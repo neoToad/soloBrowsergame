@@ -24,6 +24,19 @@ class Quest(models.Model):
                       related_name='quests'
                   )
     arc_order       = models.IntegerField(default=0)
+    # Stat gate
+    required_stat    = models.CharField(max_length=50, blank=True)
+    required_minimum = models.IntegerField(default=0)
+
+    # Quest prerequisite gate
+    required_quest = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='unlocks'
+    )
+
     entrance_scene  = models.ForeignKey(
                           'Scene',
                           null=True, blank=True,

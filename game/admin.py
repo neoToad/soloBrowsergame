@@ -11,7 +11,11 @@ class ArcAdmin(admin.ModelAdmin):
 
 @admin.register(Quest)
 class QuestAdmin(admin.ModelAdmin):
-    list_display = ('key', 'title', 'arc', 'arc_order', 'is_unlocked')
+    list_display = (
+        'key', 'title', 'arc', 'arc_order', 'is_unlocked',
+        'required_stat', 'required_minimum', 'required_quest', 'entrance_scene'
+    )
+    raw_id_fields = ('required_quest',)
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):

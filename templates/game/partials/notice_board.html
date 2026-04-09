@@ -1,0 +1,53 @@
+<h3>Available Quests</h3>
+<div class="notice-board-section">
+    {% for entry in notice_board %}
+        {% if entry.status == 'available' %}
+            <div class="quest-entry quest-entry--available">
+                <button
+                    hx-post="{% url 'start_quest' entry.quest.key %}"
+                    hx-target="#scene-panel"
+                    hx-swap="innerHTML"
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                    {{ entry.quest.title }}
+                </button>
+                <p class="quest-desc">{{ entry.quest.description }}</p>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<h3>Locked Quests</h3>
+<div class="notice-board-section">
+    {% for entry in notice_board %}
+        {% if entry.status == 'locked' %}
+            <div class="quest-entry quest-entry--locked">
+                <p class="quest-title">{{ entry.quest.title }}</p>
+                <p class="quest-lock-reason">{{ entry.lock_reason }}</p>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>
+
+<h3>Completed Quests</h3>
+<div class="notice-board-section">
+    {% for entry in notice_board %}
+        {% if entry.status == 'completed' %}
+            <div class="quest-entry quest-entry--completed">
+                <p class="quest-title">{{ entry.quest.title }}</p>
+                {% for ending in entry.endings %}
+                    <p class="quest-ending">
+                        {{ ending.completed_at|date:"M d, Y" }}
+                        — {{ ending.ending_type|title }}
+                    </p>
+                {% endfor %}
+                <button
+                    hx-post="{% url 'start_quest' entry.quest.key %}"
+                    hx-target="#scene-panel"
+                    hx-swap="innerHTML"
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                    Play again
+                </button>
+            </div>
+        {% endif %}
+    {% endfor %}
+</div>

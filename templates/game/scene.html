@@ -1,40 +1,8 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div id="stats-bar">
-    <strong>HP:</strong> {{ stats.hp }}/{{ stats.max_hp }} |
-    <strong>Strength:</strong> {{ stats.strength }} |
-    <strong>Agility:</strong> {{ stats.agility }} |
-    <strong>Intellect:</strong> {{ stats.intellect }} |
-    <strong>Charisma:</strong> {{ stats.charisma }}
-</div>
-
-<hr>
-
-<div id="scene">
-    <h2>{{ scene.title }}</h2>
-    <p>{{ scene.body }}</p>
-</div>
-
-<div id="choices">
-    {% for choice in choices %}
-        <form method="post" action="{% url 'choice_resolve' choice_id=choice.id %}" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit">{{ choice.label }}</button>
-        </form>
-    {% endfor %}
-</div>
-
-<hr>
-
-<div id="event-log">
-    <h3>Recent Events</h3>
-    <ul>
-        {% for log in logs %}
-            <li>{{ log.timestamp|date:"H:i:s" }}: {{ log.text }}</li>
-        {% empty %}
-            <li>No events yet.</li>
-        {% endfor %}
-    </ul>
+<div id="game-layout">
+    {% include "game/partials/stats_bar.html" with oob=False %}
+    {% include "game/partials/scene_panel.html" %}
+    {% include "game/partials/event_log.html" with oob=False %}
 </div>
 {% endblock %}

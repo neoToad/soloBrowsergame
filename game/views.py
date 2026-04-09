@@ -1,6 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import GameSession, PlayerStats, Scene, Choice, EventLog, CompletedQuest
-from .utils import roll_d20, stat_modifier
+from django.http import HttpResponse, HttpResponseNotAllowed
+from django.template.loader import render_to_string
+from .models import GameSession, PlayerStats, Scene, Choice, EventLog, CompletedQuest, Quest
+from .utils import roll_d20, stat_modifier, get_notice_board
+
+NOTICE_BOARD_KEY = 'hub__notice_board'
 
 def get_available_choices(scene, stats):
     choices = []
@@ -54,6 +58,11 @@ def scene_detail(request, scene_key):
     game_session = get_object_or_404(GameSession, pk=session_pk)
     scene = get_object_or_404(Scene, key=scene_key)
     stats = game_session.stats
+
+    if scene.key == NOTICE_BOARD_KEY:
+        notice_board = get_notice_board(game_session, stats)
+    else:
+        notice_board = None
     
     choices = get_available_choices(scene, stats)
     logs = game_session.log.all()[:10]
@@ -64,12 +73,12 @@ def scene_detail(request, scene_key):
         'stats': stats,
         'choices': choices,
         'logs': logs,
+        'notice_board': notice_board,
     }
     return render(request, 'game/scene.html', context)
 
 def choice_resolve(request, choice_id):
     if request.method != 'POST':
-        from django.http import HttpResponseNotAllowed
         return HttpResponseNotAllowed(['POST'])
 
     session_pk = request.session.get('game_session_id')
@@ -125,5 +134,71 @@ def choice_resolve(request, choice_id):
                 session=session,
                 text=f"You have completed: {next_scene.quest.title} ({next_scene.get_ending_type_display()})"
             )
+
+    is_htmx = request.headers.get('HX-Request') == 'true'
+    if is_htmx:
+        if next_scene.key == NOTICE_BOARD_KEY:
+            notice_board = get_notice_board(session, stats)
+        else:
+            notice_board = None
+
+        context = {
+            'scene': next_scene,
+            'choices': get_available_choices(next_scene, stats),
+            'stats': stats,
+            'logs': session.log.all()[:10],
+            'oob': True,
+            'notice_board': notice_board,
+        }
+        scene_html = render_to_string('game/partials/scene_panel.html', context, request)
+        stats_html = render_to_string('game/partials/stats_bar.html', context, request)
+        log_html = render_to_string('game/partials/event_log.html', context, request)
+        return HttpResponse(scene_html + stats_html + log_html)
+
+    return redirect('scene_detail', scene_key=next_scene.key)
+
+def start_quest(request, quest_key):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    session_pk = request.session.get('game_session_id')
+    if not session_pk:
+        return redirect('game_hub')
+
+    session = get_object_or_404(GameSession, pk=session_pk)
+    quest = get_object_or_404(Quest, key=quest_key)
+    stats = session.stats
+
+    # Check availability
+    board = get_notice_board(session, stats)
+    quest_entry = next((e for e in board if e['quest'].key == quest_key), None)
+
+    if not quest_entry or quest_entry['status'] == 'locked':
+        return HttpResponse("Quest is locked", status=403)
+
+    next_scene = quest.entrance_scene
+    if not next_scene:
+        return HttpResponse("Quest has no entrance scene", status=500)
+
+    # Log acceptance
+    EventLog.objects.create(session=session, text=f"You accepted the quest: {quest.title}")
+
+    # Advance session
+    session.current_scene = next_scene
+    session.save()
+
+    is_htmx = request.headers.get('HX-Request') == 'true'
+    if is_htmx:
+        context = {
+            'scene': next_scene,
+            'choices': get_available_choices(next_scene, stats),
+            'stats': stats,
+            'logs': session.log.all()[:10],
+            'oob': True,
+        }
+        scene_html = render_to_string('game/partials/scene_panel.html', context, request)
+        stats_html = render_to_string('game/partials/stats_bar.html', context, request)
+        log_html = render_to_string('game/partials/event_log.html', context, request)
+        return HttpResponse(scene_html + stats_html + log_html)
 
     return redirect('scene_detail', scene_key=next_scene.key)

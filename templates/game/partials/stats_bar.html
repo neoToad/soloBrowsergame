@@ -1,0 +1,28 @@
+<div id="stats-bar" {% if oob %}hx-swap-oob="true"{% endif %}>
+    <p class="panel-label">[ CHARACTER ]</p>
+    
+    <div class="stat-row hp-row">
+        <span class="stat-name">HP</span>
+        <span class="stat-value hp-value">{{ stats.hp }}/{{ stats.max_hp }}</span>
+    </div>
+    
+    <div class="stat-row">
+        <span class="stat-name">STR</span>
+        <span class="stat-value">{{ stats.strength }}</span>
+    </div>
+    
+    <div class="stat-row">
+        <span class="stat-name">AGI</span>
+        <span class="stat-value">{{ stats.agility }}</span>
+    </div>
+    
+    <div class="stat-row">
+        <span class="stat-name">INT</span>
+        <span class="stat-value">{{ stats.intellect }}</span>
+    </div>
+    
+    <div class="stat-row">
+        <span class="stat-name">CHA</span>
+        <span class="stat-value">{{ stats.charisma }}</span>
+    </div>
+</div>

@@ -1,0 +1,31 @@
+<div id="scene-panel" 
+     {% if scene.is_ending %}class="scene--ending" data-ending="{{ scene.ending_type }}"{% endif %}>
+    
+    <div id="loading-indicator" class="htmx-indicator">
+        Thinking...
+    </div>
+
+    <h2>{{ scene.title }}</h2>
+    <p>{{ scene.body }}</p>
+
+    {% if notice_board %}
+        {% include "game/partials/notice_board.html" %}
+    {% endif %}
+
+    <div class="choices">
+        {% for choice in choices %}
+            <button
+                hx-post="/game/choose/{{ choice.id }}/"
+                hx-target="#scene-panel"
+                hx-swap="innerHTML"
+                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                hx-indicator="#loading-indicator">
+                {{ choice.label }}
+            </button>
+        {% empty %}
+            {% if not scene.is_ending and not notice_board %}
+                <p><em>No choices available.</em></p>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
