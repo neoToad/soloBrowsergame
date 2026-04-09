@@ -1,0 +1,114 @@
+[
+  {
+    "model": "game.scene",
+    "pk": 1,
+    "fields": {
+      "key": "hub__main_square",
+      "quest": null,
+      "is_hub": true,
+      "is_combat": false,
+      "is_ending": false,
+      "title": "Main Square",
+      "body": "You are in the bustling main square of the town. Merchants cry out their wares, and citizens hurry about their daily lives. A large notice board stands in the center, and the local tavern is just a short walk away.",
+      "order": 1,
+      "requires_roll": false,
+      "roll_stat": "",
+      "roll_difficulty": 10,
+      "ending_type": "",
+      "ambient_sound": "city_ambience"
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 2,
+    "fields": {
+      "key": "hub__notice_board",
+      "quest": null,
+      "is_hub": true,
+      "is_combat": false,
+      "is_ending": false,
+      "title": "Notice Board",
+      "body": "The wooden notice board is covered in weathered parchments. Most are mundane requests for farm help or lost pets, but one catches your eye: a bounty for investigating the Haunted Mine.",
+      "order": 2,
+      "requires_roll": false,
+      "roll_stat": "",
+      "roll_difficulty": 10,
+      "ending_type": "",
+      "ambient_sound": "paper_rustle"
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 3,
+    "fields": {
+      "key": "hub__tavern",
+      "quest": null,
+      "is_hub": true,
+      "is_combat": false,
+      "is_ending": false,
+      "title": "The Rusty Tankard",
+      "body": "The air in the tavern is thick with the smell of roasted meat and spilled ale. A bard plays a lively tune in the corner, and the fire in the hearth provides a welcoming warmth.",
+      "order": 3,
+      "requires_roll": false,
+      "roll_stat": "",
+      "roll_difficulty": 10,
+      "ending_type": "",
+      "ambient_sound": "tavern_noise"
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 1,
+    "fields": {
+      "scene": 1,
+      "label": "Check the notice board",
+      "order": 1,
+      "target_scene": 2,
+      "arrival_flavor": "You walk over to the central notice board."
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 2,
+    "fields": {
+      "scene": 1,
+      "label": "Go to the tavern",
+      "order": 2,
+      "target_scene": 3,
+      "arrival_flavor": "You push open the heavy oak doors of the tavern."
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 3,
+    "fields": {
+      "scene": 2,
+      "label": "Return to the main square",
+      "order": 1,
+      "target_scene": 1,
+      "arrival_flavor": "You step away from the notice board."
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 4,
+    "fields": {
+      "scene": 3,
+      "label": "Return to the main square",
+      "order": 1,
+      "target_scene": 1,
+      "arrival_flavor": "You leave the warmth of the tavern and head back out into the square."
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 16,
+    "fields": {
+      "scene": 2,
+      "label": "The Haunted Mine",
+      "order": 2,
+      "target_scene": 4,
+      "arrival_flavor": "You accept the quest and head towards the old iron mine."
+    }
+  }
+]

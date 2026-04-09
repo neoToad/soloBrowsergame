@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="stats-bar">
+    <strong>HP:</strong> {{ stats.hp }}/{{ stats.max_hp }} |
+    <strong>Strength:</strong> {{ stats.strength }} |
+    <strong>Agility:</strong> {{ stats.agility }} |
+    <strong>Intellect:</strong> {{ stats.intellect }} |
+    <strong>Charisma:</strong> {{ stats.charisma }}
+</div>
+
+<hr>
+
+<div id="scene">
+    <h2>{{ scene.title }}</h2>
+    <p>{{ scene.body }}</p>
+</div>
+
+<div id="choices">
+    {% for choice in choices %}
+        <a href="{% url 'scene_detail' scene_key=choice.target_scene.key %}">
+            <button>{{ choice.label }}</button>
+        </a>
+    {% endfor %}
+</div>
+
+<hr>
+
+<div id="event-log">
+    <h3>Recent Events</h3>
+    <ul>
+        {% for log in logs %}
+            <li>{{ log.timestamp|date:"H:i:s" }}: {{ log.text }}</li>
+        {% empty %}
+            <li>No events yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

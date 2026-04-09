@@ -1,0 +1,283 @@
+[
+  {
+    "model": "game.quest",
+    "pk": 1,
+    "fields": {
+      "key": "the_haunted_mine",
+      "title": "The Haunted Mine",
+      "description": "Investigate rumors of spirits haunting the local iron mine.",
+      "is_unlocked": true,
+      "arc": null,
+      "arc_order": 0,
+      "entrance_scene": 4
+    }
+  },
+  {
+    "model": "game.requirement",
+    "pk": 1,
+    "fields": {
+      "condition_type": "stat_gte",
+      "stat_name": "agility",
+      "stat_value": 7
+    }
+  },
+  {
+    "model": "game.requirementgroup",
+    "pk": 1,
+    "fields": {
+      "label": "Agility >= 7",
+      "logic": "all",
+      "requirements": [1]
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 4,
+    "fields": {
+      "key": "mine__entrance",
+      "quest": 1,
+      "is_hub": false,
+      "is_combat": false,
+      "is_ending": false,
+      "title": "The Mine Entrance",
+      "body": "The yawning mouth of the iron mine lies before you, guarded by a pair of bored-looking sentries. You need to get inside, but they won't just let you stroll in.",
+      "order": 1,
+      "requires_roll": false
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 5,
+    "fields": {
+      "scene": 4,
+      "label": "Sneak past the guards",
+      "order": 1,
+      "target_scene": 7,
+      "arrival_flavor": "You slip silently past the sleeping guard and descend into the darkness.",
+      "requirements": [1]
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 6,
+    "fields": {
+      "scene": 4,
+      "label": "Fight through the guards",
+      "order": 2,
+      "target_scene": 5,
+      "arrival_flavor": ""
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 7,
+    "fields": {
+      "scene": 4,
+      "label": "Bribe the guards",
+      "order": 3,
+      "target_scene": 6,
+      "arrival_flavor": "You hand over a handful of coins, and the guards look the other way."
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 5,
+    "fields": {
+      "key": "mine__fight_gate",
+      "quest": 1,
+      "is_hub": false,
+      "is_combat": false,
+      "is_ending": false,
+      "title": "Fight the Guards",
+      "body": "You step forward, weapon drawn. The guards shout in alarm and move to intercept you!",
+      "order": 2,
+      "requires_roll": true,
+      "roll_stat": "strength",
+      "roll_difficulty": 13
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 8,
+    "fields": {
+      "scene": 5,
+      "label": "Engage in combat",
+      "order": 1,
+      "target_scene": 5,
+      "success_scene": 7,
+      "failure_scene": 8,
+      "arrival_flavor": "With a final blow, you drive the guards back and rush into the mine."
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 6,
+    "fields": {
+      "key": "mine__bribe_path",
+      "quest": 1,
+      "is_hub": false,
+      "is_combat": false,
+      "is_ending": false,
+      "title": "A Quiet Entry",
+      "body": "The guards count the coin and chuckle, stepping aside. 'Good luck in there,' one says with a smirk. 'You'll need it.' You walk down a long, well-lit side tunnel.",
+      "order": 3,
+      "requires_roll": false
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 9,
+    "fields": {
+      "scene": 6,
+      "label": "Continue deep into the side tunnel",
+      "order": 1,
+      "target_scene": 9,
+      "arrival_flavor": "The tunnel leads you to a peaceful grotto away from the hauntings."
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 7,
+    "fields": {
+      "key": "mine__interior",
+      "quest": 1,
+      "is_hub": false,
+      "is_combat": false,
+      "is_ending": false,
+      "title": "Deep in the Mine",
+      "body": "The air here is cold and damp. Strange whispers echo off the walls. You find yourself at a fork in the tunnel. One path smells of ozone and magic, the other of old iron and dust.",
+      "order": 4,
+      "requires_roll": false
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 10,
+    "fields": {
+      "scene": 7,
+      "label": "Follow the scent of magic",
+      "order": 1,
+      "target_scene": 10,
+      "arrival_flavor": "You follow the shimmering light into a grand chamber."
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 11,
+    "fields": {
+      "scene": 7,
+      "label": "Follow the scent of iron",
+      "order": 2,
+      "target_scene": 11,
+      "arrival_flavor": "You find the source of the haunting: a cursed iron idol."
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 8,
+    "fields": {
+      "key": "mine__captured",
+      "quest": 1,
+      "is_hub": false,
+      "is_combat": false,
+      "is_ending": true,
+      "title": "Defeated",
+      "body": "The guards are too strong. They overpower you and drag you to a makeshift cell. Your adventure ends here.",
+      "order": 5,
+      "requires_roll": false,
+      "ending_type": "defeat"
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 12,
+    "fields": {
+      "scene": 8,
+      "label": "Return to town",
+      "order": 1,
+      "target_scene": 1,
+      "arrival_flavor": "You are eventually released and limp back to town."
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 9,
+    "fields": {
+      "key": "mine__peaceful_ending",
+      "quest": 1,
+      "is_hub": false,
+      "is_combat": false,
+      "is_ending": true,
+      "title": "A Peaceful Grotto",
+      "body": "The side tunnel opens into a beautiful hidden cave, untouched by spirits. You spend some time in contemplation before heading back.",
+      "order": 6,
+      "requires_roll": false,
+      "ending_type": "neutral"
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 13,
+    "fields": {
+      "scene": 9,
+      "label": "Return to town",
+      "order": 1,
+      "target_scene": 1,
+      "arrival_flavor": "You take the long way back to the square."
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 10,
+    "fields": {
+      "key": "mine__mystical_victory",
+      "quest": 1,
+      "is_hub": false,
+      "is_combat": false,
+      "is_ending": true,
+      "title": "Mystical Purge",
+      "body": "You find the source of the hauntings and use your knowledge to cleanse the area. The spirits are at peace.",
+      "order": 7,
+      "requires_roll": false,
+      "ending_type": "victory"
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 14,
+    "fields": {
+      "scene": 10,
+      "label": "Return to town",
+      "order": 1,
+      "target_scene": 1,
+      "arrival_flavor": "The town feels brighter as you return."
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 11,
+    "fields": {
+      "key": "mine__martial_victory",
+      "quest": 1,
+      "is_hub": false,
+      "is_combat": false,
+      "is_ending": true,
+      "title": "Shattered Curse",
+      "body": "You smash the cursed iron idol into pieces. The malevolent energy dissipates instantly. The mine is safe once more.",
+      "order": 8,
+      "requires_roll": false,
+      "ending_type": "victory"
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 15,
+    "fields": {
+      "scene": 11,
+      "label": "Return to town",
+      "order": 1,
+      "target_scene": 1,
+      "arrival_flavor": "You return a hero, iron dust still on your boots."
+    }
+  }
+]
