@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import GameSession, PlayerStats, Scene, Choice, EventLog
+from .models import GameSession, PlayerStats, Scene, Choice, EventLog, CompletedQuest
+from .utils import roll_d20, stat_modifier
 
 def get_available_choices(scene, stats):
     choices = []
@@ -65,3 +66,64 @@ def scene_detail(request, scene_key):
         'logs': logs,
     }
     return render(request, 'game/scene.html', context)
+
+def choice_resolve(request, choice_id):
+    if request.method != 'POST':
+        from django.http import HttpResponseNotAllowed
+        return HttpResponseNotAllowed(['POST'])
+
+    session_pk = request.session.get('game_session_id')
+    if not session_pk:
+        return redirect('game_hub')
+
+    session = get_object_or_404(GameSession, pk=session_pk)
+    choice = get_object_or_404(Choice, pk=choice_id)
+    stats = session.stats
+
+    scene = choice.scene
+    next_scene = None
+
+    # 5. ROLL LOGIC
+    if scene.requires_roll:
+        stat_value = getattr(stats, scene.roll_stat, 10)
+        modifier = stat_modifier(stat_value)
+        roll = roll_d20()
+        total = roll + modifier
+        dc = scene.roll_difficulty
+        success = total >= dc
+
+        mod_str = f"+ {modifier}" if modifier >= 0 else f"- {abs(modifier)}"
+        res_str = "Success!" if success else "Failure."
+        log_text = f"You rolled a {roll} ({mod_str} modifier) = {total} vs DC {dc} — {res_str}"
+        
+        EventLog.objects.create(session=session, text=log_text)
+        
+        if success:
+            next_scene = choice.success_scene
+        else:
+            next_scene = choice.failure_scene
+    else:
+        next_scene = choice.target_scene
+
+    # 6. ARRIVAL FLAVOR
+    if choice.arrival_flavor:
+        EventLog.objects.create(session=session, text=choice.arrival_flavor)
+
+    # 7. ADVANCE SESSION
+    session.current_scene = next_scene
+    session.save()
+
+    # 8. QUEST COMPLETION
+    if next_scene.is_ending and next_scene.quest:
+        if not CompletedQuest.objects.filter(session=session, quest=next_scene.quest).exists():
+            CompletedQuest.objects.create(
+                session=session,
+                quest=next_scene.quest,
+                ending_type=next_scene.ending_type
+            )
+            EventLog.objects.create(
+                session=session,
+                text=f"You have completed: {next_scene.quest.title} ({next_scene.get_ending_type_display()})"
+            )
+
+    return redirect('scene_detail', scene_key=next_scene.key)

@@ -18,9 +18,10 @@
 
 <div id="choices">
     {% for choice in choices %}
-        <a href="{% url 'scene_detail' scene_key=choice.target_scene.key %}">
-            <button>{{ choice.label }}</button>
-        </a>
+        <form method="post" action="{% url 'choice_resolve' choice_id=choice.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">{{ choice.label }}</button>
+        </form>
     {% endfor %}
 </div>
 
