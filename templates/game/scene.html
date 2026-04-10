@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 <div id="game-layout">
-    {% include "game/partials/stats_bar.html" with oob=False %}
+    <div id="left-column">
+        {% include "game/partials/stats_bar.html" with oob=False %}
+        {% include "game/partials/inventory.html" with oob=False %}
+    </div>
     {% include "game/partials/scene_panel.html" %}
     {% include "game/partials/event_log.html" with oob=False %}
 </div>

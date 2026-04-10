@@ -2,19 +2,36 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
 from .models import GameSession, PlayerStats, Scene, Choice, EventLog, CompletedQuest, Quest
-from .utils import roll_d20, stat_modifier, get_notice_board
+from .utils import roll_d20, stat_modifier, get_notice_board, get_player_inventory, award_scene_items, consume_item as consume_item_util
 
 NOTICE_BOARD_KEY = 'hub__notice_board'
 
-def get_available_choices(scene, stats):
+def get_available_choices(scene, stats, inventory, completed_map):
     choices = []
-    for choice in scene.choices.all():
+    for choice in scene.choices.prefetch_related('requirements__requirements').all():
+        # Legacy simple stat gate (kept for backwards compatibility)
         if choice.required_stat:
             player_value = getattr(stats, choice.required_stat, 0)
             if player_value < choice.required_minimum:
                 continue
+        # RequirementGroup gate — all groups must pass
+        if choice.requirements.exists():
+            passed = all(
+                rg.evaluate(stats, inventory, completed_map)
+                for rg in choice.requirements.all()
+            )
+            if not passed:
+                continue
         choices.append(choice)
     return choices
+
+
+def _get_completed_map(session):
+    from .models import CompletedQuest
+    return {
+        cq.quest_id: cq.ending_type
+        for cq in CompletedQuest.objects.filter(session=session)
+    }
 
 def game_hub(request):
     session_pk = request.session.get('game_session_id')
@@ -54,25 +71,28 @@ def scene_detail(request, scene_key):
     session_pk = request.session.get('game_session_id')
     if not session_pk:
         return redirect('/game/')
-    
+
     game_session = get_object_or_404(GameSession, pk=session_pk)
-    scene = get_object_or_404(Scene, key=scene_key)
-    stats = game_session.stats
+    scene        = get_object_or_404(Scene, key=scene_key)
+    stats        = game_session.stats
+    inventory    = get_player_inventory(game_session)
+    completed_map = _get_completed_map(game_session)
 
     if scene.key == NOTICE_BOARD_KEY:
         notice_board = get_notice_board(game_session, stats)
     else:
         notice_board = None
-    
-    choices = get_available_choices(scene, stats)
-    logs = game_session.log.all()[:10]
-    
+
+    choices = get_available_choices(scene, stats, inventory, completed_map)
+    logs    = game_session.log.all()[:10]
+
     context = {
-        'session': game_session,
-        'scene': scene,
-        'stats': stats,
-        'choices': choices,
-        'logs': logs,
+        'session':      game_session,
+        'scene':        scene,
+        'stats':        stats,
+        'inventory':    inventory,
+        'choices':      choices,
+        'logs':         logs,
         'notice_board': notice_board,
     }
     return render(request, 'game/scene.html', context)
@@ -85,44 +105,52 @@ def choice_resolve(request, choice_id):
     if not session_pk:
         return redirect('game_hub')
 
-    session = get_object_or_404(GameSession, pk=session_pk)
-    choice = get_object_or_404(Choice, pk=choice_id)
-    stats = session.stats
+    session   = get_object_or_404(GameSession, pk=session_pk)
+    choice    = get_object_or_404(Choice, pk=choice_id)
+    stats     = session.stats
+    inventory = get_player_inventory(session)
+    completed_map = _get_completed_map(session)
 
-    scene = choice.scene
+    scene      = choice.scene
     next_scene = None
 
-    # 5. ROLL LOGIC
+    # ROLL LOGIC
     if scene.requires_roll:
         stat_value = getattr(stats, scene.roll_stat, 10)
-        modifier = stat_modifier(stat_value)
-        roll = roll_d20()
-        total = roll + modifier
-        dc = scene.roll_difficulty
-        success = total >= dc
+        modifier   = stat_modifier(stat_value)
+        roll       = roll_d20()
+        total      = roll + modifier
+        dc         = scene.roll_difficulty
+        success    = total >= dc
 
         mod_str = f"+ {modifier}" if modifier >= 0 else f"- {abs(modifier)}"
         res_str = "Success!" if success else "Failure."
-        log_text = f"You rolled a {roll} ({mod_str} modifier) = {total} vs DC {dc} — {res_str}"
-        
-        EventLog.objects.create(session=session, text=log_text)
-        
-        if success:
-            next_scene = choice.success_scene
-        else:
-            next_scene = choice.failure_scene
+        EventLog.objects.create(
+            session=session,
+            text=f"You rolled a {roll} ({mod_str} modifier) = {total} vs DC {dc} — {res_str}"
+        )
+
+        next_scene = choice.success_scene if success else choice.failure_scene
     else:
         next_scene = choice.target_scene
 
-    # 6. ARRIVAL FLAVOR
+    # ARRIVAL FLAVOR
     if choice.arrival_flavor:
         EventLog.objects.create(session=session, text=choice.arrival_flavor)
 
-    # 7. ADVANCE SESSION
+    # CONSUME ITEM (before advancing so inventory is still current)
+    if choice.consume_item and choice.consume_item_id in inventory:
+        consume_item_util(session, choice.consume_item, inventory)
+        EventLog.objects.create(
+            session=session,
+            text=f"You used your {choice.consume_item.name}."
+        )
+
+    # ADVANCE SESSION
     session.current_scene = next_scene
     session.save()
 
-    # 8. QUEST COMPLETION
+    # QUEST COMPLETION
     if next_scene.is_ending and next_scene.quest:
         if not CompletedQuest.objects.filter(session=session, quest=next_scene.quest).exists():
             CompletedQuest.objects.create(
@@ -134,6 +162,15 @@ def choice_resolve(request, choice_id):
                 session=session,
                 text=f"You have completed: {next_scene.quest.title} ({next_scene.get_ending_type_display()})"
             )
+            completed_map[next_scene.quest_id] = next_scene.ending_type
+
+    # AWARD SCENE ITEMS
+    awarded = award_scene_items(session, next_scene, inventory)
+    for item, qty in awarded:
+        EventLog.objects.create(
+            session=session,
+            text=f"You picked up: {item.name} x{qty}."
+        )
 
     is_htmx = request.headers.get('HX-Request') == 'true'
     if is_htmx:
@@ -143,17 +180,19 @@ def choice_resolve(request, choice_id):
             notice_board = None
 
         context = {
-            'scene': next_scene,
-            'choices': get_available_choices(next_scene, stats),
-            'stats': stats,
-            'logs': session.log.all()[:10],
-            'oob': True,
+            'scene':        next_scene,
+            'choices':      get_available_choices(next_scene, stats, inventory, completed_map),
+            'stats':        stats,
+            'inventory':    inventory,
+            'logs':         session.log.all()[:10],
+            'oob':          True,
             'notice_board': notice_board,
         }
-        scene_html = render_to_string('game/partials/scene_panel.html', context, request)
-        stats_html = render_to_string('game/partials/stats_bar.html', context, request)
-        log_html = render_to_string('game/partials/event_log.html', context, request)
-        return HttpResponse(scene_html + stats_html + log_html)
+        scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
+        stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
+        log_html       = render_to_string('game/partials/event_log.html',    context, request)
+        inventory_html = render_to_string('game/partials/inventory.html',    context, request)
+        return HttpResponse(scene_html + stats_html + log_html + inventory_html)
 
     return redirect('scene_detail', scene_key=next_scene.key)
 
@@ -189,16 +228,28 @@ def start_quest(request, quest_key):
 
     is_htmx = request.headers.get('HX-Request') == 'true'
     if is_htmx:
+        inventory     = get_player_inventory(session)
+        completed_map = _get_completed_map(session)
+
+        awarded = award_scene_items(session, next_scene, inventory)
+        for item, qty in awarded:
+            EventLog.objects.create(
+                session=session,
+                text=f"You picked up: {item.name} x{qty}."
+            )
+
         context = {
-            'scene': next_scene,
-            'choices': get_available_choices(next_scene, stats),
-            'stats': stats,
-            'logs': session.log.all()[:10],
-            'oob': True,
+            'scene':     next_scene,
+            'choices':   get_available_choices(next_scene, stats, inventory, completed_map),
+            'stats':     stats,
+            'inventory': inventory,
+            'logs':      session.log.all()[:10],
+            'oob':       True,
         }
-        scene_html = render_to_string('game/partials/scene_panel.html', context, request)
-        stats_html = render_to_string('game/partials/stats_bar.html', context, request)
-        log_html = render_to_string('game/partials/event_log.html', context, request)
-        return HttpResponse(scene_html + stats_html + log_html)
+        scene_html     = render_to_string('game/partials/scene_panel.html', context, request)
+        stats_html     = render_to_string('game/partials/stats_bar.html',   context, request)
+        log_html       = render_to_string('game/partials/event_log.html',   context, request)
+        inventory_html = render_to_string('game/partials/inventory.html',   context, request)
+        return HttpResponse(scene_html + stats_html + log_html + inventory_html)
 
     return redirect('scene_detail', scene_key=next_scene.key)

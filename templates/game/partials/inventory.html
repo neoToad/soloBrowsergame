@@ -1,0 +1,15 @@
+<div id="inventory-panel" {% if oob %}hx-swap-oob="true"{% endif %}>
+    <p class="panel-label">[ STASH ]</p>
+    {% if inventory %}
+        {% for item_id, pi in inventory.items %}
+            <div class="item-row">
+                <span class="item-name">{{ pi.item.name }}</span>
+                {% if pi.quantity > 1 %}
+                    <span class="item-qty">x{{ pi.quantity }}</span>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="item-empty">Nothing on you.</p>
+    {% endif %}
+</div>

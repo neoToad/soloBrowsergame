@@ -32,14 +32,32 @@ html, body {
 
 /* PANELS */
 
+#left-column {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+    overflow: hidden;
+}
+
 #stats-bar {
     background: var(--panel-bg);
-    border-right: 1px solid var(--border);
     padding: 24px 16px;
     display: flex;
     flex-direction: column;
     gap: 12px;
     overflow-y: auto;
+    flex-shrink: 0;
+}
+
+#inventory-panel {
+    background: var(--panel-bg);
+    border-top: 1px solid var(--border);
+    padding: 16px 16px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    overflow-y: auto;
+    flex: 1;
 }
 
 #scene-panel {
@@ -205,6 +223,33 @@ html, body {
     display: block;
 }
 
+/* INVENTORY / STASH */
+
+.item-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+}
+
+.item-name {
+    color: var(--text);
+    font-size: 12px;
+}
+
+.item-qty {
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.item-empty {
+    color: var(--text-dim);
+    font-size: 12px;
+    margin: 0;
+    font-style: italic;
+}
+
 /* EVENT LOG */
 
 .log-entry {
@@ -221,26 +266,29 @@ html, body {
 
 /* SCROLLBARS */
 
-#stats-bar, #scene-panel, #event-log {
+#stats-bar, #scene-panel, #event-log, #inventory-panel {
     scrollbar-width: thin;
     scrollbar-color: var(--accent-dim) var(--panel-bg);
 }
 
 #stats-bar::-webkit-scrollbar,
 #scene-panel::-webkit-scrollbar,
-#event-log::-webkit-scrollbar {
+#event-log::-webkit-scrollbar,
+#inventory-panel::-webkit-scrollbar {
     width: 4px;
 }
 
 #stats-bar::-webkit-scrollbar-track,
 #scene-panel::-webkit-scrollbar-track,
-#event-log::-webkit-scrollbar-track {
+#event-log::-webkit-scrollbar-track,
+#inventory-panel::-webkit-scrollbar-track {
     background: var(--panel-bg);
 }
 
 #stats-bar::-webkit-scrollbar-thumb,
 #scene-panel::-webkit-scrollbar-thumb,
-#event-log::-webkit-scrollbar-thumb {
+#event-log::-webkit-scrollbar-thumb,
+#inventory-panel::-webkit-scrollbar-thumb {
     background: var(--accent-dim);
 }
 

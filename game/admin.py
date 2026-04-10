@@ -19,7 +19,8 @@ class QuestAdmin(admin.ModelAdmin):
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('key', 'name', 'is_consumable')
+    list_display  = ('key', 'name', 'is_consumable')
+    prepopulated_fields = {'key': ('name',)}
 
 @admin.register(Requirement)
 class RequirementAdmin(admin.ModelAdmin):
@@ -51,10 +52,12 @@ class PlayerStatsAdmin(admin.ModelAdmin):
 @admin.register(PlayerInventory)
 class PlayerInventoryAdmin(admin.ModelAdmin):
     list_display = ('session', 'item', 'quantity', 'acquired_at')
+    list_filter  = ('item',)
 
 @admin.register(SceneItem)
 class SceneItemAdmin(admin.ModelAdmin):
     list_display = ('scene', 'item', 'quantity', 'award_once')
+    list_filter  = ('scene', 'item')
 
 @admin.register(CompletedQuest)
 class CompletedQuestAdmin(admin.ModelAdmin):
