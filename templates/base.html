@@ -10,5 +10,48 @@
 </head>
 <body>
     {% block content %}{% endblock %}
+    <script>
+    (function () {
+      // ── Scene panel fade ─────────────────────────────────────────────────
+      const scenePanel = () => document.getElementById('scene-panel');
+
+      document.body.addEventListener('htmx:beforeRequest', function (e) {
+        const sp = scenePanel();
+        if (sp) sp.classList.add('is-loading');
+      });
+
+      document.body.addEventListener('htmx:afterSwap', function (e) {
+        // Fade scene panel back in
+        const sp = scenePanel();
+        if (sp) sp.classList.remove('is-loading');
+
+        // ── Stat value flash ───────────────────────────────────────────────
+        document.querySelectorAll('.stat-value').forEach(function (el) {
+          el.classList.remove('stat-updated');
+          // force reflow so the animation restarts even if already applied
+          void el.offsetWidth;
+          el.classList.add('stat-updated');
+          el.addEventListener('animationend', function handler() {
+            el.classList.remove('stat-updated');
+            el.removeEventListener('animationend', handler);
+          });
+        });
+
+        // ── Combat damage flash (only when combat panel is present) ────────
+        const combatPanel = document.getElementById('combat-panel');
+        if (combatPanel) {
+          combatPanel.querySelectorAll('.bar-val').forEach(function (el) {
+            el.classList.remove('damage-flash');
+            void el.offsetWidth;
+            el.classList.add('damage-flash');
+            el.addEventListener('animationend', function handler() {
+              el.classList.remove('damage-flash');
+              el.removeEventListener('animationend', handler);
+            });
+          });
+        }
+      });
+    })();
+    </script>
 </body>
 </html>

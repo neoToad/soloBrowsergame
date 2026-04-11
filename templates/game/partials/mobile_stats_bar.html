@@ -1,0 +1,34 @@
+{% load game_filters %}
+<div id="mobile-stats-bar" {% if oob %}hx-swap-oob="true"{% endif %}>
+
+    <span class="mob-stat mob-stat--composure">
+        <span class="mob-stat-label">COMPOSURE</span>
+        <span class="mob-stat-value">{{ stats.hp }}/{{ stats.max_hp }}</span>
+    </span>
+
+    <span class="mob-stat">
+        <span class="mob-stat-label">MUSCLE</span>
+        <span class="mob-stat-value">{{ stats.strength }}{% if stat_bonuses.strength %}<span class="stat-bonus">+{{ stat_bonuses.strength }}</span>{% endif %}</span>
+    </span>
+
+    <span class="mob-stat">
+        <span class="mob-stat-label">REFLEXES</span>
+        <span class="mob-stat-value">{{ stats.agility }}{% if stat_bonuses.agility %}<span class="stat-bonus">+{{ stat_bonuses.agility }}</span>{% endif %}</span>
+    </span>
+
+    <span class="mob-stat">
+        <span class="mob-stat-label">CUNNING</span>
+        <span class="mob-stat-value">{{ stats.intellect }}{% if stat_bonuses.intellect %}<span class="stat-bonus">+{{ stat_bonuses.intellect }}</span>{% endif %}</span>
+    </span>
+
+    <span class="mob-stat">
+        <span class="mob-stat-label">NERVE</span>
+        <span class="mob-stat-value">{{ stats.charisma }}{% if stat_bonuses.charisma %}<span class="stat-bonus">+{{ stat_bonuses.charisma }}</span>{% endif %}</span>
+    </span>
+
+    <span class="mob-stat mob-stat--rank">
+        <span class="mob-stat-label">RANK</span>
+        <span class="mob-stat-value">{{ stats.level|rank_title }}</span>
+    </span>
+
+</div>
