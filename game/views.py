@@ -16,6 +16,19 @@ from .utils import (
 
 NOTICE_BOARD_KEY = 'hub__notice_board'
 
+def _htmx_response(request, context):
+    """
+    Renders the five core game partials and returns them as a single HttpResponse.
+    Used for HTMX-based partial updates.
+    """
+    scene_html     = render_to_string('game/partials/scene_panel.html',      context, request)
+    stats_html     = render_to_string('game/partials/stats_bar.html',        context, request)
+    log_html       = render_to_string('game/partials/event_log.html',        context, request)
+    inventory_html = render_to_string('game/partials/inventory.html',        context, request)
+    mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
+    return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
+
+
 def get_available_choices(scene, stats, inventory, completed_map):
     choices = []
     for choice in scene.choices.prefetch_related('requirements__requirements').all():
@@ -42,6 +55,14 @@ def _get_completed_map(session):
         cq.quest_id: cq.ending_type
         for cq in CompletedQuest.objects.filter(session=session)
     }
+
+def _load_context(session_pk):
+    session = get_object_or_404(GameSession, pk=session_pk)
+    stats   = session.stats
+    inventory     = get_player_inventory(session)
+    effective_stats = get_effective_stats(stats, inventory)
+    completed_map   = _get_completed_map(session)
+    return session, stats, inventory, effective_stats, completed_map
 
 def _get_combat_state(session, scene):
     """
@@ -158,12 +179,8 @@ def choice_resolve(request, choice_id):
     if not session_pk:
         return redirect('game_hub')
 
-    session   = get_object_or_404(GameSession, pk=session_pk)
+    session, stats, inventory, effective_stats, completed_map = _load_context(session_pk)
     choice    = get_object_or_404(Choice, pk=choice_id)
-    stats     = session.stats
-    inventory = get_player_inventory(session)
-    effective_stats = get_effective_stats(stats, inventory)
-    completed_map = _get_completed_map(session)
 
     scene      = choice.scene
     next_scene = None
@@ -256,12 +273,7 @@ def choice_resolve(request, choice_id):
             'notice_board': notice_board,
             'combat_state': combat_state,
         }
-        scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
-        stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
-        log_html       = render_to_string('game/partials/event_log.html',    context, request)
-        inventory_html = render_to_string('game/partials/inventory.html',    context, request)
-        mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
-        return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
+        return _htmx_response(request, context)
 
     return redirect('scene_detail', scene_key=next_scene.key)
 
@@ -273,9 +285,8 @@ def start_quest(request, quest_key):
     if not session_pk:
         return redirect('game_hub')
 
-    session = get_object_or_404(GameSession, pk=session_pk)
+    session, stats, inventory, effective_stats, completed_map = _load_context(session_pk)
     quest = get_object_or_404(Quest, key=quest_key)
-    stats = session.stats
 
     # Check availability
     board = get_notice_board(session, stats)
@@ -297,9 +308,6 @@ def start_quest(request, quest_key):
 
     is_htmx = request.headers.get('HX-Request') == 'true'
     if is_htmx:
-        inventory       = get_player_inventory(session)
-        completed_map   = _get_completed_map(session)
-
         awarded = award_scene_items(session, next_scene, inventory)
         for item, qty in awarded:
             EventLog.objects.create(
@@ -320,12 +328,7 @@ def start_quest(request, quest_key):
             'oob':          True,
             'combat_state': combat_state,
         }
-        scene_html     = render_to_string('game/partials/scene_panel.html', context, request)
-        stats_html     = render_to_string('game/partials/stats_bar.html',   context, request)
-        log_html       = render_to_string('game/partials/event_log.html',   context, request)
-        inventory_html = render_to_string('game/partials/inventory.html',   context, request)
-        mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
-        return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
+        return _htmx_response(request, context)
 
     return redirect('scene_detail', scene_key=next_scene.key)
 
@@ -338,8 +341,7 @@ def combat_attack(request):
     if not session_pk:
         return redirect('game_hub')
 
-    session = get_object_or_404(GameSession, pk=session_pk)
-    stats   = session.stats
+    session, stats, inventory, effective_stats, completed_map = _load_context(session_pk)
 
     try:
         combat_state = session.combat_state
@@ -350,9 +352,6 @@ def combat_attack(request):
         return HttpResponse("Combat is not active.", status=400)
 
     enemy         = combat_state.enemy
-    inventory     = get_player_inventory(session)
-    completed_map = _get_completed_map(session)
-    effective_stats = get_effective_stats(stats, inventory)
 
     # ── PLAYER ATTACKS ──────────────────────────────────────────────
     p_hit, p_dmg, p_roll, p_total = resolve_player_attack(effective_stats, enemy)
@@ -433,12 +432,7 @@ def combat_attack(request):
             'oob':          True,
             'combat_state': None,
         }
-        scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
-        stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
-        log_html       = render_to_string('game/partials/event_log.html',    context, request)
-        inventory_html = render_to_string('game/partials/inventory.html',    context, request)
-        mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
-        return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
+        return _htmx_response(request, context)
 
     # ── ENEMY ATTACKS BACK ───────────────────────────────────────────
     e_hit, e_dmg, e_roll, e_total = resolve_enemy_attack(enemy, effective_stats)
@@ -510,12 +504,7 @@ def combat_attack(request):
             'oob':          True,
             'combat_state': None,
         }
-        scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
-        stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
-        log_html       = render_to_string('game/partials/event_log.html',    context, request)
-        inventory_html = render_to_string('game/partials/inventory.html',    context, request)
-        mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
-        return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
+        return _htmx_response(request, context)
 
     # ── COMBAT CONTINUES ─────────────────────────────────────────────
     combat_state.turn_number += 1
@@ -532,12 +521,7 @@ def combat_attack(request):
         'oob':          True,
         'combat_state': combat_state,
     }
-    scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
-    stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
-    log_html       = render_to_string('game/partials/event_log.html',    context, request)
-    inventory_html = render_to_string('game/partials/inventory.html',    context, request)
-    mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
-    return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
+    return _htmx_response(request, context)
 
 
 STAT_FIELD_MAP = {
@@ -555,8 +539,7 @@ def level_up(request):
     if not session_pk:
         return redirect('game_hub')
 
-    session = get_object_or_404(GameSession, pk=session_pk)
-    stats   = session.stats
+    session, stats, inventory, effective_stats, completed_map = _load_context(session_pk)
 
     if stats.stat_points <= 0:
         return HttpResponse("No stat points available.", status=400)
@@ -577,9 +560,7 @@ def level_up(request):
     )
 
     scene           = session.current_scene
-    inventory       = get_player_inventory(session)
     effective_stats = get_effective_stats(stats, inventory)
-    completed_map   = _get_completed_map(session)
 
     # Preserve active combat state if one exists
     combat_state = None
@@ -607,12 +588,7 @@ def level_up(request):
         'notice_board': notice_board,
     }
 
-    scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
-    stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
-    log_html       = render_to_string('game/partials/event_log.html',    context, request)
-    inventory_html = render_to_string('game/partials/inventory.html',    context, request)
-    mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
-    return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
+    return _htmx_response(request, context)
 
 
 USE_ITEM_FLAVOR = {
@@ -630,10 +606,8 @@ def use_item(request, item_id):
         return redirect('game_hub')
 
     from .models import Item
-    session = get_object_or_404(GameSession, pk=session_pk)
+    session, stats, inventory, effective_stats, completed_map = _load_context(session_pk)
     item    = get_object_or_404(Item, pk=item_id)
-    stats   = session.stats
-    inventory = get_player_inventory(session)
 
     # Guard: player must actually hold the item
     if item.id not in inventory:
@@ -670,7 +644,6 @@ def use_item(request, item_id):
     # ── BUILD RESPONSE ───────────────────────────────────────────────
     scene           = session.current_scene
     effective_stats = get_effective_stats(stats, inventory)
-    completed_map   = _get_completed_map(session)
 
     combat_state = None
     try:
@@ -696,9 +669,4 @@ def use_item(request, item_id):
         'combat_state': combat_state,
         'notice_board': notice_board,
     }
-    scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
-    stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
-    log_html       = render_to_string('game/partials/event_log.html',    context, request)
-    inventory_html = render_to_string('game/partials/inventory.html',    context, request)
-    mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
-    return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
+    return _htmx_response(request, context)
