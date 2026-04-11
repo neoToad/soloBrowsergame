@@ -42,11 +42,22 @@ class GameNavigationTest(TestCase):
         # The Haunted Mine entrance scene
         scene = Scene.objects.get(key='mine__entrance')
         
-        # Choice 5: "Sneak past the guards" requires agility 7. Default is 5.
+        # Choice 5: "Sneak past the guards"
         choice_sneak = Choice.objects.get(pk=5)
-        choice_sneak.required_stat = 'agility'
-        choice_sneak.required_minimum = 7
-        choice_sneak.save()
+        
+        # Create a Requirement for agility 7
+        from .models import Requirement, RequirementGroup
+        req = Requirement.objects.create(
+            condition_type='stat_gte',
+            stat_name='agility',
+            stat_value=7
+        )
+        group = RequirementGroup.objects.create(
+            label='Agility 7 gate',
+            logic='all'
+        )
+        group.requirements.add(req)
+        choice_sneak.requirements.add(group)
         
         # Check that it's NOT visible with default agility (5)
         response = self.client.get(reverse('scene_detail', kwargs={'scene_key': 'mine__entrance'}))
@@ -94,19 +105,29 @@ class NoticeBoardTest(TestCase):
 
     def test_quest_prerequisite_gating(self):
         # Create second quest requiring haunted mine
+        from .models import Requirement, RequirementGroup
         second_quest = Quest.objects.create(
             key='second_quest',
             title='The Second Quest',
             description='Locked until mine is done.',
-            required_quest=self.mine,
             entrance_scene=self.mine_entrance
         )
+        req = Requirement.objects.create(
+            condition_type='quest_completed',
+            required_quest=self.mine
+        )
+        group = RequirementGroup.objects.create(
+            label='Requires Mine',
+            logic='all'
+        )
+        group.requirements.add(req)
+        second_quest.requirements.add(group)
         
         # Check it's locked
         response = self.client.get(reverse('scene_detail', kwargs={'scene_key': 'hub__notice_board'}))
         self.assertContains(response, "Locked Quests")
         self.assertContains(response, second_quest.title)
-        self.assertContains(response, f"Requires completion of: {self.mine.title}")
+        self.assertContains(response, "Requires Mine")
         
         # Complete haunted mine
         CompletedQuest.objects.create(session=self.session, quest=self.mine, ending_type='victory')
@@ -114,20 +135,28 @@ class NoticeBoardTest(TestCase):
         # Check it's now available
         response = self.client.get(reverse('scene_detail', kwargs={'scene_key': 'hub__notice_board'}))
         self.assertContains(response, second_quest.title)
-        # Should be in available section now, search for the title within the available block
-        # (Simplified check: title exists, and it's no longer in the locked section)
-        self.assertNotContains(response, f"Requires completion of: {self.mine.title}")
+        self.assertNotContains(response, "Requires Mine")
 
     def test_stat_gated_quest(self):
         # Create third quest requiring intellect 9
+        from .models import Requirement, RequirementGroup
         intellect_quest = Quest.objects.create(
             key='intellect_quest',
             title='Intellect Quest',
             description='Requires brains.',
-            required_stat='intellect',
-            required_minimum=9,
             entrance_scene=self.mine_entrance
         )
+        req = Requirement.objects.create(
+            condition_type='stat_gte',
+            stat_name='intellect',
+            stat_value=9
+        )
+        group = RequirementGroup.objects.create(
+            label='Requires Intellect 9',
+            logic='all'
+        )
+        group.requirements.add(req)
+        intellect_quest.requirements.add(group)
         
         # Initial stats: intellect is 5
         self.session.stats.intellect = 6
@@ -135,7 +164,7 @@ class NoticeBoardTest(TestCase):
         
         # Check it's locked
         response = self.client.get(reverse('scene_detail', kwargs={'scene_key': 'hub__notice_board'}))
-        self.assertContains(response, "Requires Intellect 9 (yours: 6)")
+        self.assertContains(response, "Requires Intellect 9")
         
         # Raise intellect to 9
         self.session.stats.intellect = 9
@@ -159,14 +188,25 @@ class NoticeBoardTest(TestCase):
 
     def test_start_quest_view(self):
         # Try to start locked quest (by stat)
+        from .models import Requirement, RequirementGroup
         locked_quest = Quest.objects.create(
             key='locked_quest',
             title='Locked Quest',
             description='Requires brains.',
-            required_stat='intellect',
-            required_minimum=99,
             entrance_scene=self.mine_entrance
         )
+        req = Requirement.objects.create(
+            condition_type='stat_gte',
+            stat_name='intellect',
+            stat_value=99
+        )
+        group = RequirementGroup.objects.create(
+            label='Requires Big Brains',
+            logic='all'
+        )
+        group.requirements.add(req)
+        locked_quest.requirements.add(group)
+        
         response = self.client.post(reverse('start_quest', kwargs={'quest_key': 'locked_quest'}))
         self.assertEqual(response.status_code, 403)
         

@@ -61,13 +61,14 @@ class ArcAdmin(admin.ModelAdmin):
 class QuestAdmin(admin.ModelAdmin):
     list_display = (
         'key', 'title', 'arc', 'arc_order', 'is_unlocked',
-        'required_stat', 'required_minimum', 'required_quest', 'entrance_scene',
+        'entrance_scene',
         'scene_count', 'view_graph_link',
     )
     list_filter = ('arc', 'is_unlocked')
     search_fields = ('key', 'title')
     list_select_related = True
-    autocomplete_fields = ('required_quest', 'entrance_scene')
+    autocomplete_fields = ('entrance_scene',)
+    filter_horizontal = ('requirements',)
     inlines = [SceneInline]
     save_on_top = True
 

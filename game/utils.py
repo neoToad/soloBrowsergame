@@ -25,32 +25,24 @@ def get_notice_board(session, stats):
     completed_qs = CompletedQuest.objects.filter(
         session=session
     ).select_related('quest')
-    completed_map = {cq.quest_id: cq for cq in completed_qs}
+    completed_map = {cq.quest_id: cq.ending_type for cq in completed_qs}
+    
+    inventory = get_player_inventory(session)
 
     quests = Quest.objects.filter(is_unlocked=True).select_related(
-        'required_quest', 'entrance_scene'
-    )
+        'entrance_scene'
+    ).prefetch_related('requirements__requirements')
 
     board = []
     for quest in quests:
         lock_reason = ''
 
-        # Check quest prerequisite
-        if quest.required_quest:
-            if quest.required_quest_id not in completed_map:
-                lock_reason = (
-                    f'Requires completion of: {quest.required_quest.title}'
-                )
-
-        # Check stat gate (only if not already locked)
-        if not lock_reason and quest.required_stat:
-            player_value = getattr(stats, quest.required_stat, 0)
-            if player_value < quest.required_minimum:
-                stat_label = quest.required_stat.capitalize()
-                lock_reason = (
-                    f'Requires {stat_label} {quest.required_minimum} '
-                    f'(yours: {player_value})'
-                )
+        # RequirementGroup gate — all groups must pass
+        if quest.requirements.exists():
+            for rg in quest.requirements.all():
+                if not rg.evaluate(stats, inventory, completed_map):
+                    lock_reason = f'Requirements not met: {rg.label}'
+                    break
 
         # Determine status
         if quest.id in completed_map:
@@ -264,3 +256,39 @@ def award_xp(session, stats, amount):
 
     stats.save()
     return levels_gained
+
+
+def maybe_complete_quest(session, stats, next_scene, completed_map):
+    """
+    If next_scene is a quest ending that hasn't been recorded yet,
+    creates CompletedQuest, awards XP, and handles level-ups.
+    Updates completed_map in place.
+    Returns a list of log message strings (completion, XP, level-up
+    flavor) so the caller can create EventLog entries — this function
+    must not create EventLog entries itself.
+    """
+    from .models import CompletedQuest
+    log_messages = []
+
+    if next_scene.is_ending and next_scene.quest:
+        if not CompletedQuest.objects.filter(session=session, quest=next_scene.quest).exists():
+            CompletedQuest.objects.create(
+                session=session,
+                quest=next_scene.quest,
+                ending_type=next_scene.ending_type
+            )
+            log_messages.append(
+                f"You have completed: {next_scene.quest.title} ({next_scene.get_ending_type_display()})"
+            )
+            completed_map[next_scene.quest_id] = next_scene.ending_type
+
+            # AWARD XP
+            xp_amount = XP_AWARDS.get(next_scene.ending_type, 0)
+            if xp_amount:
+                levels = award_xp(session, stats, xp_amount)
+                log_messages.append(f"+{xp_amount} XP.")
+                for new_level in levels:
+                    flavor = LEVEL_UP_FLAVOR[new_level - 2]
+                    log_messages.append(flavor)
+
+    return log_messages

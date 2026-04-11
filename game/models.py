@@ -18,31 +18,25 @@ class Quest(models.Model):
     description = models.TextField()
     is_unlocked = models.BooleanField(default=True)
     arc         = models.ForeignKey(
-                      Arc,
+                      'Arc',
                       null=True, blank=True,
                       on_delete=models.SET_NULL,
                       related_name='quests'
                   )
     arc_order       = models.IntegerField(default=0)
-    # Stat gate
-    required_stat    = models.CharField(max_length=50, blank=True)
-    required_minimum = models.IntegerField(default=0)
-
-    # Quest prerequisite gate
-    required_quest = models.ForeignKey(
-        'self',
-        null=True,
-        blank=True,
-        on_delete=models.SET_NULL,
-        related_name='unlocks'
-    )
-
     entrance_scene  = models.ForeignKey(
                           'Scene',
                           null=True, blank=True,
                           on_delete=models.SET_NULL,
                           related_name='+'
                       )
+
+    # Access requirements — all groups must pass to see or enter this quest
+    requirements = models.ManyToManyField(
+                       'RequirementGroup',
+                       blank=True,
+                       related_name='gated_quests'
+                   )
 
     class Meta:
         ordering = ['arc_order']
@@ -296,10 +290,6 @@ class Choice(models.Model):
                        blank=True,
                        related_name='gated_choices'
                    )
-
-    # Simplified gating for Prompt 4/5
-    required_stat = models.CharField(max_length=50, blank=True)
-    required_minimum = models.IntegerField(default=0)
 
     class Meta:
         ordering = ['order']

@@ -11,7 +11,7 @@ from .utils import (
     consume_item as consume_item_util,
     resolve_player_attack, resolve_enemy_attack,
     award_xp, XP_AWARDS, LEVEL_UP_FLAVOR,
-    get_effective_stats,
+    get_effective_stats, maybe_complete_quest,
 )
 
 NOTICE_BOARD_KEY = 'hub__notice_board'
@@ -32,11 +32,6 @@ def _htmx_response(request, context):
 def get_available_choices(scene, stats, inventory, completed_map):
     choices = []
     for choice in scene.choices.prefetch_related('requirements__requirements').all():
-        # Legacy simple stat gate (kept for backwards compatibility)
-        if choice.required_stat:
-            player_value = getattr(stats, choice.required_stat, 0)
-            if player_value < choice.required_minimum:
-                continue
         # RequirementGroup gate — all groups must pass
         if choice.requirements.exists():
             passed = all(
@@ -222,27 +217,9 @@ def choice_resolve(request, choice_id):
     session.save()
 
     # QUEST COMPLETION
-    if next_scene.is_ending and next_scene.quest:
-        if not CompletedQuest.objects.filter(session=session, quest=next_scene.quest).exists():
-            CompletedQuest.objects.create(
-                session=session,
-                quest=next_scene.quest,
-                ending_type=next_scene.ending_type
-            )
-            EventLog.objects.create(
-                session=session,
-                text=f"You have completed: {next_scene.quest.title} ({next_scene.get_ending_type_display()})"
-            )
-            completed_map[next_scene.quest_id] = next_scene.ending_type
-
-            # AWARD XP
-            xp_amount = XP_AWARDS.get(next_scene.ending_type, 0)
-            if xp_amount:
-                levels = award_xp(session, stats, xp_amount)
-                EventLog.objects.create(session=session, text=f"+{xp_amount} XP.")
-                for new_level in levels:
-                    flavor = LEVEL_UP_FLAVOR[new_level - 2]
-                    EventLog.objects.create(session=session, text=flavor)
+    quest_logs = maybe_complete_quest(session, stats, next_scene, completed_map)
+    for log_text in quest_logs:
+        EventLog.objects.create(session=session, text=log_text)
 
     # AWARD SCENE ITEMS
     awarded = award_scene_items(session, next_scene, inventory)
@@ -389,21 +366,9 @@ def combat_attack(request):
         session.current_scene = next_scene
         session.save()
 
-        if next_scene.is_ending and next_scene.quest:
-            if not CompletedQuest.objects.filter(
-                session=session, quest=next_scene.quest
-            ).exists():
-                CompletedQuest.objects.create(
-                    session=session,
-                    quest=next_scene.quest,
-                    ending_type=next_scene.ending_type,
-                )
-                EventLog.objects.create(
-                    session=session,
-                    text=f"You have completed: {next_scene.quest.title} "
-                         f"({next_scene.get_ending_type_display()})",
-                )
-                completed_map[next_scene.quest_id] = next_scene.ending_type
+        quest_logs = maybe_complete_quest(session, stats, next_scene, completed_map)
+        for log_text in quest_logs:
+            EventLog.objects.create(session=session, text=log_text)
 
         awarded = award_scene_items(session, next_scene, inventory)
         for item, qty in awarded:
@@ -471,21 +436,9 @@ def combat_attack(request):
         session.current_scene = next_scene
         session.save()
 
-        if next_scene.is_ending and next_scene.quest:
-            if not CompletedQuest.objects.filter(
-                session=session, quest=next_scene.quest
-            ).exists():
-                CompletedQuest.objects.create(
-                    session=session,
-                    quest=next_scene.quest,
-                    ending_type=next_scene.ending_type,
-                )
-                EventLog.objects.create(
-                    session=session,
-                    text=f"You have completed: {next_scene.quest.title} "
-                         f"({next_scene.get_ending_type_display()})",
-                )
-                completed_map[next_scene.quest_id] = next_scene.ending_type
+        quest_logs = maybe_complete_quest(session, stats, next_scene, completed_map)
+        for log_text in quest_logs:
+            EventLog.objects.create(session=session, text=log_text)
 
         awarded = award_scene_items(session, next_scene, inventory)
         for item, qty in awarded:
