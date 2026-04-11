@@ -1,5 +1,12 @@
+from dataclasses import dataclass
 from django.db import models
 from .items import Item
+
+@dataclass
+class PlayerContext:
+    stats: object        # PlayerStats instance
+    inventory: dict      # {item_id: PlayerInventory instance}
+    completed_map: dict  # {quest_id: ending_type string}
 
 class Requirement(models.Model):
     """
@@ -42,34 +49,32 @@ class Requirement(models.Model):
                      )
     required_ending_type = models.CharField(max_length=20, blank=True)
 
-    def evaluate(self, stats, inventory, completed_map):
+    def evaluate(self, ctx: PlayerContext):
         """
         Returns True if this condition is met.
-          stats         — PlayerStats instance
-          inventory     — dict of {item_id: PlayerInventory instance}
-          completed_map — dict of {quest_id: ending_type string}
+          ctx — PlayerContext instance (stats, inventory, completed_map)
         """
         ct = self.condition_type
 
         if ct == 'stat_gte':
-            return getattr(stats, self.stat_name, 0) >= self.stat_value
+            return getattr(ctx.stats, self.stat_name, 0) >= self.stat_value
         if ct == 'stat_lte':
-            return getattr(stats, self.stat_name, 0) <= self.stat_value
+            return getattr(ctx.stats, self.stat_name, 0) <= self.stat_value
         if ct == 'has_item':
-            return self.required_item_id in inventory
+            return self.required_item_id in ctx.inventory
         if ct == 'missing_item':
-            return self.required_item_id not in inventory
+            return self.required_item_id not in ctx.inventory
         if ct == 'quest_completed':
-            return self.required_quest_id in completed_map
+            return self.required_quest_id in ctx.completed_map
         if ct == 'quest_not_done':
-            return self.required_quest_id not in completed_map
+            return self.required_quest_id not in ctx.completed_map
         if ct == 'quest_ending':
-            return completed_map.get(self.required_quest_id) == \
+            return ctx.completed_map.get(self.required_quest_id) == \
                    self.required_ending_type
         if ct == 'level_gte':
-            return stats.level >= self.stat_value
+            return ctx.stats.level >= self.stat_value
         if ct == 'xp_gte':
-            return stats.experience >= self.stat_value
+            return ctx.stats.experience >= self.stat_value
 
         return False
 
@@ -108,9 +113,9 @@ class RequirementGroup(models.Model):
                        related_name='groups'
                    )
 
-    def evaluate(self, stats, inventory, completed_map):
+    def evaluate(self, ctx: PlayerContext):
         results = [
-            r.evaluate(stats, inventory, completed_map)
+            r.evaluate(ctx)
             for r in self.requirements.all()
         ]
         if not results:

@@ -109,58 +109,67 @@ class GameNavigationTest(TestCase):
 class RequirementEvaluationTest(TestCase):
     def test_stat_gte(self):
         from types import SimpleNamespace
-        from .models import Requirement
+        from .models import Requirement, PlayerContext
         stats = SimpleNamespace(strength=10, level=5)
+        ctx = PlayerContext(stats=stats, inventory={}, completed_map={})
         req = Requirement(condition_type='stat_gte', stat_name='strength', stat_value=10)
-        self.assertTrue(req.evaluate(stats, {}, {}))
+        self.assertTrue(req.evaluate(ctx))
         req.stat_value = 11
-        self.assertFalse(req.evaluate(stats, {}, {}))
+        self.assertFalse(req.evaluate(ctx))
 
     def test_has_item_missing_item(self):
-        from .models import Requirement
+        from .models import Requirement, PlayerContext
         req_has = Requirement(condition_type='has_item', required_item_id=1)
         req_missing = Requirement(condition_type='missing_item', required_item_id=1)
         
         inventory = {1: "some_item_instance"}
-        self.assertTrue(req_has.evaluate(None, inventory, {}))
-        self.assertFalse(req_missing.evaluate(None, inventory, {}))
+        ctx = PlayerContext(stats=None, inventory=inventory, completed_map={})
+        self.assertTrue(req_has.evaluate(ctx))
+        self.assertFalse(req_missing.evaluate(ctx))
         
         inventory = {2: "other_item"}
-        self.assertFalse(req_has.evaluate(None, inventory, {}))
-        self.assertTrue(req_missing.evaluate(None, inventory, {}))
+        ctx.inventory = inventory
+        self.assertFalse(req_has.evaluate(ctx))
+        self.assertTrue(req_missing.evaluate(ctx))
 
     def test_quest_completed_not_done(self):
-        from .models import Requirement
+        from .models import Requirement, PlayerContext
         req_done = Requirement(condition_type='quest_completed', required_quest_id=1)
         req_not_done = Requirement(condition_type='quest_not_done', required_quest_id=1)
         
         completed_map = {1: 'victory'}
-        self.assertTrue(req_done.evaluate(None, {}, completed_map))
-        self.assertFalse(req_not_done.evaluate(None, {}, completed_map))
+        ctx = PlayerContext(stats=None, inventory={}, completed_map=completed_map)
+        self.assertTrue(req_done.evaluate(ctx))
+        self.assertFalse(req_not_done.evaluate(ctx))
         
         completed_map = {2: 'victory'}
-        self.assertFalse(req_done.evaluate(None, {}, completed_map))
-        self.assertTrue(req_not_done.evaluate(None, {}, completed_map))
+        ctx.completed_map = completed_map
+        self.assertFalse(req_done.evaluate(ctx))
+        self.assertTrue(req_not_done.evaluate(ctx))
 
     def test_quest_ending(self):
-        from .models import Requirement
+        from .models import Requirement, PlayerContext
         req = Requirement(condition_type='quest_ending', required_quest_id=1, required_ending_type='victory')
         
-        self.assertTrue(req.evaluate(None, {}, {1: 'victory'}))
-        self.assertFalse(req.evaluate(None, {}, {1: 'defeat'}))
-        self.assertFalse(req.evaluate(None, {}, {2: 'victory'}))
+        ctx = PlayerContext(stats=None, inventory={}, completed_map={1: 'victory'})
+        self.assertTrue(req.evaluate(ctx))
+        ctx.completed_map = {1: 'defeat'}
+        self.assertFalse(req.evaluate(ctx))
+        ctx.completed_map = {2: 'victory'}
+        self.assertFalse(req.evaluate(ctx))
 
     def test_level_gte(self):
         from types import SimpleNamespace
-        from .models import Requirement
+        from .models import Requirement, PlayerContext
         stats = SimpleNamespace(level=5)
+        ctx = PlayerContext(stats=stats, inventory={}, completed_map={})
         req = Requirement(condition_type='level_gte', stat_value=5)
-        self.assertTrue(req.evaluate(stats, {}, {}))
+        self.assertTrue(req.evaluate(ctx))
         req.stat_value = 6
-        self.assertFalse(req.evaluate(stats, {}, {}))
+        self.assertFalse(req.evaluate(ctx))
 
     def test_requirement_group_logic(self):
-        from .models import Requirement, RequirementGroup
+        from .models import Requirement, RequirementGroup, PlayerContext
         from unittest.mock import MagicMock
         
         # We need to save them to use ManyToMany requirements.all() or mock the queryset
@@ -180,15 +189,15 @@ class RequirementEvaluationTest(TestCase):
         stats_one = SimpleNamespace(strength=10, agility=5)
         stats_none = SimpleNamespace(strength=5, agility=5)
         
-        self.assertTrue(group_all.evaluate(stats_both, {}, {}))
-        self.assertFalse(group_all.evaluate(stats_one, {}, {}))
+        self.assertTrue(group_all.evaluate(PlayerContext(stats_both, {}, {})))
+        self.assertFalse(group_all.evaluate(PlayerContext(stats_one, {}, {})))
         
-        self.assertTrue(group_any.evaluate(stats_one, {}, {}))
-        self.assertFalse(group_any.evaluate(stats_none, {}, {}))
+        self.assertTrue(group_any.evaluate(PlayerContext(stats_one, {}, {})))
+        self.assertFalse(group_any.evaluate(PlayerContext(stats_none, {}, {})))
         
         # Empty group
         group_empty = RequirementGroup.objects.create(label='Empty', logic='all')
-        self.assertTrue(group_empty.evaluate(stats_none, {}, {}))
+        self.assertTrue(group_empty.evaluate(PlayerContext(stats_none, {}, {})))
 
 class CombatTest(TestCase):
     fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_haunted_mine.json', 'game/fixtures/quest_street_debt.json']

@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
 from .models import (
     GameSession, PlayerStats, Scene, Choice, EventLog,
-    CompletedQuest, Quest, CombatState,
+    CompletedQuest, Quest, CombatState, PlayerContext,
 )
 from .utils import (
     roll_d20, stat_modifier, get_notice_board,
@@ -30,11 +30,12 @@ def _htmx_response(request, context):
 
 def get_available_choices(scene, stats, inventory, completed_map):
     choices = []
+    ctx = PlayerContext(stats=stats, inventory=inventory, completed_map=completed_map)
     for choice in scene.choices.prefetch_related('requirements__requirements').all():
         # RequirementGroup gate — all groups must pass
         if choice.requirements.exists():
             passed = all(
-                rg.evaluate(stats, inventory, completed_map)
+                rg.evaluate(ctx)
                 for rg in choice.requirements.all()
             )
             if not passed:

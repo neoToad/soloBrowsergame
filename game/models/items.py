@@ -1,15 +1,15 @@
 from django.db import models
 
 class Item(models.Model):
-    key          = models.SlugField(unique=True)
-    name         = models.CharField(max_length=200)
-    description  = models.TextField()
-    is_consumable = models.BooleanField(default=False)
-
     EFFECT_TYPES = [
         ('heal_hp',  'Heal HP'),
         ('add_stat', 'Permanently increase a stat'),
     ]
+
+    key          = models.SlugField(unique=True)
+    name         = models.CharField(max_length=200)
+    description  = models.TextField()
+    is_consumable = models.BooleanField(default=False)
 
     effect_type  = models.CharField(
                        max_length=20,

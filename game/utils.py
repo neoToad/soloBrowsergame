@@ -21,7 +21,7 @@ def get_notice_board(session, stats):
       lock_reason   — human readable string if status is 'locked',
                       else empty string
     """
-    from .models import Quest, CompletedQuest
+    from .models import Quest, CompletedQuest, PlayerContext
 
     completed_qs = CompletedQuest.objects.filter(
         session=session
@@ -40,13 +40,14 @@ def get_notice_board(session, stats):
     ).prefetch_related('requirements__requirements')
 
     board = []
+    ctx = PlayerContext(stats=stats, inventory=inventory, completed_map=completed_map)
     for quest in quests:
         lock_reason = ''
 
         # RequirementGroup gate — all groups must pass
         if quest.requirements.exists():
             for rg in quest.requirements.all():
-                if not rg.evaluate(stats, inventory, completed_map):
+                if not rg.evaluate(ctx):
                     lock_reason = f'Requirements not met: {rg.label}'
                     break
 
