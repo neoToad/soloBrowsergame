@@ -260,7 +260,8 @@ def choice_resolve(request, choice_id):
         stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
         log_html       = render_to_string('game/partials/event_log.html',    context, request)
         inventory_html = render_to_string('game/partials/inventory.html',    context, request)
-        return HttpResponse(scene_html + stats_html + log_html + inventory_html)
+        mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
+        return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
 
     return redirect('scene_detail', scene_key=next_scene.key)
 
@@ -323,7 +324,8 @@ def start_quest(request, quest_key):
         stats_html     = render_to_string('game/partials/stats_bar.html',   context, request)
         log_html       = render_to_string('game/partials/event_log.html',   context, request)
         inventory_html = render_to_string('game/partials/inventory.html',   context, request)
-        return HttpResponse(scene_html + stats_html + log_html + inventory_html)
+        mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
+        return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
 
     return redirect('scene_detail', scene_key=next_scene.key)
 
@@ -435,7 +437,8 @@ def combat_attack(request):
         stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
         log_html       = render_to_string('game/partials/event_log.html',    context, request)
         inventory_html = render_to_string('game/partials/inventory.html',    context, request)
-        return HttpResponse(scene_html + stats_html + log_html + inventory_html)
+        mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
+        return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
 
     # ── ENEMY ATTACKS BACK ───────────────────────────────────────────
     e_hit, e_dmg, e_roll, e_total = resolve_enemy_attack(enemy, effective_stats)
@@ -511,7 +514,8 @@ def combat_attack(request):
         stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
         log_html       = render_to_string('game/partials/event_log.html',    context, request)
         inventory_html = render_to_string('game/partials/inventory.html',    context, request)
-        return HttpResponse(scene_html + stats_html + log_html + inventory_html)
+        mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
+        return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
 
     # ── COMBAT CONTINUES ─────────────────────────────────────────────
     combat_state.turn_number += 1
@@ -532,7 +536,8 @@ def combat_attack(request):
     stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
     log_html       = render_to_string('game/partials/event_log.html',    context, request)
     inventory_html = render_to_string('game/partials/inventory.html',    context, request)
-    return HttpResponse(scene_html + stats_html + log_html + inventory_html)
+    mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
+    return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
 
 
 STAT_FIELD_MAP = {
@@ -606,7 +611,8 @@ def level_up(request):
     stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
     log_html       = render_to_string('game/partials/event_log.html',    context, request)
     inventory_html = render_to_string('game/partials/inventory.html',    context, request)
-    return HttpResponse(scene_html + stats_html + log_html + inventory_html)
+    mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
+    return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
 
 
 USE_ITEM_FLAVOR = {
@@ -694,4 +700,5 @@ def use_item(request, item_id):
     stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
     log_html       = render_to_string('game/partials/event_log.html',    context, request)
     inventory_html = render_to_string('game/partials/inventory.html',    context, request)
-    return HttpResponse(scene_html + stats_html + log_html + inventory_html)
+    mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
+    return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)

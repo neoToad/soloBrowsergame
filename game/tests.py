@@ -189,3 +189,4 @@ class NoticeBoardTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('id="scene-panel"', response.content.decode())
         self.assertContains(response, self.mine_entrance.title)
+

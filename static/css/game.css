@@ -488,3 +488,302 @@ html, body {
     font-size: 11px;
     font-weight: normal;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE LAYOUT
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Mobile stats bar — hidden by default, shown on mobile only */
+#mobile-stats-bar {
+    display: none;
+}
+
+/* ── DRAWER BASE STYLES (all breakpoints) ──────────────────────── */
+
+/* Drawer wrappers are plain blocks by default */
+.drawer {
+    display: block;
+}
+
+/* Summaries are hidden by default; shown via media query overrides */
+.drawer-summary {
+    display: none;
+    list-style: none;
+    cursor: pointer;
+    padding: 11px 16px;
+    color: var(--accent);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    background: var(--panel-bg);
+    border-bottom: 1px solid var(--border);
+    user-select: none;
+}
+
+/* Remove browser-default disclosure triangle */
+.drawer-summary::-webkit-details-marker { display: none; }
+.drawer-summary::marker               { display: none; }
+
+/* Closed indicator */
+.drawer-summary::before {
+    content: '> ';
+    color: var(--accent-dim);
+}
+
+/* Open indicator */
+details[open] > .drawer-summary::before {
+    content: 'v ';
+    color: var(--accent);
+}
+
+/* ── DESKTOP (>= 1024px) ───────────────────────────────────────── */
+@media (min-width: 1024px) {
+
+    /*
+     * #drawer-character and #drawer-stash are flex children of #left-column.
+     * They must carry the sizing properties that #stats-bar and #inventory-panel
+     * previously held directly on #left-column. Summaries are hidden so the
+     * panels look identical to the pre-drawer layout.
+     */
+    #drawer-character {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #drawer-stash {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;      /* allow flex child to shrink past content height */
+        overflow: hidden;
+    }
+
+    /*
+     * #right-column replaces #event-log as the 3rd grid column.
+     * It carries the border-left that previously belonged to #event-log.
+     */
+    #right-column {
+        background: var(--panel-bg);
+        border-left: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    #drawer-log {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    /* #event-log no longer needs its own border-left (moved to #right-column) */
+    #event-log {
+        flex: 1;
+        border-left: none;
+    }
+
+}
+
+/* ── TABLET (640px – 1023px) ───────────────────────────────────── */
+@media (min-width: 640px) and (max-width: 1023px) {
+
+    body {
+        overflow: auto;
+    }
+
+    /*
+     * Two-column grid: left column stays as a sidebar.
+     * #right-column drops to a second row spanning both columns.
+     */
+    #game-layout {
+        grid-template-columns: 200px 1fr;
+        grid-template-rows: 100vh auto;
+    }
+
+    #right-column {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        display: block;
+    }
+
+    /* Event log drawer: show summary toggle, hide redundant panel-label */
+    #drawer-log > .drawer-summary {
+        display: block;
+    }
+
+    #drawer-log .panel-label {
+        display: none;
+    }
+
+    #event-log {
+        border-left: none;
+        max-height: 280px;
+    }
+
+    /* Left column: drawers stay as regular panels, keep existing flex behavior */
+    #left-column .drawer-summary {
+        display: none;
+    }
+
+    #drawer-character {
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #drawer-stash {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+}
+
+/* ── MOBILE (< 640px) ──────────────────────────────────────────── */
+@media (max-width: 639px) {
+
+    body {
+        overflow: auto;
+    }
+
+    /* Slim top bar: visible and sticky */
+    #mobile-stats-bar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 8px 18px;
+        padding: 8px 12px;
+        background: var(--panel-bg);
+        border-bottom: 2px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    /* Switch game-layout from grid to flex column */
+    #game-layout {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Scene panel first; left column (character + stash) second; log third */
+    #scene-panel {
+        order: 1;
+        border-left: none;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 20px 16px;
+        overflow: visible;
+        height: auto;
+    }
+
+    #left-column {
+        order: 2;
+        border-right: none;
+        overflow: visible;
+        display: block;
+    }
+
+    #right-column {
+        order: 3;
+        border-left: none;
+        display: block;
+    }
+
+    /* Show all drawer summaries on mobile */
+    .drawer-summary {
+        display: block;
+    }
+
+    /* Hide the panel-labels inside drawers — summary is the label */
+    .drawer .panel-label {
+        display: none;
+    }
+
+    /* Add border separating each drawer */
+    .drawer {
+        border-top: 1px solid var(--border);
+    }
+
+    /* Panels lose fixed heights and internal scroll on mobile */
+    #stats-bar {
+        overflow: visible;
+        padding: 12px 16px;
+        flex-shrink: unset;
+        gap: 8px;
+    }
+
+    #inventory-panel {
+        flex: unset;
+        overflow: visible;
+        padding: 12px 16px;
+        border-top: none;
+    }
+
+    #event-log {
+        overflow: visible;
+        padding: 12px 16px;
+        border-left: none;
+        max-height: none;
+    }
+
+    /* ── MOBILE STATS BAR ELEMENTS ── */
+
+    .mob-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1px;
+        min-width: 44px;
+    }
+
+    .mob-stat-label {
+        color: var(--text-dim);
+        font-size: 9px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        white-space: nowrap;
+    }
+
+    .mob-stat-value {
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: bold;
+        line-height: 1.2;
+    }
+
+    .mob-stat--composure .mob-stat-value {
+        color: var(--danger);
+    }
+
+    .mob-stat--rank .mob-stat-value {
+        color: var(--warning);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: normal;
+    }
+
+    /* Bonus indicators in mobile bar match the stat-bonus style elsewhere */
+    #mobile-stats-bar .stat-bonus {
+        font-size: 10px;
+    }
+
+    /* Choice buttons full-width on mobile */
+    .choices button {
+        width: 100%;
+    }
+
+    /* Scene panel headings slightly smaller on mobile */
+    #scene-panel h2 {
+        font-size: 15px;
+        letter-spacing: 2px;
+    }
+
+}

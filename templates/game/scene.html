@@ -1,11 +1,29 @@
 {% extends "base.html" %}
 {% block content %}
+
+{% include "game/partials/mobile_stats_bar.html" with oob=False %}
+
 <div id="game-layout">
+
     <div id="left-column">
-        {% include "game/partials/stats_bar.html" with oob=False %}
-        {% include "game/partials/inventory.html" with oob=False %}
+        <details class="drawer" id="drawer-character" open>
+            <summary class="drawer-summary">[ CHARACTER ]</summary>
+            {% include "game/partials/stats_bar.html" with oob=False %}
+        </details>
+        <details class="drawer" id="drawer-stash" open>
+            <summary class="drawer-summary">[ STASH ]</summary>
+            {% include "game/partials/inventory.html" with oob=False %}
+        </details>
     </div>
+
     {% include "game/partials/scene_panel.html" %}
-    {% include "game/partials/event_log.html" with oob=False %}
+
+    <div id="right-column">
+        <details class="drawer" id="drawer-log" open>
+            <summary class="drawer-summary">[ EVENT LOG ]</summary>
+            {% include "game/partials/event_log.html" with oob=False %}
+        </details>
+    </div>
+
 </div>
 {% endblock %}
