@@ -13,8 +13,7 @@ from .utils import (
     award_xp, XP_AWARDS, LEVEL_UP_FLAVOR,
     get_effective_stats, maybe_complete_quest,
 )
-
-NOTICE_BOARD_KEY = 'hub__notice_board'
+from .constants import HUB_START_SCENE_KEY, NOTICE_BOARD_SCENE_KEY
 
 def _htmx_response(request, context):
     """
@@ -111,7 +110,7 @@ def game_hub(request):
         
         game_session = GameSession.objects.create(
             session_key=request.session.session_key,
-            current_scene=Scene.objects.get(key='hub__main_square')
+            current_scene=Scene.objects.get(key=HUB_START_SCENE_KEY)
         )
         PlayerStats.objects.create(session=game_session)
         request.session['game_session_id'] = game_session.pk
@@ -125,12 +124,12 @@ def game_hub(request):
                 request.session.create()
             game_session = GameSession.objects.create(
                 session_key=request.session.session_key,
-                current_scene=Scene.objects.get(key='hub__main_square')
+                current_scene=Scene.objects.get(key=HUB_START_SCENE_KEY)
             )
             PlayerStats.objects.create(session=game_session)
             request.session['game_session_id'] = game_session.pk
 
-    return redirect('scene_detail', scene_key='hub__main_square')
+    return redirect('scene_detail', scene_key=HUB_START_SCENE_KEY)
 
 def scene_detail(request, scene_key):
     session_pk = request.session.get('game_session_id')
@@ -145,7 +144,7 @@ def scene_detail(request, scene_key):
     completed_map = _get_completed_map(game_session)
     combat_state  = _get_combat_state(game_session, scene)
 
-    if scene.key == NOTICE_BOARD_KEY:
+    if scene.key == NOTICE_BOARD_SCENE_KEY:
         notice_board = get_notice_board(game_session, stats)
     else:
         notice_board = None
@@ -234,7 +233,7 @@ def choice_resolve(request, choice_id):
 
     is_htmx = request.headers.get('HX-Request') == 'true'
     if is_htmx:
-        if next_scene.key == NOTICE_BOARD_KEY:
+        if next_scene.key == NOTICE_BOARD_SCENE_KEY:
             notice_board = get_notice_board(session, stats)
         else:
             notice_board = None
@@ -524,7 +523,7 @@ def level_up(request):
     except CombatState.DoesNotExist:
         pass
 
-    if scene.key == NOTICE_BOARD_KEY:
+    if scene.key == NOTICE_BOARD_SCENE_KEY:
         notice_board = get_notice_board(session, stats)
     else:
         notice_board = None
@@ -606,7 +605,7 @@ def use_item(request, item_id):
     except CombatState.DoesNotExist:
         pass
 
-    if scene.key == NOTICE_BOARD_KEY:
+    if scene.key == NOTICE_BOARD_SCENE_KEY:
         notice_board = get_notice_board(session, stats)
     else:
         notice_board = None

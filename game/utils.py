@@ -1,5 +1,6 @@
 import random
 from types import SimpleNamespace
+from collections import defaultdict
 
 def roll_d20():
     return random.randint(1, 20)
@@ -26,7 +27,12 @@ def get_notice_board(session, stats):
         session=session
     ).select_related('quest')
     completed_map = {cq.quest_id: cq.ending_type for cq in completed_qs}
-    
+
+    # Group endings by quest in memory to avoid N+1 query
+    endings_by_quest = defaultdict(list)
+    for cq in sorted(completed_qs, key=lambda x: x.completed_at, reverse=True):
+        endings_by_quest[cq.quest_id].append(cq)
+
     inventory = get_player_inventory(session)
 
     quests = Quest.objects.filter(is_unlocked=True).select_related(
@@ -52,10 +58,8 @@ def get_notice_board(session, stats):
         else:
             status = 'available'
 
-        # Gather all completions for this quest (can be done multiple times)
-        endings = CompletedQuest.objects.filter(
-            session=session, quest=quest
-        ).order_by('-completed_at')
+        # Gather all completions for this quest
+        endings = endings_by_quest[quest.id]
 
         board.append({
             'quest': quest,
