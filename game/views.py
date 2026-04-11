@@ -10,6 +10,8 @@ from .utils import (
     get_player_inventory, award_scene_items,
     consume_item as consume_item_util,
     resolve_player_attack, resolve_enemy_attack,
+    award_xp, XP_AWARDS, LEVEL_UP_FLAVOR,
+    get_effective_stats,
 )
 
 NOTICE_BOARD_KEY = 'hub__notice_board'
@@ -123,6 +125,7 @@ def scene_detail(request, scene_key):
     scene         = get_object_or_404(Scene, key=scene_key)
     stats         = game_session.stats
     inventory     = get_player_inventory(game_session)
+    effective_stats = get_effective_stats(stats, inventory)
     completed_map = _get_completed_map(game_session)
     combat_state  = _get_combat_state(game_session, scene)
 
@@ -131,13 +134,14 @@ def scene_detail(request, scene_key):
     else:
         notice_board = None
 
-    choices = get_available_choices(scene, stats, inventory, completed_map)
+    choices = get_available_choices(scene, effective_stats, inventory, completed_map)
     logs    = game_session.log.all()[:10]
 
     context = {
         'session':      game_session,
         'scene':        scene,
         'stats':        stats,
+        'stat_bonuses': effective_stats.bonuses,
         'inventory':    inventory,
         'choices':      choices,
         'logs':         logs,
@@ -158,14 +162,15 @@ def choice_resolve(request, choice_id):
     choice    = get_object_or_404(Choice, pk=choice_id)
     stats     = session.stats
     inventory = get_player_inventory(session)
+    effective_stats = get_effective_stats(stats, inventory)
     completed_map = _get_completed_map(session)
 
     scene      = choice.scene
     next_scene = None
 
-    # ROLL LOGIC
+    # ROLL LOGIC — use effective_stats so passive bonuses apply
     if scene.requires_roll:
-        stat_value = getattr(stats, scene.roll_stat, 10)
+        stat_value = getattr(effective_stats, scene.roll_stat, 10)
         modifier   = stat_modifier(stat_value)
         roll       = roll_d20()
         total      = roll + modifier
@@ -213,6 +218,15 @@ def choice_resolve(request, choice_id):
             )
             completed_map[next_scene.quest_id] = next_scene.ending_type
 
+            # AWARD XP
+            xp_amount = XP_AWARDS.get(next_scene.ending_type, 0)
+            if xp_amount:
+                levels = award_xp(session, stats, xp_amount)
+                EventLog.objects.create(session=session, text=f"+{xp_amount} XP.")
+                for new_level in levels:
+                    flavor = LEVEL_UP_FLAVOR[new_level - 2]
+                    EventLog.objects.create(session=session, text=flavor)
+
     # AWARD SCENE ITEMS
     awarded = award_scene_items(session, next_scene, inventory)
     for item, qty in awarded:
@@ -221,7 +235,8 @@ def choice_resolve(request, choice_id):
             text=f"You picked up: {item.name} x{qty}."
         )
 
-    combat_state = _get_combat_state(session, next_scene)
+    combat_state    = _get_combat_state(session, next_scene)
+    effective_stats = get_effective_stats(stats, inventory)   # recompute after item changes
 
     is_htmx = request.headers.get('HX-Request') == 'true'
     if is_htmx:
@@ -232,8 +247,9 @@ def choice_resolve(request, choice_id):
 
         context = {
             'scene':        next_scene,
-            'choices':      get_available_choices(next_scene, stats, inventory, completed_map),
+            'choices':      get_available_choices(next_scene, effective_stats, inventory, completed_map),
             'stats':        stats,
+            'stat_bonuses': effective_stats.bonuses,
             'inventory':    inventory,
             'logs':         session.log.all()[:10],
             'oob':          True,
@@ -280,8 +296,8 @@ def start_quest(request, quest_key):
 
     is_htmx = request.headers.get('HX-Request') == 'true'
     if is_htmx:
-        inventory     = get_player_inventory(session)
-        completed_map = _get_completed_map(session)
+        inventory       = get_player_inventory(session)
+        completed_map   = _get_completed_map(session)
 
         awarded = award_scene_items(session, next_scene, inventory)
         for item, qty in awarded:
@@ -290,12 +306,14 @@ def start_quest(request, quest_key):
                 text=f"You picked up: {item.name} x{qty}."
             )
 
-        combat_state = _get_combat_state(session, next_scene)
+        combat_state    = _get_combat_state(session, next_scene)
+        effective_stats = get_effective_stats(stats, inventory)
 
         context = {
             'scene':        next_scene,
-            'choices':      get_available_choices(next_scene, stats, inventory, completed_map),
+            'choices':      get_available_choices(next_scene, effective_stats, inventory, completed_map),
             'stats':        stats,
+            'stat_bonuses': effective_stats.bonuses,
             'inventory':    inventory,
             'logs':         session.log.all()[:10],
             'oob':          True,
@@ -304,6 +322,9 @@ def start_quest(request, quest_key):
         scene_html     = render_to_string('game/partials/scene_panel.html', context, request)
         stats_html     = render_to_string('game/partials/stats_bar.html',   context, request)
         log_html       = render_to_string('game/partials/event_log.html',   context, request)
+        inventory_html = render_to_string('game/partials/inventory.html',   context, request)
+        return HttpResponse(scene_html + stats_html + log_html + inventory_html)
+
     return redirect('scene_detail', scene_key=next_scene.key)
 
 
@@ -329,10 +350,11 @@ def combat_attack(request):
     enemy         = combat_state.enemy
     inventory     = get_player_inventory(session)
     completed_map = _get_completed_map(session)
+    effective_stats = get_effective_stats(stats, inventory)
 
     # ── PLAYER ATTACKS ──────────────────────────────────────────────
-    p_hit, p_dmg, p_roll, p_total = resolve_player_attack(stats, enemy)
-    str_mod = stat_modifier(stats.strength)
+    p_hit, p_dmg, p_roll, p_total = resolve_player_attack(effective_stats, enemy)
+    str_mod = stat_modifier(effective_stats.strength)
     mod_str = f"+{str_mod}" if str_mod >= 0 else str(str_mod)
 
     if p_hit:
@@ -388,10 +410,22 @@ def combat_attack(request):
                 session=session, text=f"You picked up: {item.name} x{qty}."
             )
 
+        # AWARD XP for combat victory
+        combat_levels = award_xp(session, stats, XP_AWARDS['combat_victory'])
+        EventLog.objects.create(
+            session=session,
+            text=f"+{XP_AWARDS['combat_victory']} XP."
+        )
+        for new_level in combat_levels:
+            flavor = LEVEL_UP_FLAVOR[new_level - 2]
+            EventLog.objects.create(session=session, text=flavor)
+
+        effective_stats = get_effective_stats(stats, inventory)
         context = {
             'scene':        next_scene,
-            'choices':      get_available_choices(next_scene, stats, inventory, completed_map),
+            'choices':      get_available_choices(next_scene, effective_stats, inventory, completed_map),
             'stats':        stats,
+            'stat_bonuses': effective_stats.bonuses,
             'inventory':    inventory,
             'logs':         session.log.all()[:10],
             'oob':          True,
@@ -404,8 +438,8 @@ def combat_attack(request):
         return HttpResponse(scene_html + stats_html + log_html + inventory_html)
 
     # ── ENEMY ATTACKS BACK ───────────────────────────────────────────
-    e_hit, e_dmg, e_roll, e_total = resolve_enemy_attack(enemy, stats)
-    player_defense = 10 + stat_modifier(stats.agility)
+    e_hit, e_dmg, e_roll, e_total = resolve_enemy_attack(enemy, effective_stats)
+    player_defense = 10 + stat_modifier(effective_stats.agility)
     e_mod_str = f"+{enemy.attack_modifier}" if enemy.attack_modifier >= 0 else str(enemy.attack_modifier)
 
     if e_hit:
@@ -462,10 +496,12 @@ def combat_attack(request):
                 session=session, text=f"You picked up: {item.name} x{qty}."
             )
 
+        effective_stats = get_effective_stats(stats, inventory)
         context = {
             'scene':        next_scene,
-            'choices':      get_available_choices(next_scene, stats, inventory, completed_map),
+            'choices':      get_available_choices(next_scene, effective_stats, inventory, completed_map),
             'stats':        stats,
+            'stat_bonuses': effective_stats.bonuses,
             'inventory':    inventory,
             'logs':         session.log.all()[:10],
             'oob':          True,
@@ -481,14 +517,178 @@ def combat_attack(request):
     combat_state.turn_number += 1
     combat_state.save()
 
+    effective_stats = get_effective_stats(stats, inventory)
     context = {
         'scene':        session.current_scene,
         'choices':      [],
         'stats':        stats,
+        'stat_bonuses': effective_stats.bonuses,
         'inventory':    inventory,
         'logs':         session.log.all()[:10],
         'oob':          True,
         'combat_state': combat_state,
+    }
+    scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
+    stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
+    log_html       = render_to_string('game/partials/event_log.html',    context, request)
+    inventory_html = render_to_string('game/partials/inventory.html',    context, request)
+    return HttpResponse(scene_html + stats_html + log_html + inventory_html)
+
+
+STAT_FIELD_MAP = {
+    'muscle':   'strength',
+    'reflexes': 'agility',
+    'cunning':  'intellect',
+    'nerve':    'charisma',
+}
+
+def level_up(request):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    session_pk = request.session.get('game_session_id')
+    if not session_pk:
+        return redirect('game_hub')
+
+    session = get_object_or_404(GameSession, pk=session_pk)
+    stats   = session.stats
+
+    if stats.stat_points <= 0:
+        return HttpResponse("No stat points available.", status=400)
+
+    stat_name = request.POST.get('stat', '').lower()
+    field = STAT_FIELD_MAP.get(stat_name)
+    if not field:
+        return HttpResponse("Invalid stat.", status=400)
+
+    current_val = getattr(stats, field)
+    setattr(stats, field, current_val + 1)
+    stats.stat_points -= 1
+    stats.save()
+
+    EventLog.objects.create(
+        session=session,
+        text=f"{stat_name.upper()} increased to {current_val + 1}."
+    )
+
+    scene           = session.current_scene
+    inventory       = get_player_inventory(session)
+    effective_stats = get_effective_stats(stats, inventory)
+    completed_map   = _get_completed_map(session)
+
+    # Preserve active combat state if one exists
+    combat_state = None
+    try:
+        cs = session.combat_state
+        if cs.is_active:
+            combat_state = cs
+    except CombatState.DoesNotExist:
+        pass
+
+    if scene.key == NOTICE_BOARD_KEY:
+        notice_board = get_notice_board(session, stats)
+    else:
+        notice_board = None
+
+    context = {
+        'scene':        scene,
+        'choices':      get_available_choices(scene, effective_stats, inventory, completed_map),
+        'stats':        stats,
+        'stat_bonuses': effective_stats.bonuses,
+        'inventory':    inventory,
+        'logs':         session.log.all()[:10],
+        'oob':          True,
+        'combat_state': combat_state,
+        'notice_board': notice_board,
+    }
+
+    scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
+    stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
+    log_html       = render_to_string('game/partials/event_log.html',    context, request)
+    inventory_html = render_to_string('game/partials/inventory.html',    context, request)
+    return HttpResponse(scene_html + stats_html + log_html + inventory_html)
+
+
+USE_ITEM_FLAVOR = {
+    'heal_hp':  "You take a pull from the flask. Steadier now.",
+    'add_stat': "You feel sharper. More focused.",
+}
+
+
+def use_item(request, item_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    session_pk = request.session.get('game_session_id')
+    if not session_pk:
+        return redirect('game_hub')
+
+    from .models import Item
+    session = get_object_or_404(GameSession, pk=session_pk)
+    item    = get_object_or_404(Item, pk=item_id)
+    stats   = session.stats
+    inventory = get_player_inventory(session)
+
+    # Guard: player must actually hold the item
+    if item.id not in inventory:
+        return HttpResponse("Item not in stash.", status=400)
+
+    # Guard: item must have an active effect
+    if not item.effect_type:
+        return HttpResponse("Item has no usable effect.", status=400)
+
+    # ── APPLY EFFECT ────────────────────────────────────────────────
+    if item.effect_type == 'heal_hp':
+        healed = min(item.effect_value, stats.max_hp - stats.hp)
+        stats.hp = min(stats.max_hp, stats.hp + item.effect_value)
+        stats.save()
+        EventLog.objects.create(
+            session=session,
+            text=f"{USE_ITEM_FLAVOR['heal_hp']} (+{healed} HP)"
+        )
+
+    elif item.effect_type == 'add_stat':
+        if item.effect_stat:
+            current = getattr(stats, item.effect_stat, 0)
+            setattr(stats, item.effect_stat, current + item.effect_value)
+            stats.save()
+        EventLog.objects.create(
+            session=session,
+            text=USE_ITEM_FLAVOR['add_stat']
+        )
+
+    # ── CONSUME IF CONSUMABLE ────────────────────────────────────────
+    if item.is_consumable:
+        consume_item_util(session, item, inventory)
+
+    # ── BUILD RESPONSE ───────────────────────────────────────────────
+    scene           = session.current_scene
+    effective_stats = get_effective_stats(stats, inventory)
+    completed_map   = _get_completed_map(session)
+
+    combat_state = None
+    try:
+        cs = session.combat_state
+        if cs.is_active:
+            combat_state = cs
+    except CombatState.DoesNotExist:
+        pass
+
+    if scene.key == NOTICE_BOARD_KEY:
+        notice_board = get_notice_board(session, stats)
+    else:
+        notice_board = None
+
+    context = {
+        'scene':        scene,
+        'choices':      get_available_choices(scene, effective_stats, inventory, completed_map),
+        'stats':        stats,
+        'stat_bonuses': effective_stats.bonuses,
+        'inventory':    inventory,
+        'logs':         session.log.all()[:10],
+        'oob':          True,
+        'combat_state': combat_state,
+        'notice_board': notice_board,
     }
     scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
     stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)

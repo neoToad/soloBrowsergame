@@ -19,8 +19,25 @@ class QuestAdmin(admin.ModelAdmin):
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display  = ('key', 'name', 'is_consumable')
+    list_display = (
+        'key', 'name', 'is_consumable',
+        'effect_type', 'effect_stat', 'effect_value',
+        'passive_stat', 'passive_value',
+    )
     prepopulated_fields = {'key': ('name',)}
+    fieldsets = (
+        (None, {
+            'fields': ('key', 'name', 'description', 'is_consumable')
+        }),
+        ('Active Effect', {
+            'fields': ('effect_type', 'effect_stat', 'effect_value'),
+            'description': 'Fires when player clicks USE. Consumes item if is_consumable=True.',
+        }),
+        ('Passive Bonus', {
+            'fields': ('equip_slot', 'passive_stat', 'passive_value'),
+            'description': 'Applied automatically while the item is carried. Never consumed.',
+        }),
+    )
 
 @admin.register(Requirement)
 class RequirementAdmin(admin.ModelAdmin):

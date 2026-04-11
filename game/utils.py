@@ -1,4 +1,5 @@
 import random
+from types import SimpleNamespace
 
 def roll_d20():
     return random.randint(1, 20)
@@ -129,6 +130,42 @@ def consume_item(session, item, inventory):
         inventory[item.id] = pi
 
 
+def get_effective_stats(stats, inventory):
+    """
+    Returns a SimpleNamespace with effective stat values after applying all
+    passive bonuses from carried items (items with passive_stat and passive_value set).
+
+    The returned object supports getattr() on the same field names as PlayerStats:
+    strength, agility, intellect, charisma, hp, max_hp, level, experience, stat_points.
+
+    Also exposes `bonuses` — a dict of {field_name: total_bonus} — for display use.
+
+    IMPORTANT: The returned object is read-only for display and dice rolls.
+    Always write mutations (damage, healing, stat changes) back to the original
+    PlayerStats instance, then call get_effective_stats() again if needed.
+    """
+    bonuses = {}
+    for pi in inventory.values():
+        item = pi.item
+        if item.passive_stat and item.passive_value:
+            bonuses[item.passive_stat] = (
+                bonuses.get(item.passive_stat, 0) + item.passive_value
+            )
+
+    return SimpleNamespace(
+        strength   = stats.strength  + bonuses.get('strength',  0),
+        agility    = stats.agility   + bonuses.get('agility',   0),
+        intellect  = stats.intellect + bonuses.get('intellect', 0),
+        charisma   = stats.charisma  + bonuses.get('charisma',  0),
+        hp         = stats.hp,
+        max_hp     = stats.max_hp,
+        level      = stats.level,
+        experience = stats.experience,
+        stat_points = stats.stat_points,
+        bonuses    = bonuses,
+    )
+
+
 def resolve_player_attack(stats, enemy):
     """
     Resolves one player attack against enemy.
@@ -161,3 +198,69 @@ def resolve_enemy_attack(enemy, stats):
     if hit:
         damage = random.randint(enemy.damage_min, enemy.damage_max)
     return hit, damage, roll, total
+
+
+# ── XP / LEVELING CONSTANTS ──────────────────────────────────────────────────
+
+XP_THRESHOLDS = {
+    1: 0,
+    2: 200,
+    3: 600,
+    4: 1300,
+    5: 2400,
+    6: 4000,
+    7: 6200,
+}
+
+MAX_LEVEL = 7
+
+RANK_TITLES = {
+    1: 'Errand Boy',
+    2: 'Corner Operator',
+    3: 'Crew Member',
+    4: 'Made Man',
+    5: 'Lieutenant',
+    6: 'Underboss',
+    7: 'Boss',
+}
+
+LEVEL_UP_FLAVOR = [
+    "Word travels fast. You're moving up.",        # → level 2
+    "The crew is taking notice.",                  # → level 3
+    "You've earned your stripes.",                 # → level 4
+    "They're calling your name across the city.",  # → level 5
+    "Nobody moves without your say-so.",           # → level 6
+    "You run this town. Act like it.",             # → level 7
+]
+
+XP_AWARDS = {
+    'victory':        150,
+    'neutral':         75,
+    'defeat':          25,
+    'combat_victory':  50,
+}
+
+
+def award_xp(session, stats, amount):
+    """
+    Adds `amount` XP to stats.experience.
+    Handles multiple level-ups if a single award bridges more than one threshold.
+    Awards 1 stat_point per level gained. Caps at MAX_LEVEL.
+    Saves stats before returning.
+    Returns a list of new level numbers reached (empty list if no level-up).
+    Callers are responsible for creating EventLog entries from the return value.
+    """
+    levels_gained = []
+    stats.experience += amount
+
+    while stats.level < MAX_LEVEL:
+        next_level = stats.level + 1
+        if stats.experience >= XP_THRESHOLDS[next_level]:
+            stats.level = next_level
+            stats.stat_points += 1
+            levels_gained.append(next_level)
+        else:
+            break
+
+    stats.save()
+    return levels_gained

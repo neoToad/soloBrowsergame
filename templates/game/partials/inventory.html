@@ -4,9 +4,20 @@
         {% for item_id, pi in inventory.items %}
             <div class="item-row">
                 <span class="item-name">{{ pi.item.name }}</span>
-                {% if pi.quantity > 1 %}
-                    <span class="item-qty">x{{ pi.quantity }}</span>
-                {% endif %}
+                <div class="item-actions">
+                    {% if pi.quantity > 1 %}
+                        <span class="item-qty">x{{ pi.quantity }}</span>
+                    {% endif %}
+                    {% if pi.item.effect_type %}
+                        <button class="item-use-btn"
+                            hx-post="{% url 'use_item' pi.item.id %}"
+                            hx-target="#scene-panel"
+                            hx-swap="innerHTML"
+                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                            USE
+                        </button>
+                    {% endif %}
+                </div>
             </div>
         {% endfor %}
     {% else %}

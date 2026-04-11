@@ -1,4 +1,5 @@
 from django import template
+from game.utils import XP_THRESHOLDS, MAX_LEVEL, RANK_TITLES, LEVEL_UP_FLAVOR
 
 register = template.Library()
 
@@ -14,3 +15,53 @@ def hp_pct(current, maximum):
         return max(0, min(100, pct))
     except (ValueError, ZeroDivisionError, TypeError):
         return 0
+
+
+@register.filter
+def xp_pct(experience, level):
+    """
+    Returns XP progress within the current level as an integer percentage 0–100.
+    At MAX_LEVEL, always returns 100.
+    Usage: {{ stats.experience|xp_pct:stats.level }}
+    """
+    try:
+        level = int(level)
+        experience = int(experience)
+        if level >= MAX_LEVEL:
+            return 100
+        floor   = XP_THRESHOLDS.get(level, 0)
+        ceiling = XP_THRESHOLDS.get(level + 1, floor + 1)
+        span    = ceiling - floor
+        if span <= 0:
+            return 100
+        return max(0, min(100, int((experience - floor) / span * 100)))
+    except (ValueError, TypeError, ZeroDivisionError):
+        return 0
+
+
+@register.filter
+def rank_title(level):
+    """
+    Returns the street rank title for the given level integer.
+    Usage: {{ stats.level|rank_title }}
+    """
+    try:
+        return RANK_TITLES.get(int(level), '—')
+    except (ValueError, TypeError):
+        return '—'
+
+
+@register.filter
+def levelup_flavor(level):
+    """
+    Returns the crime-setting flavor string for the given level number.
+    Index 0 of LEVEL_UP_FLAVOR corresponds to reaching level 2.
+    Usage: {{ stats.level|levelup_flavor }}
+    """
+    try:
+        idx = int(level) - 2
+        if 0 <= idx < len(LEVEL_UP_FLAVOR):
+            return LEVEL_UP_FLAVOR[idx]
+        return ''
+    except (ValueError, TypeError):
+        return ''

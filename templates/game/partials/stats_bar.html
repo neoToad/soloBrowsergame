@@ -1,28 +1,46 @@
+{% load game_filters %}
 <div id="stats-bar" {% if oob %}hx-swap-oob="true"{% endif %}>
     <p class="panel-label">[ CHARACTER ]</p>
-    
+
+    <div class="rank-block">
+        <p class="rank-title">{{ stats.level|rank_title }}</p>
+        <div class="xp-track">
+            <div class="xp-fill"
+                 style="width: {{ stats.experience|xp_pct:stats.level }}%"></div>
+        </div>
+        <p class="xp-label">{{ stats.experience }} XP</p>
+    </div>
+
     <div class="stat-row hp-row">
         <span class="stat-name">HP</span>
         <span class="stat-value hp-value">{{ stats.hp }}/{{ stats.max_hp }}</span>
     </div>
-    
+
     <div class="stat-row">
         <span class="stat-name">MUSCLE</span>
-        <span class="stat-value">{{ stats.strength }}</span>
+        <span class="stat-value">
+            {{ stats.strength }}{% if stat_bonuses.strength %}<span class="stat-bonus"> (+{{ stat_bonuses.strength }})</span>{% endif %}
+        </span>
     </div>
-    
+
     <div class="stat-row">
         <span class="stat-name">REFLEXES</span>
-        <span class="stat-value">{{ stats.agility }}</span>
+        <span class="stat-value">
+            {{ stats.agility }}{% if stat_bonuses.agility %}<span class="stat-bonus"> (+{{ stat_bonuses.agility }})</span>{% endif %}
+        </span>
     </div>
-    
+
     <div class="stat-row">
-        <span class="stat-name">INT</span>
-        <span class="stat-value">{{ stats.intellect }}</span>
+        <span class="stat-name">CUNNING</span>
+        <span class="stat-value">
+            {{ stats.intellect }}{% if stat_bonuses.intellect %}<span class="stat-bonus"> (+{{ stat_bonuses.intellect }})</span>{% endif %}
+        </span>
     </div>
-    
+
     <div class="stat-row">
-        <span class="stat-name">CHA</span>
-        <span class="stat-value">{{ stats.charisma }}</span>
+        <span class="stat-name">NERVE</span>
+        <span class="stat-value">
+            {{ stats.charisma }}{% if stat_bonuses.charisma %}<span class="stat-bonus"> (+{{ stat_bonuses.charisma }})</span>{% endif %}
+        </span>
     </div>
 </div>

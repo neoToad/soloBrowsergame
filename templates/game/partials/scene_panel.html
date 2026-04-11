@@ -1,6 +1,6 @@
-<div id="scene-panel" 
+<div id="scene-panel"
      {% if scene.is_ending %}class="scene--ending" data-ending="{{ scene.ending_type }}"{% endif %}>
-    
+
     <div id="loading-indicator" class="htmx-indicator">
         Thinking...
     </div>
@@ -12,12 +12,17 @@
         {% include "game/partials/notice_board.html" %}
     {% endif %}
 
+    {% if stats.stat_points > 0 and not combat_state %}
+        {% include "game/partials/level_up_panel.html" %}
+    {% endif %}
+
     {% if combat_state and combat_state.is_active %}
         {% include "game/partials/combat_panel.html" %}
     {% else %}
         <div class="choices">
             {% for choice in choices %}
                 <button
+                    {% if stats.stat_points > 0 %}disabled{% endif %}
                     hx-post="/game/choose/{{ choice.id }}/"
                     hx-target="#scene-panel"
                     hx-swap="innerHTML"
@@ -32,4 +37,5 @@
             {% endfor %}
         </div>
     {% endif %}
+
 </div>

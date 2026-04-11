@@ -1,0 +1,46 @@
+{% load game_filters %}
+<div id="level-up-panel">
+    <p class="levelup-label">[ MOVING UP ]</p>
+    <p class="levelup-flavor">{{ stats.level|levelup_flavor }}</p>
+    <p class="levelup-points">
+        {{ stats.stat_points }} point{{ stats.stat_points|pluralize }} to distribute.
+    </p>
+    <div class="choices">
+        <button
+            hx-post="{% url 'level_up' %}"
+            hx-target="#scene-panel"
+            hx-swap="innerHTML"
+            hx-vals='{"stat": "muscle"}'
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-indicator="#loading-indicator">
+            + MUSCLE ({{ stats.strength }})
+        </button>
+        <button
+            hx-post="{% url 'level_up' %}"
+            hx-target="#scene-panel"
+            hx-swap="innerHTML"
+            hx-vals='{"stat": "reflexes"}'
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-indicator="#loading-indicator">
+            + REFLEXES ({{ stats.agility }})
+        </button>
+        <button
+            hx-post="{% url 'level_up' %}"
+            hx-target="#scene-panel"
+            hx-swap="innerHTML"
+            hx-vals='{"stat": "cunning"}'
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-indicator="#loading-indicator">
+            + CUNNING ({{ stats.intellect }})
+        </button>
+        <button
+            hx-post="{% url 'level_up' %}"
+            hx-target="#scene-panel"
+            hx-swap="innerHTML"
+            hx-vals='{"stat": "nerve"}'
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-indicator="#loading-indicator">
+            + NERVE ({{ stats.charisma }})
+        </button>
+    </div>
+</div>

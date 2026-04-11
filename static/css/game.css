@@ -228,6 +228,7 @@ html, body {
 .item-row {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     border-bottom: 1px solid var(--border);
     padding-bottom: 4px;
 }
@@ -371,4 +372,119 @@ html, body {
     letter-spacing: 1px;
     margin: 0;
     text-transform: uppercase;
+}
+
+/* XP / RANK (stats bar) */
+
+.rank-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 2px;
+}
+
+.rank-title {
+    color: var(--warning);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.xp-track {
+    height: 3px;
+    background: var(--border);
+}
+
+.xp-fill {
+    height: 100%;
+    background: var(--warning);
+    transition: width 0.4s ease;
+}
+
+.xp-label {
+    color: var(--text-dim);
+    font-size: 10px;
+    margin: 0;
+    text-align: right;
+}
+
+/* LEVEL UP PANEL */
+
+#level-up-panel {
+    border: 1px solid var(--warning);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: levelup-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes levelup-pulse {
+    0%, 100% { border-color: var(--warning); }
+    50%       { border-color: var(--accent-dim); }
+}
+
+.levelup-label {
+    color: var(--warning);
+    font-size: 11px;
+    letter-spacing: 2px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.levelup-flavor {
+    color: var(--text);
+    font-size: 13px;
+    margin: 0;
+    font-style: italic;
+}
+
+.levelup-points {
+    color: var(--warning);
+    font-size: 12px;
+    margin: 0;
+}
+
+/* ITEM USE BUTTON */
+
+.item-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.item-use-btn {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent-dim);
+    font-family: inherit;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.1s, color 0.1s;
+}
+
+.item-use-btn:hover {
+    background: var(--accent-dim);
+    color: var(--bg);
+}
+
+.item-use-btn:disabled,
+.item-use-btn.htmx-request {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* PASSIVE BONUS INDICATOR (stats bar) */
+
+.stat-bonus {
+    color: var(--warning);
+    font-size: 11px;
+    font-weight: normal;
 }
