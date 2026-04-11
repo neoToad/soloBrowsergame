@@ -1,0 +1,167 @@
+from django.db import models
+from .requirements import RequirementGroup
+from .items import Item
+
+class Arc(models.Model):
+    key   = models.SlugField(unique=True)
+    title = models.CharField(max_length=200)
+    order = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
+
+class Quest(models.Model):
+    key         = models.SlugField(unique=True)
+    title       = models.CharField(max_length=200)
+    description = models.TextField()
+    is_unlocked = models.BooleanField(default=True)
+    arc         = models.ForeignKey(
+                      'Arc',
+                      null=True, blank=True,
+                      on_delete=models.SET_NULL,
+                      related_name='quests'
+                  )
+    arc_order       = models.IntegerField(default=0)
+    entrance_scene  = models.ForeignKey(
+                          'Scene',
+                          null=True, blank=True,
+                          on_delete=models.SET_NULL,
+                          related_name='+'
+                      )
+
+    # Access requirements — all groups must pass to see or enter this quest
+    requirements = models.ManyToManyField(
+                       RequirementGroup,
+                       blank=True,
+                       related_name='gated_quests'
+                   )
+
+    class Meta:
+        ordering = ['arc_order']
+
+    def __str__(self):
+        return self.title
+
+
+class Scene(models.Model):
+    key      = models.SlugField(unique=True)
+    quest    = models.ForeignKey(
+                   Quest,
+                   null=True, blank=True,
+                   on_delete=models.SET_NULL,
+                   related_name='scenes'
+               )
+    is_hub   = models.BooleanField(default=False)
+    is_combat = models.BooleanField(default=False)
+    is_ending = models.BooleanField(default=False)
+    title    = models.CharField(max_length=200)
+    body     = models.TextField()
+    order    = models.IntegerField(default=0)
+
+    requires_roll    = models.BooleanField(default=False)
+    roll_stat        = models.CharField(max_length=50, blank=True)
+    roll_difficulty  = models.IntegerField(default=10)
+
+    ending_type = models.CharField(
+                      max_length=20,
+                      choices=[
+                          ('victory', 'Victory'),
+                          ('defeat',  'Defeat'),
+                          ('neutral', 'Neutral'),
+                      ],
+                      blank=True
+                  )
+
+    # Access requirements — all groups must pass to enter this scene
+    requirements = models.ManyToManyField(
+                       RequirementGroup,
+                       blank=True,
+                       related_name='gated_scenes'
+                   )
+
+    ambient_sound = models.CharField(max_length=100, blank=True)
+    # slug of a static audio file e.g. 'cave_drip', 'tavern_noise'
+
+    class Meta:
+        ordering = ['quest', 'order']
+
+    def __str__(self):
+        return self.key
+
+
+class Choice(models.Model):
+    scene        = models.ForeignKey(
+                       Scene,
+                       related_name='choices',
+                       on_delete=models.CASCADE
+                   )
+    label        = models.CharField(max_length=300)
+    order        = models.IntegerField(default=0)
+
+    # Routing — used when no roll is required
+    target_scene = models.ForeignKey(
+                       Scene,
+                       related_name='+',
+                       on_delete=models.CASCADE
+                   )
+
+    # Roll routing — used when the scene requires a roll
+    success_scene = models.ForeignKey(
+                        Scene,
+                        null=True, blank=True,
+                        related_name='+',
+                        on_delete=models.SET_NULL
+                    )
+    failure_scene = models.ForeignKey(
+                        Scene,
+                        null=True, blank=True,
+                        related_name='+',
+                        on_delete=models.SET_NULL
+                    )
+
+    # Flavor logged to EventLog when this choice leads to its target
+    arrival_flavor = models.TextField(blank=True)
+
+    # Item consumption — separate from gating, this is an action on take
+    consume_item = models.ForeignKey(
+                       Item,
+                       null=True, blank=True,
+                       on_delete=models.SET_NULL,
+                       related_name='consumed_by_choices'
+                   )
+    # If set, this item is removed from inventory when the choice is taken
+
+    # Visibility and access requirements
+    requirements = models.ManyToManyField(
+                       RequirementGroup,
+                       blank=True,
+                       related_name='gated_choices'
+                   )
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"{self.scene.key} → {self.label}"
+
+
+class SceneItem(models.Model):
+    scene      = models.ForeignKey(
+                     Scene,
+                     related_name='scene_items',
+                     on_delete=models.CASCADE
+                 )
+    item       = models.ForeignKey(
+                     Item,
+                     related_name='found_in',
+                     on_delete=models.CASCADE
+                 )
+    quantity   = models.IntegerField(default=1)
+    award_once = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"{self.item.name} x{self.quantity} in {self.scene.key}"
