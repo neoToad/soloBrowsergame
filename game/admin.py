@@ -5,9 +5,54 @@ from .models import (
     Enemy, CombatEncounter, CombatState, EventLog
 )
 
+# 2. Custom actions
+@admin.action(description='Force-close selected combat states')
+def close_combat_states(modeladmin, request, queryset):
+    updated = queryset.update(is_active=False)
+    modeladmin.message_user(request, f'{updated} combat state(s) closed.')
+
+# 3. Inline classes
+class ChoiceInline(admin.TabularInline):
+    model = Choice
+    fk_name = 'scene'
+    extra = 1
+    fields = ('label', 'order', 'target_scene', 'consume_item')
+    autocomplete_fields = ('target_scene', 'consume_item')
+    show_change_link = True
+
+class SceneItemInline(admin.TabularInline):
+    model = SceneItem
+    extra = 0
+    fields = ('item', 'quantity', 'award_once')
+
+class CombatEncounterInline(admin.StackedInline):
+    model = CombatEncounter
+    extra = 0
+    autocomplete_fields = ('enemy',)
+
+class SceneInline(admin.TabularInline):
+    model = Scene
+    extra = 0
+    fields = ('key', 'title', 'order', 'is_hub', 'is_combat', 'is_ending')
+    show_change_link = True
+
+class PlayerStatsInline(admin.StackedInline):
+    model = PlayerStats
+    extra = 0
+    readonly_fields = ('level', 'experience', 'stat_points')
+    can_delete = False
+
+class PlayerInventoryInline(admin.TabularInline):
+    model = PlayerInventory
+    extra = 0
+    fields = ('item', 'quantity', 'acquired_at')
+    readonly_fields = ('acquired_at',)
+
+# 4. Admin classes
 @admin.register(Arc)
 class ArcAdmin(admin.ModelAdmin):
     list_display = ('key', 'title', 'order')
+    search_fields = ('key', 'title')
 
 @admin.register(Quest)
 class QuestAdmin(admin.ModelAdmin):
@@ -15,15 +60,18 @@ class QuestAdmin(admin.ModelAdmin):
         'key', 'title', 'arc', 'arc_order', 'is_unlocked',
         'required_stat', 'required_minimum', 'required_quest', 'entrance_scene'
     )
-    raw_id_fields = ('required_quest',)
+    list_filter = ('arc', 'is_unlocked')
+    search_fields = ('key', 'title')
+    list_select_related = True
+    autocomplete_fields = ('required_quest', 'entrance_scene')
+    inlines = [SceneInline]
+    save_on_top = True
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = (
-        'key', 'name', 'is_consumable',
-        'effect_type', 'effect_stat', 'effect_value',
-        'passive_stat', 'passive_value',
-    )
+    list_display = ('key', 'name', 'is_consumable', 'effect_summary')
+    list_filter = ('is_consumable', 'effect_type', 'equip_slot')
+    search_fields = ('key', 'name', 'description')
     prepopulated_fields = {'key': ('name',)}
     fieldsets = (
         (None, {
@@ -38,65 +86,113 @@ class ItemAdmin(admin.ModelAdmin):
             'description': 'Applied automatically while the item is carried. Never consumed.',
         }),
     )
+    save_on_top = True
+
+    @admin.display(description='Effect Summary')
+    def effect_summary(self, obj):
+        parts = []
+        if obj.effect_type:
+            parts.append(f'USE:{obj.effect_type}')
+        if obj.passive_stat:
+            parts.append(f'PASSIVE:{obj.passive_stat}+{obj.passive_value}')
+        return ', '.join(parts) or '—'
 
 @admin.register(Requirement)
 class RequirementAdmin(admin.ModelAdmin):
     list_display = ('condition_type', 'stat_name', 'required_item', 'required_quest', 'stat_value')
+    search_fields = ('stat_name',)
 
 @admin.register(RequirementGroup)
 class RequirementGroupAdmin(admin.ModelAdmin):
     list_display = ('label', 'logic')
+    search_fields = ('label',)
     filter_horizontal = ('requirements',)
 
 @admin.register(Scene)
 class SceneAdmin(admin.ModelAdmin):
     list_display = ('key', 'title', 'quest', 'is_hub', 'is_combat', 'is_ending', 'requires_roll', 'order')
+    list_filter = ('quest', 'is_hub', 'is_combat', 'is_ending', 'requires_roll', 'ending_type')
+    search_fields = ('key', 'title', 'body')
+    list_select_related = True
     filter_horizontal = ('requirements',)
+    inlines = [ChoiceInline, SceneItemInline, CombatEncounterInline]
+    save_on_top = True
 
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
     list_display = ('scene', 'label', 'target_scene', 'consume_item', 'order')
+    list_filter = ('scene__quest',)
+    search_fields = ('label', 'scene__key')
+    list_select_related = True
+    autocomplete_fields = ('target_scene', 'success_scene', 'failure_scene', 'consume_item')
     filter_horizontal = ('requirements',)
+    save_on_top = True
 
 @admin.register(GameSession)
 class GameSessionAdmin(admin.ModelAdmin):
     list_display = ('session_key', 'current_scene', 'created_at')
+    search_fields = ('session_key',)
+    readonly_fields = ('session_key', 'created_at')
+    inlines = [PlayerStatsInline, PlayerInventoryInline]
 
 @admin.register(PlayerStats)
 class PlayerStatsAdmin(admin.ModelAdmin):
     list_display = ('session', 'level', 'experience', 'hp', 'strength', 'agility', 'intellect', 'charisma')
+    list_select_related = True
 
 @admin.register(PlayerInventory)
 class PlayerInventoryAdmin(admin.ModelAdmin):
     list_display = ('session', 'item', 'quantity', 'acquired_at')
-    list_filter  = ('item',)
+    list_filter = ('item',)
+    search_fields = ('session__session_key', 'item__name')
+    list_select_related = True
+    readonly_fields = ('acquired_at',)
 
 @admin.register(SceneItem)
 class SceneItemAdmin(admin.ModelAdmin):
     list_display = ('scene', 'item', 'quantity', 'award_once')
-    list_filter  = ('scene', 'item')
+    list_filter = ('scene', 'item')
+    list_select_related = True
 
 @admin.register(CompletedQuest)
 class CompletedQuestAdmin(admin.ModelAdmin):
     list_display = ('session', 'quest', 'ending_type', 'completed_at')
+    list_filter = ('quest', 'ending_type')
+    list_select_related = True
+    readonly_fields = ('completed_at',)
+    date_hierarchy = 'completed_at'
 
 @admin.register(Enemy)
 class EnemyAdmin(admin.ModelAdmin):
-    list_display = ('key', 'name', 'max_hp', 'defense', 'attack_modifier',
-                    'damage_min', 'damage_max')
+    list_display = ('key', 'name', 'max_hp', 'defense', 'attack_modifier', 'damage_range')
+    search_fields = ('key', 'name')
     prepopulated_fields = {'key': ('name',)}
-    raw_id_fields = ('victory_scene', 'defeat_scene')
+    autocomplete_fields = ('victory_scene', 'defeat_scene')
+    save_on_top = True
+
+    @admin.display(description='Damage')
+    def damage_range(self, obj):
+        return f'{obj.damage_min}–{obj.damage_max}'
 
 @admin.register(CombatEncounter)
 class CombatEncounterAdmin(admin.ModelAdmin):
     list_display = ('scene', 'enemy')
-    raw_id_fields = ('scene', 'enemy')
+    list_select_related = True
+    autocomplete_fields = ('scene', 'enemy')
 
 @admin.register(CombatState)
 class CombatStateAdmin(admin.ModelAdmin):
     list_display = ('session', 'enemy', 'enemy_hp', 'turn_number', 'is_active')
-    list_filter  = ('is_active', 'enemy')
+    list_filter = ('is_active', 'enemy')
+    list_select_related = True
+    actions = [close_combat_states]
 
 @admin.register(EventLog)
 class EventLogAdmin(admin.ModelAdmin):
     list_display = ('session', 'timestamp', 'text')
+    list_filter = ('session',)
+    search_fields = ('text', 'session__session_key')
+    list_select_related = True
+    readonly_fields = ('session', 'timestamp')
+    date_hierarchy = 'timestamp'
+    ordering = ('-timestamp',)
