@@ -1,5 +1,5 @@
 from django import template
-from game.utils import XP_THRESHOLDS, MAX_LEVEL, RANK_TITLES, LEVEL_UP_FLAVOR
+from game.services.progression import XP_THRESHOLDS, MAX_LEVEL, RANK_TITLES, LEVEL_UP_FLAVOR
 
 register = template.Library()
 

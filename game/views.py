@@ -5,13 +5,14 @@ from .models import (
     GameSession, PlayerStats, Scene, Choice, EventLog,
     CompletedQuest, Quest, CombatState, PlayerContext,
 )
+from .services.session     import load_session_context, create_session, get_completed_map, build_render_context
+from .services.scene       import get_available_choices, get_notice_board_for_scene, get_notice_board
+from .services.combat      import get_or_create_combat_state, get_active_combat_state, resolve_combat_end, resolve_player_attack, resolve_enemy_attack
+from .services.inventory   import get_player_inventory, award_scene_items, consume_item as consume_item_util
+from .services.progression import award_xp, maybe_complete_quest, XP_AWARDS, LEVEL_UP_FLAVOR
 from .utils import (
-    roll_d20, stat_modifier, get_notice_board,
-    get_player_inventory, award_scene_items,
-    consume_item as consume_item_util,
-    resolve_player_attack, resolve_enemy_attack,
-    award_xp, XP_AWARDS, LEVEL_UP_FLAVOR,
-    get_effective_stats, maybe_complete_quest,
+    roll_d20, stat_modifier,
+    get_effective_stats,
 )
 from .constants import (
     HUB_START_SCENE_KEY, NOTICE_BOARD_SCENE_KEY,
@@ -30,134 +31,23 @@ def _htmx_response(request, context):
     mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
     return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
 
-def _build_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state, notice_board=None):
-    return {
-        'scene':        scene,
-        'choices':      get_available_choices(scene, effective_stats, inventory, completed_map),
-        'stats':        stats,
-        'stat_bonuses': effective_stats.bonuses,
-        'inventory':    inventory,
-        'logs':         session.log.all()[:10],
-        'oob':          True,
-        'combat_state': combat_state,
-        'notice_board': notice_board,
-    }
 
 
-def get_available_choices(scene, stats, inventory, completed_map):
-    choices = []
-    ctx = PlayerContext(stats=stats, inventory=inventory, completed_map=completed_map)
-    for choice in scene.choices.prefetch_related('requirements__requirements').all():
-        # RequirementGroup gate — all groups must pass
-        if choice.requirements.exists():
-            passed = all(
-                rg.evaluate(ctx)
-                for rg in choice.requirements.all()
-            )
-            if not passed:
-                continue
-        choices.append(choice)
-    return choices
 
 
-def _get_completed_map(session):
-    from .models import CompletedQuest
-    return {
-        cq.quest_id: cq.ending_type
-        for cq in CompletedQuest.objects.filter(session=session)
-    }
-
-def _load_context(session_pk):
-    session = get_object_or_404(GameSession, pk=session_pk)
-    stats   = session.stats
-    inventory     = get_player_inventory(session)
-    effective_stats = get_effective_stats(stats, inventory)
-    completed_map   = _get_completed_map(session)
-    return session, stats, inventory, effective_stats, completed_map
-
-def _get_active_combat_state(session):
-    """
-    Returns the session's active CombatState if one exists, else None.
-    Read-only, does not modify database.
-    """
-    try:
-        cs = session.combat_state
-        if cs.is_active:
-            return cs
-    except CombatState.DoesNotExist:
-        pass
-    return None
-
-
-def _get_notice_board_for_scene(session, stats, scene):
-    if scene.key == NOTICE_BOARD_SCENE_KEY:
-        return get_notice_board(session, stats)
-    return None
-
-
-def _get_combat_state(session, scene):
-    """
-    For a combat scene: returns an active CombatState, creating one if needed.
-    If an inactive state exists for a combat scene, deletes and recreates it.
-    For a non-combat scene: deactivates any lingering active CombatState and returns None.
-    """
-    from .models import CombatEncounter, CombatState
-    if not scene.is_combat:
-        try:
-            cs = session.combat_state
-            if cs.is_active:
-                cs.is_active = False
-                cs.save()
-        except CombatState.DoesNotExist:
-            pass
-        return None
-
-    try:
-        cs = session.combat_state
-        if cs.is_active:
-            return cs
-        cs.delete()
-    except CombatState.DoesNotExist:
-        pass
-
-    encounter = CombatEncounter.objects.select_related('enemy').get(scene=scene)
-    cs = CombatState.objects.create(
-        session=session,
-        enemy=encounter.enemy,
-        enemy_hp=encounter.enemy.max_hp,
-        turn_number=1,
-        is_active=True,
-    )
-    EventLog.objects.create(
-        session=session,
-        text=f"You square up against {encounter.enemy.name}."
-    )
-    return cs
-
-def _create_session(request):
-    """Creates a new GameSession + PlayerStats, stores the pk in the Django session."""
-    if not request.session.session_key:
-        request.session.create()
-    game_session = GameSession.objects.create(
-        session_key=request.session.session_key,
-        current_scene=Scene.objects.get(key=HUB_START_SCENE_KEY),
-    )
-    PlayerStats.objects.create(session=game_session)
-    request.session['game_session_id'] = game_session.pk
-    return game_session
 
 
 def game_hub(request):
     session_pk = request.session.get('game_session_id')
 
     if not session_pk:
-        _create_session(request)
+        create_session(request)
     else:
         # Check if the session actually exists in DB
         try:
             GameSession.objects.get(pk=session_pk)
         except GameSession.DoesNotExist:
-            _create_session(request)
+            create_session(request)
 
     return redirect('scene_detail', scene_key=HUB_START_SCENE_KEY)
 
@@ -166,11 +56,11 @@ def scene_detail(request, scene_key):
     if not session_pk:
         return redirect('/game/')
 
-    game_session, stats, inventory, effective_stats, completed_map = _load_context(session_pk)
+    game_session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
     scene        = get_object_or_404(Scene, key=scene_key)
-    combat_state = _get_combat_state(game_session, scene)
+    combat_state = get_or_create_combat_state(game_session, scene)
 
-    notice_board = _get_notice_board_for_scene(game_session, stats, scene)
+    notice_board = get_notice_board_for_scene(game_session, stats, scene)
 
     choices = get_available_choices(scene, effective_stats, inventory, completed_map)
     logs    = game_session.log.all()[:10]
@@ -196,7 +86,7 @@ def choice_resolve(request, choice_id):
     if not session_pk:
         return redirect('game_hub')
 
-    session, stats, inventory, effective_stats, completed_map = _load_context(session_pk)
+    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
     choice    = get_object_or_404(Choice, pk=choice_id)
 
     scene      = choice.scene
@@ -251,14 +141,14 @@ def choice_resolve(request, choice_id):
             text=f"You picked up: {item.name} x{qty}."
         )
 
-    combat_state    = _get_combat_state(session, next_scene)
+    combat_state    = get_or_create_combat_state(session, next_scene)
     effective_stats = get_effective_stats(stats, inventory)   # recompute after item changes
 
     is_htmx = request.headers.get('HX-Request') == 'true'
     if is_htmx:
-        notice_board = _get_notice_board_for_scene(session, stats, next_scene)
+        notice_board = get_notice_board_for_scene(session, stats, next_scene)
 
-        context = _build_context(
+        context = build_render_context(
             session, next_scene, stats, effective_stats, inventory, completed_map,
             combat_state=combat_state, notice_board=notice_board
         )
@@ -274,7 +164,7 @@ def start_quest(request, quest_key):
     if not session_pk:
         return redirect('game_hub')
 
-    session, stats, inventory, effective_stats, completed_map = _load_context(session_pk)
+    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
     quest = get_object_or_404(Quest, key=quest_key)
 
     # Check availability
@@ -304,10 +194,10 @@ def start_quest(request, quest_key):
                 text=f"You picked up: {item.name} x{qty}."
             )
 
-        combat_state    = _get_combat_state(session, next_scene)
+        combat_state    = get_or_create_combat_state(session, next_scene)
         effective_stats = get_effective_stats(stats, inventory)
 
-        context = _build_context(
+        context = build_render_context(
             session, next_scene, stats, effective_stats, inventory, completed_map,
             combat_state=combat_state
         )
@@ -316,37 +206,6 @@ def start_quest(request, quest_key):
     return redirect('scene_detail', scene_key=next_scene.key)
 
 
-def _resolve_combat_end(session, stats, inventory, completed_map, next_scene, combat_state, *, xp_award=0):
-    """
-    Shared teardown for combat victory and defeat:
-    deactivates combat, advances the scene, runs quest/item/XP logic,
-    and returns a ready-to-render HTMX context dict.
-    """
-    combat_state.is_active = False
-    combat_state.save()
-
-    session.current_scene = next_scene
-    session.save()
-
-    quest_logs = maybe_complete_quest(session, stats, next_scene, completed_map)
-    for log_text in quest_logs:
-        EventLog.objects.create(session=session, text=log_text)
-
-    awarded = award_scene_items(session, next_scene, inventory)
-    for item, qty in awarded:
-        EventLog.objects.create(session=session, text=f"You picked up: {item.name} x{qty}.")
-
-    if xp_award:
-        combat_levels = award_xp(session, stats, xp_award)
-        EventLog.objects.create(session=session, text=f"+{xp_award} XP.")
-        for new_level in combat_levels:
-            EventLog.objects.create(session=session, text=LEVEL_UP_FLAVOR[new_level - 2])
-
-    effective_stats = get_effective_stats(stats, inventory)
-    return _build_context(
-        session, next_scene, stats, effective_stats, inventory, completed_map,
-        combat_state=None,
-    )
 
 
 def combat_attack(request):
@@ -357,7 +216,7 @@ def combat_attack(request):
     if not session_pk:
         return redirect('game_hub')
 
-    session, stats, inventory, effective_stats, completed_map = _load_context(session_pk)
+    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
 
     try:
         combat_state = session.combat_state
@@ -396,7 +255,7 @@ def combat_attack(request):
     # ── CHECK: OPPONENT DOWN ─────────────────────────────────────────
     if combat_state.enemy_hp <= 0:
         EventLog.objects.create(session=session, text=f"{enemy.name} goes down. You walk away.")
-        context = _resolve_combat_end(
+        context = resolve_combat_end(
             session, stats, inventory, completed_map,
             enemy.victory_scene, combat_state,
             xp_award=XP_AWARDS['combat_victory'],
@@ -431,14 +290,14 @@ def combat_attack(request):
     # ── CHECK: PLAYER DOWN ───────────────────────────────────────────
     if stats.hp <= 0:
         EventLog.objects.create(session=session, text="You're down. You lose consciousness.")
-        context = _resolve_combat_end(
+        context = resolve_combat_end(
             session, stats, inventory, completed_map,
             enemy.defeat_scene, combat_state,
         )
         return _htmx_response(request, context)
 
     effective_stats = get_effective_stats(stats, inventory)
-    context = _build_context(
+    context = build_render_context(
         session, session.current_scene, stats, effective_stats, inventory, completed_map,
         combat_state=combat_state
     )
@@ -455,7 +314,7 @@ def level_up(request):
     if not session_pk:
         return redirect('game_hub')
 
-    session, stats, inventory, effective_stats, completed_map = _load_context(session_pk)
+    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
 
     if stats.stat_points <= 0:
         return HttpResponse("No stat points available.", status=400)
@@ -479,11 +338,11 @@ def level_up(request):
     effective_stats = get_effective_stats(stats, inventory)
 
     # Preserve active combat state if one exists
-    combat_state = _get_active_combat_state(session)
+    combat_state = get_active_combat_state(session)
 
-    notice_board = _get_notice_board_for_scene(session, stats, scene)
+    notice_board = get_notice_board_for_scene(session, stats, scene)
 
-    context = _build_context(
+    context = build_render_context(
         session, scene, stats, effective_stats, inventory, completed_map,
         combat_state=combat_state, notice_board=notice_board
     )
@@ -500,7 +359,7 @@ def use_item(request, item_id):
         return redirect('game_hub')
 
     from .models import Item
-    session, stats, inventory, effective_stats, completed_map = _load_context(session_pk)
+    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
     item    = get_object_or_404(Item, pk=item_id)
 
     # Guard: player must actually hold the item
@@ -539,11 +398,11 @@ def use_item(request, item_id):
     scene           = session.current_scene
     effective_stats = get_effective_stats(stats, inventory)
 
-    combat_state = _get_active_combat_state(session)
+    combat_state = get_active_combat_state(session)
 
-    notice_board = _get_notice_board_for_scene(session, stats, scene)
+    notice_board = get_notice_board_for_scene(session, stats, scene)
 
-    context = _build_context(
+    context = build_render_context(
         session, scene, stats, effective_stats, inventory, completed_map,
         combat_state=combat_state, notice_board=notice_board
     )
