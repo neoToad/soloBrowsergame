@@ -297,3 +297,78 @@ html, body {
 .scene--ending[data-ending="victory"] h2 { color: var(--accent); }
 .scene--ending[data-ending="defeat"]  h2 { color: var(--danger); }
 .scene--ending[data-ending="neutral"] h2 { color: var(--warning); }
+
+/* COMBAT PANEL */
+
+.combat-opponent {
+    border: 1px solid var(--danger);
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.combat-opp-name {
+    color: var(--danger);
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin: 0;
+}
+
+.combat-opp-desc {
+    color: var(--text-dim);
+    font-size: 12px;
+    margin: 0;
+}
+
+.combat-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.combat-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bar-label {
+    color: var(--text-dim);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    min-width: 50px;
+}
+
+.hp-track {
+    flex: 1;
+    height: 8px;
+    background: var(--border);
+    position: relative;
+}
+
+.hp-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.2s ease;
+}
+
+.hp-fill--enemy {
+    background: var(--danger);
+}
+
+.bar-val {
+    color: var(--text-dim);
+    font-size: 11px;
+    min-width: 40px;
+    text-align: right;
+}
+
+.combat-turn {
+    color: var(--text-dim);
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin: 0;
+    text-transform: uppercase;
+}

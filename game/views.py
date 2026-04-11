@@ -1,8 +1,16 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
-from .models import GameSession, PlayerStats, Scene, Choice, EventLog, CompletedQuest, Quest
-from .utils import roll_d20, stat_modifier, get_notice_board, get_player_inventory, award_scene_items, consume_item as consume_item_util
+from .models import (
+    GameSession, PlayerStats, Scene, Choice, EventLog,
+    CompletedQuest, Quest, CombatState,
+)
+from .utils import (
+    roll_d20, stat_modifier, get_notice_board,
+    get_player_inventory, award_scene_items,
+    consume_item as consume_item_util,
+    resolve_player_attack, resolve_enemy_attack,
+)
 
 NOTICE_BOARD_KEY = 'hub__notice_board'
 
@@ -32,6 +40,45 @@ def _get_completed_map(session):
         cq.quest_id: cq.ending_type
         for cq in CompletedQuest.objects.filter(session=session)
     }
+
+def _get_combat_state(session, scene):
+    """
+    For a combat scene: returns an active CombatState, creating one if needed.
+    If an inactive state exists for a combat scene, deletes and recreates it.
+    For a non-combat scene: deactivates any lingering active CombatState and returns None.
+    """
+    from .models import CombatEncounter, CombatState
+    if not scene.is_combat:
+        try:
+            cs = session.combat_state
+            if cs.is_active:
+                cs.is_active = False
+                cs.save()
+        except CombatState.DoesNotExist:
+            pass
+        return None
+
+    try:
+        cs = session.combat_state
+        if cs.is_active:
+            return cs
+        cs.delete()
+    except CombatState.DoesNotExist:
+        pass
+
+    encounter = CombatEncounter.objects.select_related('enemy').get(scene=scene)
+    cs = CombatState.objects.create(
+        session=session,
+        enemy=encounter.enemy,
+        enemy_hp=encounter.enemy.max_hp,
+        turn_number=1,
+        is_active=True,
+    )
+    EventLog.objects.create(
+        session=session,
+        text=f"You square up against {encounter.enemy.name}."
+    )
+    return cs
 
 def game_hub(request):
     session_pk = request.session.get('game_session_id')
@@ -72,11 +119,12 @@ def scene_detail(request, scene_key):
     if not session_pk:
         return redirect('/game/')
 
-    game_session = get_object_or_404(GameSession, pk=session_pk)
-    scene        = get_object_or_404(Scene, key=scene_key)
-    stats        = game_session.stats
-    inventory    = get_player_inventory(game_session)
+    game_session  = get_object_or_404(GameSession, pk=session_pk)
+    scene         = get_object_or_404(Scene, key=scene_key)
+    stats         = game_session.stats
+    inventory     = get_player_inventory(game_session)
     completed_map = _get_completed_map(game_session)
+    combat_state  = _get_combat_state(game_session, scene)
 
     if scene.key == NOTICE_BOARD_KEY:
         notice_board = get_notice_board(game_session, stats)
@@ -94,6 +142,7 @@ def scene_detail(request, scene_key):
         'choices':      choices,
         'logs':         logs,
         'notice_board': notice_board,
+        'combat_state': combat_state,
     }
     return render(request, 'game/scene.html', context)
 
@@ -172,6 +221,8 @@ def choice_resolve(request, choice_id):
             text=f"You picked up: {item.name} x{qty}."
         )
 
+    combat_state = _get_combat_state(session, next_scene)
+
     is_htmx = request.headers.get('HX-Request') == 'true'
     if is_htmx:
         if next_scene.key == NOTICE_BOARD_KEY:
@@ -187,6 +238,7 @@ def choice_resolve(request, choice_id):
             'logs':         session.log.all()[:10],
             'oob':          True,
             'notice_board': notice_board,
+            'combat_state': combat_state,
         }
         scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
         stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
@@ -238,18 +290,208 @@ def start_quest(request, quest_key):
                 text=f"You picked up: {item.name} x{qty}."
             )
 
+        combat_state = _get_combat_state(session, next_scene)
+
         context = {
-            'scene':     next_scene,
-            'choices':   get_available_choices(next_scene, stats, inventory, completed_map),
-            'stats':     stats,
-            'inventory': inventory,
-            'logs':      session.log.all()[:10],
-            'oob':       True,
+            'scene':        next_scene,
+            'choices':      get_available_choices(next_scene, stats, inventory, completed_map),
+            'stats':        stats,
+            'inventory':    inventory,
+            'logs':         session.log.all()[:10],
+            'oob':          True,
+            'combat_state': combat_state,
         }
         scene_html     = render_to_string('game/partials/scene_panel.html', context, request)
         stats_html     = render_to_string('game/partials/stats_bar.html',   context, request)
         log_html       = render_to_string('game/partials/event_log.html',   context, request)
-        inventory_html = render_to_string('game/partials/inventory.html',   context, request)
+    return redirect('scene_detail', scene_key=next_scene.key)
+
+
+def combat_attack(request):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    session_pk = request.session.get('game_session_id')
+    if not session_pk:
+        return redirect('game_hub')
+
+    session = get_object_or_404(GameSession, pk=session_pk)
+    stats   = session.stats
+
+    try:
+        combat_state = session.combat_state
+    except CombatState.DoesNotExist:
+        return HttpResponse("No active combat.", status=400)
+
+    if not combat_state.is_active:
+        return HttpResponse("Combat is not active.", status=400)
+
+    enemy         = combat_state.enemy
+    inventory     = get_player_inventory(session)
+    completed_map = _get_completed_map(session)
+
+    # ── PLAYER ATTACKS ──────────────────────────────────────────────
+    p_hit, p_dmg, p_roll, p_total = resolve_player_attack(stats, enemy)
+    str_mod = stat_modifier(stats.strength)
+    mod_str = f"+{str_mod}" if str_mod >= 0 else str(str_mod)
+
+    if p_hit:
+        combat_state.enemy_hp = max(0, combat_state.enemy_hp - p_dmg)
+        EventLog.objects.create(
+            session=session,
+            text=(
+                f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
+                f"vs {enemy.defense} — Hit! {p_dmg} damage."
+            ),
+        )
+    else:
+        EventLog.objects.create(
+            session=session,
+            text=(
+                f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
+                f"vs {enemy.defense} — Missed."
+            ),
+        )
+
+    # ── CHECK: OPPONENT DOWN ─────────────────────────────────────────
+    if combat_state.enemy_hp <= 0:
+        combat_state.is_active = False
+        combat_state.save()
+        EventLog.objects.create(
+            session=session,
+            text=f"{enemy.name} goes down. You walk away."
+        )
+
+        next_scene = enemy.victory_scene
+        session.current_scene = next_scene
+        session.save()
+
+        if next_scene.is_ending and next_scene.quest:
+            if not CompletedQuest.objects.filter(
+                session=session, quest=next_scene.quest
+            ).exists():
+                CompletedQuest.objects.create(
+                    session=session,
+                    quest=next_scene.quest,
+                    ending_type=next_scene.ending_type,
+                )
+                EventLog.objects.create(
+                    session=session,
+                    text=f"You have completed: {next_scene.quest.title} "
+                         f"({next_scene.get_ending_type_display()})",
+                )
+                completed_map[next_scene.quest_id] = next_scene.ending_type
+
+        awarded = award_scene_items(session, next_scene, inventory)
+        for item, qty in awarded:
+            EventLog.objects.create(
+                session=session, text=f"You picked up: {item.name} x{qty}."
+            )
+
+        context = {
+            'scene':        next_scene,
+            'choices':      get_available_choices(next_scene, stats, inventory, completed_map),
+            'stats':        stats,
+            'inventory':    inventory,
+            'logs':         session.log.all()[:10],
+            'oob':          True,
+            'combat_state': None,
+        }
+        scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
+        stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
+        log_html       = render_to_string('game/partials/event_log.html',    context, request)
+        inventory_html = render_to_string('game/partials/inventory.html',    context, request)
         return HttpResponse(scene_html + stats_html + log_html + inventory_html)
 
-    return redirect('scene_detail', scene_key=next_scene.key)
+    # ── ENEMY ATTACKS BACK ───────────────────────────────────────────
+    e_hit, e_dmg, e_roll, e_total = resolve_enemy_attack(enemy, stats)
+    player_defense = 10 + stat_modifier(stats.agility)
+    e_mod_str = f"+{enemy.attack_modifier}" if enemy.attack_modifier >= 0 else str(enemy.attack_modifier)
+
+    if e_hit:
+        stats.hp = max(0, stats.hp - e_dmg)
+        EventLog.objects.create(
+            session=session,
+            text=(
+                f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
+                f"vs {player_defense} — Hit! {e_dmg} damage."
+            ),
+        )
+    else:
+        EventLog.objects.create(
+            session=session,
+            text=(
+                f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
+                f"vs {player_defense} — Missed."
+            ),
+        )
+
+    stats.save()
+
+    # ── CHECK: PLAYER DOWN ───────────────────────────────────────────
+    if stats.hp <= 0:
+        combat_state.is_active = False
+        combat_state.save()
+        EventLog.objects.create(
+            session=session, text="You're down. You lose consciousness."
+        )
+
+        next_scene = enemy.defeat_scene
+        session.current_scene = next_scene
+        session.save()
+
+        if next_scene.is_ending and next_scene.quest:
+            if not CompletedQuest.objects.filter(
+                session=session, quest=next_scene.quest
+            ).exists():
+                CompletedQuest.objects.create(
+                    session=session,
+                    quest=next_scene.quest,
+                    ending_type=next_scene.ending_type,
+                )
+                EventLog.objects.create(
+                    session=session,
+                    text=f"You have completed: {next_scene.quest.title} "
+                         f"({next_scene.get_ending_type_display()})",
+                )
+                completed_map[next_scene.quest_id] = next_scene.ending_type
+
+        awarded = award_scene_items(session, next_scene, inventory)
+        for item, qty in awarded:
+            EventLog.objects.create(
+                session=session, text=f"You picked up: {item.name} x{qty}."
+            )
+
+        context = {
+            'scene':        next_scene,
+            'choices':      get_available_choices(next_scene, stats, inventory, completed_map),
+            'stats':        stats,
+            'inventory':    inventory,
+            'logs':         session.log.all()[:10],
+            'oob':          True,
+            'combat_state': None,
+        }
+        scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
+        stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
+        log_html       = render_to_string('game/partials/event_log.html',    context, request)
+        inventory_html = render_to_string('game/partials/inventory.html',    context, request)
+        return HttpResponse(scene_html + stats_html + log_html + inventory_html)
+
+    # ── COMBAT CONTINUES ─────────────────────────────────────────────
+    combat_state.turn_number += 1
+    combat_state.save()
+
+    context = {
+        'scene':        session.current_scene,
+        'choices':      [],
+        'stats':        stats,
+        'inventory':    inventory,
+        'logs':         session.log.all()[:10],
+        'oob':          True,
+        'combat_state': combat_state,
+    }
+    scene_html     = render_to_string('game/partials/scene_panel.html',  context, request)
+    stats_html     = render_to_string('game/partials/stats_bar.html',    context, request)
+    log_html       = render_to_string('game/partials/event_log.html',    context, request)
+    inventory_html = render_to_string('game/partials/inventory.html',    context, request)
+    return HttpResponse(scene_html + stats_html + log_html + inventory_html)

@@ -65,15 +65,20 @@ class CompletedQuestAdmin(admin.ModelAdmin):
 
 @admin.register(Enemy)
 class EnemyAdmin(admin.ModelAdmin):
-    list_display = ('key', 'name', 'max_hp', 'attack_modifier', 'defense')
+    list_display = ('key', 'name', 'max_hp', 'defense', 'attack_modifier',
+                    'damage_min', 'damage_max')
+    prepopulated_fields = {'key': ('name',)}
+    raw_id_fields = ('victory_scene', 'defeat_scene')
 
 @admin.register(CombatEncounter)
 class CombatEncounterAdmin(admin.ModelAdmin):
     list_display = ('scene', 'enemy')
+    raw_id_fields = ('scene', 'enemy')
 
 @admin.register(CombatState)
 class CombatStateAdmin(admin.ModelAdmin):
     list_display = ('session', 'enemy', 'enemy_hp', 'turn_number', 'is_active')
+    list_filter  = ('is_active', 'enemy')
 
 @admin.register(EventLog)
 class EventLogAdmin(admin.ModelAdmin):

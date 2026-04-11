@@ -127,3 +127,37 @@ def consume_item(session, item, inventory):
     else:
         pi.save()
         inventory[item.id] = pi
+
+
+def resolve_player_attack(stats, enemy):
+    """
+    Resolves one player attack against enemy.
+    Player rolls: d20 + stat_modifier(strength) vs enemy.defense.
+    Damage on hit: d6 + max(0, stat_modifier(strength)).
+    Returns (hit: bool, damage: int, roll: int, total: int).
+    """
+    modifier = stat_modifier(stats.strength)
+    roll  = roll_d20()
+    total = roll + modifier
+    hit   = total >= enemy.defense
+    damage = 0
+    if hit:
+        damage = random.randint(1, 6) + max(0, modifier)
+    return hit, damage, roll, total
+
+
+def resolve_enemy_attack(enemy, stats):
+    """
+    Resolves one enemy attack against the player.
+    Enemy rolls: d20 + enemy.attack_modifier vs (10 + stat_modifier(agility)).
+    Damage on hit: random(enemy.damage_min, enemy.damage_max).
+    Returns (hit: bool, damage: int, roll: int, total: int).
+    """
+    player_defense = 10 + stat_modifier(stats.agility)
+    roll  = roll_d20()
+    total = roll + enemy.attack_modifier
+    hit   = total >= player_defense
+    damage = 0
+    if hit:
+        damage = random.randint(enemy.damage_min, enemy.damage_max)
+    return hit, damage, roll, total
