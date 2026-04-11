@@ -36,7 +36,7 @@ class CombatEncounterInline(admin.StackedInline):
 class SceneInline(admin.TabularInline):
     model = Scene
     extra = 0
-    fields = ('key', 'title', 'order', 'is_hub', 'is_combat', 'is_ending')
+    fields = ('key', 'title', 'order', 'scene_type')
     show_change_link = True
 
 class PlayerStatsInline(admin.StackedInline):
@@ -167,8 +167,8 @@ class RequirementGroupAdmin(admin.ModelAdmin):
 
 @admin.register(Scene)
 class SceneAdmin(admin.ModelAdmin):
-    list_display = ('key', 'title', 'quest', 'is_hub', 'is_combat', 'is_ending', 'requires_roll', 'order')
-    list_filter = ('quest', 'is_hub', 'is_combat', 'is_ending', 'requires_roll', 'ending_type')
+    list_display = ('key', 'title', 'quest', 'scene_type', 'requires_roll', 'order')
+    list_filter = ('quest', 'scene_type', 'requires_roll', 'ending_type')
     search_fields = ('key', 'title', 'body')
     list_select_related = True
     filter_horizontal = ('requirements',)

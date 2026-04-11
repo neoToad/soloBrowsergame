@@ -205,7 +205,10 @@ class CombatTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.client.get('/game/')
-        self.session = GameSession.objects.first()
+        # In case multiple sessions exist, get the last one created by our client
+        from django.contrib.sessions.models import Session
+        session_id = self.client.session.session_key
+        self.session = GameSession.objects.get(session_key=session_id)
         # In quest_street_debt.json, debt__corner_fight (pk=21) is combat.
         self.combat_scene = Scene.objects.get(key='debt__corner_fight')
         self.session.current_scene = self.combat_scene
@@ -236,6 +239,10 @@ class CombatTest(TestCase):
         # Manipulate enemy HP to 1
         self.combat_state.enemy_hp = 1
         self.combat_state.save()
+        
+        # Ensure player has enough strength to actually hit if the mock fails for some reason
+        self.session.stats.strength = 20
+        self.session.stats.save()
         
         # Make sure player can hit and kill. 
         from unittest.mock import patch

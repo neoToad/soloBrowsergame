@@ -55,9 +55,17 @@ class Scene(models.Model):
                    on_delete=models.SET_NULL,
                    related_name='scenes'
                )
-    is_hub   = models.BooleanField(default=False)
-    is_combat = models.BooleanField(default=False)
-    is_ending = models.BooleanField(default=False)
+    SCENE_TYPES = [
+        ('normal',  'Normal'),
+        ('hub',     'Hub'),
+        ('combat',  'Combat'),
+        ('ending',  'Ending'),
+    ]
+    scene_type = models.CharField(
+        max_length=20,
+        choices=SCENE_TYPES,
+        default='normal',
+    )
     title    = models.CharField(max_length=200)
     body     = models.TextField()
     order    = models.IntegerField(default=0)
@@ -85,6 +93,18 @@ class Scene(models.Model):
 
     ambient_sound = models.CharField(max_length=100, blank=True)
     # slug of a static audio file e.g. 'cave_drip', 'tavern_noise'
+
+    @property
+    def is_hub(self):
+        return self.scene_type == 'hub'
+
+    @property
+    def is_combat(self):
+        return self.scene_type == 'combat'
+
+    @property
+    def is_ending(self):
+        return self.scene_type == 'ending'
 
     class Meta:
         ordering = ['quest', 'order']
@@ -147,6 +167,21 @@ class Choice(models.Model):
 
     def __str__(self):
         return f"{self.scene.key} → {self.label}"
+
+    def resolve_target(self, roll_succeeded: bool | None = None):
+        """
+        Return the Scene this choice routes to.
+        Pass roll_succeeded=True/False when the parent scene requires a roll.
+        Pass roll_succeeded=None (default) for non-roll scenes.
+        """
+        if self.scene.requires_roll:
+            if roll_succeeded is None:
+                raise ValueError(
+                    f"Choice {self.pk} belongs to a roll scene but "
+                    "roll_succeeded was not provided."
+                )
+            return self.success_scene if roll_succeeded else self.failure_scene
+        return self.target_scene
 
 
 class SceneItem(models.Model):

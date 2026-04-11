@@ -63,7 +63,7 @@
 
   {"model": "game.scene", "pk": 20, "fields": {
     "key": "debt__street_meet", "quest": 2,
-    "is_hub": false, "is_combat": false, "is_ending": false,
+    "scene_type": "normal",
     "title": "The Corner",
     "body": "You find him on his usual corner, back to the wall, watching the street. He clocks you and his jaw tightens. You can step to him or let it go.",
     "order": 1, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
@@ -72,7 +72,7 @@
 
   {"model": "game.scene", "pk": 21, "fields": {
     "key": "debt__corner_fight", "quest": 2,
-    "is_hub": false, "is_combat": true, "is_ending": false,
+    "scene_type": "combat",
     "title": "Squaring Up",
     "body": "He comes off the wall fast. Hands up, eyes wild. This is happening.",
     "order": 2, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
@@ -81,7 +81,7 @@
 
   {"model": "game.scene", "pk": 22, "fields": {
     "key": "debt__enforcer_fight", "quest": 2,
-    "is_hub": false, "is_combat": true, "is_ending": false,
+    "scene_type": "combat",
     "title": "The Real Problem",
     "body": "The corner boy's down, but a door opens across the street. Big guy, slow walk. He's been watching. Now it's his turn.",
     "order": 3, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
@@ -90,7 +90,7 @@
 
   {"model": "game.scene", "pk": 23, "fields": {
     "key": "debt__collected", "quest": 2,
-    "is_hub": false, "is_combat": false, "is_ending": true,
+    "scene_type": "ending",
     "title": "Paid in Full",
     "body": "The envelope is in your pocket. They'll think twice before shorting you again. You walk back to the square.",
     "order": 4, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
@@ -99,7 +99,7 @@
 
   {"model": "game.scene", "pk": 24, "fields": {
     "key": "debt__beaten", "quest": 2,
-    "is_hub": false, "is_combat": false, "is_ending": true,
+    "scene_type": "ending",
     "title": "Left on the Pavement",
     "body": "You come to against a dumpster. Wallet's gone. Ribs ache. You limp back to the square with nothing.",
     "order": 5, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
@@ -108,7 +108,7 @@
 
   {"model": "game.scene", "pk": 25, "fields": {
     "key": "debt__walked_away", "quest": 2,
-    "is_hub": false, "is_combat": false, "is_ending": true,
+    "scene_type": "ending",
     "title": "Not Today",
     "body": "You hold his gaze for a moment, then turn and walk. Some debts aren't worth the trouble. Today.",
     "order": 6, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
@@ -117,7 +117,7 @@
 
   {"model": "game.scene", "pk": 26, "fields": {
     "key": "debt__cop_confrontation", "quest": null,
-    "is_hub": false, "is_combat": true, "is_ending": false,
+    "scene_type": "combat",
     "title": "Badge Problem",
     "body": "He followed you from the corner. Off-duty, no radio. Just him and his reputation. He wants a piece of whatever you just collected.",
     "order": 7, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
@@ -126,7 +126,7 @@
 
   {"model": "game.scene", "pk": 27, "fields": {
     "key": "debt__cop_beaten", "quest": null,
-    "is_hub": false, "is_combat": false, "is_ending": false,
+    "scene_type": "normal",
     "title": "No Badge Saves You Here",
     "body": "He's face-down on asphalt. You strip his wallet of the bribe money and disappear before anyone notices. Word will get around.",
     "order": 8, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
