@@ -1,0 +1,168 @@
+[
+  {
+    "model": "game.enemy",
+    "pk": 1,
+    "fields": {
+      "key": "corner_boy",
+      "name": "Corner Boy",
+      "description": "Young, jumpy, more bark than bite. Stands his ground out of pride.",
+      "max_hp": 8,
+      "attack_modifier": 0,
+      "defense": 10,
+      "damage_min": 1,
+      "damage_max": 4,
+      "victory_scene": 22,
+      "defeat_scene": 24
+    }
+  },
+  {
+    "model": "game.enemy",
+    "pk": 2,
+    "fields": {
+      "key": "crew_enforcer",
+      "name": "Crew Enforcer",
+      "description": "Thick-necked, deliberate. He's hurt people for a living and it shows.",
+      "max_hp": 14,
+      "attack_modifier": 2,
+      "defense": 12,
+      "damage_min": 2,
+      "damage_max": 6,
+      "victory_scene": 23,
+      "defeat_scene": 24
+    }
+  },
+  {
+    "model": "game.enemy",
+    "pk": 3,
+    "fields": {
+      "key": "dirty_cop",
+      "name": "Dirty Cop",
+      "description": "Badge on his belt, brass knuckles in his pocket. Knows how to make it look clean.",
+      "max_hp": 12,
+      "attack_modifier": 3,
+      "defense": 13,
+      "damage_min": 2,
+      "damage_max": 8,
+      "victory_scene": 27,
+      "defeat_scene": 24
+    }
+  },
+  {
+    "model": "game.quest",
+    "pk": 2,
+    "fields": {
+      "key": "street_debt",
+      "title": "Street Debt",
+      "description": "A crew contact says a corner boy is sitting on money that belongs to you. Go collect.",
+      "is_unlocked": true,
+      "arc": null,
+      "arc_order": 1,
+      "entrance_scene": 20
+    }
+  },
+
+  {"model": "game.scene", "pk": 20, "fields": {
+    "key": "debt__street_meet", "quest": 2,
+    "is_hub": false, "is_combat": false, "is_ending": false,
+    "title": "The Corner",
+    "body": "You find him on his usual corner, back to the wall, watching the street. He clocks you and his jaw tightens. You can step to him or let it go.",
+    "order": 1, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
+    "ending_type": "", "ambient_sound": ""
+  }},
+
+  {"model": "game.scene", "pk": 21, "fields": {
+    "key": "debt__corner_fight", "quest": 2,
+    "is_hub": false, "is_combat": true, "is_ending": false,
+    "title": "Squaring Up",
+    "body": "He comes off the wall fast. Hands up, eyes wild. This is happening.",
+    "order": 2, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
+    "ending_type": "", "ambient_sound": ""
+  }},
+
+  {"model": "game.scene", "pk": 22, "fields": {
+    "key": "debt__enforcer_fight", "quest": 2,
+    "is_hub": false, "is_combat": true, "is_ending": false,
+    "title": "The Real Problem",
+    "body": "The corner boy's down, but a door opens across the street. Big guy, slow walk. He's been watching. Now it's his turn.",
+    "order": 3, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
+    "ending_type": "", "ambient_sound": ""
+  }},
+
+  {"model": "game.scene", "pk": 23, "fields": {
+    "key": "debt__collected", "quest": 2,
+    "is_hub": false, "is_combat": false, "is_ending": true,
+    "title": "Paid in Full",
+    "body": "The envelope is in your pocket. They'll think twice before shorting you again. You walk back to the square.",
+    "order": 4, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
+    "ending_type": "victory", "ambient_sound": ""
+  }},
+
+  {"model": "game.scene", "pk": 24, "fields": {
+    "key": "debt__beaten", "quest": 2,
+    "is_hub": false, "is_combat": false, "is_ending": true,
+    "title": "Left on the Pavement",
+    "body": "You come to against a dumpster. Wallet's gone. Ribs ache. You limp back to the square with nothing.",
+    "order": 5, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
+    "ending_type": "defeat", "ambient_sound": ""
+  }},
+
+  {"model": "game.scene", "pk": 25, "fields": {
+    "key": "debt__walked_away", "quest": 2,
+    "is_hub": false, "is_combat": false, "is_ending": true,
+    "title": "Not Today",
+    "body": "You hold his gaze for a moment, then turn and walk. Some debts aren't worth the trouble. Today.",
+    "order": 6, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
+    "ending_type": "neutral", "ambient_sound": ""
+  }},
+
+  {"model": "game.scene", "pk": 26, "fields": {
+    "key": "debt__cop_confrontation", "quest": null,
+    "is_hub": false, "is_combat": true, "is_ending": false,
+    "title": "Badge Problem",
+    "body": "He followed you from the corner. Off-duty, no radio. Just him and his reputation. He wants a piece of whatever you just collected.",
+    "order": 7, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
+    "ending_type": "", "ambient_sound": ""
+  }},
+
+  {"model": "game.scene", "pk": 27, "fields": {
+    "key": "debt__cop_beaten", "quest": null,
+    "is_hub": false, "is_combat": false, "is_ending": false,
+    "title": "No Badge Saves You Here",
+    "body": "He's face-down on asphalt. You strip his wallet of the bribe money and disappear before anyone notices. Word will get around.",
+    "order": 8, "requires_roll": false, "roll_stat": "", "roll_difficulty": 10,
+    "ending_type": "", "ambient_sound": ""
+  }},
+
+  {"model": "game.choice", "pk": 20, "fields": {
+    "scene": 20, "label": "Step to him", "order": 1,
+    "target_scene": 21, "arrival_flavor": "You cross the street. He tenses."
+  }},
+  {"model": "game.choice", "pk": 21, "fields": {
+    "scene": 20, "label": "Walk away", "order": 2,
+    "target_scene": 25, "arrival_flavor": "You keep moving."
+  }},
+  {"model": "game.choice", "pk": 22, "fields": {
+    "scene": 23, "label": "Head back", "order": 1,
+    "target_scene": 1, "arrival_flavor": "You pocket the envelope and disappear into the crowd."
+  }},
+  {"model": "game.choice", "pk": 23, "fields": {
+    "scene": 24, "label": "Drag yourself home", "order": 1,
+    "target_scene": 1, "arrival_flavor": "You take the back streets to avoid anyone seeing you like this."
+  }},
+  {"model": "game.choice", "pk": 24, "fields": {
+    "scene": 25, "label": "Back to the square", "order": 1,
+    "target_scene": 1, "arrival_flavor": ""
+  }},
+  {"model": "game.choice", "pk": 25, "fields": {
+    "scene": 27, "label": "Take his money and go", "order": 1,
+    "target_scene": 1, "arrival_flavor": "You're three blocks away before he stirs."
+  }},
+  {"model": "game.choice", "pk": 26, "fields": {
+    "scene": 27, "label": "Leave him and go", "order": 2,
+    "target_scene": 1, "arrival_flavor": "You leave him where he fell."
+  }},
+
+  {"model": "game.combatencounter", "pk": 1, "fields": {"scene": 21, "enemy": 1}},
+  {"model": "game.combatencounter", "pk": 2, "fields": {"scene": 22, "enemy": 2}},
+  {"model": "game.combatencounter", "pk": 3, "fields": {"scene": 26, "enemy": 3}}
+]

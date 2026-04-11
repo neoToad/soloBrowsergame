@@ -1,0 +1,41 @@
+{% load game_filters %}
+<div id="combat-panel">
+
+    <div class="combat-opponent">
+        <p class="combat-opp-name">{{ combat_state.enemy.name|upper }}</p>
+        <p class="combat-opp-desc">{{ combat_state.enemy.description }}</p>
+    </div>
+
+    <div class="combat-bars">
+        <div class="combat-bar-row">
+            <span class="bar-label">YOU</span>
+            <div class="hp-track">
+                <div class="hp-fill"
+                     style="width: {{ stats.hp|hp_pct:stats.max_hp }}%"></div>
+            </div>
+            <span class="bar-val">{{ stats.hp }}/{{ stats.max_hp }}</span>
+        </div>
+        <div class="combat-bar-row">
+            <span class="bar-label">THEM</span>
+            <div class="hp-track">
+                <div class="hp-fill hp-fill--enemy"
+                     style="width: {{ combat_state.enemy_hp|hp_pct:combat_state.enemy.max_hp }}%"></div>
+            </div>
+            <span class="bar-val">{{ combat_state.enemy_hp }}/{{ combat_state.enemy.max_hp }}</span>
+        </div>
+    </div>
+
+    <p class="combat-turn">Round {{ combat_state.turn_number }}</p>
+
+    <div class="choices">
+        <button
+            hx-post="{% url 'combat_attack' %}"
+            hx-target="#scene-panel"
+            hx-swap="innerHTML"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-indicator="#loading-indicator">
+            Move on him
+        </button>
+    </div>
+
+</div>
