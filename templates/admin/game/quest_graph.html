@@ -1,0 +1,297 @@
+{% extends "admin/base_site.html" %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">Home</a>
+    &rsaquo; <a href="{% url 'admin:game_quest_changelist' %}">Quests</a>
+    &rsaquo; <a href="{% url 'admin:game_quest_change' quest.pk %}">{{ quest.title }}</a>
+    &rsaquo; Scene Graph
+</div>
+{% endblock %}
+
+{% block content %}
+<style>
+  .graph-scene {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .graph-scene-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: #f8f8f8;
+    border-bottom: 1px solid #ccc;
+    font-family: monospace;
+    font-size: 13px;
+  }
+  .graph-scene-key {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+  }
+  .graph-scene-title {
+    color: #555;
+  }
+  .badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  .badge-hub    { background: #d4edda; color: #155724; }
+  .badge-combat { background: #f8d7da; color: #721c24; }
+  .badge-ending { background: #fff3cd; color: #856404; }
+  .badge-roll   { background: #d1ecf1; color: #0c5460; }
+  .graph-scene-body {
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .graph-items {
+    font-size: 12px;
+    color: #666;
+  }
+  .graph-items span {
+    background: #e8f4e8;
+    border: 1px solid #a3d6a3;
+    border-radius: 3px;
+    padding: 1px 6px;
+    margin-right: 4px;
+    font-family: monospace;
+  }
+  .graph-combat-stat {
+    font-size: 12px;
+    color: #721c24;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 3px;
+    padding: 3px 8px;
+    display: inline-block;
+  }
+  .graph-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .graph-choice {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    font-family: monospace;
+  }
+  .graph-choice-label {
+    color: #333;
+    flex-shrink: 0;
+    max-width: 360px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .graph-arrow { color: #999; flex-shrink: 0; }
+  .graph-target { font-weight: bold; }
+  .graph-target a { color: #0066cc; text-decoration: none; }
+  .graph-target a:hover { text-decoration: underline; }
+
+  /* Roll routes (indented block under a choice) */
+  .graph-roll-routes {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-left: 16px;
+    font-size: 12px;
+    font-family: monospace;
+  }
+
+  /* Combat outcome routes (standalone rows, not under a choice) */
+  .graph-combat-routes {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    font-family: monospace;
+  }
+
+  /* Win = green, Lose = red */
+  .route-win  { color: #155724; font-weight: bold; }
+  .route-lose { color: #721c24; font-weight: bold; }
+  .route-win  a { color: #155724; text-decoration: none; }
+  .route-lose a { color: #721c24; text-decoration: none; }
+  .route-win  a:hover,
+  .route-lose a:hover { text-decoration: underline; }
+
+  /* Roll success/failure keep same palette */
+  .route-success { color: #155724; }
+  .route-failure { color: #721c24; }
+
+  .graph-consume {
+    font-size: 11px;
+    color: #856404;
+    background: #fff3cd;
+    border-radius: 3px;
+    padding: 0 5px;
+    flex-shrink: 0;
+  }
+
+  /* Dead end */
+  .graph-dead-end {
+    font-size: 12px;
+    color: #856404;
+    background: #fff3cd;
+    border: 1px dashed #f0ad4e;
+    border-radius: 3px;
+    padding: 1px 7px;
+    font-family: monospace;
+  }
+
+  .graph-empty {
+    color: #999;
+    font-size: 13px;
+    font-style: italic;
+  }
+  .graph-no-scenes {
+    padding: 20px;
+    color: #999;
+    font-style: italic;
+  }
+</style>
+
+<h1>Scene Graph &mdash; {{ quest.title }}</h1>
+<p style="color:#666; margin-bottom:20px;">
+    {{ scenes|length }} scene{{ scenes|length|pluralize }}
+    &nbsp;&bull;&nbsp;
+    <a href="{% url 'admin:game_quest_change' quest.pk %}">Edit quest</a>
+</p>
+
+{% if scenes %}
+    {% for scene in scenes %}
+    <div class="graph-scene">
+
+        {# ── Header ── #}
+        <div class="graph-scene-header">
+            <span class="graph-scene-key">
+                <a href="{% url 'admin:game_scene_change' scene.pk %}" style="color:inherit; text-decoration:none;">
+                    {{ scene.key }}
+                </a>
+            </span>
+            <span class="graph-scene-title">{{ scene.title }}</span>
+            {% if scene.is_hub %}<span class="badge badge-hub">Hub</span>{% endif %}
+            {% if scene.is_combat %}<span class="badge badge-combat">Combat</span>{% endif %}
+            {% if scene.is_ending %}<span class="badge badge-ending">{{ scene.ending_type|default:"Ending" }}</span>{% endif %}
+            {% if scene.requires_roll %}<span class="badge badge-roll">Roll: {{ scene.roll_stat }} DC{{ scene.roll_difficulty }}</span>{% endif %}
+        </div>
+
+        <div class="graph-scene-body">
+
+            {# ── Items awarded ── #}
+            {% if scene.scene_items.all %}
+            <div class="graph-items">
+                Items:
+                {% for si in scene.scene_items.all %}
+                    <span>{{ si.item.name }}{% if si.quantity > 1 %} x{{ si.quantity }}{% endif %}{% if si.award_once %} (once){% endif %}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {# ── Combat encounter: stats + win/lose outgoing arrows ── #}
+            {% if scene.combat_encounter %}
+            {% with enc=scene.combat_encounter enemy=scene.combat_encounter.enemy %}
+            <div>
+                <span class="graph-combat-stat">
+                    &#9876; {{ enemy.name }}
+                    &mdash; HP {{ enemy.max_hp }},
+                    DMG {{ enemy.damage_min }}&ndash;{{ enemy.damage_max }},
+                    DEF {{ enemy.defense }}
+                </span>
+            </div>
+            <div class="graph-combat-routes">
+                {# Win route #}
+                <span class="route-win">
+                    &#9650; WIN &rarr;
+                    {% if enemy.victory_scene %}
+                        <a href="{% url 'admin:game_scene_change' enemy.victory_scene.pk %}">{{ enemy.victory_scene.key }}</a>
+                    {% else %}
+                        <span class="graph-dead-end">&#9888; no victory_scene set</span>
+                    {% endif %}
+                </span>
+                {# Lose route #}
+                <span class="route-lose">
+                    &#9660; LOSE &rarr;
+                    {% if enemy.defeat_scene %}
+                        <a href="{% url 'admin:game_scene_change' enemy.defeat_scene.pk %}">{{ enemy.defeat_scene.key }}</a>
+                    {% else %}
+                        <span class="graph-dead-end">&#9888; no defeat_scene set</span>
+                    {% endif %}
+                </span>
+            </div>
+            {% endwith %}
+            {% endif %}
+
+            {# ── Choices ── #}
+            {% with choices=scene.choices.all %}
+            {% if choices %}
+            <div class="graph-choices">
+                {% for choice in choices %}
+                <div class="graph-choice">
+                    {# Label — truncated to 40 chars #}
+                    <span class="graph-choice-label" title="{{ choice.label }}">[{{ forloop.counter }}] &ldquo;{{ choice.label|truncatechars:40 }}&rdquo;</span>
+
+                    {% if choice.consume_item %}
+                        <span class="graph-consume">consumes: {{ choice.consume_item.name }}</span>
+                    {% endif %}
+
+                    {% if scene.requires_roll %}
+                        {# Roll scene: success + failure branches #}
+                        <span class="graph-arrow">&#10132;</span>
+                        <div class="graph-roll-routes">
+                            <span class="route-success">&#10003; success &rarr;
+                                {% if choice.success_scene %}
+                                    <span class="graph-target">
+                                        <a href="{% url 'admin:game_scene_change' choice.success_scene.pk %}">{{ choice.success_scene.key }}</a>
+                                    </span>
+                                {% else %}
+                                    <span class="graph-dead-end">&#9888; no success_scene set</span>
+                                {% endif %}
+                            </span>
+                            <span class="route-failure">&#10007; failure &rarr;
+                                {% if choice.failure_scene %}
+                                    <span class="graph-target">
+                                        <a href="{% url 'admin:game_scene_change' choice.failure_scene.pk %}">{{ choice.failure_scene.key }}</a>
+                                    </span>
+                                {% else %}
+                                    <span class="graph-dead-end">&#9888; no failure_scene set</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                    {% else %}
+                        {# Normal scene: single target #}
+                        <span class="graph-arrow">&#10132;</span>
+                        {% if choice.target_scene %}
+                            <span class="graph-target">
+                                <a href="{% url 'admin:game_scene_change' choice.target_scene.pk %}">{{ choice.target_scene.key }}</a>
+                            </span>
+                        {% else %}
+                            <span class="graph-dead-end">&#9888; no target_scene set</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% elif not scene.is_ending and not scene.combat_encounter %}
+            <p class="graph-empty">No choices defined.</p>
+            {% endif %}
+            {% endwith %}
+
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <p class="graph-no-scenes">No scenes found for this quest.</p>
+{% endif %}
+{% endblock %}

@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.db.models import Count
+from django.urls import path, reverse
+from django.utils.html import format_html
 from .models import (
     Arc, Quest, Item, Requirement, RequirementGroup, Scene, Choice,
     GameSession, PlayerStats, PlayerInventory, SceneItem, CompletedQuest,
@@ -58,7 +61,8 @@ class ArcAdmin(admin.ModelAdmin):
 class QuestAdmin(admin.ModelAdmin):
     list_display = (
         'key', 'title', 'arc', 'arc_order', 'is_unlocked',
-        'required_stat', 'required_minimum', 'required_quest', 'entrance_scene'
+        'required_stat', 'required_minimum', 'required_quest', 'entrance_scene',
+        'scene_count', 'view_graph_link',
     )
     list_filter = ('arc', 'is_unlocked')
     search_fields = ('key', 'title')
@@ -66,6 +70,58 @@ class QuestAdmin(admin.ModelAdmin):
     autocomplete_fields = ('required_quest', 'entrance_scene')
     inlines = [SceneInline]
     save_on_top = True
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate(
+            _scene_count=Count('scenes', distinct=True)
+        )
+
+    @admin.display(description='Scenes', ordering='_scene_count')
+    def scene_count(self, obj):
+        return obj._scene_count
+
+    @admin.display(description='Graph')
+    def view_graph_link(self, obj):
+        url = reverse('admin:quest_graph', args=[obj.pk])
+        return format_html('<a href="{}">View Graph →</a>', url)
+
+    def get_urls(self):
+        custom = [
+            path(
+                '<int:quest_id>/graph/',
+                self.admin_site.admin_view(self.graph_view),
+                name='quest_graph',
+            ),
+        ]
+        return custom + super().get_urls()
+
+    def graph_view(self, request, quest_id):
+        from django.shortcuts import get_object_or_404, render
+        quest = get_object_or_404(Quest, pk=quest_id)
+        scenes = (
+            Scene.objects
+            .filter(quest=quest)
+            .prefetch_related(
+                'choices',
+                'choices__target_scene',
+                'choices__success_scene',
+                'choices__failure_scene',
+                'choices__consume_item',
+                'scene_items__item',
+                'combat_encounter__enemy',
+                'combat_encounter__enemy__victory_scene',
+                'combat_encounter__enemy__defeat_scene',
+            )
+            .order_by('order')
+        )
+        context = {
+            **self.admin_site.each_context(request),
+            'quest': quest,
+            'scenes': scenes,
+            'title': f'Scene Graph — {quest.title}',
+            'opts': Quest._meta,
+        }
+        return render(request, 'admin/game/quest_graph.html', context)
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
