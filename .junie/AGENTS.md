@@ -6,6 +6,5 @@ This project is a Django text RPG. Before making changes, read the relevant doc(
 |------|-----------------|
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Always. System layers, data model, conventions, dev setup, testing. |
 | [GAME_DESIGN.md](GAME_DESIGN.md) | Writing game logic, stats, progression, combat, items, requirements. |
-| [CONTENT_GUIDE.md](CONTENT_GUIDE.md) | Writing scene text, choices, event log entries, items. |
 | [CURRENT_TASK.md](CURRENT_TASK.md) | Session continuity — what's in progress and why. |
 | [TECH_DEBT.md](TECH_DEBT.md) | Known shortcuts. Check before building on existing code. |

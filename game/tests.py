@@ -3,7 +3,7 @@ from django.urls import reverse
 from .models import Scene, GameSession, PlayerStats, Choice, Quest, CompletedQuest
 
 class GameNavigationTest(TestCase):
-    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_haunted_mine.json']
+    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_warehouse_job.json']
 
     def setUp(self):
         self.client = Client()
@@ -200,7 +200,7 @@ class RequirementEvaluationTest(TestCase):
         self.assertTrue(group_empty.evaluate(PlayerContext(stats_none, {}, {})))
 
 class CombatTest(TestCase):
-    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_haunted_mine.json', 'game/fixtures/quest_street_debt.json']
+    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_warehouse_job.json', 'game/fixtures/quest_street_debt.json']
 
     def setUp(self):
         self.client = Client()
@@ -260,7 +260,7 @@ class CombatTest(TestCase):
             self.assertTrue(CompletedQuest.objects.filter(session=self.session, quest__key='street_debt').exists())
 
 class LevelUpTest(TestCase):
-    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_haunted_mine.json']
+    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_warehouse_job.json']
 
     def setUp(self):
         self.client = Client()
@@ -297,7 +297,7 @@ class LevelUpTest(TestCase):
         self.assertEqual(response.status_code, 400)
 
 class UseItemTest(TestCase):
-    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_haunted_mine.json', 'game/fixtures/items.json']
+    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_warehouse_job.json', 'game/fixtures/items.json']
 
     def setUp(self):
         self.client = Client()
@@ -351,7 +351,7 @@ class UseItemTest(TestCase):
         self.assertEqual(response.status_code, 400)
 
 class NoticeBoardTest(TestCase):
-    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_haunted_mine.json']
+    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_warehouse_job.json']
 
     def setUp(self):
         self.client = Client()

@@ -3,9 +3,9 @@
     "model": "game.quest",
     "pk": 1,
     "fields": {
-      "key": "the_haunted_mine",
-      "title": "The Haunted Mine",
-      "description": "Investigate rumors of spirits haunting the local iron mine.",
+      "key": "the_warehouse_job",
+      "title": "The Warehouse Job",
+      "description": "A rival crew's been stashing stolen goods in a port warehouse. Someone wants to know what's inside — or wants it gone.",
       "is_unlocked": true,
       "arc": null,
       "arc_order": 0,
@@ -34,11 +34,11 @@
     "model": "game.scene",
     "pk": 4,
     "fields": {
-      "key": "mine__entrance",
+      "key": "warehouse__loading_dock",
       "quest": 1,
       "scene_type": "normal",
-      "title": "The Mine Entrance",
-      "body": "The yawning mouth of the iron mine lies before you, guarded by a pair of bored-looking sentries. You need to get inside, but they won't just let you stroll in.",
+      "title": "Loading Dock",
+      "body": "The warehouse sits dark at the end of Pier 9. Two of Deluca's guys lean against the loading dock, smoking. They're not expecting trouble. They're also not moving.",
       "order": 1,
       "requires_roll": false
     }
@@ -48,10 +48,10 @@
     "pk": 5,
     "fields": {
       "scene": 4,
-      "label": "Sneak past the guards",
+      "label": "Slip around back.",
       "order": 1,
       "target_scene": 7,
-      "arrival_flavor": "You slip silently past the sleeping guard and descend into the darkness.",
+      "arrival_flavor": "You move through the shadows and find an unlocked side door.",
       "requirements": [1]
     }
   },
@@ -60,7 +60,7 @@
     "pk": 6,
     "fields": {
       "scene": 4,
-      "label": "Fight through the guards",
+      "label": "Walk through them.",
       "order": 2,
       "target_scene": 5,
       "arrival_flavor": ""
@@ -71,21 +71,21 @@
     "pk": 7,
     "fields": {
       "scene": 4,
-      "label": "Bribe the guards",
+      "label": "Bribe them to look away.",
       "order": 3,
       "target_scene": 6,
-      "arrival_flavor": "You hand over a handful of coins, and the guards look the other way."
+      "arrival_flavor": "You peel off a few bills. They pocket the cash and find somewhere else to be."
     }
   },
   {
     "model": "game.scene",
     "pk": 5,
     "fields": {
-      "key": "mine__fight_gate",
+      "key": "warehouse__dock_fight",
       "quest": 1,
       "scene_type": "normal",
-      "title": "Fight the Guards",
-      "body": "You step forward, weapon drawn. The guards shout in alarm and move to intercept you!",
+      "title": "Dock Fight",
+      "body": "The first guy reaches for something in his jacket. You don't give him the chance.",
       "order": 2,
       "requires_roll": true,
       "roll_stat": "strength",
@@ -97,23 +97,23 @@
     "pk": 8,
     "fields": {
       "scene": 5,
-      "label": "Engage in combat",
+      "label": "Take them down.",
       "order": 1,
       "target_scene": 5,
       "success_scene": 7,
       "failure_scene": 8,
-      "arrival_flavor": "With a final blow, you drive the guards back and rush into the mine."
+      "arrival_flavor": "Both men are down. You step over them and into the warehouse."
     }
   },
   {
     "model": "game.scene",
     "pk": 6,
     "fields": {
-      "key": "mine__bribe_path",
+      "key": "warehouse__side_entrance",
       "quest": 1,
       "scene_type": "normal",
-      "title": "A Quiet Entry",
-      "body": "The guards count the coin and chuckle, stepping aside. 'Good luck in there,' one says with a smirk. 'You'll need it.' You walk down a long, well-lit side tunnel.",
+      "title": "Side Entrance",
+      "body": "The guards don't even count the money before stepping aside. One of them points you toward a service entrance on the far side of the dock. 'Stay out of the back office,' he says. You note that.",
       "order": 3,
       "requires_roll": false
     }
@@ -123,21 +123,21 @@
     "pk": 9,
     "fields": {
       "scene": 6,
-      "label": "Continue deep into the side tunnel",
+      "label": "Head through the service entrance.",
       "order": 1,
       "target_scene": 9,
-      "arrival_flavor": "The tunnel leads you to a peaceful grotto away from the hauntings."
+      "arrival_flavor": "The side corridor is quiet. Crates of cigarettes, mostly. Nothing worth dying over."
     }
   },
   {
     "model": "game.scene",
     "pk": 7,
     "fields": {
-      "key": "mine__interior",
+      "key": "warehouse__interior",
       "quest": 1,
       "scene_type": "normal",
-      "title": "Deep in the Mine",
-      "body": "The air here is cold and damp. Strange whispers echo off the walls. You find yourself at a fork in the tunnel. One path smells of ozone and magic, the other of old iron and dust.",
+      "title": "Inside the Warehouse",
+      "body": "Floor-to-ceiling shelving. The place is a maze. At the far end, two paths: one leads toward voices and the glow of a work lamp — someone's still here. The other leads toward rows of padlocked crates.",
       "order": 4,
       "requires_roll": false
     }
@@ -147,10 +147,10 @@
     "pk": 10,
     "fields": {
       "scene": 7,
-      "label": "Follow the scent of magic",
+      "label": "Move toward the voices.",
       "order": 1,
       "target_scene": 10,
-      "arrival_flavor": "You follow the shimmering light into a grand chamber."
+      "arrival_flavor": "You ease around the shelving and find a man alone, going through ledgers."
     }
   },
   {
@@ -158,21 +158,21 @@
     "pk": 11,
     "fields": {
       "scene": 7,
-      "label": "Follow the scent of iron",
+      "label": "Go for the crates.",
       "order": 2,
       "target_scene": 11,
-      "arrival_flavor": "You find the source of the haunting: a cursed iron idol."
+      "arrival_flavor": "The padlock is cheap. The contents are not."
     }
   },
   {
     "model": "game.scene",
     "pk": 8,
     "fields": {
-      "key": "mine__captured",
+      "key": "warehouse__taken",
       "quest": 1,
       "scene_type": "ending",
-      "title": "Defeated",
-      "body": "The guards are too strong. They overpower you and drag you to a makeshift cell. Your adventure ends here.",
+      "title": "Taken",
+      "body": "They're better than they looked. You wake up zip-tied to a chair in the back office. By the time someone cuts you loose, the warehouse is empty.",
       "order": 5,
       "requires_roll": false,
       "ending_type": "defeat"
@@ -183,21 +183,21 @@
     "pk": 12,
     "fields": {
       "scene": 8,
-      "label": "Return to town",
+      "label": "Head back to the corner.",
       "order": 1,
       "target_scene": 1,
-      "arrival_flavor": "You are eventually released and limp back to town."
+      "arrival_flavor": "You walk back across town, jaw sore, empty-handed."
     }
   },
   {
     "model": "game.scene",
     "pk": 9,
     "fields": {
-      "key": "mine__peaceful_ending",
+      "key": "warehouse__clean_exit",
       "quest": 1,
       "scene_type": "ending",
-      "title": "A Peaceful Grotto",
-      "body": "The side tunnel opens into a beautiful hidden cave, untouched by spirits. You spend some time in contemplation before heading back.",
+      "title": "Clean Exit",
+      "body": "Nothing incriminating. Nothing worth the risk. You document what you see and walk out the way you came. Sometimes the job is just reconnaissance.",
       "order": 6,
       "requires_roll": false,
       "ending_type": "neutral"
@@ -208,21 +208,21 @@
     "pk": 13,
     "fields": {
       "scene": 9,
-      "label": "Return to town",
+      "label": "Head back to the corner.",
       "order": 1,
       "target_scene": 1,
-      "arrival_flavor": "You take the long way back to the square."
+      "arrival_flavor": "You take the long way back, making sure no one's behind you."
     }
   },
   {
     "model": "game.scene",
     "pk": 10,
     "fields": {
-      "key": "mine__mystical_victory",
+      "key": "warehouse__accountant",
       "quest": 1,
       "scene_type": "ending",
-      "title": "Mystical Purge",
-      "body": "You find the source of the hauntings and use your knowledge to cleanse the area. The spirits are at peace.",
+      "title": "The Accountant",
+      "body": "The man with the ledgers turns out to be Deluca's bookkeeper. He's skimming. You now know things about Deluca's operation that Deluca doesn't know you know. That's worth more than anything in those crates.",
       "order": 7,
       "requires_roll": false,
       "ending_type": "victory"
@@ -233,21 +233,21 @@
     "pk": 14,
     "fields": {
       "scene": 10,
-      "label": "Return to town",
+      "label": "Head back to the corner.",
       "order": 1,
       "target_scene": 1,
-      "arrival_flavor": "The town feels brighter as you return."
+      "arrival_flavor": "You walk out into the night with leverage."
     }
   },
   {
     "model": "game.scene",
     "pk": 11,
     "fields": {
-      "key": "mine__martial_victory",
+      "key": "warehouse__the_score",
       "quest": 1,
       "scene_type": "ending",
-      "title": "Shattered Curse",
-      "body": "You smash the cursed iron idol into pieces. The malevolent energy dissipates instantly. The mine is safe once more.",
+      "title": "The Score",
+      "body": "Pharmacy-grade opioids. Twelve crates, all tagged for a hospital system that'll never see them. You make two calls. By morning, the crates are gone and you're owed a favor by the people who moved them.",
       "order": 8,
       "requires_roll": false,
       "ending_type": "victory"
@@ -258,10 +258,10 @@
     "pk": 15,
     "fields": {
       "scene": 11,
-      "label": "Return to town",
+      "label": "Head back to the corner.",
       "order": 1,
       "target_scene": 1,
-      "arrival_flavor": "You return a hero, iron dust still on your boots."
+      "arrival_flavor": "You leave the dock lighter than you expected and heavier where it counts."
     }
   }
 ]

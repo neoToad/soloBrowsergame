@@ -109,9 +109,9 @@ html, body {
     font-weight: bold;
 }
 
-.hp-value {
-    color: var(--danger);
-}
+.hp-healthy { color: var(--accent); }
+.hp-warning { color: var(--warning); }
+.hp-danger  { color: var(--danger); }
 
 /* SCENE PANEL */
 
@@ -759,9 +759,9 @@ details[open] > .drawer-summary::before {
         line-height: 1.2;
     }
 
-    .mob-stat--composure .mob-stat-value {
-        color: var(--danger);
-    }
+    .mob-stat-value.hp-healthy { color: var(--accent); }
+    .mob-stat-value.hp-warning { color: var(--warning); }
+    .mob-stat-value.hp-danger  { color: var(--danger); }
 
     .mob-stat--rank .mob-stat-value {
         color: var(--warning);

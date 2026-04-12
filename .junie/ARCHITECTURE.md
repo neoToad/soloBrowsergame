@@ -8,7 +8,7 @@
 ### Local Setup
 ```bash
 python manage.py migrate
-python manage.py loaddata game/fixtures/hub.json game/fixtures/quest_haunted_mine.json
+python manage.py loaddata game/fixtures/hub.json game/fixtures/quest_warehouse_job.json
 python manage.py collectstatic --noinput
 ```
 

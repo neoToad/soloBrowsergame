@@ -22,38 +22,6 @@ All stats default to 5. Modifier formula: `(stat - 10) // 2` (D&D-style, so 5 â†
 
 Passive item bonuses are applied on top via `get_effective_stats()` â€” effective values are used for all rolls and display, but mutations always go to the raw `PlayerStats`.
 
----
-
-## Progression
-
-### Levels and XP Thresholds
-
-| Level | Title            | XP Required |
-|-------|------------------|-------------|
-| 1     | Errand Boy       | 0           |
-| 2     | Corner Operator  | 200         |
-| 3     | Crew Member      | 600         |
-| 4     | Made Man         | 1300        |
-| 5     | Lieutenant       | 2400        |
-| 6     | Underboss        | 4000        |
-| 7     | Boss             | 6200        |
-
-Max level is **7**.
-
-### XP Awards (per quest ending type)
-
-| Ending type      | XP  |
-|------------------|-----|
-| `victory`        | 150 |
-| `neutral`        | 75  |
-| `defeat`         | 25  |
-| `combat_victory` | 50  |
-
-### Levelling Up
-- Each level gained awards **1 stat point**.
-- Player spends stat points via the level-up UI, selecting `muscle / reflexes / cunning / nerve`.
-- Each spend increments the chosen stat field by 1.
-- Multiple level-ups from a single XP award are handled automatically.
 
 ---
 
@@ -68,15 +36,6 @@ Max level is **7**.
 
 Ending scenes additionally have an `ending_type`: `victory`, `defeat`, or `neutral`.
 
----
-
-## Roll System
-
-- `requires_roll=True` on a Scene triggers a d20 roll when any choice is taken.
-- Roll: `d20 + stat_modifier(roll_stat)` vs `roll_difficulty` (DC).
-- `roll_stat` is the DB field name of the stat being tested (e.g. `strength`).
-- Result routes to `success_scene` or `failure_scene` on the Choice.
-- Non-roll choices always use `target_scene`.
 
 ---
 

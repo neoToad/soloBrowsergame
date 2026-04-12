@@ -13,7 +13,7 @@
 
     <div class="stat-row hp-row">
         <span class="stat-name">HP</span>
-        <span class="stat-value hp-value">{{ stats.hp }}/{{ stats.max_hp }}</span>
+        <span class="stat-value {{ stats.hp|hp_color_class:stats.max_hp }}">{{ stats.hp }}/{{ stats.max_hp }}</span>
     </div>
 
     <div class="stat-row">

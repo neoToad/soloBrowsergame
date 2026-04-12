@@ -118,7 +118,8 @@ def resolve_combat_end(session, stats, inventory, completed_map, next_scene, com
             EventLog.objects.create(session=session, text=LEVEL_UP_FLAVOR[new_level - 2])
 
     effective_stats = get_effective_stats(stats, inventory)
+    next_combat_state = get_or_create_combat_state(session, next_scene)
     return build_render_context(
         session, next_scene, stats, effective_stats, inventory, completed_map,
-        combat_state=None,
+        combat_state=next_combat_state,
     )

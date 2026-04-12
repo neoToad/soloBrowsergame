@@ -6,8 +6,8 @@
       "key": "hub__main_square",
       "quest": null,
       "scene_type": "hub",
-      "title": "Main Square",
-      "body": "You are in the bustling main square of the town. Merchants cry out their wares, and citizens hurry about their daily lives. A large notice board stands in the center, and the local tavern is just a short walk away.",
+      "title": "The Corner",
+      "body": "You're on your corner. A payphone that never rings. A bodega with bars on the windows. The city moves around you like you're not there. For now, that suits you fine.",
       "order": 1,
       "requires_roll": false,
       "roll_stat": "",
@@ -23,8 +23,8 @@
       "key": "hub__notice_board",
       "quest": null,
       "scene_type": "hub",
-      "title": "Notice Board",
-      "body": "The wooden notice board is covered in weathered parchments. Most are mundane requests for farm help or lost pets, but one catches your eye: a bounty for investigating the Haunted Mine.",
+      "title": "The Board",
+      "body": "A corkboard inside Sal's back room. Folded notes, burner numbers, job descriptions written in the kind of language that doesn't hold up in court. Someone's moving product. Someone needs muscle. Someone wants a problem to disappear.",
       "order": 2,
       "requires_roll": false,
       "roll_stat": "",
@@ -37,11 +37,11 @@
     "model": "game.scene",
     "pk": 3,
     "fields": {
-      "key": "hub__tavern",
+      "key": "hub__sals_bar",
       "quest": null,
       "scene_type": "hub",
-      "title": "The Rusty Tankard",
-      "body": "The air in the tavern is thick with the smell of roasted meat and spilled ale. A bard plays a lively tune in the corner, and the fire in the hearth provides a welcoming warmth.",
+      "title": "Sal's Bar",
+      "body": "The kind of bar that doesn't have a sign. Sal keeps the lights low, the bottles cheap, and his mouth shut. Half the city's criminal ecosystem runs through this place on any given night.",
       "order": 3,
       "requires_roll": false,
       "roll_stat": "",
@@ -55,10 +55,10 @@
     "pk": 1,
     "fields": {
       "scene": 1,
-      "label": "Check the notice board",
+      "label": "Check the job board.",
       "order": 1,
       "target_scene": 2,
-      "arrival_flavor": "You walk over to the central notice board."
+      "arrival_flavor": "You head into Sal's back room."
     }
   },
   {
@@ -66,10 +66,10 @@
     "pk": 2,
     "fields": {
       "scene": 1,
-      "label": "Go to the tavern",
+      "label": "Go to Sal's bar.",
       "order": 2,
       "target_scene": 3,
-      "arrival_flavor": "You push open the heavy oak doors of the tavern."
+      "arrival_flavor": "You push through the unmarked door."
     }
   },
   {
@@ -77,10 +77,10 @@
     "pk": 3,
     "fields": {
       "scene": 2,
-      "label": "Return to the main square",
+      "label": "Head back outside.",
       "order": 1,
       "target_scene": 1,
-      "arrival_flavor": "You step away from the notice board."
+      "arrival_flavor": "You step back out onto the street."
     }
   },
   {
@@ -88,10 +88,10 @@
     "pk": 4,
     "fields": {
       "scene": 3,
-      "label": "Return to the main square",
+      "label": "Head back outside.",
       "order": 1,
       "target_scene": 1,
-      "arrival_flavor": "You leave the warmth of the tavern and head back out into the square."
+      "arrival_flavor": "You leave Sal's and step back into the cold."
     }
   },
   {
@@ -99,10 +99,10 @@
     "pk": 16,
     "fields": {
       "scene": 2,
-      "label": "The Haunted Mine",
+      "label": "The Warehouse Job",
       "order": 2,
       "target_scene": 4,
-      "arrival_flavor": "You accept the quest and head towards the old iron mine."
+      "arrival_flavor": "You memorize the address and head across town."
     }
   }
 ]

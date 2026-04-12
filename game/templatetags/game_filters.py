@@ -5,6 +5,24 @@ register = template.Library()
 
 
 @register.filter
+def hp_color_class(current, maximum):
+    """
+    Returns a CSS class name based on HP percentage.
+    >60% → hp-healthy (green), 30–60% → hp-warning (yellow), ≤30% → hp-danger (red).
+    Usage: {{ stats.hp|hp_color_class:stats.max_hp }}
+    """
+    try:
+        pct = max(0, min(100, int(int(current) / int(maximum) * 100)))
+    except (ValueError, ZeroDivisionError, TypeError):
+        pct = 0
+    if pct > 60:
+        return 'hp-healthy'
+    elif pct > 30:
+        return 'hp-warning'
+    return 'hp-danger'
+
+
+@register.filter
 def hp_pct(current, maximum):
     """
     Returns HP as an integer percentage clamped 0–100.

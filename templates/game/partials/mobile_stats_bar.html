@@ -3,7 +3,7 @@
 
     <span class="mob-stat mob-stat--composure">
         <span class="mob-stat-label">COMPOSURE</span>
-        <span class="mob-stat-value">{{ stats.hp }}/{{ stats.max_hp }}</span>
+        <span class="mob-stat-value {{ stats.hp|hp_color_class:stats.max_hp }}">{{ stats.hp }}/{{ stats.max_hp }}</span>
     </span>
 
     <span class="mob-stat">
