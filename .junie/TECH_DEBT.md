@@ -1,12 +1,6 @@
 # Tech Debt
 
-## Roll logic lives in views.py, not a service
 
-`choice_resolve` in `views.py` (lines ~96–111) does the d20 roll, applies the modifier, formats the log string, and creates the `EventLog` entry inline. This should be a `services/scene.py` function like `resolve_roll(scene, choice, effective_stats)` that returns `(next_scene, log_text)`.
-
-**Impact**: Low risk now, but adds friction when adding roll-adjacent features (critical hits, advantage/disadvantage, contested rolls).
-
----
 
 ## `get_effective_stats` returns a SimpleNamespace
 

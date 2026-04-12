@@ -1,3 +1,26 @@
+from ..utils import roll_d20, stat_modifier
+
+def resolve_roll(scene, choice, effective_stats) -> tuple[object, str]:
+    """
+    Rolls d20 + stat modifier vs scene.roll_difficulty.
+    Returns (next_scene, log_text). Does NOT write to the DB.
+    """
+
+    stat_value = getattr(effective_stats, scene.roll_stat, 10)
+    modifier   = stat_modifier(stat_value)
+    roll       = roll_d20()
+    total      = roll + modifier
+    dc         = scene.roll_difficulty
+    success    = total >= dc
+
+    mod_str = f"+ {modifier}" if modifier >= 0 else f"- {abs(modifier)}"
+    res_str = "Success!" if success else "Failure."
+    log_text = f"You rolled a {roll} ({mod_str} modifier) = {total} vs DC {dc} — {res_str}"
+
+    next_scene = choice.success_scene if success else choice.failure_scene
+    return (next_scene, log_text)
+
+
 def get_available_choices(scene, effective_stats, inventory, completed_map):
     from ..models import PlayerContext
     ctx = PlayerContext(

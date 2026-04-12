@@ -246,7 +246,7 @@ class CombatTest(TestCase):
         
         # Make sure player can hit and kill. 
         from unittest.mock import patch
-        with patch('game.views.roll_d20', return_value=20):
+        with patch('game.services.combat.roll_d20', return_value=20):
             response = self.client.post(reverse('combat_attack'), HTTP_HX_REQUEST='true')
         
         self.assertEqual(response.status_code, 200)

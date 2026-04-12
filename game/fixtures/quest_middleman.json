@@ -1,0 +1,218 @@
+[
+  {
+    "model": "game.requirement",
+    "pk": 3,
+    "fields": {
+      "condition_type": "quest_completed",
+      "required_quest": 2,
+      "stat_name": "",
+      "stat_value": 0
+    }
+  },
+  {
+    "model": "game.requirementgroup",
+    "pk": 3,
+    "fields": {
+      "label": "Street Debt completed",
+      "logic": "all",
+      "requirements": [3]
+    }
+  },
+  {
+    "model": "game.quest",
+    "pk": 3,
+    "fields": {
+      "key": "the_middleman",
+      "title": "The Middleman",
+      "description": "A contact needs a case walked across town. Simple job. Ten percent. Until it isn't.",
+      "is_unlocked": true,
+      "arc": null,
+      "arc_order": 2,
+      "entrance_scene": 30,
+      "requirements": [3]
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 30,
+    "fields": {
+      "key": "mid__intro",
+      "quest": 3,
+      "scene_type": "normal",
+      "title": "The Case",
+      "body": "Russ finds you outside Sal's. He's holding a slim aluminum case and an unlit cigarette. Ten percent to walk something to a laundromat on Fifth. Hand it to a man in a gray jacket. Don't look inside.",
+      "order": 1,
+      "requires_roll": false,
+      "roll_stat": "",
+      "roll_difficulty": 10,
+      "ending_type": "",
+      "ambient_sound": ""
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 31,
+    "fields": {
+      "key": "mid__negotiations",
+      "quest": 3,
+      "scene_type": "normal",
+      "title": "Name Your Price",
+      "body": "Russ doesn't like it. He chews the unlit cigarette and does the math behind his eyes. You wait. He either agrees or you walk, and you both know it.",
+      "order": 2,
+      "requires_roll": true,
+      "roll_stat": "charisma",
+      "roll_difficulty": 12,
+      "ending_type": "",
+      "ambient_sound": ""
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 32,
+    "fields": {
+      "key": "mid__the_walk",
+      "quest": 3,
+      "scene_type": "normal",
+      "title": "Third Street Bridge",
+      "body": "Halfway across the bridge, you pick up a tail. Dark coat, measured pace. Could be nothing. The laundromat is two blocks further.",
+      "order": 3,
+      "requires_roll": true,
+      "roll_stat": "intellect",
+      "roll_difficulty": 11,
+      "ending_type": "",
+      "ambient_sound": ""
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 33,
+    "fields": {
+      "key": "mid__clean_handoff",
+      "quest": 3,
+      "scene_type": "ending",
+      "title": "Clean Exchange",
+      "body": "Eleven seconds. Gray jacket takes the case, hands you an envelope, walks. You don't watch him go. You count the bills two blocks later. Everything's there. Russ's cut is light. Yours isn't.",
+      "order": 4,
+      "requires_roll": false,
+      "roll_stat": "",
+      "roll_difficulty": 10,
+      "ending_type": "victory",
+      "ambient_sound": ""
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 34,
+    "fields": {
+      "key": "mid__burned",
+      "quest": 3,
+      "scene_type": "ending",
+      "title": "Made",
+      "body": "The tail is a vice detective with a long memory. You ditch the case in a trash can and spend an hour proving you were just walking. By the time you're clear, the buyer is gone. So is your cut.",
+      "order": 5,
+      "requires_roll": false,
+      "roll_stat": "",
+      "roll_difficulty": 10,
+      "ending_type": "defeat",
+      "ambient_sound": ""
+    }
+  },
+  {
+    "model": "game.scene",
+    "pk": 35,
+    "fields": {
+      "key": "mid__top_dollar",
+      "quest": 3,
+      "scene_type": "ending",
+      "title": "Eighteen Percent",
+      "body": "Russ paid eighteen percent without much argument. The walk was clean, the handoff was fast, and you're back at the corner in under two hours. Some jobs go the way they're supposed to.",
+      "order": 6,
+      "requires_roll": false,
+      "roll_stat": "",
+      "roll_difficulty": 10,
+      "ending_type": "victory",
+      "ambient_sound": ""
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 30,
+    "fields": {
+      "scene": 30,
+      "label": "Take the standard rate and move.",
+      "order": 1,
+      "target_scene": 32,
+      "arrival_flavor": "You take the case. It's light. Russ lights the cigarette at last."
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 31,
+    "fields": {
+      "scene": 30,
+      "label": "Push for a better cut.",
+      "order": 2,
+      "target_scene": 31,
+      "arrival_flavor": "Russ's jaw tightens. 'Ten percent is the rate.' You hold his eye."
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 32,
+    "fields": {
+      "scene": 31,
+      "label": "Hold your ground.",
+      "order": 1,
+      "target_scene": 32,
+      "success_scene": 35,
+      "failure_scene": 32,
+      "arrival_flavor": ""
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 33,
+    "fields": {
+      "scene": 32,
+      "label": "Break your pattern and lose him.",
+      "order": 1,
+      "target_scene": 33,
+      "success_scene": 33,
+      "failure_scene": 34,
+      "arrival_flavor": ""
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 34,
+    "fields": {
+      "scene": 33,
+      "label": "Head back to the corner.",
+      "order": 1,
+      "target_scene": 1,
+      "arrival_flavor": "You fold the envelope into your jacket and take the long route back."
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 35,
+    "fields": {
+      "scene": 34,
+      "label": "Walk it off.",
+      "order": 1,
+      "target_scene": 1,
+      "arrival_flavor": "You find a diner three blocks away and sit there until you feel clean."
+    }
+  },
+  {
+    "model": "game.choice",
+    "pk": 36,
+    "fields": {
+      "scene": 35,
+      "label": "Head back to the corner.",
+      "order": 1,
+      "target_scene": 1,
+      "arrival_flavor": "You leave Russ counting his cut and head back. Tonight was easy money."
+    }
+  }
+]

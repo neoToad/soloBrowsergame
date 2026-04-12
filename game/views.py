@@ -6,8 +6,8 @@ from .models import (
     CompletedQuest, CombatState, PlayerContext,
 )
 from .services.session     import load_session_context, create_session, get_completed_map, build_render_context
-from .services.scene       import get_available_choices, complete_scene, get_notice_board
-from .services.combat      import get_or_create_combat_state, get_active_combat_state, resolve_combat_end, resolve_player_attack, resolve_enemy_attack
+from .services.scene       import get_available_choices, complete_scene, get_notice_board, resolve_roll
+from .services.combat      import get_or_create_combat_state, get_active_combat_state, resolve_combat_end, resolve_player_attack as resolve_player_attack_util, resolve_enemy_attack as resolve_enemy_attack_util
 from .services.inventory   import get_player_inventory, award_scene_items, consume_item as consume_item_util
 from .services.progression import award_xp, maybe_complete_quest, XP_AWARDS, LEVEL_UP_FLAVOR
 from .utils import (
@@ -93,21 +93,8 @@ def choice_resolve(request, choice_id):
 
     # ROLL LOGIC — use effective_stats so passive bonuses apply
     if scene.requires_roll:
-        stat_value = getattr(effective_stats, scene.roll_stat, 10)
-        modifier   = stat_modifier(stat_value)
-        roll       = roll_d20()
-        total      = roll + modifier
-        dc         = scene.roll_difficulty
-        success    = total >= dc
-
-        mod_str = f"+ {modifier}" if modifier >= 0 else f"- {abs(modifier)}"
-        res_str = "Success!" if success else "Failure."
-        EventLog.objects.create(
-            session=session,
-            text=f"You rolled a {roll} ({mod_str} modifier) = {total} vs DC {dc} — {res_str}"
-        )
-
-        next_scene = choice.success_scene if success else choice.failure_scene
+        next_scene, roll_log = resolve_roll(scene, choice, effective_stats)
+        EventLog.objects.create(session=session, text=roll_log)
     else:
         next_scene = choice.target_scene
 
@@ -250,7 +237,7 @@ def combat_attack(request):
     enemy         = combat_state.enemy
 
     # ── PLAYER ATTACKS ──────────────────────────────────────────────
-    p_hit, p_dmg, p_roll, p_total = resolve_player_attack(effective_stats, enemy)
+    p_hit, p_dmg, p_roll, p_total = resolve_player_attack_util(effective_stats, enemy)
     str_mod = stat_modifier(effective_stats.strength)
     mod_str = f"+{str_mod}" if str_mod >= 0 else str(str_mod)
 
@@ -284,7 +271,7 @@ def combat_attack(request):
         return _htmx_response(request, context)
 
     # ── ENEMY ATTACKS BACK ───────────────────────────────────────────
-    e_hit, e_dmg, e_roll, e_total = resolve_enemy_attack(enemy, effective_stats)
+    e_hit, e_dmg, e_roll, e_total = resolve_enemy_attack_util(enemy, effective_stats)
     player_defense = 10 + stat_modifier(effective_stats.agility)
     e_mod_str = f"+{enemy.attack_modifier}" if enemy.attack_modifier >= 0 else str(enemy.attack_modifier)
 
