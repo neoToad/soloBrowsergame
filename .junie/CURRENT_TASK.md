@@ -1,7 +1,7 @@
 # Current Task
 
 ## What We're Building
-Implementing a **Property System** to add passive progression, resource management (cash, heat, rep), and risk-reward gameplay via rival contests triggered by high "Heat".
+Improving **backend authoring UX** — making it faster and less error-prone to add new scenes and quests via the Django admin and management commands.
 
 ## Status
 
@@ -16,9 +16,14 @@ Implementing a **Property System** to add passive progression, resource manageme
 - Added Property management to the Django admin.
 
 ### In Progress
-- Balancing heat-to-contest ratios (currently 1/200 chance per point of heat).
-- Testing rival claim resolution scenes (Victory vs. Defeat outcomes).
-- Ensuring UI feedback for newly unlocked resolution scenes is prominent enough.
+- **Admin polish** (`game/admin.py`):
+  - `prepopulated_fields` + fieldsets on `SceneAdmin`
+  - Expand `ChoiceInline` to include `success_scene`, `failure_scene`, `requires_roll`
+  - Fieldsets + routing description on `ChoiceAdmin`
+  - `RequirementGroupInline` on Scene and Choice (eliminates the 4-step requirements detour)
+- **Management commands**:
+  - `scaffold_quest <key> <title>` — creates stub quest with entrance + victory/defeat endings
+  - `export_quest <key>` — dumps a quest and all related objects to a loadable fixture
 
 ### Next
 - Implement property upgrade tiers (increasing income or reducing heat more effectively).
@@ -31,4 +36,5 @@ Implementing a **Property System** to add passive progression, resource manageme
 - **Heat as Risk**: Heat acts as a linear probability modifier for rival contests, creating a natural "push your luck" mechanic.
 - **Scene-Based Resolution**: Rival contests are resolved via standard game scenes/quests, reusing existing engine mechanics for "Victory" and "Defeat" endings.
 - **Native Dialogs**: Continued use of `<dialog>` for the new turn summary to maintain UI consistency with the inventory modal.
+- **Admin-first authoring**: Scene keys still need the `{quest_key}__{scene_slug}` prefix typed manually for now; `prepopulated_fields` fills the slug portion only. The convention is documented via help_text on the key field.
 

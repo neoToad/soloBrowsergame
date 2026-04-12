@@ -69,6 +69,10 @@ game/
     combat.py       — get_or_create_combat_state, resolve_player_attack, resolve_enemy_attack, resolve_combat_end
     progression.py  — award_xp, maybe_complete_quest; also defines XP_THRESHOLDS, XP_AWARDS, RANK_TITLES
 
+  management/commands/
+    scaffold_quest.py — creates a stub quest with entrance + victory/defeat ending scenes
+    export_quest.py   — dumps a quest and all related objects to a loadable fixture JSON
+
   views.py          — HTTP handlers only; delegates to services
   utils.py          — roll_d20, stat_modifier, get_effective_stats
   constants.py      — HUB_START_SCENE_KEY, NOTICE_BOARD_SCENE_KEY, STAT_FIELD_MAP, USE_ITEM_FLAVOR

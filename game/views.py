@@ -206,9 +206,6 @@ def start_quest(request, quest_key):
         return _htmx_response(request, context)
     return redirect('scene_detail', scene_key=next_scene.key)
 
-
-
-
 def combat_attack(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])

@@ -41,6 +41,10 @@ game/
     combat.py       — get_or_create_combat_state, resolve_player_attack, resolve_enemy_attack, resolve_combat_end
     progression.py  — award_xp, maybe_complete_quest; XP_THRESHOLDS, XP_AWARDS, RANK_TITLES
 
+  management/commands/
+    scaffold_quest.py — creates a stub quest with entrance + victory/defeat ending scenes
+    export_quest.py   — dumps a quest and all related objects to a loadable fixture JSON
+
   views.py          — HTTP handlers only
   utils.py          — roll_d20, stat_modifier, get_effective_stats
   constants.py      — HUB_START_SCENE_KEY, NOTICE_BOARD_SCENE_KEY, STAT_FIELD_MAP, USE_ITEM_FLAVOR
@@ -195,3 +199,8 @@ Noir. Terse. Dry. Second person, present tense. Matter-of-fact about violence. N
 - `get_notice_board()` re-fetches inventory even when it's already been loaded by `load_session_context`.
 - `CombatState` is a `OneToOneField` on session — only one active fight possible at a time.
 - `Item.equip_slot` is dead schema weight — no equip logic is implemented.
+- Scene key prefix (`{quest_key}__`) is convention-only — not validated; a wrong key silently breaks navigation.
+- `export_quest` falls back to PKs for models without `natural_key()` — fixtures may not load cleanly into a fresh DB.
+- `start_quest` and `choice_resolve` both call `award_scene_items` — award-on-enter logic is in two places.
+
+See `.junie/TECH_DEBT.md` for full details.
