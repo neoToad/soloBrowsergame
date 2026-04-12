@@ -257,6 +257,36 @@ html, body {
     gap: 6px;
 }
 
+/* PROPERTIES */
+
+.property-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 4px;
+}
+
+.property-name {
+    color: var(--text);
+    font-size: 12px;
+}
+
+.property-meta {
+    color: var(--accent);
+    font-size: 12px;
+}
+
+.property-contested .property-name {
+    color: var(--danger, #c0392b);
+}
+
+.property-contested-badge {
+    color: var(--danger, #c0392b);
+    font-weight: bold;
+    margin-left: 4px;
+}
+
 /* EVENT LOG */
 
 .log-entry {

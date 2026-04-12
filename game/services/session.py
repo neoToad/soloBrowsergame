@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from ..models import GameSession, PlayerStats, Scene, CompletedQuest
+from ..models.property import PlayerProperty
 from ..constants import HUB_START_SCENE_KEY
 from .inventory import get_player_inventory
 from ..utils import get_effective_stats
@@ -33,20 +34,23 @@ def create_session(request):
     return game_session
 
 
-def build_render_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state):
+def build_render_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state, turn_summary=None):
     from .scene import get_available_choices, get_notice_board
     from ..constants import NOTICE_BOARD_SCENE_KEY
     notice_board = None
     if scene.key == NOTICE_BOARD_SCENE_KEY:
         notice_board = get_notice_board(inventory, completed_map, effective_stats)
+    player_properties = PlayerProperty.objects.filter(session=session).select_related('property')
     return {
-        'scene':        scene,
-        'choices':      get_available_choices(scene, effective_stats, inventory, completed_map),
-        'stats':        stats,
-        'stat_bonuses': effective_stats.bonuses,
-        'inventory':    inventory,
-        'logs':         session.log.all()[:10],
-        'oob':          True,
-        'combat_state': combat_state,
-        'notice_board': notice_board,
+        'scene':             scene,
+        'choices':           get_available_choices(scene, effective_stats, inventory, completed_map),
+        'stats':             stats,
+        'stat_bonuses':      effective_stats.bonuses,
+        'inventory':         inventory,
+        'logs':              session.log.all()[:10],
+        'oob':               True,
+        'combat_state':      combat_state,
+        'notice_board':      notice_board,
+        'turn_summary':      turn_summary,
+        'player_properties': player_properties,
     }

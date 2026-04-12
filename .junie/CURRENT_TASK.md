@@ -1,32 +1,34 @@
 # Current Task
 
 ## What We're Building
-Improving the inventory system by adding an item detail modal using the HTML5 `<dialog>` element to provide clearer descriptions and usage feedback.
+Implementing a **Property System** to add passive progression, resource management (cash, heat, rep), and risk-reward gameplay via rival contests triggered by high "Heat".
 
 ## Status
 
 ### Done
 - Implemented an item detail modal using `<dialog>` in `templates/game/partials/inventory.html`.
-- Added CSS for `dialog.item-modal`, including styling for backdrop, headers, and footer in `static/css/game.css`.
-- Added a global click listener in `base.html` to close any open `<dialog>` when clicking the backdrop.
-- Integrated HTMX in the item modal 'USE' button to trigger item effects and close the modal on success.
-- Updated the inventory layout to use a vertical list of buttons (`item-list` and `item-name-btn`).
-- Expanded `game/fixtures/items.json` with clearer descriptions and property definitions (active effects, passive bonuses, and consumables).
+- Added CSS for `dialog.item-modal` in `static/css/game.css` and backdrop closing in `base.html`.
+- Verified item effects (healing, stat buffs) through the new UI.
+- Created `Property`, `PlayerProperty`, and `RivalClaim` models.
+- Implemented `property_service.py` to handle turn income, heat-based rival contest rolls, and contest resolution logic.
+- Integrated property turns into `choice_resolve` (triggered by quest completion).
+- Added `turn_summary.html` partial to display income and active threats after a quest.
+- Added Property management to the Django admin.
 
 ### In Progress
-- Verification of item effects (healing, stat buffs) through the new UI.
+- Balancing heat-to-contest ratios (currently 1/200 chance per point of heat).
+- Testing rival claim resolution scenes (Victory vs. Defeat outcomes).
+- Ensuring UI feedback for newly unlocked resolution scenes is prominent enough.
 
 ### Next
-- Add visual feedback for passive stat bonuses in the mobile stats bar.
-- Refine the 'USE' button state for non-usable items or items with requirements.
-- Tech Debt
-- Property System
-- Flag System
-- Cash / heat/ rep
-- more stories
+- Implement property upgrade tiers (increasing income or reducing heat more effectively).
+- Add "Passive" vs "Active" property management (e.g., paying a bribe to lower heat immediately).
+- Visual polish for the turn summary modal/panel.
+- Expand "street" content to include more contestable properties.
 
 ## Decisions Made This Session
-- Used native HTML5 `<dialog>` for modals instead of custom absolute-positioned `div`s to simplify backdrop handling and accessibility.
-- Implemented backdrop closing via a global event listener on `body` in `base.html` for a consistent UX.
-- Used HTMX's `hx-on::after-request` inside the modal to ensure the dialog closes only after a successful item usage request.
+- **Turn Trigger**: Property income and rival checks fire only on **Quest Completion** (not every scene) to prevent resource bloat and keep questing as the primary driver of time.
+- **Heat as Risk**: Heat acts as a linear probability modifier for rival contests, creating a natural "push your luck" mechanic.
+- **Scene-Based Resolution**: Rival contests are resolved via standard game scenes/quests, reusing existing engine mechanics for "Victory" and "Defeat" endings.
+- **Native Dialogs**: Continued use of `<dialog>` for the new turn summary to maintain UI consistency with the inventory modal.
 

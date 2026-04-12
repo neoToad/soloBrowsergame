@@ -5,7 +5,9 @@
         Thinking...
     </div>
 
-
+    {% if turn_summary and turn_summary.has_activity %}
+        {% include "game/partials/turn_summary.html" %}
+    {% endif %}
 
     {% if logs %}
     <div class="latest-event">{{ logs.0.text }}</div>

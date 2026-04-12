@@ -5,7 +5,8 @@ from django.utils.html import format_html
 from .models import (
     Arc, Quest, Item, Requirement, RequirementGroup, Scene, Choice,
     GameSession, PlayerStats, PlayerInventory, SceneItem, CompletedQuest,
-    Enemy, CombatEncounter, CombatState, EventLog, SceneUnlock, PlayerSceneState
+    Enemy, CombatEncounter, CombatState, EventLog, SceneUnlock, PlayerSceneState,
+    Property, PlayerProperty, RivalClaim
 )
 
 # 2. Custom actions
@@ -51,6 +52,11 @@ class PlayerInventoryInline(admin.TabularInline):
     extra = 0
     fields = ('item', 'quantity', 'acquired_at')
     readonly_fields = ('acquired_at',)
+
+class PlayerPropertyInline(admin.TabularInline):
+    model = PlayerProperty
+    extra = 0
+    fields = ('property', 'is_contested', 'upgrade_tier')
 
 # 4. Admin classes
 @admin.register(Arc)
@@ -191,7 +197,7 @@ class GameSessionAdmin(admin.ModelAdmin):
     list_display = ('session_key', 'current_scene', 'created_at')
     search_fields = ('session_key',)
     readonly_fields = ('session_key', 'created_at')
-    inlines = [PlayerStatsInline, PlayerInventoryInline]
+    inlines = [PlayerStatsInline, PlayerInventoryInline, PlayerPropertyInline]
 
 @admin.register(PlayerStats)
 class PlayerStatsAdmin(admin.ModelAdmin):
@@ -268,3 +274,20 @@ class PlayerSceneStateAdmin(admin.ModelAdmin):
     list_display = ('session', 'scene', 'state')
     list_filter = ('state',)
     list_select_related = True
+
+@admin.register(Property)
+class PropertyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'property_type', 'income_per_turn', 'heat_reduction', 'rep_bonus', 'is_contestable', 'resolution_scene')
+    list_filter = ('property_type', 'is_contestable')
+
+@admin.register(PlayerProperty)
+class PlayerPropertyAdmin(admin.ModelAdmin):
+    list_display = ('session', 'property', 'is_contested', 'upgrade_tier')
+    list_filter = ('is_contested',)
+    list_select_related = True
+
+@admin.register(RivalClaim)
+class RivalClaimAdmin(admin.ModelAdmin):
+    list_display = ('player_property', 'resolution_scene', 'created_at')
+    list_select_related = True
+    readonly_fields = ('created_at',)

@@ -61,16 +61,19 @@ def scene_detail(request, scene_key):
     if scene.key == NOTICE_BOARD_SCENE_KEY:
         notice_board = get_notice_board(inventory, completed_map, effective_stats)
 
+    from .models.property import PlayerProperty
+    player_properties = PlayerProperty.objects.filter(session=game_session).select_related('property')
     context = {
-        'session':      game_session,
-        'scene':        scene,
-        'stats':        stats,
-        'stat_bonuses': effective_stats.bonuses,
-        'inventory':    inventory,
-        'choices':      choices,
-        'logs':         logs,
-        'combat_state': combat_state,
-        'notice_board': notice_board,
+        'session':           game_session,
+        'scene':             scene,
+        'stats':             stats,
+        'stat_bonuses':      effective_stats.bonuses,
+        'inventory':         inventory,
+        'choices':           choices,
+        'logs':              logs,
+        'combat_state':      combat_state,
+        'notice_board':      notice_board,
+        'player_properties': player_properties,
     }
     return render(request, 'game/scene.html', context)
 
@@ -142,6 +145,36 @@ def choice_resolve(request, choice_id):
             text=f"You picked up: {item.name} x{qty}."
         )
 
+    # PROPERTY TURN (fires once per quest completion)
+    turn_summary = None
+    if quest_logs:
+        from .services.property_service import (
+            process_turn_income, check_rival_contests, resolve_contest, get_turn_summary
+        )
+        from .models.property import RivalClaim
+
+        # Resolve an active contest if this scene was its resolution
+        active_claim = RivalClaim.objects.filter(
+            player_property__session=session,
+            resolution_scene=next_scene,
+        ).first()
+        if active_claim:
+            contest_log = resolve_contest(session, active_claim, next_scene.ending_type)
+            EventLog.objects.create(session=session, text=contest_log)
+
+        # Apply passive property income
+        income_logs, income_totals = process_turn_income(session)
+        for log in income_logs:
+            EventLog.objects.create(session=session, text=log)
+
+        # Roll for new rival contests
+        contest_warning, unlocked_scene = check_rival_contests(session)
+        newly_unlocked_scenes = [unlocked_scene] if unlocked_scene else []
+        if contest_warning:
+            EventLog.objects.create(session=session, text=contest_warning)
+
+        turn_summary = get_turn_summary(session, income_totals, newly_unlocked_scenes)
+
     combat_state    = get_or_create_combat_state(session, next_scene)
     effective_stats = get_effective_stats(stats, inventory)   # recompute after item changes
 
@@ -150,6 +183,7 @@ def choice_resolve(request, choice_id):
         context = build_render_context(
             session, next_scene, stats, effective_stats, inventory, completed_map,
             combat_state=combat_state,
+            turn_summary=turn_summary,
         )
         return _htmx_response(request, context)
 

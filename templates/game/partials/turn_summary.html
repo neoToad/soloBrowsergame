@@ -1,0 +1,37 @@
+<div class="turn-summary">
+    {% if turn_summary.income_totals.cash or turn_summary.income_totals.heat or turn_summary.income_totals.rep %}
+    <div class="turn-summary__income">
+        <strong>End of turn</strong>
+        {% if turn_summary.income_totals.cash %}
+            <span>Cash: +${{ turn_summary.income_totals.cash }}</span>
+        {% endif %}
+        {% if turn_summary.income_totals.heat %}
+            <span>Heat: {{ turn_summary.income_totals.heat }}</span>
+        {% endif %}
+        {% if turn_summary.income_totals.rep %}
+            <span>Rep: +{{ turn_summary.income_totals.rep }}</span>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if turn_summary.active_claims %}
+    <div class="turn-summary__threats">
+        {% for claim in turn_summary.active_claims %}
+            <p class="turn-summary__threat-warning">
+                Rival contest: <strong>{{ claim.player_property.property.name }}</strong>
+                {% if claim.resolution_scene %}
+                    — resolve it at {{ claim.resolution_scene.title }}
+                {% endif %}
+            </p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if turn_summary.newly_unlocked %}
+    <div class="turn-summary__unlocked">
+        {% for scene in turn_summary.newly_unlocked %}
+            <p>New job available: {{ scene.title }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>

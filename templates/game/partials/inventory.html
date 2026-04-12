@@ -57,4 +57,19 @@
     {% else %}
         <p class="item-empty">Nothing on you.</p>
     {% endif %}
+
+    {% if player_properties %}
+        <p class="panel-label" style="margin-top: 14px;">[ Properties ]</p>
+        <div class="item-list">
+            {% for pp in player_properties %}
+                <div class="property-row{% if pp.is_contested %} property-contested{% endif %}">
+                    <span class="property-name">{{ pp.property.name }}</span>
+                    <span class="property-meta">
+                        {% if pp.property.income_per_turn %}+${{ pp.property.income_per_turn }}{% endif %}
+                        {% if pp.is_contested %}<span class="property-contested-badge">!</span>{% endif %}
+                    </span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
