@@ -251,6 +251,12 @@ html, body {
     font-style: italic;
 }
 
+.item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
 /* EVENT LOG */
 
 .log-entry {
@@ -489,6 +495,97 @@ html, body {
 .item-use-btn.htmx-request {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+/* ITEM MODAL */
+
+dialog.item-modal {
+    background: var(--panel-bg);
+    border: 1px solid var(--accent);
+    color: var(--text);
+    font-family: 'Courier New', monospace;
+    padding: 20px;
+    width: 90vw;
+    max-width: 340px;
+    outline: none;
+    border-radius: 0;
+}
+
+dialog.item-modal::backdrop {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(2px);
+}
+
+.item-modal-header {
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.item-modal-description {
+    color: var(--text-dim);
+    font-size: 12px;
+    margin: 0 0 12px 0;
+}
+
+.item-modal-effect {
+    color: var(--warning);
+    font-size: 12px;
+    margin: 4px 0;
+}
+
+.item-modal-passive {
+    color: var(--accent);
+    font-size: 12px;
+    margin: 4px 0;
+}
+
+.item-modal-consumable {
+    color: var(--text-dim);
+    font-style: italic;
+    font-size: 11px;
+    margin: 4px 0;
+}
+
+.item-modal-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+}
+
+.item-close-btn {
+    background: transparent;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    font-family: inherit;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.1s, color 0.1s;
+}
+
+.item-close-btn:hover {
+    background: var(--border);
+    color: var(--text);
+}
+
+.item-name-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 12px;
+    font-family: inherit;
+    text-align: left;
+}
+
+.item-name-btn:hover {
+    color: var(--accent);
 }
 
 /* PASSIVE BONUS INDICATOR (stats bar) */

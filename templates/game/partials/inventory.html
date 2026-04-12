@@ -1,25 +1,59 @@
 <div id="inventory-panel" {% if oob %}hx-swap-oob="true"{% endif %}>
     <p class="panel-label">[ STASH ]</p>
     {% if inventory %}
-        {% for item_id, pi in inventory.items %}
-            <div class="item-row">
-                <span class="item-name">{{ pi.item.name }}</span>
-                <div class="item-actions">
-                    {% if pi.quantity > 1 %}
-                        <span class="item-qty">x{{ pi.quantity }}</span>
-                    {% endif %}
+        <div class="item-list">
+            {% for item_id, pi in inventory.items %}
+                <div class="item-row">
+                    <button class="item-name-btn" onclick="document.getElementById('item-modal-{{ pi.item.id }}').showModal()">
+                        {{ pi.item.name }}
+                    </button>
+                    <div class="item-actions">
+                        {% if pi.quantity > 1 %}
+                            <span class="item-qty">x{{ pi.quantity }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <dialog id="item-modal-{{ pi.item.id }}" class="item-modal">
+                    <div class="item-modal-header">{{ pi.item.name }}</div>
+                    <p class="item-modal-description">{{ pi.item.description }}</p>
+
+                {% if pi.item.effect_type %}
+                    <p class="item-modal-effect">
+                        {% if pi.item.effect_type == 'heal_hp' %}
+                            USE: Restore {{ pi.item.effect_value }} HP
+                        {% elif pi.item.effect_type == 'add_stat' %}
+                            USE: +{{ pi.item.effect_value }} {{ pi.item.effect_stat|upper }}
+                        {% endif %}
+                    </p>
+                {% endif %}
+
+                {% if pi.item.passive_stat %}
+                    <p class="item-modal-passive">
+                        PASSIVE: +{{ pi.item.passive_value }} {{ pi.item.passive_stat|upper }}
+                    </p>
+                {% endif %}
+
+                {% if pi.item.is_consumable %}
+                    <p class="item-modal-consumable">— consumed on use</p>
+                {% endif %}
+
+                <div class="item-modal-footer">
                     {% if pi.item.effect_type %}
                         <button class="item-use-btn"
                             hx-post="{% url 'use_item' pi.item.id %}"
                             hx-target="#scene-panel"
                             hx-swap="innerHTML"
-                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                            hx-on::after-request="this.closest('dialog').close()">
                             USE
                         </button>
                     {% endif %}
+                    <button class="item-close-btn" onclick="this.closest('dialog').close()">CLOSE</button>
                 </div>
-            </div>
+            </dialog>
         {% endfor %}
+        </div>
     {% else %}
         <p class="item-empty">Nothing on you.</p>
     {% endif %}
