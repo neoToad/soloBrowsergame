@@ -265,6 +265,15 @@ html, body {
     color: var(--warning);
 }
 
+.latest-event {
+    color: var(--warning);
+    font-size: 17px;
+    font-style: italic;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+    animation: log-slide-in 0.25s ease forwards;
+}
+
 /* SCROLLBARS */
 
 #stats-bar, #scene-panel, #event-log, #inventory-panel {
@@ -844,7 +853,8 @@ details[open] > .drawer-summary::before {
 /* 1h. prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
     #scene-panel          { transition: none; }
-    .log-entry--recent    { animation: none; }
+    .log-entry--recent,
+    .latest-event         { animation: none; }
     .stat-value.stat-updated { animation: none; }
     .bar-val.damage-flash { animation: none; }
     .choices button,

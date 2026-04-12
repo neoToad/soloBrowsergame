@@ -5,8 +5,16 @@
         Thinking...
     </div>
 
+
+
+    {% if logs %}
+    <div class="latest-event">{{ logs.0.text }}</div>
+    {% endif %}
+
     <h2>{{ scene.title }}</h2>
     <p>{{ scene.body }}</p>
+
+
 
     {% if notice_board %}
         {% include "game/partials/notice_board.html" %}
