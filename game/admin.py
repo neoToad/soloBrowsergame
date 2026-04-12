@@ -5,7 +5,7 @@ from django.utils.html import format_html
 from .models import (
     Arc, Quest, Item, Requirement, RequirementGroup, Scene, Choice,
     GameSession, PlayerStats, PlayerInventory, SceneItem, CompletedQuest,
-    Enemy, CombatEncounter, CombatState, EventLog
+    Enemy, CombatEncounter, CombatState, EventLog, SceneUnlock, PlayerSceneState
 )
 
 # 2. Custom actions
@@ -253,3 +253,17 @@ class EventLogAdmin(admin.ModelAdmin):
     readonly_fields = ('session', 'timestamp')
     date_hierarchy = 'timestamp'
     ordering = ('-timestamp',)
+
+
+@admin.register(SceneUnlock)
+class SceneUnlockAdmin(admin.ModelAdmin):
+    list_display = ('from_scene', 'unlocks_scene', 'requires_choice', 'requires_item')
+    list_select_related = True
+    autocomplete_fields = ('from_scene', 'unlocks_scene', 'requires_choice', 'requires_item')
+
+
+@admin.register(PlayerSceneState)
+class PlayerSceneStateAdmin(admin.ModelAdmin):
+    list_display = ('session', 'scene', 'state')
+    list_filter = ('state',)
+    list_select_related = True

@@ -6,7 +6,7 @@ from .models import (
     CompletedQuest, CombatState, PlayerContext,
 )
 from .services.session     import load_session_context, create_session, get_completed_map, build_render_context
-from .services.scene       import get_available_choices
+from .services.scene       import get_available_choices, complete_scene
 from .services.combat      import get_or_create_combat_state, get_active_combat_state, resolve_combat_end, resolve_player_attack, resolve_enemy_attack
 from .services.inventory   import get_player_inventory, award_scene_items, consume_item as consume_item_util
 from .services.progression import award_xp, maybe_complete_quest, XP_AWARDS, LEVEL_UP_FLAVOR
@@ -124,6 +124,11 @@ def choice_resolve(request, choice_id):
     # ADVANCE SESSION
     session.current_scene = next_scene
     session.save()
+
+    # SCENE UNLOCK
+    unlock_logs = complete_scene(session, scene, choice, inventory)
+    for log_text in unlock_logs:
+        EventLog.objects.create(session=session, text=log_text)
 
     # QUEST COMPLETION
     quest_logs = maybe_complete_quest(session, stats, next_scene, completed_map)

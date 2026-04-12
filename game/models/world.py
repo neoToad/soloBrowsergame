@@ -202,17 +202,47 @@ class Choice(models.Model):
 
 class SceneItem(models.Model):
     scene      = models.ForeignKey(
-                     Scene,
-                     related_name='scene_items',
-                     on_delete=models.CASCADE
-                 )
+        Scene,
+        related_name='scene_items',
+        on_delete=models.CASCADE
+    )
     item       = models.ForeignKey(
-                     Item,
-                     related_name='found_in',
-                     on_delete=models.CASCADE
-                 )
+        Item,
+        related_name='found_in',
+        on_delete=models.CASCADE
+    )
     quantity   = models.IntegerField(default=1)
     award_once = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.item.name} x{self.quantity} in {self.scene.key}"
+
+
+class SceneUnlock(models.Model):
+    from_scene = models.ForeignKey(
+        Scene,
+        related_name='unlocks',
+        on_delete=models.CASCADE
+    )
+    unlocks_scene = models.ForeignKey(
+        Scene,
+        related_name='unlocked_by',
+        on_delete=models.CASCADE
+    )
+    requires_choice = models.ForeignKey(
+        'Choice',
+        null=True,
+        blank=True,
+        related_name='triggers_unlocks',
+        on_delete=models.SET_NULL
+    )
+    requires_item = models.ForeignKey(
+        Item,
+        null=True,
+        blank=True,
+        related_name='+',
+        on_delete=models.SET_NULL
+    )
+
+    def __str__(self):
+        return f"{self.from_scene} -> {self.unlocks_scene}"

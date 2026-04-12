@@ -72,3 +72,32 @@ class CompletedQuest(models.Model):
 
     def __str__(self):
         return f"{self.session} — {self.quest.title} ({self.ending_type})"
+
+
+class PlayerSceneState(models.Model):
+    session = models.ForeignKey(
+        GameSession,
+        related_name='scene_states',
+        on_delete=models.CASCADE
+    )
+    scene = models.ForeignKey(
+        Scene,
+        related_name='player_states',
+        on_delete=models.CASCADE
+    )
+    STATE_CHOICES = [
+        ('locked', 'Locked'),
+        ('available', 'Available'),
+        ('completed', 'Completed'),
+    ]
+    state = models.CharField(
+        max_length=20,
+        choices=STATE_CHOICES,
+        default='available'
+    )
+
+    class Meta:
+        unique_together = ('session', 'scene')
+
+    def __str__(self):
+        return f"{self.session} — {self.scene.title} ({self.state})"
