@@ -22,7 +22,8 @@ Improving the inventory system by adding an item detail modal using the HTML5 `<
 - Tech Debt
 - Property System
 - Flag System
-- 
+- Cash / heat/ rep
+- more stories
 
 ## Decisions Made This Session
 - Used native HTML5 `<dialog>` for modals instead of custom absolute-positioned `div`s to simplify backdrop handling and accessibility.

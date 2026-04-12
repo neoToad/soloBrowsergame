@@ -33,7 +33,7 @@ def create_session(request):
     return game_session
 
 
-def build_render_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state, notice_board=None):
+def build_render_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state):
     from .scene import get_available_choices
     return {
         'scene':        scene,
@@ -44,5 +44,4 @@ def build_render_context(session, scene, stats, effective_stats, inventory, comp
         'logs':         session.log.all()[:10],
         'oob':          True,
         'combat_state': combat_state,
-        'notice_board': notice_board,
     }

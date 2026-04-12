@@ -60,11 +60,11 @@ class ArcAdmin(admin.ModelAdmin):
 @admin.register(Quest)
 class QuestAdmin(admin.ModelAdmin):
     list_display = (
-        'key', 'title', 'arc', 'arc_order', 'is_unlocked',
+        'key', 'title', 'arc', 'arc_order', 'is_unlocked', 'is_repeatable',
         'entrance_scene',
         'scene_count', 'view_graph_link',
     )
-    list_filter = ('arc', 'is_unlocked')
+    list_filter = ('arc', 'is_unlocked', 'is_repeatable')
     search_fields = ('key', 'title')
     list_select_related = True
     autocomplete_fields = ('entrance_scene',)
@@ -177,11 +177,11 @@ class SceneAdmin(admin.ModelAdmin):
 
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ('scene', 'label', 'target_scene', 'consume_item', 'order')
+    list_display = ('scene', 'label', 'quest', 'target_scene', 'consume_item', 'order')
     list_filter = ('scene__quest',)
     search_fields = ('label', 'scene__key')
     list_select_related = True
-    autocomplete_fields = ('target_scene', 'success_scene', 'failure_scene', 'consume_item')
+    autocomplete_fields = ('target_scene', 'success_scene', 'failure_scene', 'consume_item', 'quest')
     filter_horizontal = ('requirements',)
     save_on_top = True
 

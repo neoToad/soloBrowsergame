@@ -16,10 +16,6 @@
 
 
 
-    {% if notice_board %}
-        {% include "game/partials/notice_board.html" %}
-    {% endif %}
-
     {% if stats.stat_points > 0 and not combat_state %}
         {% include "game/partials/level_up_panel.html" %}
     {% endif %}
@@ -39,7 +35,7 @@
                     {{ choice.label }}
                 </button>
             {% empty %}
-                {% if not scene.is_ending and not notice_board %}
+                {% if not scene.is_ending %}
                     <p><em>No choices available.</em></p>
                 {% endif %}
             {% endfor %}

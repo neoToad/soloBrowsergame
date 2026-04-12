@@ -40,6 +40,11 @@ class Quest(models.Model):
                        related_name='gated_quests'
                    )
 
+    is_repeatable = models.BooleanField(
+        default=False,
+        help_text="If True, this quest's entry choice re-appears after completion."
+    )
+
     class Meta:
         ordering = ['arc_order']
 
@@ -161,6 +166,17 @@ class Choice(models.Model):
                        blank=True,
                        related_name='gated_choices'
                    )
+
+    # If set, this choice starts the linked quest; hidden once quest is completed
+    # (unless Quest.is_repeatable is True)
+    quest = models.ForeignKey(
+                'Quest',
+                null=True, blank=True,
+                on_delete=models.SET_NULL,
+                related_name='entry_choices',
+                help_text="If set, this choice starts the linked quest and is hidden "
+                          "once the quest is completed (unless the quest is repeatable)."
+            )
 
     class Meta:
         ordering = ['order']

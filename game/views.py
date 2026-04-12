@@ -3,10 +3,10 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
 from .models import (
     GameSession, PlayerStats, Scene, Choice, EventLog,
-    CompletedQuest, Quest, CombatState, PlayerContext,
+    CompletedQuest, CombatState, PlayerContext,
 )
 from .services.session     import load_session_context, create_session, get_completed_map, build_render_context
-from .services.scene       import get_available_choices, get_notice_board_for_scene, get_notice_board
+from .services.scene       import get_available_choices
 from .services.combat      import get_or_create_combat_state, get_active_combat_state, resolve_combat_end, resolve_player_attack, resolve_enemy_attack
 from .services.inventory   import get_player_inventory, award_scene_items, consume_item as consume_item_util
 from .services.progression import award_xp, maybe_complete_quest, XP_AWARDS, LEVEL_UP_FLAVOR
@@ -15,7 +15,7 @@ from .utils import (
     get_effective_stats,
 )
 from .constants import (
-    HUB_START_SCENE_KEY, NOTICE_BOARD_SCENE_KEY,
+    HUB_START_SCENE_KEY,
     STAT_FIELD_MAP, USE_ITEM_FLAVOR,
 )
 
@@ -60,8 +60,6 @@ def scene_detail(request, scene_key):
     scene        = get_object_or_404(Scene, key=scene_key)
     combat_state = get_or_create_combat_state(game_session, scene)
 
-    notice_board = get_notice_board_for_scene(game_session, stats, scene)
-
     choices = get_available_choices(scene, effective_stats, inventory, completed_map)
     logs    = game_session.log.all()[:10]
 
@@ -73,7 +71,6 @@ def scene_detail(request, scene_key):
         'inventory':    inventory,
         'choices':      choices,
         'logs':         logs,
-        'notice_board': notice_board,
         'combat_state': combat_state,
     }
     return render(request, 'game/scene.html', context)
@@ -146,60 +143,9 @@ def choice_resolve(request, choice_id):
 
     is_htmx = request.headers.get('HX-Request') == 'true'
     if is_htmx:
-        notice_board = get_notice_board_for_scene(session, stats, next_scene)
-
         context = build_render_context(
             session, next_scene, stats, effective_stats, inventory, completed_map,
-            combat_state=combat_state, notice_board=notice_board
-        )
-        return _htmx_response(request, context)
-
-    return redirect('scene_detail', scene_key=next_scene.key)
-
-def start_quest(request, quest_key):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-
-    session_pk = request.session.get('game_session_id')
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
-    quest = get_object_or_404(Quest, key=quest_key)
-
-    # Check availability
-    board = get_notice_board(session, stats)
-    quest_entry = next((e for e in board if e['quest'].key == quest_key), None)
-
-    if not quest_entry or quest_entry['status'] == 'locked':
-        return HttpResponse("Quest is locked", status=403)
-
-    next_scene = quest.entrance_scene
-    if not next_scene:
-        return HttpResponse("Quest has no entrance scene", status=500)
-
-    # Log acceptance
-    EventLog.objects.create(session=session, text=f"You accepted the quest: {quest.title}")
-
-    # Advance session
-    session.current_scene = next_scene
-    session.save()
-
-    is_htmx = request.headers.get('HX-Request') == 'true'
-    if is_htmx:
-        awarded = award_scene_items(session, next_scene, inventory)
-        for item, qty in awarded:
-            EventLog.objects.create(
-                session=session,
-                text=f"You picked up: {item.name} x{qty}."
-            )
-
-        combat_state    = get_or_create_combat_state(session, next_scene)
-        effective_stats = get_effective_stats(stats, inventory)
-
-        context = build_render_context(
-            session, next_scene, stats, effective_stats, inventory, completed_map,
-            combat_state=combat_state
+            combat_state=combat_state,
         )
         return _htmx_response(request, context)
 
@@ -340,11 +286,9 @@ def level_up(request):
     # Preserve active combat state if one exists
     combat_state = get_active_combat_state(session)
 
-    notice_board = get_notice_board_for_scene(session, stats, scene)
-
     context = build_render_context(
         session, scene, stats, effective_stats, inventory, completed_map,
-        combat_state=combat_state, notice_board=notice_board
+        combat_state=combat_state,
     )
 
     return _htmx_response(request, context)
@@ -400,10 +344,8 @@ def use_item(request, item_id):
 
     combat_state = get_active_combat_state(session)
 
-    notice_board = get_notice_board_for_scene(session, stats, scene)
-
     context = build_render_context(
         session, scene, stats, effective_stats, inventory, completed_map,
-        combat_state=combat_state, notice_board=notice_board
+        combat_state=combat_state,
     )
     return _htmx_response(request, context)
