@@ -16,12 +16,52 @@ def close_combat_states(modeladmin, request, queryset):
     modeladmin.message_user(request, f'{updated} combat state(s) closed.')
 
 # 3. Inline classes
+class RequirementInline(admin.TabularInline):
+    model = RequirementGroup.requirements.through
+    extra = 1
+    fields = ('requirement', 'condition_type', 'stat_name', 'stat_value', 'required_item', 'required_quest')
+    readonly_fields = ('condition_type', 'stat_name', 'stat_value', 'required_item', 'required_quest')
+
+    @admin.display(description='Type')
+    def condition_type(self, obj):
+        return obj.requirement.get_condition_type_display() if obj.requirement else ""
+
+    @admin.display(description='Stat Name')
+    def stat_name(self, obj):
+        return obj.requirement.stat_name if obj.requirement else ""
+
+    @admin.display(description='Value')
+    def stat_value(self, obj):
+        return obj.requirement.stat_value if obj.requirement else ""
+
+    @admin.display(description='Item')
+    def required_item(self, obj):
+        return obj.requirement.required_item if obj.requirement else ""
+
+    @admin.display(description='Quest')
+    def required_quest(self, obj):
+        return obj.requirement.required_quest if obj.requirement else ""
+
+class SceneRequirementGroupInline(admin.StackedInline):
+    model = Scene.requirements.through
+    extra = 0
+    verbose_name = 'Requirement Group'
+    verbose_name_plural = 'Requirement Groups'
+    show_change_link = True
+
+class ChoiceRequirementGroupInline(admin.StackedInline):
+    model = Choice.requirements.through
+    extra = 0
+    verbose_name = 'Requirement Group'
+    verbose_name_plural = 'Requirement Groups'
+    show_change_link = True
+
 class ChoiceInline(admin.TabularInline):
     model = Choice
     fk_name = 'scene'
     extra = 1
-    fields = ('label', 'order', 'target_scene', 'consume_item')
-    autocomplete_fields = ('target_scene', 'consume_item')
+    fields = ('label', 'order', 'target_scene', 'success_scene', 'failure_scene', 'consume_item')
+    autocomplete_fields = ('target_scene', 'success_scene', 'failure_scene', 'consume_item')
     show_change_link = True
 
 class SceneItemInline(admin.TabularInline):
@@ -170,17 +210,40 @@ class RequirementAdmin(admin.ModelAdmin):
 class RequirementGroupAdmin(admin.ModelAdmin):
     list_display = ('label', 'logic')
     search_fields = ('label',)
-    filter_horizontal = ('requirements',)
+    inlines = [RequirementInline]
 
 @admin.register(Scene)
 class SceneAdmin(admin.ModelAdmin):
-    list_display = ('key', 'title', 'quest', 'scene_type', 'requires_roll', 'order')
+    list_display = ('key', 'title', 'quest', 'body_preview', 'scene_type', 'requires_roll', 'order')
     list_filter = ('quest', 'scene_type', 'requires_roll', 'ending_type')
     search_fields = ('key', 'title', 'body')
     list_select_related = True
-    filter_horizontal = ('requirements',)
-    inlines = [ChoiceInline, SceneItemInline, CombatEncounterInline]
+    prepopulated_fields = {'key': ('title',)}
+    readonly_fields = ('key_format_note',)
+    fieldsets = (
+        ('Identity', {
+            'fields': ('key', 'key_format_note', 'title', 'quest', 'order')
+        }),
+        ('Narrative', {
+            'fields': ('body',)
+        }),
+        ('Type', {
+            'fields': ('scene_type', 'ending_type')
+        }),
+        ('Roll Settings', {
+            'fields': ('requires_roll', 'roll_difficulty', 'roll_stat')
+        }),
+    )
+    inlines = [ChoiceInline, SceneItemInline, CombatEncounterInline, SceneRequirementGroupInline]
     save_on_top = True
+
+    @admin.display(description='Body Preview')
+    def body_preview(self, obj):
+        return (obj.body[:77] + '...') if len(obj.body) > 80 else obj.body
+
+    @admin.display(description='Key Format')
+    def key_format_note(self, obj):
+        return "{quest_key}__{scene_slug}"
 
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
@@ -189,7 +252,16 @@ class ChoiceAdmin(admin.ModelAdmin):
     search_fields = ('label', 'scene__key')
     list_select_related = True
     autocomplete_fields = ('target_scene', 'success_scene', 'failure_scene', 'consume_item', 'quest')
-    filter_horizontal = ('requirements',)
+    fieldsets = (
+        ('Basic', {
+            'fields': ('scene', 'label', 'order', 'consume_item', 'quest')
+        }),
+        ('Routing', {
+            'fields': ('target_scene', 'success_scene', 'failure_scene'),
+            'description': 'For non-roll choices use target_scene. For roll choices use success_scene / failure_scene and leave target_scene blank.'
+        }),
+    )
+    inlines = [ChoiceRequirementGroupInline]
     save_on_top = True
 
 @admin.register(GameSession)
