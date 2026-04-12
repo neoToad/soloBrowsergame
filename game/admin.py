@@ -42,6 +42,7 @@ class SceneInline(admin.TabularInline):
 class PlayerStatsInline(admin.StackedInline):
     model = PlayerStats
     extra = 0
+    fields = ('strength', 'agility', 'intellect', 'charisma', 'hp', 'max_hp', 'cash', 'heat', 'rep')
     readonly_fields = ('level', 'experience', 'stat_points')
     can_delete = False
 
@@ -194,7 +195,7 @@ class GameSessionAdmin(admin.ModelAdmin):
 
 @admin.register(PlayerStats)
 class PlayerStatsAdmin(admin.ModelAdmin):
-    list_display = ('session', 'level', 'experience', 'hp', 'strength', 'agility', 'intellect', 'charisma')
+    list_display = ('session', 'level', 'experience', 'hp', 'strength', 'agility', 'intellect', 'charisma', 'cash', 'heat', 'rep')
     list_select_related = True
 
 @admin.register(PlayerInventory)

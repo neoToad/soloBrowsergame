@@ -30,6 +30,11 @@ class PlayerStats(models.Model):
     level       = models.IntegerField(default=1)
     experience  = models.IntegerField(default=0)
     stat_points = models.IntegerField(default=0)
+    cash = models.IntegerField(default=0)
+    heat = models.IntegerField(default=0)
+    # TODO: heat decay per turn is planned behaviour — subtract a fixed amount
+    #       at the end of each scene transition. Do not implement yet.
+    rep  = models.IntegerField(default=0)
 
     def __str__(self):
         return f"Stats for {self.session}"

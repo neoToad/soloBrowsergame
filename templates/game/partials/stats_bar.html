@@ -43,4 +43,17 @@
             {{ stats.charisma }}{% if stat_bonuses.charisma %}<span class="stat-bonus"> (+{{ stat_bonuses.charisma }})</span>{% endif %}
         </span>
     </div>
+
+    <div class="stat-row">
+        <span class="stat-name">CASH</span>
+        <span class="stat-value">${{ stats.cash }}</span>
+    </div>
+    <div class="stat-row">
+        <span class="stat-name">HEAT</span>
+        <span class="stat-value">{{ stats.heat }}</span>
+    </div>
+    <div class="stat-row">
+        <span class="stat-name">REP</span>
+        <span class="stat-value">{{ stats.rep }}</span>
+    </div>
 </div>

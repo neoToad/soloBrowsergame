@@ -39,5 +39,8 @@ def get_effective_stats(stats, inventory):
         level      = stats.level,
         experience = stats.experience,
         stat_points = stats.stat_points,
+        cash  = stats.cash,
+        heat  = stats.heat,
+        rep   = stats.rep,
         bonuses    = bonuses,
     )
