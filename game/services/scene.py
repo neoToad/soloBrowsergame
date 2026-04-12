@@ -66,3 +66,38 @@ def complete_scene(session, scene, choice, inventory) -> list[str]:
 def get_available_scenes(session):
     from ..models import Scene
     return Scene.objects.filter(player_states__session=session, player_states__state='available')
+
+
+def get_notice_board(inventory, completed_map, effective_stats):
+    """
+    Returns a dict of three lists — available, locked, completed — for all
+    is_unlocked quests. Called only when rendering the notice board scene.
+    """
+    from ..models import Quest, PlayerContext
+    ctx = PlayerContext(
+        stats=effective_stats,
+        inventory=inventory,
+        completed_map=completed_map,
+    )
+    available, locked, completed = [], [], []
+    for quest in Quest.objects.filter(is_unlocked=True).prefetch_related(
+        'requirements__requirements'
+    ):
+        if quest.id in completed_map:
+            completed.append({
+                'quest': quest,
+                'ending_type': completed_map[quest.id],
+            })
+            continue
+        if quest.requirements.exists():
+            failing = [
+                rg for rg in quest.requirements.all() if not rg.evaluate(ctx)
+            ]
+            if failing:
+                locked.append({
+                    'quest': quest,
+                    'reasons': [rg.label for rg in failing],
+                })
+                continue
+        available.append({'quest': quest})
+    return {'available': available, 'locked': locked, 'completed': completed}

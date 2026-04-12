@@ -57,7 +57,27 @@
       "is_unlocked": true,
       "arc": null,
       "arc_order": 1,
-      "entrance_scene": 20
+      "entrance_scene": 20,
+      "requirements": [2]
+    }
+  },
+  {
+    "model": "game.requirement",
+    "pk": 2,
+    "fields": {
+      "condition_type": "quest_completed",
+      "required_quest": 1,
+      "stat_name": "",
+      "stat_value": 0
+    }
+  },
+  {
+    "model": "game.requirementgroup",
+    "pk": 2,
+    "fields": {
+      "label": "Warehouse Job completed",
+      "logic": "all",
+      "requirements": [2]
     }
   },
 

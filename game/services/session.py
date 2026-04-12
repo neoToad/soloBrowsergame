@@ -34,7 +34,11 @@ def create_session(request):
 
 
 def build_render_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state):
-    from .scene import get_available_choices
+    from .scene import get_available_choices, get_notice_board
+    from ..constants import NOTICE_BOARD_SCENE_KEY
+    notice_board = None
+    if scene.key == NOTICE_BOARD_SCENE_KEY:
+        notice_board = get_notice_board(inventory, completed_map, effective_stats)
     return {
         'scene':        scene,
         'choices':      get_available_choices(scene, effective_stats, inventory, completed_map),
@@ -44,4 +48,5 @@ def build_render_context(session, scene, stats, effective_stats, inventory, comp
         'logs':         session.log.all()[:10],
         'oob':          True,
         'combat_state': combat_state,
+        'notice_board': notice_board,
     }

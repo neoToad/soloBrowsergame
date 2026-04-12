@@ -1,0 +1,53 @@
+<div class="notice-board">
+
+  {% if notice_board.available %}
+  <p class="panel-label">[ AVAILABLE JOBS ]</p>
+  {% for entry in notice_board.available %}
+  <div class="quest-entry quest-entry--available">
+    <p class="quest-title">{{ entry.quest.title }}</p>
+    <p>{{ entry.quest.description }}</p>
+    <button
+      hx-post="{% url 'start_quest' entry.quest.key %}"
+      hx-target="#scene-panel"
+      hx-swap="innerHTML"
+      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+      hx-indicator="#loading-indicator">
+      Take the job
+    </button>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {% if notice_board.locked %}
+  <p class="panel-label">[ LOCKED JOBS ]</p>
+  {% for entry in notice_board.locked %}
+  <div class="quest-entry quest-entry--locked">
+    <p class="quest-title">{{ entry.quest.title }}</p>
+    {% for reason in entry.reasons %}
+    <p class="quest-req">Requires: {{ reason }}</p>
+    {% endfor %}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {% if notice_board.completed %}
+  <p class="panel-label">[ COMPLETED JOBS ]</p>
+  {% for entry in notice_board.completed %}
+  <div class="quest-entry quest-entry--completed">
+    <p class="quest-title">{{ entry.quest.title }}</p>
+    <p>{{ entry.ending_type|capfirst }}</p>
+    {% if entry.quest.is_repeatable %}
+    <button
+      hx-post="{% url 'start_quest' entry.quest.key %}"
+      hx-target="#scene-panel"
+      hx-swap="innerHTML"
+      hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+      hx-indicator="#loading-indicator">
+      Play again
+    </button>
+    {% endif %}
+  </div>
+  {% endfor %}
+  {% endif %}
+
+</div>

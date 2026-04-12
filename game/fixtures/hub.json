@@ -93,16 +93,5 @@
       "target_scene": 1,
       "arrival_flavor": "You leave Sal's and step back into the cold."
     }
-  },
-  {
-    "model": "game.choice",
-    "pk": 16,
-    "fields": {
-      "scene": 2,
-      "label": "The Warehouse Job",
-      "order": 2,
-      "target_scene": 4,
-      "arrival_flavor": "You memorize the address and head across town."
-    }
   }
 ]

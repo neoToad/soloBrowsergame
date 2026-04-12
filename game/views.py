@@ -6,7 +6,7 @@ from .models import (
     CompletedQuest, CombatState, PlayerContext,
 )
 from .services.session     import load_session_context, create_session, get_completed_map, build_render_context
-from .services.scene       import get_available_choices, complete_scene
+from .services.scene       import get_available_choices, complete_scene, get_notice_board
 from .services.combat      import get_or_create_combat_state, get_active_combat_state, resolve_combat_end, resolve_player_attack, resolve_enemy_attack
 from .services.inventory   import get_player_inventory, award_scene_items, consume_item as consume_item_util
 from .services.progression import award_xp, maybe_complete_quest, XP_AWARDS, LEVEL_UP_FLAVOR
@@ -15,7 +15,7 @@ from .utils import (
     get_effective_stats,
 )
 from .constants import (
-    HUB_START_SCENE_KEY,
+    HUB_START_SCENE_KEY, NOTICE_BOARD_SCENE_KEY,
     STAT_FIELD_MAP, USE_ITEM_FLAVOR,
 )
 
@@ -30,12 +30,6 @@ def _htmx_response(request, context):
     inventory_html = render_to_string('game/partials/inventory.html',        context, request)
     mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
     return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
-
-
-
-
-
-
 
 def game_hub(request):
     session_pk = request.session.get('game_session_id')
@@ -63,6 +57,10 @@ def scene_detail(request, scene_key):
     choices = get_available_choices(scene, effective_stats, inventory, completed_map)
     logs    = game_session.log.all()[:10]
 
+    notice_board = None
+    if scene.key == NOTICE_BOARD_SCENE_KEY:
+        notice_board = get_notice_board(inventory, completed_map, effective_stats)
+
     context = {
         'session':      game_session,
         'scene':        scene,
@@ -72,6 +70,7 @@ def scene_detail(request, scene_key):
         'choices':      choices,
         'logs':         logs,
         'combat_state': combat_state,
+        'notice_board': notice_board,
     }
     return render(request, 'game/scene.html', context)
 
@@ -154,6 +153,43 @@ def choice_resolve(request, choice_id):
         )
         return _htmx_response(request, context)
 
+    return redirect('scene_detail', scene_key=next_scene.key)
+
+
+def start_quest(request, quest_key):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+    session_pk = request.session.get('game_session_id')
+    if not session_pk:
+        return redirect('game_hub')
+    from .models import Quest, PlayerContext
+    session, stats, inventory, effective_stats, completed_map = \
+        load_session_context(session_pk)
+    quest = get_object_or_404(Quest, key=quest_key, is_unlocked=True)
+    # Gate: evaluate quest requirements
+    ctx = PlayerContext(stats=effective_stats, inventory=inventory,
+                        completed_map=completed_map)
+    if quest.requirements.exists():
+        if not all(rg.evaluate(ctx) for rg in quest.requirements.all()):
+            return HttpResponse("Quest requirements not met.", status=403)
+    next_scene = quest.entrance_scene
+    session.current_scene = next_scene
+    session.save()
+    EventLog.objects.create(session=session,
+                            text=f"You took the job: {quest.title}.")
+    awarded = award_scene_items(session, next_scene, inventory)
+    for item, qty in awarded:
+        EventLog.objects.create(session=session,
+                                text=f"You picked up: {item.name} x{qty}.")
+    combat_state    = get_or_create_combat_state(session, next_scene)
+    effective_stats = get_effective_stats(stats, inventory)
+    is_htmx = request.headers.get('HX-Request') == 'true'
+    if is_htmx:
+        context = build_render_context(
+            session, next_scene, stats, effective_stats, inventory,
+            completed_map, combat_state=combat_state,
+        )
+        return _htmx_response(request, context)
     return redirect('scene_detail', scene_key=next_scene.key)
 
 

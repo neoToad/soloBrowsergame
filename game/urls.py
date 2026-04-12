@@ -10,4 +10,5 @@ urlpatterns = [
     path('game/combat/attack/', views.combat_attack, name='combat_attack'),
     path('game/level-up/', views.level_up, name='level_up'),
     path('game/item/use/<int:item_id>/', views.use_item, name='use_item'),
+    path('game/quest/<slug:quest_key>/start/', views.start_quest, name='start_quest'),
 ]
