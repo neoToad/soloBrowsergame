@@ -45,6 +45,8 @@ class CombatEncounter(models.Model):
 
 
 class CombatState(models.Model):
+    # OneToOneField: only one active fight per session is supported by design.
+    # Revisit if multi-room dungeons with sequential fights are added.
     session      = models.OneToOneField(
                        GameSession,
                        related_name='combat_state',

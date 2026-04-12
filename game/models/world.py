@@ -19,6 +19,9 @@ class Quest(models.Model):
     title       = models.CharField(max_length=200)
     description = models.TextField()
     is_unlocked = models.BooleanField(default=True)
+    # Convention: is_unlocked=False means "not yet authored / hidden from players".
+    # It is a content visibility flag set by admins, NOT a player-facing requirement gate.
+    # Player-facing gating (e.g. "requires level 3") belongs in the requirements M2M.
     arc         = models.ForeignKey(
                       'Arc',
                       null=True, blank=True,

@@ -5,6 +5,7 @@ from .models import (
     GameSession, PlayerStats, Scene, Choice, EventLog,
     CompletedQuest, CombatState, PlayerContext,
 )
+from .models.events import log_event
 from .services.session     import load_session_context, create_session, get_completed_map, build_render_context
 from .services.scene       import get_available_choices, complete_scene, get_notice_board, resolve_roll
 from .services.combat      import get_or_create_combat_state, get_active_combat_state, resolve_combat_end, resolve_player_attack as resolve_player_attack_util, resolve_enemy_attack as resolve_enemy_attack_util
@@ -94,21 +95,18 @@ def choice_resolve(request, choice_id):
     # ROLL LOGIC — use effective_stats so passive bonuses apply
     if scene.requires_roll:
         next_scene, roll_log = resolve_roll(scene, choice, effective_stats)
-        EventLog.objects.create(session=session, text=roll_log)
+        log_event(session, roll_log)
     else:
         next_scene = choice.target_scene
 
     # ARRIVAL FLAVOR
     if choice.arrival_flavor:
-        EventLog.objects.create(session=session, text=choice.arrival_flavor)
+        log_event(session, choice.arrival_flavor)
 
     # CONSUME ITEM (before advancing so inventory is still current)
     if choice.consume_item and choice.consume_item_id in inventory:
         consume_item_util(session, choice.consume_item, inventory)
-        EventLog.objects.create(
-            session=session,
-            text=f"You used your {choice.consume_item.name}."
-        )
+        log_event(session, f"You used your {choice.consume_item.name}.")
 
     # ADVANCE SESSION
     session.current_scene = next_scene
@@ -117,20 +115,17 @@ def choice_resolve(request, choice_id):
     # SCENE UNLOCK
     unlock_logs = complete_scene(session, scene, choice, inventory)
     for log_text in unlock_logs:
-        EventLog.objects.create(session=session, text=log_text)
+        log_event(session, log_text)
 
     # QUEST COMPLETION
     quest_logs = maybe_complete_quest(session, stats, next_scene, completed_map)
     for log_text in quest_logs:
-        EventLog.objects.create(session=session, text=log_text)
+        log_event(session, log_text)
 
     # AWARD SCENE ITEMS
     awarded = award_scene_items(session, next_scene, inventory)
     for item, qty in awarded:
-        EventLog.objects.create(
-            session=session,
-            text=f"You picked up: {item.name} x{qty}."
-        )
+        log_event(session, f"You picked up: {item.name} x{qty}.")
 
     # PROPERTY TURN (fires once per quest completion)
     turn_summary = None
@@ -147,18 +142,18 @@ def choice_resolve(request, choice_id):
         ).first()
         if active_claim:
             contest_log = resolve_contest(session, active_claim, next_scene.ending_type)
-            EventLog.objects.create(session=session, text=contest_log)
+            log_event(session, contest_log)
 
         # Apply passive property income
         income_logs, income_totals = process_turn_income(session)
         for log in income_logs:
-            EventLog.objects.create(session=session, text=log)
+            log_event(session, log)
 
         # Roll for new rival contests
         contest_warning, unlocked_scene = check_rival_contests(session)
         newly_unlocked_scenes = [unlocked_scene] if unlocked_scene else []
         if contest_warning:
-            EventLog.objects.create(session=session, text=contest_warning)
+            log_event(session, contest_warning)
 
         turn_summary = get_turn_summary(session, income_totals, newly_unlocked_scenes)
 
@@ -196,12 +191,10 @@ def start_quest(request, quest_key):
     next_scene = quest.entrance_scene
     session.current_scene = next_scene
     session.save()
-    EventLog.objects.create(session=session,
-                            text=f"You took the job: {quest.title}.")
+    log_event(session, f"You took the job: {quest.title}.")
     awarded = award_scene_items(session, next_scene, inventory)
     for item, qty in awarded:
-        EventLog.objects.create(session=session,
-                                text=f"You picked up: {item.name} x{qty}.")
+        log_event(session, f"You picked up: {item.name} x{qty}.")
     combat_state    = get_or_create_combat_state(session, next_scene)
     effective_stats = get_effective_stats(stats, inventory)
     is_htmx = request.headers.get('HX-Request') == 'true'
@@ -244,25 +237,19 @@ def combat_attack(request):
     if p_hit:
         combat_state.enemy_hp = max(0, combat_state.enemy_hp - p_dmg)
         combat_state.save()
-        EventLog.objects.create(
-            session=session,
-            text=(
-                f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
-                f"vs {enemy.defense} — Hit! {p_dmg} damage."
-            ),
+        log_event(session,
+            f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
+            f"vs {enemy.defense} — Hit! {p_dmg} damage."
         )
     else:
-        EventLog.objects.create(
-            session=session,
-            text=(
-                f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
-                f"vs {enemy.defense} — Missed."
-            ),
+        log_event(session,
+            f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
+            f"vs {enemy.defense} — Missed."
         )
 
     # ── CHECK: OPPONENT DOWN ─────────────────────────────────────────
     if combat_state.enemy_hp <= 0:
-        EventLog.objects.create(session=session, text=f"{enemy.name} goes down. You walk away.")
+        log_event(session, f"{enemy.name} goes down. You walk away.")
         context = resolve_combat_end(
             session, stats, inventory, completed_map,
             enemy.victory_scene, combat_state,
@@ -277,27 +264,21 @@ def combat_attack(request):
 
     if e_hit:
         stats.hp = max(0, stats.hp - e_dmg)
-        EventLog.objects.create(
-            session=session,
-            text=(
-                f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
-                f"vs {player_defense} — Hit! {e_dmg} damage."
-            ),
+        log_event(session,
+            f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
+            f"vs {player_defense} — Hit! {e_dmg} damage."
         )
     else:
-        EventLog.objects.create(
-            session=session,
-            text=(
-                f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
-                f"vs {player_defense} — Missed."
-            ),
+        log_event(session,
+            f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
+            f"vs {player_defense} — Missed."
         )
 
     stats.save()
 
     # ── CHECK: PLAYER DOWN ───────────────────────────────────────────
     if stats.hp <= 0:
-        EventLog.objects.create(session=session, text="You're down. You lose consciousness.")
+        log_event(session, "You're down. You lose consciousness.")
         context = resolve_combat_end(
             session, stats, inventory, completed_map,
             enemy.defeat_scene, combat_state,
@@ -337,10 +318,7 @@ def level_up(request):
     stats.stat_points -= 1
     stats.save()
 
-    EventLog.objects.create(
-        session=session,
-        text=f"{stat_name.upper()} increased to {current_val + 1}."
-    )
+    log_event(session, f"{stat_name.upper()} increased to {current_val + 1}.")
 
     scene           = session.current_scene
     effective_stats = get_effective_stats(stats, inventory)
@@ -381,20 +359,14 @@ def use_item(request, item_id):
         healed = min(item.effect_value, stats.max_hp - stats.hp)
         stats.hp = min(stats.max_hp, stats.hp + item.effect_value)
         stats.save()
-        EventLog.objects.create(
-            session=session,
-            text=f"{USE_ITEM_FLAVOR['heal_hp']} (+{healed} HP)"
-        )
+        log_event(session, f"{USE_ITEM_FLAVOR['heal_hp']} (+{healed} HP)")
 
     elif item.effect_type == 'add_stat':
         if item.effect_stat:
             current = getattr(stats, item.effect_stat, 0)
             setattr(stats, item.effect_stat, current + item.effect_value)
             stats.save()
-        EventLog.objects.create(
-            session=session,
-            text=USE_ITEM_FLAVOR['add_stat']
-        )
+        log_event(session, USE_ITEM_FLAVOR['add_stat'])
 
     # ── CONSUME IF CONSUMABLE ────────────────────────────────────────
     if item.is_consumable:
