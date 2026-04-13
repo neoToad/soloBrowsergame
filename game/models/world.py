@@ -163,6 +163,11 @@ class Choice(models.Model):
                    )
     # If set, this item is removed from inventory when the choice is taken
 
+    set_flag_name   = models.CharField(max_length=100, blank=True,
+                          help_text="If set, this flag is set on the session when this choice is taken.")
+    clear_flag_name = models.CharField(max_length=100, blank=True,
+                          help_text="If set, this flag is cleared from the session when this choice is taken.")
+
     # Visibility and access requirements
     requirements = models.ManyToManyField(
                        RequirementGroup,

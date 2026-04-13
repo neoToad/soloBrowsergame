@@ -9,6 +9,7 @@ class GameSession(models.Model):
                         on_delete=models.SET_NULL,
                         null=True
                     )
+    flags         = models.JSONField(default=dict, blank=True)
     created_at    = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

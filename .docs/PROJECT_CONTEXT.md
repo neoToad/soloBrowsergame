@@ -43,6 +43,7 @@ game/
     combat.py       - attack resolution, combat lifecycle, combat-end routing
     progression.py  - award_xp, maybe_complete_quest, XP thresholds/awards
     property_service.py - turn income, rival contests, contest resolution, turn summaries
+    flags.py        - set_flag, clear_flag, has_flag
 
   management/commands/
     scaffold_quest.py - scaffold a quest with entrance/victory/defeat scenes
@@ -65,6 +66,7 @@ Arc --< Quest --< Scene --< Choice
                   \--< SceneUnlock (conditional unlock graph)
 
 GameSession ---- PlayerStats (1:1)
+           ---- flags (JSONField)
            --< PlayerInventory --> Item
            --< CompletedQuest --> Quest
            ---- CombatState (1:1 optional)
@@ -98,6 +100,8 @@ Quest, Scene, and Choice each have M2M -> RequirementGroup -> M2M -> Requirement
 - Choice routing fields:
   - `target_scene` for non-roll scenes
   - `success_scene` / `failure_scene` for roll scenes
+- Flag effects:
+  - `set_flag_name` / `clear_flag_name` are applied when a choice is taken.
 - Entry choices can link to `Quest` and are hidden after completion unless `Quest.is_repeatable=True`.
 
 ---
@@ -149,6 +153,7 @@ Requirement types:
 - `has_item`, `missing_item`
 - `quest_completed`, `quest_not_done`, `quest_ending`
 - `level_gte`, `xp_gte`
+- `has_flag`, `missing_flag`
 
 Evaluation logic:
 - All requirement groups on a gated object must pass (AND between groups).

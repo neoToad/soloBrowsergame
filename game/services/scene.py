@@ -21,12 +21,13 @@ def resolve_roll(scene, choice, effective_stats) -> tuple[object, str]:
     return (next_scene, log_text)
 
 
-def get_available_choices(scene, effective_stats, inventory, completed_map):
+def get_available_choices(scene, effective_stats, inventory, completed_map, flags=None):
     from ..models import PlayerContext
     ctx = PlayerContext(
         stats=effective_stats,
         inventory=inventory,
         completed_map=completed_map,
+        flags=flags or {},
     )
     choices = []
     for choice in scene.choices.select_related('quest').all():
@@ -91,7 +92,7 @@ def get_available_scenes(session):
     return Scene.objects.filter(player_states__session=session, player_states__state='available')
 
 
-def get_notice_board(inventory, completed_map, effective_stats):
+def get_notice_board(inventory, completed_map, effective_stats, flags=None):
     """
     Returns a dict of three lists — available, locked, completed — for all
     is_unlocked quests. Called only when rendering the notice board scene.
@@ -101,6 +102,7 @@ def get_notice_board(inventory, completed_map, effective_stats):
         stats=effective_stats,
         inventory=inventory,
         completed_map=completed_map,
+        flags=flags or {},
     )
     available, locked, completed = [], [], []
     for quest in Quest.objects.filter(is_unlocked=True).prefetch_related(

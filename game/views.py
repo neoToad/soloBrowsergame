@@ -55,12 +55,12 @@ def scene_detail(request, scene_key):
     scene        = get_object_or_404(Scene, key=scene_key)
     combat_state = get_or_create_combat_state(game_session, scene)
 
-    choices = get_available_choices(scene, effective_stats, inventory, completed_map)
+    choices = get_available_choices(scene, effective_stats, inventory, completed_map, flags=game_session.flags)
     logs    = game_session.log.all()[:10]
 
     notice_board = None
     if scene.key == NOTICE_BOARD_SCENE_KEY:
-        notice_board = get_notice_board(inventory, completed_map, effective_stats)
+        notice_board = get_notice_board(inventory, completed_map, effective_stats, flags=game_session.flags)
 
     from .models.property import PlayerProperty
     player_properties = PlayerProperty.objects.filter(session=game_session).select_related('property')
@@ -107,6 +107,13 @@ def choice_resolve(request, choice_id):
     if choice.consume_item and choice.consume_item_id in inventory:
         consume_item_util(session, choice.consume_item, inventory)
         log_event(session, f"You used your {choice.consume_item.name}.")
+
+    # FLAG EFFECTS
+    from .services.flags import set_flag, clear_flag
+    if choice.set_flag_name:
+        set_flag(session, choice.set_flag_name)
+    if choice.clear_flag_name:
+        clear_flag(session, choice.clear_flag_name)
 
     # ADVANCE SESSION
     session.current_scene = next_scene
@@ -184,7 +191,7 @@ def start_quest(request, quest_key):
     quest = get_object_or_404(Quest, key=quest_key, is_unlocked=True)
     # Gate: evaluate quest requirements
     ctx = PlayerContext(stats=effective_stats, inventory=inventory,
-                        completed_map=completed_map)
+                        completed_map=completed_map, flags=session.flags)
     if quest.requirements.exists():
         if not all(rg.evaluate(ctx) for rg in quest.requirements.all()):
             return HttpResponse("Quest requirements not met.", status=403)

@@ -7,6 +7,11 @@ class PlayerContext:
     stats: object        # PlayerStats instance
     inventory: dict      # {item_id: PlayerInventory instance}
     completed_map: dict  # {quest_id: ending_type string}
+    flags: dict = None
+
+    def __post_init__(self):
+        if self.flags is None:
+            self.flags = {}
 
 class Requirement(models.Model):
     """
@@ -24,13 +29,18 @@ class Requirement(models.Model):
         ('quest_ending',    'Quest completed with specific ending'),
         ('level_gte',       'Player level >= value'),
         ('xp_gte',          'Player XP >= value'),
+        ('has_flag',     'Flag is set'),
+        ('missing_flag', 'Flag is not set'),
     ]
 
     condition_type = models.CharField(max_length=50, choices=CONDITION_TYPES)
 
+    # Flag conditions
+    flag_name = models.CharField(max_length=100, blank=True)
+
     # Stat conditions
     stat_name  = models.CharField(max_length=50, blank=True)
-    stat_value = models.IntegerField(default=0)
+    stat_value = models.IntegerField(default=0, blank=True)
 
     # Item conditions
     required_item = models.ForeignKey(
@@ -75,6 +85,11 @@ class Requirement(models.Model):
             return ctx.stats.level >= self.stat_value
         if ct == 'xp_gte':
             return ctx.stats.experience >= self.stat_value
+
+        if ct == 'has_flag':
+            return bool(ctx.flags.get(self.flag_name))
+        if ct == 'missing_flag':
+            return not ctx.flags.get(self.flag_name)
 
         return False
 

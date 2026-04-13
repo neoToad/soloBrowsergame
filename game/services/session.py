@@ -39,11 +39,11 @@ def build_render_context(session, scene, stats, effective_stats, inventory, comp
     from ..constants import NOTICE_BOARD_SCENE_KEY
     notice_board = None
     if scene.key == NOTICE_BOARD_SCENE_KEY:
-        notice_board = get_notice_board(inventory, completed_map, effective_stats)
+        notice_board = get_notice_board(inventory, completed_map, effective_stats, flags=session.flags)
     player_properties = PlayerProperty.objects.filter(session=session).select_related('property')
     return {
         'scene':             scene,
-        'choices':           get_available_choices(scene, effective_stats, inventory, completed_map),
+        'choices':           get_available_choices(scene, effective_stats, inventory, completed_map, flags=session.flags),
         'stats':             stats,
         'stat_bonuses':      effective_stats.bonuses,
         'inventory':         inventory,
