@@ -109,7 +109,7 @@ class QuestAdmin(admin.ModelAdmin):
     list_display = (
         'key', 'title', 'arc', 'arc_order', 'is_unlocked', 'is_repeatable',
         'entrance_scene',
-        'scene_count', 'view_graph_link',
+        'scene_count', 'view_builder_link',
     )
     list_filter = ('arc', 'is_unlocked', 'is_repeatable')
     search_fields = ('key', 'title')
@@ -128,10 +128,14 @@ class QuestAdmin(admin.ModelAdmin):
     def scene_count(self, obj):
         return obj._scene_count
 
-    @admin.display(description='Graph')
-    def view_graph_link(self, obj):
-        url = reverse('admin:quest_graph', args=[obj.pk])
-        return format_html('<a href="{}">View Graph →</a>', url)
+    @admin.display(description='Builder')
+    def view_builder_link(self, obj):
+        url = reverse('admin:quest_builder_canvas', args=[obj.pk])
+        graph_url = reverse('admin:quest_graph', args=[obj.pk])
+        return format_html(
+            '<a href="{}">Open Builder →</a><br><small><a href="{}">View Static Graph</a></small>',
+            url, graph_url
+        )
 
     def get_urls(self):
         custom = [
@@ -140,8 +144,23 @@ class QuestAdmin(admin.ModelAdmin):
                 self.admin_site.admin_view(self.graph_view),
                 name='quest_graph',
             ),
+            path(
+                'quest-builder/',
+                self.admin_site.admin_view(self.quest_builder_list_view),
+                name='quest_builder_list',
+            ),
+            path(
+                'quest-builder/<int:quest_id>/',
+                self.admin_site.admin_view(self.quest_builder_canvas_view),
+                name='quest_builder_canvas',
+            ),
         ]
         return custom + super().get_urls()
+
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context['quest_builder_url'] = reverse('admin:quest_builder_list')
+        return super().changelist_view(request, extra_context=extra_context)
 
     def graph_view(self, request, quest_id):
         from django.shortcuts import get_object_or_404, render
@@ -170,6 +189,14 @@ class QuestAdmin(admin.ModelAdmin):
             'opts': Quest._meta,
         }
         return render(request, 'admin/game/quest_graph.html', context)
+
+    def quest_builder_list_view(self, request):
+        from .views import quest_builder_list
+        return quest_builder_list(request)
+
+    def quest_builder_canvas_view(self, request, quest_id):
+        from .views import quest_builder_canvas
+        return quest_builder_canvas(request, quest_id)
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):

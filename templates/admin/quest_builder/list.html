@@ -1,0 +1,54 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+&rsaquo; Quest Builder
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+    <ul class="object-tools">
+        <li>
+            <a href="{% url 'admin:game_quest_add' %}" class="addlink">
+                Add Quest
+            </a>
+        </li>
+    </ul>
+
+    <div class="module">
+        {% for arc_title, quests in quests_by_arc.items %}
+            <h2>{{ arc_title }}</h2>
+            <table style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Quest Name</th>
+                        <th>Arc Order</th>
+                        <th>Repeatable</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quest in quests %}
+                        <tr class="{% cycle 'row1' 'row2' %}">
+                            <td>{{ quest.title }} ({{ quest.key }})</td>
+                            <td>{{ quest.arc_order }}</td>
+                            <td>{% if quest.is_repeatable %}Yes{% else %}No{% endif %}</td>
+                            <td>
+                                <a href="{% url 'admin:quest_builder_canvas' quest.id %}">Open in Builder</a>
+                                |
+                                <a href="{% url 'admin:game_quest_change' quest.id %}">Edit Admin</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+        {% empty %}
+            <p>No quests found.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

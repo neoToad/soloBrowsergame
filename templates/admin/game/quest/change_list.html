@@ -1,0 +1,11 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls %}
+
+{% block object-tools-items %}
+    <li>
+        <a href="{{ quest_builder_url }}" class="addlink">
+            Open Quest Builder
+        </a>
+    </li>
+    {{ block.super }}
+{% endblock %}

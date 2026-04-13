@@ -1,0 +1,293 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% translate 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:quest_builder_list' %}">Quest Builder</a>
+    &rsaquo; {{ quest.title }}
+</div>
+{% endblock %}
+
+{% block content %}
+<style>
+    :root {
+        --qb-canvas-bg: #151a22;
+        --qb-canvas-border: #2f3644;
+        --qb-card-bg: #1c222c;
+        --qb-card-border: #364152;
+        --qb-card-text: #e5e9f0;
+        --qb-card-subtext: #97a3b6;
+        --qb-card-button-bg: #273243;
+        --qb-card-button-border: #405066;
+        --qb-card-button-text: #e5e9f0;
+        --qb-arrow-direct: #7d8796;
+        --qb-arrow-success: #2f9e44;
+        --qb-arrow-failure: #d64545;
+        --qb-badge-normal: #586170;
+        --qb-badge-hub: #2f7ce0;
+        --qb-badge-combat: #b34040;
+        --qb-badge-ending: #d4a93d;
+    }
+
+    #canvas-container {
+        position: relative;
+        overflow: auto;
+        width: 100%;
+        height: 80vh;
+        background:
+            radial-gradient(circle at top left, rgba(47, 124, 224, 0.12), transparent 28%),
+            radial-gradient(circle at bottom right, rgba(212, 169, 61, 0.08), transparent 24%),
+            var(--qb-canvas-bg);
+        border: 1px solid var(--qb-canvas-border);
+        border-radius: 6px;
+        color: var(--qb-card-text);
+    }
+
+    #canvas-stage {
+        position: relative;
+        min-width: 100%;
+        min-height: 100%;
+    }
+
+    .scene-card {
+        position: absolute;
+        width: 220px;
+        padding: 14px;
+        background: var(--qb-card-bg);
+        border: 1px solid var(--qb-card-border);
+        border-radius: 14px;
+        font-size: 12px;
+        cursor: grab;
+        z-index: 10;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+        box-sizing: border-box;
+    }
+
+    .scene-card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .scene-card .scene-title {
+        font-size: 15px;
+        font-weight: 700;
+        margin: 0;
+        padding-right: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .scene-card .scene-key {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 11px;
+        color: var(--qb-card-subtext);
+        margin-bottom: 12px;
+    }
+
+    .type-badge {
+        display: inline-block;
+        padding: 3px 9px;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        line-height: 1.2;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+    }
+    .type-badge-normal { background: var(--qb-badge-normal); color: #eef2f7; }
+    .type-badge-hub    { background: var(--qb-badge-hub); color: #edf4ff; }
+    .type-badge-combat { background: var(--qb-badge-combat); color: #fff0f0; }
+    .type-badge-ending { background: var(--qb-badge-ending); color: #2a2108; }
+
+    .roll-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 8px;
+        padding: 3px 9px;
+        border-radius: 999px;
+        border: 1px solid #4e5970;
+        color: #d9e5f8;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .scene-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .scene-card-actions {
+        display: flex;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .scene-card-actions .qb-card-button {
+        flex: 1;
+        min-height: 28px;
+        padding: 6px 10px;
+        font-size: 11px;
+        border: 1px solid var(--qb-card-button-border);
+        border-radius: 8px;
+        background: var(--qb-card-button-bg);
+        color: var(--qb-card-button-text);
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .scene-card-actions .qb-card-button:hover {
+        background: #324159;
+    }
+
+    #toolbar {
+        background: #f8f8f8;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: #333;
+    }
+
+    #panel {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 350px;
+        height: 100%;
+        background: #fff;
+        box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+        z-index: 1000;
+        display: none; /* Empty for now */
+    }
+
+    svg#canvas-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    .canvas-arrow {
+        fill: none;
+        stroke-width: 2;
+    }
+
+    .canvas-arrow--direct {
+        stroke: var(--qb-arrow-direct);
+    }
+
+    .canvas-arrow--success {
+        stroke: var(--qb-arrow-success);
+    }
+
+    .canvas-arrow--failure {
+        stroke: var(--qb-arrow-failure);
+    }
+
+    .canvas-arrow-label {
+        font-size: 10px;
+        text-anchor: middle;
+        dominant-baseline: middle;
+    }
+
+    .canvas-arrow-label--direct {
+        fill: var(--qb-arrow-direct);
+    }
+
+    .canvas-arrow-label--success {
+        fill: var(--qb-arrow-success);
+    }
+
+    .canvas-arrow-label--failure {
+        fill: var(--qb-arrow-failure);
+    }
+</style>
+
+<div id="toolbar">
+    <strong style="font-size: 1.2em;">{{ quest.title }}</strong>
+    <button type="button" class="button">New Scene</button>
+    <button type="button" class="button">Auto Layout</button>
+    <a href="{% url 'admin:game_quest_change' quest.id %}" class="closelink" style="margin-left: auto;">Exit Builder</a>
+</div>
+
+<div id="canvas-container">
+    <div id="canvas-stage" style="width: {{ canvas_width }}px; height: {{ canvas_height }}px;">
+        <svg
+            id="canvas-overlay"
+            width="{{ canvas_width }}"
+            height="{{ canvas_height }}"
+            viewBox="0 0 {{ canvas_width }} {{ canvas_height }}">
+            <defs>
+                <marker id="arrowhead-direct" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#7d8796"></polygon>
+                </marker>
+                <marker id="arrowhead-success" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#2f9e44"></polygon>
+                </marker>
+                <marker id="arrowhead-failure" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                    <polygon points="0 0, 8 3, 0 6" fill="#d64545"></polygon>
+                </marker>
+            </defs>
+
+            {% for arrow in arrows %}
+                <line
+                    id="{{ arrow.id }}"
+                    class="canvas-arrow canvas-arrow--{{ arrow.kind }}"
+                    x1="{{ arrow.x1 }}"
+                    y1="{{ arrow.y1 }}"
+                    x2="{{ arrow.x2 }}"
+                    y2="{{ arrow.y2 }}"
+                    marker-end="url(#arrowhead-{{ arrow.kind }})">
+                </line>
+                <text
+                    class="canvas-arrow-label canvas-arrow-label--{{ arrow.kind }}"
+                    x="{{ arrow.label_x }}"
+                    y="{{ arrow.label_y }}">
+                    {{ arrow.label }}
+                </text>
+            {% endfor %}
+        </svg>
+
+        {% for scene in scenes %}
+            <div class="scene-card"
+                 style="left: {{ scene.canvas_x }}px; top: {{ scene.canvas_y }}px;"
+                 data-scene-id="{{ scene.id }}">
+                <div class="scene-card-header">
+                    <div class="scene-title" title="{{ scene.title }}">{{ scene.title }}</div>
+                    <span class="type-badge type-badge-{{ scene.scene_type }}">{{ scene.scene_type }}</span>
+                </div>
+                <div class="scene-key">{{ scene.key }}</div>
+                <div class="scene-card-footer">
+                    {% if scene.requires_roll %}
+                        <div class="roll-badge">ROLL</div>
+                    {% else %}
+                        <div></div>
+                    {% endif %}
+                    <div class="scene-card-actions">
+                        <button type="button" class="qb-card-button">Edit</button>
+                        <button type="button" class="qb-card-button">Add Choice</button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div id="panel">
+    <!-- HTMX slide-out panels will go here -->
+</div>
+{% endblock %}

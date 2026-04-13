@@ -102,6 +102,9 @@ class Scene(models.Model):
     ambient_sound = models.CharField(max_length=100, blank=True)
     # slug of a static audio file e.g. 'cave_drip', 'tavern_noise'
 
+    canvas_x = models.IntegerField(default=0)
+    canvas_y = models.IntegerField(default=0)
+
     @property
     def is_hub(self):
         return self.scene_type == 'hub'

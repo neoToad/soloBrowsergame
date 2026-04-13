@@ -11,6 +11,7 @@ from .services.scene       import get_available_choices, complete_scene, get_not
 from .services.combat      import get_or_create_combat_state, get_active_combat_state, resolve_combat_end, resolve_player_attack as resolve_player_attack_util, resolve_enemy_attack as resolve_enemy_attack_util
 from .services.inventory   import get_player_inventory, award_scene_items, consume_item as consume_item_util
 from .services.progression import award_xp, maybe_complete_quest, XP_AWARDS, LEVEL_UP_FLAVOR
+from .services.quest_builder import get_canvas_data
 from .utils import (
     roll_d20, stat_modifier,
     get_effective_stats,
@@ -336,6 +337,43 @@ def level_up(request):
     )
 
     return _htmx_response(request, context)
+
+
+def quest_builder_list(request):
+    """
+    Queries all Quest objects, ordered by arc then title.
+    Renders game/templates/admin/quest_builder/list.html.
+    Passes quests grouped by Arc to the template.
+    """
+    from .models import Quest, Arc
+    quests = Quest.objects.select_related('arc').order_by('arc__order', 'arc_order', 'title')
+    
+    # Group by Arc
+    from collections import defaultdict
+    quests_by_arc = defaultdict(list)
+    for q in quests:
+        arc_title = q.arc.title if q.arc else "No Arc"
+        quests_by_arc[arc_title].append(q)
+    
+    context = {
+        'quests_by_arc': dict(quests_by_arc),
+        'title': 'Quest Builder',
+    }
+    return render(request, 'admin/quest_builder/list.html', context)
+
+
+def quest_builder_canvas(request, quest_id):
+    """
+    Calls get_canvas_data(quest_id).
+    Renders game/templates/admin/quest_builder/canvas.html.
+    Passes the canvas data to the template.
+    """
+    canvas_data = get_canvas_data(quest_id)
+    context = {
+        **canvas_data,
+        'title': f"Quest Builder - {canvas_data['quest'].title}",
+    }
+    return render(request, 'admin/quest_builder/canvas.html', context)
 
 
 def use_item(request, item_id):
