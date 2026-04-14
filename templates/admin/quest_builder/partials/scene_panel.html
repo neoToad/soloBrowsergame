@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <div style="display: flex; gap: 8px; margin-top: 16px;">
+        <div style="display: flex; gap: 8px; margin-top: 16px; margin-bottom: 4px;">
             <button type="submit" class="button default">Save</button>
             <button
                 type="button"
@@ -92,6 +92,11 @@
             {% endif %}
         </div>
     </form>
+
+    {% if scene %}
+        {% include "admin/quest_builder/partials/items_section.html" %}
+        {% include "admin/quest_builder/partials/combat_section.html" %}
+    {% endif %}
 
     {% if scene and scene_choices %}
         <div style="border-top: 1px solid #ddd; margin-top: 20px; padding-top: 14px;">
@@ -142,12 +147,17 @@
             return;
         }
 
-        function updateRollSettings() {
-            const isNormal = sceneType.value === 'normal';
-            rollSettings.style.display = isNormal ? 'block' : 'none';
+        function updateVisibility() {
+            const type = sceneType.value;
+            rollSettings.style.display = (type === 'normal') ? 'block' : 'none';
+
+            const combatSection = document.getElementById('combat-section');
+            if (combatSection) {
+                combatSection.style.display = (type === 'combat') ? 'block' : 'none';
+            }
         }
 
-        sceneType.addEventListener('change', updateRollSettings);
-        updateRollSettings();
+        sceneType.addEventListener('change', updateVisibility);
+        updateVisibility();
     })();
 </script>

@@ -39,6 +39,18 @@ class CombatEncounter(models.Model):
                  related_name='encounters',
                  on_delete=models.CASCADE
              )
+    victory_scene = models.ForeignKey(
+                        Scene,
+                        null=True, blank=True,
+                        related_name='+',
+                        on_delete=models.SET_NULL,
+                    )
+    defeat_scene  = models.ForeignKey(
+                        Scene,
+                        null=True, blank=True,
+                        related_name='+',
+                        on_delete=models.SET_NULL,
+                    )
 
     def __str__(self):
         return f"{self.scene.key} vs {self.enemy.name}"

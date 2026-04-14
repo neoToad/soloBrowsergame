@@ -1,0 +1,60 @@
+<div id="combat-section" style="border-top: 1px solid #ddd; margin-top: 16px; padding-top: 12px;">
+    <details {% if combat_encounter %}open{% endif %}>
+        <summary style="cursor: pointer; font-weight: 600; font-size: 14px; margin-bottom: 10px;">
+            Combat Encounter
+        </summary>
+
+        {% if toast_message %}
+            <div class="success" style="padding: 6px 10px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px; margin-bottom: 10px; font-size: 13px; color: #155724;">
+                {{ toast_message }}
+            </div>
+        {% endif %}
+
+        <form
+            hx-post="{% url 'admin:quest_builder_scene_combat_save' quest_id scene.id %}"
+            hx-target="#combat-section"
+            hx-swap="outerHTML">
+            {% csrf_token %}
+
+            <div style="margin-bottom: 8px;">
+                <label><strong>Enemy</strong></label><br>
+                <select name="enemy_id" style="width: 100%;">
+                    <option value="">— none —</option>
+                    {% for enemy in all_enemies %}
+                        <option value="{{ enemy.id }}" {% if combat_encounter and combat_encounter.enemy_id == enemy.id %}selected{% endif %}>
+                            {{ enemy.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="margin-bottom: 8px;">
+                <label><strong>Victory Scene</strong></label><br>
+                <select name="victory_scene_id" style="width: 100%;">
+                    <option value="">— none —</option>
+                    {% for s in quest_scenes %}
+                        <option value="{{ s.id }}" {% if combat_encounter and combat_encounter.victory_scene_id == s.id %}selected{% endif %}>
+                            {{ s.title }} ({{ s.key }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="margin-bottom: 8px;">
+                <label><strong>Defeat Scene</strong></label><br>
+                <select name="defeat_scene_id" style="width: 100%;">
+                    <option value="">— none —</option>
+                    {% for s in quest_scenes %}
+                        <option value="{{ s.id }}" {% if combat_encounter and combat_encounter.defeat_scene_id == s.id %}selected{% endif %}>
+                            {{ s.title }} ({{ s.key }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="margin-top: 10px;">
+                <button type="submit" class="button default" style="font-size: 12px;">Save Combat</button>
+            </div>
+        </form>
+    </details>
+</div>

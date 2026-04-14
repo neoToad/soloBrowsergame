@@ -22,6 +22,8 @@ from .services.quest_builder import (
     update_choice as update_choice_service,
     delete_choice as delete_choice_service,
     save_scene_position as save_scene_position_service,
+    update_scene_items as update_scene_items_service,
+    update_combat_encounter as update_combat_encounter_service,
 )
 from .utils import (
     roll_d20, stat_modifier,
@@ -394,6 +396,8 @@ def scene_panel(request, quest_id, scene_id=None):
     get_object_or_404(Quest, pk=quest_id)
     scene = None
     scene_choices = []
+    scene_items = []
+    combat_encounter = None
     if scene_id is not None:
         scene = get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
         scene_choices = list(
@@ -401,6 +405,21 @@ def scene_panel(request, quest_id, scene_id=None):
             .select_related('target_scene', 'success_scene', 'failure_scene')
             .order_by('order')
         )
+        scene_items = list(
+            scene.scene_items.select_related('item').order_by('id')
+        )
+        try:
+            combat_encounter = scene.combat_encounter
+        except Exception:
+            combat_encounter = None
+
+    from .models.items import Item as ItemModel
+    from .models.combat import Enemy as EnemyModel
+    all_items = list(ItemModel.objects.order_by('name'))
+    all_enemies = list(EnemyModel.objects.order_by('name'))
+    quest_scenes = list(
+        Scene.objects.filter(quest_id=quest_id).only('id', 'key', 'title').order_by('order')
+    )
 
     context = {
         'quest_id': quest_id,
@@ -414,6 +433,11 @@ def scene_panel(request, quest_id, scene_id=None):
             ('charisma', 'nerve'),
         ],
         'default_roll_difficulty': 12,
+        'scene_items': scene_items,
+        'all_items': all_items,
+        'all_enemies': all_enemies,
+        'quest_scenes': quest_scenes,
+        'combat_encounter': combat_encounter,
     }
     return render(request, 'admin/quest_builder/partials/scene_panel.html', context)
 
@@ -495,6 +519,76 @@ def scene_move(request, quest_id, scene_id):
 
     save_scene_position_service(scene_id, x, y)
     return HttpResponse(status=204)
+
+
+def scene_items_save(request, quest_id, scene_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+
+    # Parse indexed POST fields: item_id_0, quantity_0, item_id_1, quantity_1, ...
+    items_data = []
+    index = 0
+    while True:
+        item_id_key = f'item_id_{index}'
+        qty_key = f'quantity_{index}'
+        if item_id_key not in request.POST and qty_key not in request.POST:
+            break
+        items_data.append({
+            'item_id':  request.POST.get(item_id_key, ''),
+            'quantity': request.POST.get(qty_key, '1'),
+        })
+        index += 1
+
+    scene_items = update_scene_items_service(scene_id, items_data)
+
+    from .models.items import Item as ItemModel
+    all_items = list(ItemModel.objects.order_by('name'))
+    scene = Scene.objects.get(pk=scene_id)
+
+    html = render_to_string(
+        'admin/quest_builder/partials/items_section.html',
+        {
+            'quest_id': quest_id,
+            'scene': scene,
+            'scene_items': scene_items,
+            'all_items': all_items,
+            'toast_message': 'Items saved.',
+        },
+        request=request,
+    )
+    return HttpResponse(html)
+
+
+def scene_combat_save(request, quest_id, scene_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+
+    encounter = update_combat_encounter_service(scene_id, request.POST)
+
+    from .models.combat import Enemy as EnemyModel
+    all_enemies = list(EnemyModel.objects.order_by('name'))
+    quest_scenes = list(
+        Scene.objects.filter(quest_id=quest_id).only('id', 'key', 'title').order_by('order')
+    )
+    scene = Scene.objects.get(pk=scene_id)
+
+    html = render_to_string(
+        'admin/quest_builder/partials/combat_section.html',
+        {
+            'quest_id': quest_id,
+            'scene': scene,
+            'combat_encounter': encounter,
+            'all_enemies': all_enemies,
+            'quest_scenes': quest_scenes,
+            'toast_message': 'Combat encounter saved.',
+        },
+        request=request,
+    )
+    return HttpResponse(html)
 
 
 def choice_panel(request, quest_id, source_scene_id=None, choice_id=None):

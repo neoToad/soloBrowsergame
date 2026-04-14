@@ -1,8 +1,9 @@
 from django.db import transaction
 from django.utils.text import slugify
 
-from ..models.world import Quest, Scene, Choice
-from ..models.combat import CombatEncounter
+from ..models.world import Quest, Scene, Choice, SceneItem
+from ..models.items import Item
+from ..models.combat import CombatEncounter, Enemy
 
 
 CARD_WIDTH = 220
@@ -350,6 +351,59 @@ def delete_choice(choice_id):
 def save_scene_position(scene_id, x, y):
     """Updates canvas_x and canvas_y on the scene and saves"""
     Scene.objects.filter(pk=scene_id).update(canvas_x=x, canvas_y=y)
+
+
+def update_scene_items(scene_id, items_data):
+    """
+    Replaces all SceneItem records for this scene with the provided list.
+    items_data: list of dicts with 'item_id' and 'quantity' keys.
+    Skips entries where item_id is blank/None.
+    Returns the updated list of SceneItem objects.
+    """
+    with transaction.atomic():
+        SceneItem.objects.filter(scene_id=scene_id).delete()
+        created = []
+        for entry in items_data:
+            raw_id = str(entry.get('item_id') or '').strip()
+            if not raw_id:
+                continue
+            raw_qty = str(entry.get('quantity') or '').strip()
+            quantity = int(raw_qty) if raw_qty else 1
+            scene_item = SceneItem.objects.create(
+                scene_id=scene_id,
+                item_id=int(raw_id),
+                quantity=quantity,
+            )
+            created.append(scene_item)
+    return created
+
+
+def update_combat_encounter(scene_id, data):
+    """
+    Creates or updates the CombatEncounter for this scene.
+    If enemy_id is blank/null, deletes any existing encounter and returns None.
+    Returns the encounter object or None.
+    """
+    raw_enemy = str(data.get('enemy_id') or '').strip()
+    if not raw_enemy:
+        CombatEncounter.objects.filter(scene_id=scene_id).delete()
+        return None
+
+    raw_victory = str(data.get('victory_scene_id') or '').strip()
+    raw_defeat  = str(data.get('defeat_scene_id') or '').strip()
+    victory_scene_id = int(raw_victory) if raw_victory else None
+    defeat_scene_id  = int(raw_defeat)  if raw_defeat  else None
+
+    encounter, _ = CombatEncounter.objects.update_or_create(
+        scene_id=scene_id,
+        defaults={
+            'enemy_id':         int(raw_enemy),
+            'victory_scene_id': victory_scene_id,
+            'defeat_scene_id':  defeat_scene_id,
+        },
+    )
+    return encounter
+
 
 def build_requirement_groups_from_post(obj, post_data):
     """Stub only"""

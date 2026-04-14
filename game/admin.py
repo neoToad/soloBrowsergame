@@ -71,6 +71,7 @@ class SceneItemInline(admin.TabularInline):
 
 class CombatEncounterInline(admin.StackedInline):
     model = CombatEncounter
+    fk_name = 'scene'
     extra = 0
     autocomplete_fields = ('enemy',)
 
@@ -209,6 +210,16 @@ class QuestAdmin(admin.ModelAdmin):
                 self.admin_site.admin_view(self.quest_builder_choice_delete_view),
                 name='quest_builder_choice_delete',
             ),
+            path(
+                'quest-builder/<int:quest_id>/scene/<int:scene_id>/items/save/',
+                self.admin_site.admin_view(self.quest_builder_scene_items_save_view),
+                name='quest_builder_scene_items_save',
+            ),
+            path(
+                'quest-builder/<int:quest_id>/scene/<int:scene_id>/combat/save/',
+                self.admin_site.admin_view(self.quest_builder_scene_combat_save_view),
+                name='quest_builder_scene_combat_save',
+            ),
         ]
         return custom + super().get_urls()
 
@@ -288,6 +299,14 @@ class QuestAdmin(admin.ModelAdmin):
     def quest_builder_choice_delete_view(self, request, quest_id, choice_id):
         from .views import choice_delete
         return choice_delete(request, quest_id, choice_id)
+
+    def quest_builder_scene_items_save_view(self, request, quest_id, scene_id):
+        from .views import scene_items_save
+        return scene_items_save(request, quest_id, scene_id)
+
+    def quest_builder_scene_combat_save_view(self, request, quest_id, scene_id):
+        from .views import scene_combat_save
+        return scene_combat_save(request, quest_id, scene_id)
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
