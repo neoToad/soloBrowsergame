@@ -12,6 +12,7 @@ GRID_START_Y = 60
 GRID_X_GAP = 280
 GRID_Y_GAP = 200
 CANVAS_PADDING = 120
+PARALLEL_ARROW_SPACING = 12
 
 def get_canvas_data(quest_id):
     """
@@ -149,6 +150,27 @@ def get_canvas_data(quest_id):
 
         append_combat_arrow(encounter.enemy.victory_scene_id, 'success', 'WIN')
         append_combat_arrow(encounter.enemy.defeat_scene_id, 'failure', 'LOSE')
+
+    # Spread arrows that share the same source and target so they do not overlap.
+    arrows_by_edge = {}
+    for arrow in arrows:
+        edge_key = (arrow.get('source_scene_id'), arrow.get('target_scene_id'))
+        arrows_by_edge.setdefault(edge_key, []).append(arrow)
+
+    for grouped_arrows in arrows_by_edge.values():
+        total = len(grouped_arrows)
+        center_index = (total - 1) / 2
+        for index, arrow in enumerate(grouped_arrows):
+            lane = index - center_index
+            offset = int(lane * PARALLEL_ARROW_SPACING)
+
+            arrow['offset_index'] = index
+            arrow['offset_total'] = total
+            arrow['offset_px'] = offset
+
+            arrow['y1'] += offset
+            arrow['y2'] += offset
+            arrow['label_y'] += offset
 
     if scenes:
         max_scene_x = max(scene['canvas_x'] for scene in scenes)

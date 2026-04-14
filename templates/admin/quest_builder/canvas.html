@@ -293,6 +293,8 @@
                 <g
                     data-source-scene-id="{{ arrow.source_scene_id }}"
                     data-target-scene-id="{{ arrow.target_scene_id }}"
+                    data-offset-index="{{ arrow.offset_index|default:0 }}"
+                    data-offset-total="{{ arrow.offset_total|default:1 }}"
                     {% if arrow.success_scene_id %}data-success-scene-id="{{ arrow.success_scene_id }}"{% endif %}
                     {% if arrow.failure_scene_id %}data-failure-scene-id="{{ arrow.failure_scene_id }}"{% endif %}
                     {% if arrow.choice_id %}data-choice-id="{{ arrow.choice_id }}" style="cursor: pointer; pointer-events: all;"{% endif %}>
@@ -348,6 +350,7 @@
     var LAYOUT_START_X = 60;
     var LAYOUT_START_Y = 60;
     var LAYOUT_SAVE_STAGGER_MS = 50;
+    var PARALLEL_ARROW_SPACING = 12;
 
     var stage = document.getElementById('canvas-stage');
     var svg = document.getElementById('canvas-overlay');
@@ -401,6 +404,15 @@
         return isNaN(parsed) ? null : parsed;
     }
 
+    function parseArrowNumber(group, attrName, fallback) {
+        var raw = group.getAttribute(attrName);
+        if (!raw) {
+            return fallback;
+        }
+        var parsed = parseInt(raw, 10);
+        return isNaN(parsed) ? fallback : parsed;
+    }
+
     function indexArrowRecordForScene(record, sceneId) {
         if (sceneId === null || sceneId === undefined) {
             return;
@@ -428,12 +440,15 @@
             var failureSceneId = parseArrowSceneId(group, 'data-failure-scene-id');
 
             var record = {
+                group: group,
                 line: line,
                 label: label,
                 sourceSceneId: sourceSceneId,
                 targetSceneId: targetSceneId,
                 successSceneId: successSceneId,
                 failureSceneId: failureSceneId,
+                offsetIndex: parseArrowNumber(group, 'data-offset-index', 0),
+                offsetTotal: parseArrowNumber(group, 'data-offset-total', 1),
             };
 
             arrowRecords.push(record);
@@ -447,6 +462,38 @@
     function rebuildCaches() {
         refreshSceneCache();
         rebuildArrowCaches();
+        normalizeArrowOffsets();
+        redrawAllArrows();
+    }
+
+    function normalizeArrowOffsets() {
+        var grouped = {};
+        for (var i = 0; i < arrowRecords.length; i += 1) {
+            var record = arrowRecords[i];
+            if (!record.sourceSceneId) {
+                continue;
+            }
+            var targetSceneId = record.targetSceneId || record.successSceneId || record.failureSceneId;
+            if (!targetSceneId) {
+                continue;
+            }
+            var edgeKey = record.sourceSceneId + '->' + targetSceneId;
+            if (!grouped[edgeKey]) {
+                grouped[edgeKey] = [];
+            }
+            grouped[edgeKey].push(record);
+        }
+
+        Object.keys(grouped).forEach(function (edgeKey) {
+            var records = grouped[edgeKey];
+            var total = records.length;
+            for (var i = 0; i < total; i += 1) {
+                records[i].offsetIndex = i;
+                records[i].offsetTotal = total;
+                records[i].group.setAttribute('data-offset-index', i);
+                records[i].group.setAttribute('data-offset-total', total);
+            }
+        });
     }
 
     function updateArrowRecord(record) {
@@ -461,6 +508,21 @@
         var y1 = sourceCard.offsetTop + (sourceCard.offsetHeight / 2);
         var x2 = targetCard.offsetLeft;
         var y2 = targetCard.offsetTop + (targetCard.offsetHeight / 2);
+
+        var offsetTotal = record.offsetTotal || 1;
+        if (offsetTotal > 1) {
+            var lane = (record.offsetIndex || 0) - ((offsetTotal - 1) / 2);
+            var offset = lane * PARALLEL_ARROW_SPACING;
+            var dx = x2 - x1;
+            var dy = y2 - y1;
+            var length = Math.sqrt((dx * dx) + (dy * dy)) || 1;
+            var nx = -dy / length;
+            var ny = dx / length;
+            x1 += nx * offset;
+            y1 += ny * offset;
+            x2 += nx * offset;
+            y2 += ny * offset;
+        }
 
         if (record.line.tagName.toLowerCase() === 'path') {
             record.line.setAttribute('d', 'M ' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2);
@@ -519,6 +581,8 @@
             g.remove();
         });
         rebuildArrowCaches();
+        normalizeArrowOffsets();
+        redrawAllArrows();
     }
 
     function makeArrowGroup(x1, y1, x2, y2, kind, label, choiceId, sourceSceneId, targetSceneId) {
@@ -526,6 +590,8 @@
         g.setAttribute('data-choice-id', choiceId);
         g.setAttribute('data-source-scene-id', sourceSceneId);
         g.setAttribute('data-target-scene-id', targetSceneId);
+        g.setAttribute('data-offset-index', '0');
+        g.setAttribute('data-offset-total', '1');
         if (kind === 'success') {
             g.setAttribute('data-success-scene-id', targetSceneId);
         } else if (kind === 'failure') {
@@ -595,6 +661,8 @@
         }
 
         rebuildArrowCaches();
+        normalizeArrowOffsets();
+        redrawAllArrows();
     }
 
     function startDrag(event, card) {
