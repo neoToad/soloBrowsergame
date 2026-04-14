@@ -6,13 +6,13 @@ Both `start_quest` and `choice_resolve` call `award_scene_items`. This is correc
 
 **Impact**: Low now, but a future landmine if scene item award logic changes.
 
-De---
+---
 
-## Scene key prefix is not enforced by the admin
+## EventLog writes inside services
 
-The naming convention `{quest_key}__{scene_slug}` is documented but not validated. `prepopulated_fields` fills the slug portion from `title`, but the quest prefix must still be typed manually. A wrong key will silently break scene navigation.
+Some event writes still happen in `game/services/combat.py` and `game/services/property_service.py`, which conflicts with the preferred service/view boundary where services return messages and views log them.
 
-**Impact**: Easy to fat-finger when adding scenes quickly. A `clean()` validator on `Scene` would fix this permanently.
+**Impact**: Inconsistent EventLog patterns.
 
 ---
 

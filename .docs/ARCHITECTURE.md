@@ -54,12 +54,13 @@ Services are responsible for: all game logic, all DB writes beyond simple sessio
 ```
 game/
   models/
-    player.py       — GameSession, PlayerStats, PlayerInventory, CompletedQuest
+    player.py       — GameSession, PlayerStats (cash, heat, rep), PlayerInventory, CompletedQuest
     world.py        — Arc, Quest, Scene, Choice, SceneItem
     items.py        — Item
     combat.py       — Enemy, CombatEncounter, CombatState
     requirements.py — Requirement, RequirementGroup, PlayerContext (dataclass)
     events.py       — EventLog
+    property.py     — Property, PlayerProperty, RivalClaim
     __init__.py     — re-exports all public models
 
   services/
@@ -68,12 +69,14 @@ game/
     inventory.py    — get_player_inventory, award_scene_items, consume_item
     combat.py       — get_or_create_combat_state, resolve_player_attack, resolve_enemy_attack, resolve_combat_end
     progression.py  — award_xp, maybe_complete_quest; also defines XP_THRESHOLDS, XP_AWARDS, RANK_TITLES
+    property_service.py — turn income, rival contests, contest resolution
+    quest_builder.py — AJAX-powered scene/choice CRUD and canvas graph logic
 
   management/commands/
     scaffold_quest.py — creates a stub quest with entrance + victory/defeat ending scenes
     export_quest.py   — dumps a quest and all related objects to a loadable fixture JSON
 
-  views.py          — HTTP handlers only; delegates to services
+  views.py          — HTTP handlers; delegates to services; includes Quest Builder AJAX views
   utils.py          — roll_d20, stat_modifier, get_effective_stats
   constants.py      — HUB_START_SCENE_KEY, NOTICE_BOARD_SCENE_KEY, STAT_FIELD_MAP, USE_ITEM_FLAVOR
 ```

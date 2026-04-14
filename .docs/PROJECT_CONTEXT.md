@@ -28,7 +28,7 @@ Rule: business logic belongs in services. Views should handle request/response f
 ```text
 game/
   models/
-    player.py       - GameSession, PlayerStats, PlayerInventory, CompletedQuest, PlayerSceneState
+    player.py       - GameSession, PlayerStats (cash, heat, rep), PlayerInventory, CompletedQuest, PlayerSceneState
     world.py        - Arc, Quest, Scene, Choice, SceneItem, SceneUnlock
     items.py        - Item
     combat.py       - Enemy, CombatEncounter, CombatState
@@ -44,12 +44,13 @@ game/
     progression.py  - award_xp, maybe_complete_quest, XP thresholds/awards
     property_service.py - turn income, rival contests, contest resolution, turn summaries
     flags.py        - set_flag, clear_flag, has_flag
+    quest_builder.py - canvas data, scene/choice CRUD, position saving
 
   management/commands/
     scaffold_quest.py - scaffold a quest with entrance/victory/defeat scenes
     export_quest.py   - export a quest and related objects as fixture JSON
 
-  views.py          - HTTP handlers
+  views.py          - HTTP handlers, quest builder views
   utils.py          - roll_d20, stat_modifier, get_effective_stats
   constants.py      - scene keys, stat field map, item flavor text
 ```
