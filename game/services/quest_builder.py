@@ -77,7 +77,7 @@ def get_canvas_data(quest_id):
         source_x = source_scene['canvas_x'] + CARD_WIDTH
         source_y = source_scene['canvas_y'] + (CARD_HEIGHT // 2)
 
-        def append_arrow(target_scene_id, kind):
+        def append_arrow(target_scene_id, kind, choice_id=c.id):
             if not target_scene_id:
                 return
 
@@ -89,7 +89,8 @@ def get_canvas_data(quest_id):
             target_y = target_scene['canvas_y'] + (CARD_HEIGHT // 2)
 
             arrows.append({
-                'id': f"choice-{c.id}-{kind}",
+                'id': f"choice-{choice_id}-{kind}",
+                'choice_id': choice_id,
                 'kind': kind,
                 'label': c.label,
                 'x1': source_x,
@@ -127,6 +128,7 @@ def get_canvas_data(quest_id):
 
             arrows.append({
                 'id': f"combat-{encounter.id}-{kind}",
+                'choice_id': None,
                 'kind': kind,
                 'label': label,
                 'x1': source_x,
@@ -169,15 +171,21 @@ def create_scene(quest_id, data):
     if not key and title:
         key = f"{quest.key}__{slugify(title)}"
 
-    raw_x = data.get('canvas_x')
-    raw_y = data.get('canvas_y')
-    canvas_x = int(raw_x) if str(raw_x).strip() else 60
-    canvas_y = int(raw_y) if str(raw_y).strip() else 60
+    raw_x = str(data.get('canvas_x') or '').strip()
+    raw_y = str(data.get('canvas_y') or '').strip()
+    if raw_x and raw_y:
+        canvas_x = int(raw_x)
+        canvas_y = int(raw_y)
+    else:
+        # Place in the next grid slot so it doesn't overlap existing cards
+        index = Scene.objects.filter(quest=quest).count()
+        canvas_x = GRID_START_X + (index % 4) * GRID_X_GAP
+        canvas_y = GRID_START_Y + (index // 4) * GRID_Y_GAP
 
     requires_roll = str(data.get('requires_roll', '')).lower() in ('1', 'true', 'on', 'yes')
     roll_stat = (data.get('roll_stat') or '').strip()
-    raw_dc = data.get('roll_difficulty')
-    roll_difficulty = int(raw_dc) if str(raw_dc).strip() else 12
+    raw_dc = str(data.get('roll_difficulty') or '').strip()
+    roll_difficulty = int(raw_dc) if raw_dc else 12
 
     return Scene.objects.create(
         quest=quest,
@@ -220,8 +228,8 @@ def update_scene(scene_id, data):
     if 'roll_stat' in allowed_fields:
         scene.roll_stat = (data.get('roll_stat') or '').strip()
     if 'roll_difficulty' in allowed_fields:
-        raw_dc = data.get('roll_difficulty')
-        scene.roll_difficulty = int(raw_dc) if str(raw_dc).strip() else 12
+        raw_dc = str(data.get('roll_difficulty') or '').strip()
+        scene.roll_difficulty = int(raw_dc) if raw_dc else 12
 
     scene.save()
     return scene
@@ -248,16 +256,66 @@ def delete_scene(scene_id):
     return affected_choice_ids
 
 def create_choice(source_scene_id, data):
-    """Stub only"""
-    pass
+    scene = Scene.objects.get(pk=source_scene_id)
+    label = (data.get('label') or '').strip()
+    routing_type = (data.get('routing_type') or 'direct').strip()
+
+    target_scene_id = None
+    success_scene_id = None
+    failure_scene_id = None
+
+    if routing_type == 'roll':
+        raw_success = str(data.get('success_scene') or '').strip()
+        raw_failure = str(data.get('failure_scene') or '').strip()
+        success_scene_id = int(raw_success) if raw_success else None
+        failure_scene_id = int(raw_failure) if raw_failure else None
+    else:
+        raw_target = str(data.get('target_scene') or '').strip()
+        target_scene_id = int(raw_target) if raw_target else None
+
+    set_flag_name = (data.get('set_flag_name') or '').strip()
+    clear_flag_name = (data.get('clear_flag_name') or '').strip()
+
+    return Choice.objects.create(
+        scene=scene,
+        label=label,
+        target_scene_id=target_scene_id,
+        success_scene_id=success_scene_id,
+        failure_scene_id=failure_scene_id,
+        set_flag_name=set_flag_name,
+        clear_flag_name=clear_flag_name,
+    )
 
 def update_choice(choice_id, data):
-    """Stub only"""
-    pass
+    choice = Choice.objects.get(pk=choice_id)
+    label = (data.get('label') or '').strip()
+    routing_type = (data.get('routing_type') or 'direct').strip()
+
+    choice.label = label
+
+    if routing_type == 'roll':
+        raw_success = str(data.get('success_scene') or '').strip()
+        raw_failure = str(data.get('failure_scene') or '').strip()
+        choice.success_scene_id = int(raw_success) if raw_success else None
+        choice.failure_scene_id = int(raw_failure) if raw_failure else None
+        choice.target_scene_id = None
+    else:
+        raw_target = str(data.get('target_scene') or '').strip()
+        choice.target_scene_id = int(raw_target) if raw_target else None
+        choice.success_scene_id = None
+        choice.failure_scene_id = None
+
+    choice.set_flag_name = (data.get('set_flag_name') or '').strip()
+    choice.clear_flag_name = (data.get('clear_flag_name') or '').strip()
+
+    choice.save()
+    return choice
 
 def delete_choice(choice_id):
-    """Stub only"""
-    pass
+    choice = Choice.objects.get(pk=choice_id)
+    source_scene_id = choice.scene_id
+    choice.delete()
+    return source_scene_id
 
 def save_scene_position(scene_id, x, y):
     """Updates canvas_x and canvas_y on the scene and saves"""

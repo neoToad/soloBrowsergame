@@ -351,6 +351,134 @@ class UseItemTest(TestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+class QuestBuilderSceneTest(TestCase):
+    """Tests for quest builder scene create/save/delete admin views."""
+
+    def setUp(self):
+        from django.contrib.auth.models import User
+        self.admin = User.objects.create_superuser(
+            username='testadmin', password='testpass', email='a@a.com'
+        )
+        self.client = Client()
+        self.client.force_login(self.admin)
+        self.quest = Quest.objects.create(
+            key='test_quest',
+            title='Test Quest',
+            description='A quest for testing.',
+        )
+
+    def _create_url(self):
+        return reverse('admin:quest_builder_scene_create', args=[self.quest.pk])
+
+    def _save_url(self, scene_id):
+        return reverse('admin:quest_builder_scene_save', args=[self.quest.pk, scene_id])
+
+    def _delete_url(self, scene_id):
+        return reverse('admin:quest_builder_scene_delete', args=[self.quest.pk, scene_id])
+
+    # ── CREATE ─────────────────────────────────────────────────────────────────
+
+    def test_scene_create_saves_to_db(self):
+        self.assertEqual(Scene.objects.filter(quest=self.quest).count(), 0)
+
+        response = self.client.post(self._create_url(), {
+            'title': 'Rooftop',
+            'key': 'test_quest__rooftop',
+            'scene_type': 'normal',
+            'description': 'High up.',
+            'canvas_x': '100',
+            'canvas_y': '200',
+        })
+
+        self.assertEqual(response.status_code, 200,
+            f"Expected 200, got {response.status_code}. Body: {response.content[:400]}")
+        self.assertEqual(Scene.objects.filter(quest=self.quest).count(), 1)
+        scene = Scene.objects.get(quest=self.quest)
+        self.assertEqual(scene.title, 'Rooftop')
+        self.assertEqual(scene.key, 'test_quest__rooftop')
+        self.assertEqual(scene.canvas_x, 100)
+        self.assertEqual(scene.canvas_y, 200)
+
+    def test_scene_create_auto_generates_key(self):
+        self.client.post(self._create_url(), {
+            'title': 'Dark Alley',
+            'key': '',
+            'scene_type': 'normal',
+            'description': '',
+        })
+        scene = Scene.objects.get(quest=self.quest)
+        self.assertIn('test_quest', scene.key)
+        self.assertIn('dark', scene.key)
+
+    def test_scene_create_returns_oob_html(self):
+        response = self.client.post(self._create_url(), {
+            'title': 'Docks',
+            'scene_type': 'normal',
+            'description': '',
+        })
+        body = response.content.decode()
+        self.assertIn('hx-swap-oob', body)
+        self.assertIn('canvas-stage', body)
+        self.assertIn('qb-toast-container', body)
+        self.assertIn('Docks', body)
+
+    def test_scene_create_get_not_allowed(self):
+        response = self.client.get(self._create_url())
+        self.assertEqual(response.status_code, 405)
+
+    def test_scene_create_requires_login(self):
+        self.client.logout()
+        response = self.client.post(self._create_url(), {'title': 'X', 'scene_type': 'normal'})
+        # Should redirect to admin login
+        self.assertIn(response.status_code, [302, 403])
+
+    # ── SAVE ───────────────────────────────────────────────────────────────────
+
+    def test_scene_save_updates_db(self):
+        scene = Scene.objects.create(
+            quest=self.quest, key='test_quest__old', title='Old Title',
+            body='old body', scene_type='normal',
+        )
+        response = self.client.post(self._save_url(scene.pk), {
+            'title': 'New Title',
+            'key': 'test_quest__new',
+            'scene_type': 'hub',
+            'description': 'new body',
+        })
+        self.assertEqual(response.status_code, 200,
+            f"Expected 200, got {response.status_code}. Body: {response.content[:400]}")
+        scene.refresh_from_db()
+        self.assertEqual(scene.title, 'New Title')
+        self.assertEqual(scene.scene_type, 'hub')
+        self.assertEqual(scene.body, 'new body')
+
+    def test_scene_save_returns_oob_html(self):
+        scene = Scene.objects.create(
+            quest=self.quest, key='test_quest__s', title='Spot',
+            body='', scene_type='normal',
+        )
+        response = self.client.post(self._save_url(scene.pk), {
+            'title': 'Spot', 'key': 'test_quest__s',
+            'scene_type': 'normal', 'description': '',
+        })
+        body = response.content.decode()
+        self.assertIn('hx-swap-oob', body)
+        self.assertIn(f'scene-card-{scene.pk}', body)
+        self.assertIn('qb-toast-container', body)
+
+    # ── DELETE ─────────────────────────────────────────────────────────────────
+
+    def test_scene_delete_removes_from_db(self):
+        scene = Scene.objects.create(
+            quest=self.quest, key='test_quest__del', title='Gone',
+            body='', scene_type='normal',
+        )
+        response = self.client.post(self._delete_url(scene.pk))
+        self.assertEqual(response.status_code, 200,
+            f"Expected 200, got {response.content[:400]}")
+        self.assertFalse(Scene.objects.filter(pk=scene.pk).exists())
+
+
 class NoticeBoardTest(TestCase):
     fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_warehouse_job.json']
 

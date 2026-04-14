@@ -1,0 +1,162 @@
+<div id="choice-panel" style="padding: 18px;">
+    <h2 style="margin-top: 0;">
+        {% if choice %}Edit Choice{% else %}Add Choice{% endif %}
+    </h2>
+
+    <form
+        hx-post="{% if choice %}{% url 'admin:quest_builder_choice_save' quest_id choice.id %}{% else %}{% url 'admin:quest_builder_choice_create' quest_id %}{% endif %}"
+        hx-target="#htmx-sink"
+        hx-swap="innerHTML">
+        {% csrf_token %}
+        {% if not choice %}
+            <input type="hidden" name="source_scene_id" value="{{ source_scene_id }}">
+        {% endif %}
+
+        <div style="margin-bottom: 10px;">
+            <label for="choice-label"><strong>Label</strong></label><br>
+            <input
+                id="choice-label"
+                type="text"
+                name="label"
+                required
+                value="{{ choice.label|default:'' }}"
+                style="width: 100%;"
+                placeholder="Player-facing choice text">
+        </div>
+
+        <div style="border-top: 1px solid #ddd; margin-top: 12px; padding-top: 10px;">
+            <h3 style="margin: 0 0 8px;">Routing</h3>
+            <div style="display: flex; gap: 16px; margin-bottom: 12px;">
+                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600;">
+                    <input type="radio" name="routing_type" value="direct" id="route-direct"
+                        {% if routing_type == 'direct' %}checked{% endif %}>
+                    Direct
+                </label>
+                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600;">
+                    <input type="radio" name="routing_type" value="roll" id="route-roll"
+                        {% if routing_type == 'roll' %}checked{% endif %}>
+                    Roll-based
+                </label>
+            </div>
+
+            <div id="section-direct" {% if routing_type == 'roll' %}style="display: none;"{% endif %}>
+                <label for="target-scene"><strong>Target Scene</strong></label><br>
+                <select id="target-scene" name="target_scene" style="width: 100%; margin-top: 4px;">
+                    <option value="">— select scene —</option>
+                    {% for scene in scenes %}
+                        {% if scene.id != source_scene_id %}
+                            <option value="{{ scene.id }}"
+                                {% if choice and choice.target_scene_id == scene.id %}selected{% endif %}>
+                                {{ scene.title }} ({{ scene.key }})
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div id="section-roll" {% if routing_type == 'direct' %}style="display: none;"{% endif %}>
+                <small style="display: block; margin-bottom: 10px; color: #666;">
+                    Roll stat and difficulty are set on the scene, not the choice.
+                </small>
+                <div style="margin-bottom: 10px;">
+                    <label for="success-scene"><strong>Success Scene</strong></label><br>
+                    <select id="success-scene" name="success_scene" style="width: 100%; margin-top: 4px;">
+                        <option value="">— select scene —</option>
+                        {% for scene in scenes %}
+                            {% if scene.id != source_scene_id %}
+                                <option value="{{ scene.id }}"
+                                    {% if choice and choice.success_scene_id == scene.id %}selected{% endif %}>
+                                    {{ scene.title }} ({{ scene.key }})
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label for="failure-scene"><strong>Failure Scene</strong></label><br>
+                    <select id="failure-scene" name="failure_scene" style="width: 100%; margin-top: 4px;">
+                        <option value="">— select scene —</option>
+                        {% for scene in scenes %}
+                            {% if scene.id != source_scene_id %}
+                                <option value="{{ scene.id }}"
+                                    {% if choice and choice.failure_scene_id == scene.id %}selected{% endif %}>
+                                    {{ scene.title }} ({{ scene.key }})
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid #ddd; margin-top: 12px; padding-top: 10px;">
+            <h3 style="margin: 0 0 8px;">Flag Effects</h3>
+            <div style="margin-bottom: 10px;">
+                <label for="set-flag"><strong>Set Flag</strong></label><br>
+                <input
+                    id="set-flag"
+                    type="text"
+                    name="set_flag_name"
+                    value="{{ choice.set_flag_name|default:'' }}"
+                    style="width: 100%; margin-top: 4px;"
+                    placeholder="Flag to set when this choice is taken">
+            </div>
+            <div>
+                <label for="clear-flag"><strong>Clear Flag</strong></label><br>
+                <input
+                    id="clear-flag"
+                    type="text"
+                    name="clear_flag_name"
+                    value="{{ choice.clear_flag_name|default:'' }}"
+                    style="width: 100%; margin-top: 4px;"
+                    placeholder="Flag to clear when this choice is taken">
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;">
+            <button type="submit" class="button default">Save</button>
+            <button
+                type="button"
+                class="button"
+                onclick="document.getElementById('panel').innerHTML = '';">
+                Cancel
+            </button>
+            {% if choice %}
+                <button
+                    type="button"
+                    class="button deletelink"
+                    hx-post="{% url 'admin:quest_builder_choice_delete' quest_id choice.id %}"
+                    hx-target="#htmx-sink"
+                    hx-swap="innerHTML"
+                    hx-confirm="Delete this choice? Its arrow will be removed from the canvas.">
+                    Delete
+                </button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<script>
+(function () {
+    const panel = document.getElementById('choice-panel');
+    if (!panel) return;
+
+    const routeDirect = panel.querySelector('#route-direct');
+    const routeRoll   = panel.querySelector('#route-roll');
+    const sectionDirect = panel.querySelector('#section-direct');
+    const sectionRoll   = panel.querySelector('#section-roll');
+
+    function updateSections() {
+        if (routeRoll && routeRoll.checked) {
+            sectionDirect.style.display = 'none';
+            sectionRoll.style.display   = 'block';
+        } else {
+            sectionDirect.style.display = 'block';
+            sectionRoll.style.display   = 'none';
+        }
+    }
+
+    if (routeDirect) routeDirect.addEventListener('change', updateSections);
+    if (routeRoll)   routeRoll.addEventListener('change', updateSections);
+})();
+</script>

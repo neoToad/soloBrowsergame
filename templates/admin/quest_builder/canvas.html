@@ -290,21 +290,23 @@
             </defs>
 
             {% for arrow in arrows %}
-                <line
-                    id="{{ arrow.id }}"
-                    class="canvas-arrow canvas-arrow--{{ arrow.kind }}"
-                    x1="{{ arrow.x1 }}"
-                    y1="{{ arrow.y1 }}"
-                    x2="{{ arrow.x2 }}"
-                    y2="{{ arrow.y2 }}"
-                    marker-end="url(#arrowhead-{{ arrow.kind }})">
-                </line>
-                <text
-                    class="canvas-arrow-label canvas-arrow-label--{{ arrow.kind }}"
-                    x="{{ arrow.label_x }}"
-                    y="{{ arrow.label_y }}">
-                    {{ arrow.label }}
-                </text>
+                <g {% if arrow.choice_id %}data-choice-id="{{ arrow.choice_id }}" style="cursor: pointer; pointer-events: all;"{% endif %}>
+                    <line
+                        id="{{ arrow.id }}"
+                        class="canvas-arrow canvas-arrow--{{ arrow.kind }}"
+                        x1="{{ arrow.x1 }}"
+                        y1="{{ arrow.y1 }}"
+                        x2="{{ arrow.x2 }}"
+                        y2="{{ arrow.y2 }}"
+                        marker-end="url(#arrowhead-{{ arrow.kind }})">
+                    </line>
+                    <text
+                        class="canvas-arrow-label canvas-arrow-label--{{ arrow.kind }}"
+                        x="{{ arrow.label_x }}"
+                        y="{{ arrow.label_y }}">
+                        {{ arrow.label }}
+                    </text>
+                </g>
             {% endfor %}
         </svg>
 
@@ -316,6 +318,7 @@
 
 <div id="panel"></div>
 <div id="qb-toast-container"></div>
+<div id="htmx-sink" style="display:none;" aria-hidden="true"></div>
 
 <script>
     document.body.addEventListener('htmx:afterSwap', function (event) {
@@ -330,5 +333,112 @@
             }, 2600);
         });
     });
+</script>
+
+<script>
+(function () {
+    var CARD_WIDTH  = 220;
+    var CARD_HEIGHT = 100;
+
+    var svg = document.getElementById('canvas-overlay');
+
+    // Build the choice-panel edit URL from the canvas URL.
+    // Canvas URL: .../quest-builder/<quest_id>/  → strip trailing slash → + /choice/<id>/
+    var canvasUrl = "{% url 'admin:quest_builder_canvas' quest.id %}".replace(/\/$/, '');
+    var choiceNewBase  = canvasUrl + '/choice/new/';   // + <source_scene_id>/
+    var choiceEditBase = canvasUrl + '/choice/';       // + <choice_id>/
+
+    function getCardPos(sceneId) {
+        var card = document.getElementById('scene-card-' + sceneId);
+        if (!card) return null;
+        return {
+            x: parseInt(card.style.left, 10) || 0,
+            y: parseInt(card.style.top,  10) || 0,
+        };
+    }
+
+    function removeChoiceArrows(choiceId) {
+        svg.querySelectorAll('g[data-choice-id="' + choiceId + '"]').forEach(function (g) {
+            g.remove();
+        });
+    }
+
+    function makeArrowGroup(x1, y1, x2, y2, kind, label, choiceId) {
+        var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        g.setAttribute('data-choice-id', choiceId);
+        g.style.cursor        = 'pointer';
+        g.style.pointerEvents = 'all';
+
+        var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('class', 'canvas-arrow canvas-arrow--' + kind);
+        line.setAttribute('x1', x1);
+        line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2);
+        line.setAttribute('y2', y2);
+        line.setAttribute('marker-end', 'url(#arrowhead-' + kind + ')');
+
+        var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('class', 'canvas-arrow-label canvas-arrow-label--' + kind);
+        text.setAttribute('x', Math.round((x1 + x2) / 2));
+        text.setAttribute('y', Math.round((y1 + y2) / 2) - 6);
+        text.textContent = label;
+
+        g.appendChild(line);
+        g.appendChild(text);
+        return g;
+    }
+
+    function drawArrow(choiceData) {
+        var src = getCardPos(choiceData.source_scene_id);
+        if (!src) return;
+
+        var sx = src.x + CARD_WIDTH;
+        var sy = src.y + CARD_HEIGHT / 2;
+
+        function appendArrow(targetSceneId, kind) {
+            if (!targetSceneId) return;
+            var tgt = getCardPos(targetSceneId);
+            if (!tgt) return;
+            var tx = tgt.x;
+            var ty = tgt.y + CARD_HEIGHT / 2;
+            svg.appendChild(makeArrowGroup(sx, sy, tx, ty, kind, choiceData.label, choiceData.id));
+        }
+
+        if (choiceData.routing_type === 'roll') {
+            appendArrow(choiceData.success_scene_id, 'success');
+            appendArrow(choiceData.failure_scene_id, 'failure');
+        } else {
+            appendArrow(choiceData.target_scene_id, 'direct');
+        }
+    }
+
+    // HTMX event listeners
+    document.body.addEventListener('choiceCreated', function (e) {
+        var data = e.detail;
+        removeChoiceArrows(data.id);
+        drawArrow(data);
+        document.getElementById('panel').innerHTML = '';
+    });
+
+    document.body.addEventListener('choiceUpdated', function (e) {
+        var data = e.detail;
+        removeChoiceArrows(data.id);
+        drawArrow(data);
+        document.getElementById('panel').innerHTML = '';
+    });
+
+    document.body.addEventListener('choiceDeleted', function (e) {
+        removeChoiceArrows(e.detail.id);
+        document.getElementById('panel').innerHTML = '';
+    });
+
+    // Delegated click on SVG: open choice panel for any arrow group
+    svg.addEventListener('click', function (e) {
+        var g = e.target.closest('g[data-choice-id]');
+        if (!g) return;
+        var choiceId = g.getAttribute('data-choice-id');
+        htmx.ajax('GET', choiceEditBase + choiceId + '/', {target: '#panel', swap: 'innerHTML'});
+    });
+})();
 </script>
 {% endblock %}

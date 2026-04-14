@@ -5,8 +5,8 @@
 
     <form
         hx-post="{% if scene %}{% url 'admin:quest_builder_scene_save' quest_id scene.id %}{% else %}{% url 'admin:quest_builder_scene_create' quest_id %}{% endif %}"
-        hx-target="#canvas-container"
-        hx-swap="none">
+        hx-target="#htmx-sink"
+        hx-swap="innerHTML">
         {% csrf_token %}
 
         <h3 style="margin-bottom: 8px;">Basic Info</h3>
@@ -84,14 +84,49 @@
                     type="button"
                     class="button deletelink"
                     hx-post="{% url 'admin:quest_builder_scene_delete' quest_id scene.id %}"
-                    hx-target="#canvas-container"
-                    hx-swap="none"
+                    hx-target="#htmx-sink"
+                    hx-swap="innerHTML"
                     hx-confirm="Delete this scene? Choices that route here will be cleared.">
                     Delete
                 </button>
             {% endif %}
         </div>
     </form>
+
+    {% if scene and scene_choices %}
+        <div style="border-top: 1px solid #ddd; margin-top: 20px; padding-top: 14px;">
+            <h3 style="margin: 0 0 10px;">Choices</h3>
+            {% for c in scene_choices %}
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid #eee; gap: 8px;">
+                    <div style="flex: 1; min-width: 0;">
+                        <div style="font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {{ c.label }}
+                        </div>
+                        <div style="font-size: 11px; color: #666; margin-top: 2px;">
+                            {% if c.target_scene_id %}
+                                &rarr; {{ c.target_scene.title }}
+                            {% elif c.success_scene_id or c.failure_scene_id %}
+                                &#10003; {{ c.success_scene.title|default:"?" }} &nbsp;/&nbsp; &#10007; {{ c.failure_scene.title|default:"?" }}
+                            {% else %}
+                                <em>no target set</em>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <a href="#"
+                       style="font-size: 12px; white-space: nowrap;"
+                       hx-get="{% url 'admin:quest_builder_choice_panel' quest_id c.id %}"
+                       hx-target="#panel"
+                       hx-swap="innerHTML">
+                        Edit
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    {% elif scene %}
+        <div style="border-top: 1px solid #ddd; margin-top: 20px; padding-top: 14px; color: #999; font-size: 12px;">
+            No choices yet. Use &ldquo;Add Choice&rdquo; on the scene card.
+        </div>
+    {% endif %}
 </div>
 
 <script>

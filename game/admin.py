@@ -179,6 +179,31 @@ class QuestAdmin(admin.ModelAdmin):
                 self.admin_site.admin_view(self.quest_builder_scene_delete_view),
                 name='quest_builder_scene_delete',
             ),
+            path(
+                'quest-builder/<int:quest_id>/choice/new/<int:source_scene_id>/',
+                self.admin_site.admin_view(self.quest_builder_choice_panel_view),
+                name='quest_builder_choice_panel_new',
+            ),
+            path(
+                'quest-builder/<int:quest_id>/choice/create/',
+                self.admin_site.admin_view(self.quest_builder_choice_create_view),
+                name='quest_builder_choice_create',
+            ),
+            path(
+                'quest-builder/<int:quest_id>/choice/<int:choice_id>/',
+                self.admin_site.admin_view(self.quest_builder_choice_panel_view),
+                name='quest_builder_choice_panel',
+            ),
+            path(
+                'quest-builder/<int:quest_id>/choice/<int:choice_id>/save/',
+                self.admin_site.admin_view(self.quest_builder_choice_save_view),
+                name='quest_builder_choice_save',
+            ),
+            path(
+                'quest-builder/<int:quest_id>/choice/<int:choice_id>/delete/',
+                self.admin_site.admin_view(self.quest_builder_choice_delete_view),
+                name='quest_builder_choice_delete',
+            ),
         ]
         return custom + super().get_urls()
 
@@ -238,6 +263,22 @@ class QuestAdmin(admin.ModelAdmin):
     def quest_builder_scene_delete_view(self, request, quest_id, scene_id):
         from .views import scene_delete
         return scene_delete(request, quest_id, scene_id)
+
+    def quest_builder_choice_panel_view(self, request, quest_id, source_scene_id=None, choice_id=None):
+        from .views import choice_panel
+        return choice_panel(request, quest_id, source_scene_id=source_scene_id, choice_id=choice_id)
+
+    def quest_builder_choice_create_view(self, request, quest_id):
+        from .views import choice_create
+        return choice_create(request, quest_id)
+
+    def quest_builder_choice_save_view(self, request, quest_id, choice_id):
+        from .views import choice_save
+        return choice_save(request, quest_id, choice_id)
+
+    def quest_builder_choice_delete_view(self, request, quest_id, choice_id):
+        from .views import choice_delete
+        return choice_delete(request, quest_id, choice_id)
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):

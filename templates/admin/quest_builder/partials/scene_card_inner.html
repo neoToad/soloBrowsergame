@@ -18,6 +18,13 @@
             hx-swap="innerHTML">
             Edit
         </button>
-        <button type="button" class="qb-card-button">Add Choice</button>
+        <button
+            type="button"
+            class="qb-card-button"
+            hx-get="{% url 'admin:quest_builder_choice_panel_new' quest_id scene.id %}"
+            hx-target="#panel"
+            hx-swap="innerHTML">
+            Add Choice
+        </button>
     </div>
 </div>

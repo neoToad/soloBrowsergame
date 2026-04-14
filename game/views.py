@@ -18,6 +18,9 @@ from .services.quest_builder import (
     create_scene as create_scene_service,
     update_scene as update_scene_service,
     delete_scene as delete_scene_service,
+    create_choice as create_choice_service,
+    update_choice as update_choice_service,
+    delete_choice as delete_choice_service,
 )
 from .utils import (
     roll_d20, stat_modifier,
@@ -389,12 +392,19 @@ def scene_panel(request, quest_id, scene_id=None):
 
     get_object_or_404(Quest, pk=quest_id)
     scene = None
+    scene_choices = []
     if scene_id is not None:
         scene = get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+        scene_choices = list(
+            Choice.objects.filter(scene=scene)
+            .select_related('target_scene', 'success_scene', 'failure_scene')
+            .order_by('order')
+        )
 
     context = {
         'quest_id': quest_id,
         'scene': scene,
+        'scene_choices': scene_choices,
         'scene_types': Scene.SCENE_TYPES,
         'roll_stat_options': [
             ('strength', 'muscle'),
@@ -467,6 +477,104 @@ def scene_delete(request, quest_id, scene_id):
     )
     response = HttpResponse(html)
     response['HX-Trigger'] = json.dumps({'sceneUpdated': {'sceneId': scene_id}})
+    return response
+
+
+def choice_panel(request, quest_id, source_scene_id=None, choice_id=None):
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+
+    get_object_or_404(Quest, pk=quest_id)
+    choice = None
+    routing_type = 'direct'
+
+    if choice_id is not None:
+        choice = get_object_or_404(Choice, pk=choice_id)
+        source_scene_id = choice.scene_id
+        if choice.success_scene_id or choice.failure_scene_id:
+            routing_type = 'roll'
+
+    scenes = list(
+        Scene.objects.filter(quest_id=quest_id)
+        .only('id', 'key', 'title')
+        .order_by('order')
+    )
+
+    context = {
+        'quest_id': quest_id,
+        'source_scene_id': source_scene_id,
+        'choice': choice,
+        'scenes': scenes,
+        'routing_type': routing_type,
+    }
+    return render(request, 'admin/quest_builder/partials/choice_panel.html', context)
+
+
+def choice_create(request, quest_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    get_object_or_404(Quest, pk=quest_id)
+    raw_source = (request.POST.get('source_scene_id') or '').strip()
+    if not raw_source:
+        return HttpResponse("source_scene_id required", status=400)
+
+    choice = create_choice_service(int(raw_source), request.POST)
+    routing_type = 'roll' if (choice.success_scene_id or choice.failure_scene_id) else 'direct'
+
+    response = HttpResponse('')
+    response['HX-Trigger'] = json.dumps({
+        'choiceCreated': {
+            'id': choice.id,
+            'quest_id': quest_id,
+            'source_scene_id': choice.scene_id,
+            'routing_type': routing_type,
+            'target_scene_id': choice.target_scene_id,
+            'success_scene_id': choice.success_scene_id,
+            'failure_scene_id': choice.failure_scene_id,
+            'label': choice.label,
+        }
+    })
+    return response
+
+
+def choice_save(request, quest_id, choice_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    get_object_or_404(Choice, pk=choice_id)
+    choice = update_choice_service(choice_id, request.POST)
+    routing_type = 'roll' if (choice.success_scene_id or choice.failure_scene_id) else 'direct'
+
+    response = HttpResponse('')
+    response['HX-Trigger'] = json.dumps({
+        'choiceUpdated': {
+            'id': choice.id,
+            'source_scene_id': choice.scene_id,
+            'routing_type': routing_type,
+            'target_scene_id': choice.target_scene_id,
+            'success_scene_id': choice.success_scene_id,
+            'failure_scene_id': choice.failure_scene_id,
+            'label': choice.label,
+        }
+    })
+    return response
+
+
+def choice_delete(request, quest_id, choice_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    get_object_or_404(Choice, pk=choice_id)
+    source_scene_id = delete_choice_service(choice_id)
+
+    response = HttpResponse('')
+    response['HX-Trigger'] = json.dumps({
+        'choiceDeleted': {
+            'id': choice_id,
+            'source_scene_id': source_scene_id,
+        }
+    })
     return response
 
 
