@@ -134,6 +134,10 @@
             {% endif %}
         </div>
     </form>
+
+    {% if choice %}
+        {% include "admin/quest_builder/partials/requirements_section.html" with save_url=req_save_url %}
+    {% endif %}
 </div>
 
 <script>

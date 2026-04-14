@@ -96,6 +96,7 @@
     {% if scene %}
         {% include "admin/quest_builder/partials/items_section.html" %}
         {% include "admin/quest_builder/partials/combat_section.html" %}
+        {% include "admin/quest_builder/partials/requirements_section.html" with save_url=req_save_url %}
     {% endif %}
 
     {% if scene and scene_choices %}

@@ -220,6 +220,16 @@ class QuestAdmin(admin.ModelAdmin):
                 self.admin_site.admin_view(self.quest_builder_scene_combat_save_view),
                 name='quest_builder_scene_combat_save',
             ),
+            path(
+                'quest-builder/<int:quest_id>/scene/<int:scene_id>/requirements/save/',
+                self.admin_site.admin_view(self.quest_builder_scene_requirements_save_view),
+                name='quest_builder_scene_requirements_save',
+            ),
+            path(
+                'quest-builder/<int:quest_id>/choice/<int:choice_id>/requirements/save/',
+                self.admin_site.admin_view(self.quest_builder_choice_requirements_save_view),
+                name='quest_builder_choice_requirements_save',
+            ),
         ]
         return custom + super().get_urls()
 
@@ -307,6 +317,14 @@ class QuestAdmin(admin.ModelAdmin):
     def quest_builder_scene_combat_save_view(self, request, quest_id, scene_id):
         from .views import scene_combat_save
         return scene_combat_save(request, quest_id, scene_id)
+
+    def quest_builder_scene_requirements_save_view(self, request, quest_id, scene_id):
+        from .views import scene_requirements_save
+        return scene_requirements_save(request, quest_id, scene_id)
+
+    def quest_builder_choice_requirements_save_view(self, request, quest_id, choice_id):
+        from .views import choice_requirements_save
+        return choice_requirements_save(request, quest_id, choice_id)
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):

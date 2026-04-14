@@ -24,6 +24,7 @@ from .services.quest_builder import (
     save_scene_position as save_scene_position_service,
     update_scene_items as update_scene_items_service,
     update_combat_encounter as update_combat_encounter_service,
+    build_requirement_groups_from_post as build_requirement_groups_from_post_service,
 )
 from .utils import (
     roll_d20, stat_modifier,
@@ -415,10 +416,25 @@ def scene_panel(request, quest_id, scene_id=None):
 
     from .models.items import Item as ItemModel
     from .models.combat import Enemy as EnemyModel
+    from .models.requirements import Requirement
+    from .models.world import Quest as QuestModel
+    from .constants import STAT_FIELD_MAP
+    from django.urls import reverse as url_reverse
+
     all_items = list(ItemModel.objects.order_by('name'))
     all_enemies = list(EnemyModel.objects.order_by('name'))
+    all_quests = list(QuestModel.objects.order_by('title'))
     quest_scenes = list(
         Scene.objects.filter(quest_id=quest_id).only('id', 'key', 'title').order_by('order')
+    )
+
+    requirement_groups = (
+        list(scene.requirements.prefetch_related('requirements').all())
+        if scene else []
+    )
+    req_save_url = (
+        url_reverse('admin:quest_builder_scene_requirements_save', args=[quest_id, scene_id])
+        if scene else ''
     )
 
     context = {
@@ -438,6 +454,11 @@ def scene_panel(request, quest_id, scene_id=None):
         'all_enemies': all_enemies,
         'quest_scenes': quest_scenes,
         'combat_encounter': combat_encounter,
+        'requirement_groups': requirement_groups,
+        'req_save_url': req_save_url,
+        'all_quests': all_quests,
+        'stat_choices': [(v, k) for k, v in STAT_FIELD_MAP.items()],
+        'requirement_types': Requirement.CONDITION_TYPES,
     }
     return render(request, 'admin/quest_builder/partials/scene_panel.html', context)
 
@@ -611,12 +632,36 @@ def choice_panel(request, quest_id, source_scene_id=None, choice_id=None):
         .order_by('order')
     )
 
+    from .models.items import Item as ItemModel
+    from .models.requirements import Requirement
+    from .models.world import Quest as QuestModel
+    from .constants import STAT_FIELD_MAP
+    from django.urls import reverse as url_reverse
+
+    all_items = list(ItemModel.objects.order_by('name'))
+    all_quests = list(QuestModel.objects.order_by('title'))
+
+    requirement_groups = (
+        list(choice.requirements.prefetch_related('requirements').all())
+        if choice else []
+    )
+    req_save_url = (
+        url_reverse('admin:quest_builder_choice_requirements_save', args=[quest_id, choice_id])
+        if choice else ''
+    )
+
     context = {
         'quest_id': quest_id,
         'source_scene_id': source_scene_id,
         'choice': choice,
         'scenes': scenes,
         'routing_type': routing_type,
+        'requirement_groups': requirement_groups,
+        'req_save_url': req_save_url,
+        'all_quests': all_quests,
+        'all_items': all_items,
+        'stat_choices': [(v, k) for k, v in STAT_FIELD_MAP.items()],
+        'requirement_types': Requirement.CONDITION_TYPES,
     }
     return render(request, 'admin/quest_builder/partials/choice_panel.html', context)
 
@@ -687,6 +732,66 @@ def choice_delete(request, quest_id, choice_id):
         }
     })
     return response
+
+
+def scene_requirements_save(request, quest_id, scene_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    scene = get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+    build_requirement_groups_from_post_service(scene, request.POST)
+
+    from .models.requirements import Requirement
+    from .models.world import Quest as QuestModel
+    from .models.items import Item as ItemModel
+    from .constants import STAT_FIELD_MAP
+    from django.urls import reverse as url_reverse
+
+    html = render_to_string(
+        'admin/quest_builder/partials/requirements_section.html',
+        {
+            'quest_id': quest_id,
+            'requirement_groups': list(scene.requirements.prefetch_related('requirements').all()),
+            'save_url': url_reverse('admin:quest_builder_scene_requirements_save', args=[quest_id, scene_id]),
+            'all_quests': list(QuestModel.objects.order_by('title')),
+            'all_items': list(ItemModel.objects.order_by('name')),
+            'stat_choices': [(v, k) for k, v in STAT_FIELD_MAP.items()],
+            'requirement_types': Requirement.CONDITION_TYPES,
+            'toast_message': 'Requirements saved.',
+        },
+        request=request,
+    )
+    return HttpResponse(html)
+
+
+def choice_requirements_save(request, quest_id, choice_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    choice = get_object_or_404(Choice, pk=choice_id)
+    build_requirement_groups_from_post_service(choice, request.POST)
+
+    from .models.requirements import Requirement
+    from .models.world import Quest as QuestModel
+    from .models.items import Item as ItemModel
+    from .constants import STAT_FIELD_MAP
+    from django.urls import reverse as url_reverse
+
+    html = render_to_string(
+        'admin/quest_builder/partials/requirements_section.html',
+        {
+            'quest_id': quest_id,
+            'requirement_groups': list(choice.requirements.prefetch_related('requirements').all()),
+            'save_url': url_reverse('admin:quest_builder_choice_requirements_save', args=[quest_id, choice_id]),
+            'all_quests': list(QuestModel.objects.order_by('title')),
+            'all_items': list(ItemModel.objects.order_by('name')),
+            'stat_choices': [(v, k) for k, v in STAT_FIELD_MAP.items()],
+            'requirement_types': Requirement.CONDITION_TYPES,
+            'toast_message': 'Requirements saved.',
+        },
+        request=request,
+    )
+    return HttpResponse(html)
 
 
 def use_item(request, item_id):

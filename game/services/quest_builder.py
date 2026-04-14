@@ -406,5 +406,108 @@ def update_combat_encounter(scene_id, data):
 
 
 def build_requirement_groups_from_post(obj, post_data):
-    """Stub only"""
-    pass
+    """
+    Clears all RequirementGroup M2M relations on obj, then rebuilds from POST data.
+    obj is a Scene or Choice (both have requirements M2M to RequirementGroup).
+    Returns the list of created RequirementGroup objects.
+
+    POST format:
+      group_count = N
+      group_0_logic = all|any
+      group_0_req_count = M
+      group_0_req_0_type = stat_gte
+      group_0_req_0_param = strength:3       (stat: "name:value")
+      group_0_req_0_param = met_informant    (flag: flag_name)
+      group_0_req_0_param = <quest_id>       (quest types)
+      group_0_req_0_param2 = victory         (quest_ending only: ending_type)
+      group_0_req_0_param = <item_id>        (item types)
+      group_0_req_0_param = <number>         (level_gte / xp_gte)
+    """
+    from ..models.requirements import Requirement, RequirementGroup
+
+    with transaction.atomic():
+        obj.requirements.clear()
+
+        raw_count = str(post_data.get('group_count') or '').strip()
+        try:
+            group_count = int(raw_count)
+        except (ValueError, TypeError):
+            return []
+
+        created_groups = []
+        for gi in range(group_count):
+            logic = (post_data.get(f'group_{gi}_logic') or 'all').strip()
+            if logic not in ('all', 'any'):
+                logic = 'all'
+
+            raw_req_count = str(post_data.get(f'group_{gi}_req_count') or '').strip()
+            try:
+                req_count = int(raw_req_count)
+            except (ValueError, TypeError):
+                req_count = 0
+
+            group = RequirementGroup.objects.create(
+                label=f'Group {gi + 1}',
+                logic=logic,
+            )
+
+            for ri in range(req_count):
+                ctype = (post_data.get(f'group_{gi}_req_{ri}_type') or '').strip()
+                if not ctype:
+                    continue
+                param  = (post_data.get(f'group_{gi}_req_{ri}_param')  or '').strip()
+                param2 = (post_data.get(f'group_{gi}_req_{ri}_param2') or '').strip()
+
+                req_kwargs = {'condition_type': ctype}
+
+                if ctype in ('stat_gte', 'stat_lte'):
+                    if ':' in param:
+                        stat_name, _, raw_val = param.partition(':')
+                        req_kwargs['stat_name'] = stat_name.strip()
+                        try:
+                            req_kwargs['stat_value'] = int(raw_val.strip())
+                        except ValueError:
+                            req_kwargs['stat_value'] = 0
+                    else:
+                        req_kwargs['stat_name'] = param
+                        req_kwargs['stat_value'] = 0
+
+                elif ctype in ('has_flag', 'missing_flag'):
+                    req_kwargs['flag_name'] = param
+
+                elif ctype in ('quest_completed', 'quest_not_done'):
+                    if param:
+                        try:
+                            req_kwargs['required_quest_id'] = int(param)
+                        except ValueError:
+                            pass
+
+                elif ctype == 'quest_ending':
+                    if param:
+                        try:
+                            req_kwargs['required_quest_id'] = int(param)
+                        except ValueError:
+                            pass
+                    if param2:
+                        req_kwargs['required_ending_type'] = param2
+
+                elif ctype in ('level_gte', 'xp_gte'):
+                    try:
+                        req_kwargs['stat_value'] = int(param)
+                    except (ValueError, TypeError):
+                        req_kwargs['stat_value'] = 0
+
+                elif ctype in ('has_item', 'missing_item'):
+                    if param:
+                        try:
+                            req_kwargs['required_item_id'] = int(param)
+                        except ValueError:
+                            pass
+
+                req = Requirement.objects.create(**req_kwargs)
+                group.requirements.add(req)
+
+            obj.requirements.add(group)
+            created_groups.append(group)
+
+        return created_groups
