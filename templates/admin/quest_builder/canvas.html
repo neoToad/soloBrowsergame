@@ -266,7 +266,7 @@
         hx-swap="innerHTML">
         New Scene
     </button>
-    <button type="button" class="button">Auto Layout</button>
+    <button type="button" class="button" id="auto-layout-btn">Auto Layout</button>
     <a href="{% url 'admin:game_quest_change' quest.id %}" class="closelink" style="margin-left: auto;">Exit Builder</a>
 </div>
 
@@ -290,7 +290,12 @@
             </defs>
 
             {% for arrow in arrows %}
-                <g {% if arrow.choice_id %}data-choice-id="{{ arrow.choice_id }}" style="cursor: pointer; pointer-events: all;"{% endif %}>
+                <g
+                    data-source-scene-id="{{ arrow.source_scene_id }}"
+                    data-target-scene-id="{{ arrow.target_scene_id }}"
+                    {% if arrow.success_scene_id %}data-success-scene-id="{{ arrow.success_scene_id }}"{% endif %}
+                    {% if arrow.failure_scene_id %}data-failure-scene-id="{{ arrow.failure_scene_id }}"{% endif %}
+                    {% if arrow.choice_id %}data-choice-id="{{ arrow.choice_id }}" style="cursor: pointer; pointer-events: all;"{% endif %}>
                     <line
                         id="{{ arrow.id }}"
                         class="canvas-arrow canvas-arrow--{{ arrow.kind }}"
@@ -337,36 +342,196 @@
 
 <script>
 (function () {
-    var CARD_WIDTH  = 220;
-    var CARD_HEIGHT = 100;
+    var DRAG_SAVE_DEBOUNCE_MS = 400;
+    var LAYOUT_X_GAP = 280;
+    var LAYOUT_Y_GAP = 200;
+    var LAYOUT_START_X = 60;
+    var LAYOUT_START_Y = 60;
+    var LAYOUT_SAVE_STAGGER_MS = 50;
 
+    var stage = document.getElementById('canvas-stage');
     var svg = document.getElementById('canvas-overlay');
+    var autoLayoutBtn = document.getElementById('auto-layout-btn');
 
-    // Build the choice-panel edit URL from the canvas URL.
-    // Canvas URL: .../quest-builder/<quest_id>/  → strip trailing slash → + /choice/<id>/
     var canvasUrl = "{% url 'admin:quest_builder_canvas' quest.id %}".replace(/\/$/, '');
-    var choiceNewBase  = canvasUrl + '/choice/new/';   // + <source_scene_id>/
-    var choiceEditBase = canvasUrl + '/choice/';       // + <choice_id>/
+    var choiceNewBase = canvasUrl + '/choice/new/';
+    var choiceEditBase = canvasUrl + '/choice/';
+    var sceneMoveBase = canvasUrl + '/scene/';
 
-    function getCardPos(sceneId) {
-        var card = document.getElementById('scene-card-' + sceneId);
-        if (!card) return null;
-        return {
-            x: parseInt(card.style.left, 10) || 0,
-            y: parseInt(card.style.top,  10) || 0,
-        };
+    var cardBySceneId = {};
+    var arrowRecords = [];
+    var arrowRecordsBySceneId = {};
+    var moveSaveTimers = {};
+    var dragState = {
+        isDragging: false,
+        card: null,
+        sceneId: null,
+        startMouseX: 0,
+        startMouseY: 0,
+        startLeft: 0,
+        startTop: 0,
+        originalZIndex: '',
+    };
+
+    function getSceneMoveUrl(sceneId) {
+        return sceneMoveBase + sceneId + '/move/';
+    }
+
+    function getCsrfToken() {
+        var match = document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/);
+        return match ? decodeURIComponent(match[1]) : '';
+    }
+
+    function refreshSceneCache() {
+        cardBySceneId = {};
+        stage.querySelectorAll('.scene-card[data-scene-id]').forEach(function (card) {
+            var sceneId = parseInt(card.getAttribute('data-scene-id'), 10);
+            if (!isNaN(sceneId)) {
+                cardBySceneId[sceneId] = card;
+            }
+        });
+    }
+
+    function parseArrowSceneId(group, attrName) {
+        var raw = group.getAttribute(attrName);
+        if (!raw) {
+            return null;
+        }
+        var parsed = parseInt(raw, 10);
+        return isNaN(parsed) ? null : parsed;
+    }
+
+    function indexArrowRecordForScene(record, sceneId) {
+        if (sceneId === null || sceneId === undefined) {
+            return;
+        }
+        if (!arrowRecordsBySceneId[sceneId]) {
+            arrowRecordsBySceneId[sceneId] = [];
+        }
+        arrowRecordsBySceneId[sceneId].push(record);
+    }
+
+    function rebuildArrowCaches() {
+        arrowRecords = [];
+        arrowRecordsBySceneId = {};
+
+        svg.querySelectorAll('g').forEach(function (group) {
+            var line = group.querySelector('line, path');
+            var label = group.querySelector('text');
+            if (!line) {
+                return;
+            }
+
+            var sourceSceneId = parseArrowSceneId(group, 'data-source-scene-id');
+            var targetSceneId = parseArrowSceneId(group, 'data-target-scene-id');
+            var successSceneId = parseArrowSceneId(group, 'data-success-scene-id');
+            var failureSceneId = parseArrowSceneId(group, 'data-failure-scene-id');
+
+            var record = {
+                line: line,
+                label: label,
+                sourceSceneId: sourceSceneId,
+                targetSceneId: targetSceneId,
+                successSceneId: successSceneId,
+                failureSceneId: failureSceneId,
+            };
+
+            arrowRecords.push(record);
+            indexArrowRecordForScene(record, sourceSceneId);
+            indexArrowRecordForScene(record, targetSceneId);
+            indexArrowRecordForScene(record, successSceneId);
+            indexArrowRecordForScene(record, failureSceneId);
+        });
+    }
+
+    function rebuildCaches() {
+        refreshSceneCache();
+        rebuildArrowCaches();
+    }
+
+    function updateArrowRecord(record) {
+        var sourceCard = cardBySceneId[record.sourceSceneId];
+        var targetSceneId = record.targetSceneId || record.successSceneId || record.failureSceneId;
+        var targetCard = cardBySceneId[targetSceneId];
+        if (!sourceCard || !targetCard) {
+            return;
+        }
+
+        var x1 = sourceCard.offsetLeft + sourceCard.offsetWidth;
+        var y1 = sourceCard.offsetTop + (sourceCard.offsetHeight / 2);
+        var x2 = targetCard.offsetLeft;
+        var y2 = targetCard.offsetTop + (targetCard.offsetHeight / 2);
+
+        if (record.line.tagName.toLowerCase() === 'path') {
+            record.line.setAttribute('d', 'M ' + x1 + ' ' + y1 + ' L ' + x2 + ' ' + y2);
+        } else {
+            record.line.setAttribute('x1', x1);
+            record.line.setAttribute('y1', y1);
+            record.line.setAttribute('x2', x2);
+            record.line.setAttribute('y2', y2);
+        }
+
+        if (record.label) {
+            record.label.setAttribute('x', Math.round((x1 + x2) / 2));
+            record.label.setAttribute('y', Math.round((y1 + y2) / 2) - 6);
+        }
+    }
+
+    function redrawArrowsForScene(sceneId) {
+        var records = arrowRecordsBySceneId[sceneId] || [];
+        for (var i = 0; i < records.length; i += 1) {
+            updateArrowRecord(records[i]);
+        }
+    }
+
+    function redrawAllArrows() {
+        for (var i = 0; i < arrowRecords.length; i += 1) {
+            updateArrowRecord(arrowRecords[i]);
+        }
+    }
+
+    function postSceneMove(sceneId, x, y) {
+        var body = new URLSearchParams({x: String(x), y: String(y)});
+        fetch(getSceneMoveUrl(sceneId), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'X-CSRFToken': getCsrfToken(),
+                'HX-Request': 'true',
+            },
+            body: body.toString(),
+            credentials: 'same-origin',
+        });
+    }
+
+    function scheduleSceneMove(sceneId, x, y) {
+        if (moveSaveTimers[sceneId]) {
+            clearTimeout(moveSaveTimers[sceneId]);
+        }
+        moveSaveTimers[sceneId] = setTimeout(function () {
+            postSceneMove(sceneId, x, y);
+            delete moveSaveTimers[sceneId];
+        }, DRAG_SAVE_DEBOUNCE_MS);
     }
 
     function removeChoiceArrows(choiceId) {
         svg.querySelectorAll('g[data-choice-id="' + choiceId + '"]').forEach(function (g) {
             g.remove();
         });
+        rebuildArrowCaches();
     }
 
-    function makeArrowGroup(x1, y1, x2, y2, kind, label, choiceId) {
+    function makeArrowGroup(x1, y1, x2, y2, kind, label, choiceId, sourceSceneId, targetSceneId) {
         var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         g.setAttribute('data-choice-id', choiceId);
-        g.style.cursor        = 'pointer';
+        g.setAttribute('data-source-scene-id', sourceSceneId);
+        g.setAttribute('data-target-scene-id', targetSceneId);
+        if (kind === 'success') {
+            g.setAttribute('data-success-scene-id', targetSceneId);
+        } else if (kind === 'failure') {
+            g.setAttribute('data-failure-scene-id', targetSceneId);
+        }
+        g.style.cursor = 'pointer';
         g.style.pointerEvents = 'all';
 
         var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
@@ -389,19 +554,37 @@
     }
 
     function drawArrow(choiceData) {
-        var src = getCardPos(choiceData.source_scene_id);
-        if (!src) return;
+        var sourceCard = cardBySceneId[choiceData.source_scene_id];
+        if (!sourceCard) {
+            return;
+        }
 
-        var sx = src.x + CARD_WIDTH;
-        var sy = src.y + CARD_HEIGHT / 2;
+        var sx = sourceCard.offsetLeft + sourceCard.offsetWidth;
+        var sy = sourceCard.offsetTop + sourceCard.offsetHeight / 2;
 
         function appendArrow(targetSceneId, kind) {
-            if (!targetSceneId) return;
-            var tgt = getCardPos(targetSceneId);
-            if (!tgt) return;
-            var tx = tgt.x;
-            var ty = tgt.y + CARD_HEIGHT / 2;
-            svg.appendChild(makeArrowGroup(sx, sy, tx, ty, kind, choiceData.label, choiceData.id));
+            if (!targetSceneId) {
+                return;
+            }
+            var targetCard = cardBySceneId[targetSceneId];
+            if (!targetCard) {
+                return;
+            }
+            var tx = targetCard.offsetLeft;
+            var ty = targetCard.offsetTop + targetCard.offsetHeight / 2;
+            svg.appendChild(
+                makeArrowGroup(
+                    sx,
+                    sy,
+                    tx,
+                    ty,
+                    kind,
+                    choiceData.label,
+                    choiceData.id,
+                    choiceData.source_scene_id,
+                    targetSceneId
+                )
+            );
         }
 
         if (choiceData.routing_type === 'roll') {
@@ -410,9 +593,166 @@
         } else {
             appendArrow(choiceData.target_scene_id, 'direct');
         }
+
+        rebuildArrowCaches();
     }
 
-    // HTMX event listeners
+    function startDrag(event, card) {
+        if (event.target.closest('button, a')) {
+            return;
+        }
+        var sceneId = parseInt(card.getAttribute('data-scene-id'), 10);
+        if (isNaN(sceneId)) {
+            return;
+        }
+
+        dragState.isDragging = true;
+        dragState.card = card;
+        dragState.sceneId = sceneId;
+        dragState.startMouseX = event.clientX;
+        dragState.startMouseY = event.clientY;
+        dragState.startLeft = card.offsetLeft;
+        dragState.startTop = card.offsetTop;
+        dragState.originalZIndex = card.style.zIndex || '';
+
+        card.style.zIndex = '1000';
+        card.style.cursor = 'grabbing';
+        document.body.style.userSelect = 'none';
+        event.preventDefault();
+    }
+
+    function onDragMove(event) {
+        if (!dragState.isDragging || !dragState.card) {
+            return;
+        }
+
+        var dx = event.clientX - dragState.startMouseX;
+        var dy = event.clientY - dragState.startMouseY;
+        var nextLeft = dragState.startLeft + dx;
+        var nextTop = dragState.startTop + dy;
+
+        dragState.card.style.left = nextLeft + 'px';
+        dragState.card.style.top = nextTop + 'px';
+        redrawArrowsForScene(dragState.sceneId);
+    }
+
+    function onDragEnd() {
+        if (!dragState.isDragging || !dragState.card) {
+            return;
+        }
+
+        var movedCard = dragState.card;
+        var movedSceneId = dragState.sceneId;
+        var finalX = movedCard.offsetLeft;
+        var finalY = movedCard.offsetTop;
+
+        dragState.isDragging = false;
+        dragState.card = null;
+        dragState.sceneId = null;
+        movedCard.style.zIndex = dragState.originalZIndex;
+        movedCard.style.cursor = 'grab';
+        document.body.style.userSelect = '';
+
+        scheduleSceneMove(movedSceneId, finalX, finalY);
+    }
+
+    function runAutoLayout() {
+        refreshSceneCache();
+
+        var sceneIds = Object.keys(cardBySceneId).map(function (id) {
+            return parseInt(id, 10);
+        }).filter(function (id) {
+            return !isNaN(id);
+        });
+        if (!sceneIds.length) {
+            return;
+        }
+
+        var adjacency = {};
+        var indegree = {};
+        var columnByScene = {};
+        sceneIds.forEach(function (sceneId) {
+            adjacency[sceneId] = [];
+            indegree[sceneId] = 0;
+            columnByScene[sceneId] = 0;
+        });
+
+        var seenEdges = {};
+        arrowRecords.forEach(function (record) {
+            var source = record.sourceSceneId;
+            var target = record.targetSceneId || record.successSceneId || record.failureSceneId;
+            if (!source || !target || source === target || !adjacency[source] || !adjacency[target]) {
+                return;
+            }
+
+            var edgeKey = source + '->' + target;
+            if (seenEdges[edgeKey]) {
+                return;
+            }
+            seenEdges[edgeKey] = true;
+            adjacency[source].push(target);
+            indegree[target] += 1;
+        });
+
+        var queue = sceneIds.filter(function (sceneId) {
+            return indegree[sceneId] === 0;
+        }).sort(function (a, b) {
+            return a - b;
+        });
+
+        var topoOrder = [];
+        while (queue.length) {
+            var current = queue.shift();
+            topoOrder.push(current);
+
+            adjacency[current].forEach(function (next) {
+                indegree[next] -= 1;
+                if (columnByScene[next] < columnByScene[current] + 1) {
+                    columnByScene[next] = columnByScene[current] + 1;
+                }
+                if (indegree[next] === 0) {
+                    queue.push(next);
+                }
+            });
+
+            queue.sort(function (a, b) {
+                return a - b;
+            });
+        }
+
+        var remaining = sceneIds.filter(function (sceneId) {
+            return topoOrder.indexOf(sceneId) === -1;
+        }).sort(function (a, b) {
+            return a - b;
+        });
+
+        var orderedScenes = topoOrder.concat(remaining);
+        var rowByColumn = {};
+
+        orderedScenes.forEach(function (sceneId, index) {
+            var card = cardBySceneId[sceneId];
+            if (!card) {
+                return;
+            }
+
+            var column = columnByScene[sceneId] || 0;
+            var row = rowByColumn[column] || 0;
+            rowByColumn[column] = row + 1;
+
+            var x = column * LAYOUT_X_GAP + LAYOUT_START_X;
+            var y = row * LAYOUT_Y_GAP + LAYOUT_START_Y;
+
+            card.style.left = x + 'px';
+            card.style.top = y + 'px';
+
+            setTimeout(function () {
+                postSceneMove(sceneId, x, y);
+            }, index * LAYOUT_SAVE_STAGGER_MS);
+        });
+
+        redrawAllArrows();
+    }
+
     document.body.addEventListener('choiceCreated', function (e) {
         var data = e.detail;
         removeChoiceArrows(data.id);
@@ -432,13 +772,35 @@
         document.getElementById('panel').innerHTML = '';
     });
 
-    // Delegated click on SVG: open choice panel for any arrow group
+    stage.addEventListener('mousedown', function (e) {
+        var card = e.target.closest('.scene-card');
+        if (!card || !stage.contains(card)) {
+            return;
+        }
+        startDrag(e, card);
+    });
+
+    document.addEventListener('mousemove', onDragMove);
+    document.addEventListener('mouseup', onDragEnd);
+
+    if (autoLayoutBtn) {
+        autoLayoutBtn.addEventListener('click', runAutoLayout);
+    }
+
+    document.body.addEventListener('sceneUpdated', function () {
+        setTimeout(rebuildCaches, 0);
+    });
+
     svg.addEventListener('click', function (e) {
         var g = e.target.closest('g[data-choice-id]');
-        if (!g) return;
+        if (!g) {
+            return;
+        }
         var choiceId = g.getAttribute('data-choice-id');
         htmx.ajax('GET', choiceEditBase + choiceId + '/', {target: '#panel', swap: 'innerHTML'});
     });
+
+    rebuildCaches();
 })();
 </script>
 {% endblock %}

@@ -180,6 +180,11 @@ class QuestAdmin(admin.ModelAdmin):
                 name='quest_builder_scene_delete',
             ),
             path(
+                'quest-builder/<int:quest_id>/scene/<int:scene_id>/move/',
+                self.admin_site.admin_view(self.quest_builder_scene_move_view),
+                name='quest_builder_scene_move',
+            ),
+            path(
                 'quest-builder/<int:quest_id>/choice/new/<int:source_scene_id>/',
                 self.admin_site.admin_view(self.quest_builder_choice_panel_view),
                 name='quest_builder_choice_panel_new',
@@ -263,6 +268,10 @@ class QuestAdmin(admin.ModelAdmin):
     def quest_builder_scene_delete_view(self, request, quest_id, scene_id):
         from .views import scene_delete
         return scene_delete(request, quest_id, scene_id)
+
+    def quest_builder_scene_move_view(self, request, quest_id, scene_id):
+        from .views import scene_move
+        return scene_move(request, quest_id, scene_id)
 
     def quest_builder_choice_panel_view(self, request, quest_id, source_scene_id=None, choice_id=None):
         from .views import choice_panel

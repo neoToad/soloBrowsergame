@@ -21,6 +21,7 @@ from .services.quest_builder import (
     create_choice as create_choice_service,
     update_choice as update_choice_service,
     delete_choice as delete_choice_service,
+    save_scene_position as save_scene_position_service,
 )
 from .utils import (
     roll_d20, stat_modifier,
@@ -478,6 +479,22 @@ def scene_delete(request, quest_id, scene_id):
     response = HttpResponse(html)
     response['HX-Trigger'] = json.dumps({'sceneUpdated': {'sceneId': scene_id}})
     return response
+
+
+def scene_move(request, quest_id, scene_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+
+    try:
+        x = int((request.POST.get('x') or '').strip())
+        y = int((request.POST.get('y') or '').strip())
+    except (TypeError, ValueError):
+        return HttpResponse("x and y must be integers", status=400)
+
+    save_scene_position_service(scene_id, x, y)
+    return HttpResponse(status=204)
 
 
 def choice_panel(request, quest_id, source_scene_id=None, choice_id=None):

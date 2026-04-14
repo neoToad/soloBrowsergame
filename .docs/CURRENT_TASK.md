@@ -13,6 +13,7 @@ Improving **core gameplay depth** and **narrative scale** by expanding the Prope
 - **UI Enhancements**: Item detail modals (`<dialog>`) and property turn summaries.
 
 ### In Progress
+- quest builder
 - **Property Upgrades**: Implementing logic for `upgrade_tier` affecting income/heat/rep.
 - **Natural Key Support**: Adding `natural_key()` to core models to ensure `export_quest` fixtures are portable across databases.
 - **Street Content Expansion**: Adding more contestable properties and associated resolution quests.
