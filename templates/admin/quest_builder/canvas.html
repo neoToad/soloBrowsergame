@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block content %}
+<script src="https://unpkg.com/htmx.org@2.0.4"></script>
 <style>
     :root {
         --qb-canvas-bg: #151a22;
@@ -165,12 +166,50 @@
         position: fixed;
         right: 0;
         top: 0;
-        width: 350px;
+        width: 380px;
+        max-width: 92vw;
         height: 100%;
         background: #fff;
-        box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+        box-shadow: -8px 0 24px rgba(0, 0, 0, 0.2);
         z-index: 1000;
-        display: none; /* Empty for now */
+        overflow-y: auto;
+        transform: translateX(100%);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.22s ease, opacity 0.22s ease;
+    }
+
+    #panel:not(:empty) {
+        transform: translateX(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    #qb-toast-container {
+        position: fixed;
+        right: 18px;
+        top: 18px;
+        z-index: 1200;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .qb-toast {
+        padding: 10px 12px;
+        border-radius: 8px;
+        color: #fff;
+        font-size: 12px;
+        max-width: 360px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+    }
+
+    .qb-toast--success {
+        background: #1b7f42;
+    }
+
+    .qb-toast--warning {
+        background: #b56a00;
     }
 
     svg#canvas-overlay {
@@ -219,7 +258,14 @@
 
 <div id="toolbar">
     <strong style="font-size: 1.2em;">{{ quest.title }}</strong>
-    <button type="button" class="button">New Scene</button>
+    <button
+        type="button"
+        class="button"
+        hx-get="{% url 'admin:quest_builder_scene_panel_new' quest.id %}"
+        hx-target="#panel"
+        hx-swap="innerHTML">
+        New Scene
+    </button>
     <button type="button" class="button">Auto Layout</button>
     <a href="{% url 'admin:game_quest_change' quest.id %}" class="closelink" style="margin-left: auto;">Exit Builder</a>
 </div>
@@ -263,31 +309,26 @@
         </svg>
 
         {% for scene in scenes %}
-            <div class="scene-card"
-                 style="left: {{ scene.canvas_x }}px; top: {{ scene.canvas_y }}px;"
-                 data-scene-id="{{ scene.id }}">
-                <div class="scene-card-header">
-                    <div class="scene-title" title="{{ scene.title }}">{{ scene.title }}</div>
-                    <span class="type-badge type-badge-{{ scene.scene_type }}">{{ scene.scene_type }}</span>
-                </div>
-                <div class="scene-key">{{ scene.key }}</div>
-                <div class="scene-card-footer">
-                    {% if scene.requires_roll %}
-                        <div class="roll-badge">ROLL</div>
-                    {% else %}
-                        <div></div>
-                    {% endif %}
-                    <div class="scene-card-actions">
-                        <button type="button" class="qb-card-button">Edit</button>
-                        <button type="button" class="qb-card-button">Add Choice</button>
-                    </div>
-                </div>
-            </div>
+            {% include "admin/quest_builder/partials/scene_card.html" with scene=scene quest_id=quest.id only %}
         {% endfor %}
     </div>
 </div>
 
-<div id="panel">
-    <!-- HTMX slide-out panels will go here -->
-</div>
+<div id="panel"></div>
+<div id="qb-toast-container"></div>
+
+<script>
+    document.body.addEventListener('htmx:afterSwap', function (event) {
+        if (event.target.id !== 'qb-toast-container') {
+            return;
+        }
+
+        const toasts = event.target.querySelectorAll('.qb-toast');
+        toasts.forEach(function (toast) {
+            setTimeout(function () {
+                toast.remove();
+            }, 2600);
+        });
+    });
+</script>
 {% endblock %}

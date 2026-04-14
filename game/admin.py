@@ -154,6 +154,31 @@ class QuestAdmin(admin.ModelAdmin):
                 self.admin_site.admin_view(self.quest_builder_canvas_view),
                 name='quest_builder_canvas',
             ),
+            path(
+                'quest-builder/<int:quest_id>/scene/new/',
+                self.admin_site.admin_view(self.quest_builder_scene_panel_view),
+                name='quest_builder_scene_panel_new',
+            ),
+            path(
+                'quest-builder/<int:quest_id>/scene/<int:scene_id>/',
+                self.admin_site.admin_view(self.quest_builder_scene_panel_view),
+                name='quest_builder_scene_panel',
+            ),
+            path(
+                'quest-builder/<int:quest_id>/scene/<int:scene_id>/save/',
+                self.admin_site.admin_view(self.quest_builder_scene_save_view),
+                name='quest_builder_scene_save',
+            ),
+            path(
+                'quest-builder/<int:quest_id>/scene/create/',
+                self.admin_site.admin_view(self.quest_builder_scene_create_view),
+                name='quest_builder_scene_create',
+            ),
+            path(
+                'quest-builder/<int:quest_id>/scene/<int:scene_id>/delete/',
+                self.admin_site.admin_view(self.quest_builder_scene_delete_view),
+                name='quest_builder_scene_delete',
+            ),
         ]
         return custom + super().get_urls()
 
@@ -197,6 +222,22 @@ class QuestAdmin(admin.ModelAdmin):
     def quest_builder_canvas_view(self, request, quest_id):
         from .views import quest_builder_canvas
         return quest_builder_canvas(request, quest_id)
+
+    def quest_builder_scene_panel_view(self, request, quest_id, scene_id=None):
+        from .views import scene_panel
+        return scene_panel(request, quest_id, scene_id=scene_id)
+
+    def quest_builder_scene_save_view(self, request, quest_id, scene_id):
+        from .views import scene_save
+        return scene_save(request, quest_id, scene_id)
+
+    def quest_builder_scene_create_view(self, request, quest_id):
+        from .views import scene_create
+        return scene_create(request, quest_id)
+
+    def quest_builder_scene_delete_view(self, request, quest_id, scene_id):
+        from .views import scene_delete
+        return scene_delete(request, quest_id, scene_id)
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):

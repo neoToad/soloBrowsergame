@@ -1,0 +1,118 @@
+<div id="scene-panel" style="padding: 18px;">
+    <h2 style="margin-top: 0;">
+        {% if scene %}Edit Scene{% else %}New Scene{% endif %}
+    </h2>
+
+    <form
+        hx-post="{% if scene %}{% url 'admin:quest_builder_scene_save' quest_id scene.id %}{% else %}{% url 'admin:quest_builder_scene_create' quest_id %}{% endif %}"
+        hx-target="#canvas-container"
+        hx-swap="none">
+        {% csrf_token %}
+
+        <h3 style="margin-bottom: 8px;">Basic Info</h3>
+        <div style="margin-bottom: 10px;">
+            <label for="scene-title"><strong>Title</strong></label><br>
+            <input id="scene-title" type="text" name="title" required value="{{ scene.title|default:'' }}" style="width: 100%;">
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <label for="scene-key"><strong>Key</strong></label><br>
+            <input id="scene-key" type="text" name="key" value="{{ scene.key|default:'' }}" style="width: 100%;">
+            {% if not scene %}
+                <small style="color: #666;">Will be auto-generated as quest_key__title-slug</small>
+            {% endif %}
+        </div>
+
+        <div style="margin-bottom: 10px;">
+            <label for="scene-type"><strong>Scene Type</strong></label><br>
+            <select id="scene-type" name="scene_type" style="width: 100%;">
+                {% for type_value, type_label in scene_types %}
+                    <option value="{{ type_value }}" {% if scene and scene.scene_type == type_value %}selected{% elif not scene and type_value == 'normal' %}selected{% endif %}>
+                        {{ type_label }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div style="margin-bottom: 12px;">
+            <label for="scene-description"><strong>Description</strong></label><br>
+            <textarea id="scene-description" name="description" rows="6" style="width: 100%;">{{ scene.body|default:'' }}</textarea>
+        </div>
+
+        <div id="roll-settings" style="border-top: 1px solid #ddd; margin-top: 12px; padding-top: 10px;">
+            <h3 style="margin: 0 0 8px;">Roll Settings</h3>
+            <div style="margin-bottom: 8px;">
+                <label>
+                    <input type="checkbox" name="requires_roll" {% if scene and scene.requires_roll %}checked{% endif %}>
+                    Requires roll
+                </label>
+            </div>
+
+            <div style="margin-bottom: 8px;">
+                <label for="roll-stat"><strong>Roll Stat</strong></label><br>
+                <select id="roll-stat" name="roll_stat" style="width: 100%;">
+                    <option value="">Select stat</option>
+                    {% for stat_value, stat_label in roll_stat_options %}
+                        <option value="{{ stat_value }}" {% if scene and scene.roll_stat == stat_value %}selected{% endif %}>
+                            {{ stat_value }} / {{ stat_label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="margin-bottom: 10px;">
+                <label for="roll-difficulty"><strong>Roll Difficulty</strong></label><br>
+                <input
+                    id="roll-difficulty"
+                    type="number"
+                    name="roll_difficulty"
+                    value="{% if scene %}{{ scene.roll_difficulty }}{% else %}{{ default_roll_difficulty }}{% endif %}"
+                    style="width: 100%;">
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-top: 16px;">
+            <button type="submit" class="button default">Save</button>
+            <button
+                type="button"
+                class="button"
+                onclick="document.getElementById('panel').innerHTML = '';">
+                Cancel
+            </button>
+            {% if scene %}
+                <button
+                    type="button"
+                    class="button deletelink"
+                    hx-post="{% url 'admin:quest_builder_scene_delete' quest_id scene.id %}"
+                    hx-target="#canvas-container"
+                    hx-swap="none"
+                    hx-confirm="Delete this scene? Choices that route here will be cleared.">
+                    Delete
+                </button>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<script>
+    (function () {
+        const panel = document.getElementById('scene-panel');
+        if (!panel) {
+            return;
+        }
+
+        const sceneType = panel.querySelector('#scene-type');
+        const rollSettings = panel.querySelector('#roll-settings');
+        if (!sceneType || !rollSettings) {
+            return;
+        }
+
+        function updateRollSettings() {
+            const isNormal = sceneType.value === 'normal';
+            rollSettings.style.display = isNormal ? 'block' : 'none';
+        }
+
+        sceneType.addEventListener('change', updateRollSettings);
+        updateRollSettings();
+    })();
+</script>

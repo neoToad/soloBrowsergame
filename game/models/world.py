@@ -136,8 +136,9 @@ class Choice(models.Model):
     # Routing — used when no roll is required
     target_scene = models.ForeignKey(
                        Scene,
+                       null=True, blank=True,
                        related_name='+',
-                       on_delete=models.CASCADE
+                       on_delete=models.SET_NULL
                    )
 
     # Roll routing — used when the scene requires a roll

@@ -1,4 +1,8 @@
+from django.db import transaction
+from django.utils.text import slugify
+
 from ..models.world import Quest, Scene, Choice
+from ..models.combat import CombatEncounter
 
 
 CARD_WIDTH = 220
@@ -47,6 +51,9 @@ def get_canvas_data(quest_id):
     
     choices_qs = Choice.objects.filter(scene_id__in=scene_ids).only(
         'id', 'scene_id', 'label', 'target_scene_id', 'success_scene_id', 'failure_scene_id'
+    )
+    encounters_qs = CombatEncounter.objects.filter(scene_id__in=scene_ids).select_related('enemy').only(
+        'id', 'scene_id', 'enemy_id', 'enemy__victory_scene_id', 'enemy__defeat_scene_id'
     )
     
     choices = []
@@ -99,6 +106,40 @@ def get_canvas_data(quest_id):
         else:
             append_arrow(c.target_scene_id, 'direct')
 
+    for encounter in encounters_qs:
+        source_scene = scene_lookup.get(encounter.scene_id)
+        if not source_scene:
+            continue
+
+        source_x = source_scene['canvas_x'] + CARD_WIDTH
+        source_y = source_scene['canvas_y'] + (CARD_HEIGHT // 2)
+
+        def append_combat_arrow(target_scene_id, kind, label):
+            if not target_scene_id:
+                return
+
+            target_scene = scene_lookup.get(target_scene_id)
+            if not target_scene:
+                return
+
+            target_x = target_scene['canvas_x']
+            target_y = target_scene['canvas_y'] + (CARD_HEIGHT // 2)
+
+            arrows.append({
+                'id': f"combat-{encounter.id}-{kind}",
+                'kind': kind,
+                'label': label,
+                'x1': source_x,
+                'y1': source_y,
+                'x2': target_x,
+                'y2': target_y,
+                'label_x': (source_x + target_x) // 2,
+                'label_y': ((source_y + target_y) // 2) - 6,
+            })
+
+        append_combat_arrow(encounter.enemy.victory_scene_id, 'success', 'WIN')
+        append_combat_arrow(encounter.enemy.defeat_scene_id, 'failure', 'LOSE')
+
     if scenes:
         max_scene_x = max(scene['canvas_x'] for scene in scenes)
         max_scene_y = max(scene['canvas_y'] for scene in scenes)
@@ -118,16 +159,93 @@ def get_canvas_data(quest_id):
     }
 
 def create_scene(quest_id, data):
-    """Stub only"""
-    pass
+    quest = Quest.objects.get(pk=quest_id)
+
+    title = (data.get('title') or '').strip()
+    key = (data.get('key') or '').strip()
+    description = (data.get('description') or '').strip()
+    scene_type = (data.get('scene_type') or 'normal').strip() or 'normal'
+
+    if not key and title:
+        key = f"{quest.key}__{slugify(title)}"
+
+    raw_x = data.get('canvas_x')
+    raw_y = data.get('canvas_y')
+    canvas_x = int(raw_x) if str(raw_x).strip() else 60
+    canvas_y = int(raw_y) if str(raw_y).strip() else 60
+
+    requires_roll = str(data.get('requires_roll', '')).lower() in ('1', 'true', 'on', 'yes')
+    roll_stat = (data.get('roll_stat') or '').strip()
+    raw_dc = data.get('roll_difficulty')
+    roll_difficulty = int(raw_dc) if str(raw_dc).strip() else 12
+
+    return Scene.objects.create(
+        quest=quest,
+        title=title,
+        key=key,
+        scene_type=scene_type,
+        body=description,
+        requires_roll=requires_roll,
+        roll_stat=roll_stat,
+        roll_difficulty=roll_difficulty,
+        canvas_x=canvas_x,
+        canvas_y=canvas_y,
+    )
 
 def update_scene(scene_id, data):
-    """Stub only"""
-    pass
+    scene = Scene.objects.get(pk=scene_id)
+
+    allowed_fields = {
+        'title',
+        'key',
+        'scene_type',
+        'description',
+        'requires_roll',
+        'roll_stat',
+        'roll_difficulty',
+    }
+
+    if 'title' in allowed_fields:
+        scene.title = (data.get('title') or scene.title).strip()
+    if 'key' in allowed_fields:
+        incoming_key = (data.get('key') or '').strip()
+        if incoming_key:
+            scene.key = incoming_key
+    if 'scene_type' in allowed_fields:
+        scene.scene_type = (data.get('scene_type') or scene.scene_type).strip() or scene.scene_type
+    if 'description' in allowed_fields:
+        scene.body = (data.get('description') or '').strip()
+    if 'requires_roll' in allowed_fields:
+        scene.requires_roll = str(data.get('requires_roll', '')).lower() in ('1', 'true', 'on', 'yes')
+    if 'roll_stat' in allowed_fields:
+        scene.roll_stat = (data.get('roll_stat') or '').strip()
+    if 'roll_difficulty' in allowed_fields:
+        raw_dc = data.get('roll_difficulty')
+        scene.roll_difficulty = int(raw_dc) if str(raw_dc).strip() else 12
+
+    scene.save()
+    return scene
 
 def delete_scene(scene_id):
-    """Stub only"""
-    pass
+    scene = Scene.objects.get(pk=scene_id)
+
+    target_qs = Choice.objects.filter(target_scene_id=scene_id)
+    success_qs = Choice.objects.filter(success_scene_id=scene_id)
+    failure_qs = Choice.objects.filter(failure_scene_id=scene_id)
+
+    affected_choice_ids = sorted({
+        *target_qs.values_list('id', flat=True),
+        *success_qs.values_list('id', flat=True),
+        *failure_qs.values_list('id', flat=True),
+    })
+
+    with transaction.atomic():
+        target_qs.update(target_scene=None)
+        success_qs.update(success_scene=None)
+        failure_qs.update(failure_scene=None)
+        scene.delete()
+
+    return affected_choice_ids
 
 def create_choice(source_scene_id, data):
     """Stub only"""

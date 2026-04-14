@@ -1,0 +1,8 @@
+<div
+    id="scene-card-{{ scene.id }}"
+    class="scene-card"
+    style="left: {{ scene.canvas_x|default_if_none:60 }}px; top: {{ scene.canvas_y|default_if_none:60 }}px;"
+    data-scene-id="{{ scene.id }}"
+    {% if oob_swap %}hx-swap-oob="{{ oob_swap }}"{% endif %}>
+    {% include "admin/quest_builder/partials/scene_card_inner.html" with scene=scene quest_id=quest_id only %}
+</div>

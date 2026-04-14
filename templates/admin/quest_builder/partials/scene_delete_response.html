@@ -1,0 +1,15 @@
+<div id="scene-card-{{ scene_id }}" hx-swap-oob="delete"></div>
+
+<div id="qb-toast-container" hx-swap-oob="beforeend">
+    <div class="qb-toast qb-toast--success">Scene "{{ scene_title }}" deleted.</div>
+</div>
+
+{% if affected_choice_ids %}
+    <div id="qb-toast-container" hx-swap-oob="beforeend">
+        <div class="qb-toast qb-toast--warning">
+            Cleared routing on choice IDs: {{ affected_choice_ids|join:", " }}
+        </div>
+    </div>
+{% endif %}
+
+<div id="panel" hx-swap-oob="innerHTML"></div>

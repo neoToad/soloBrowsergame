@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
+import json
+
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
 from .models import (
-    GameSession, PlayerStats, Scene, Choice, EventLog,
+    GameSession, PlayerStats, Quest, Scene, Choice, EventLog,
     CompletedQuest, CombatState, PlayerContext,
 )
 from .models.events import log_event
@@ -11,7 +13,12 @@ from .services.scene       import get_available_choices, complete_scene, get_not
 from .services.combat      import get_or_create_combat_state, get_active_combat_state, resolve_combat_end, resolve_player_attack as resolve_player_attack_util, resolve_enemy_attack as resolve_enemy_attack_util
 from .services.inventory   import get_player_inventory, award_scene_items, consume_item as consume_item_util
 from .services.progression import award_xp, maybe_complete_quest, XP_AWARDS, LEVEL_UP_FLAVOR
-from .services.quest_builder import get_canvas_data
+from .services.quest_builder import (
+    get_canvas_data,
+    create_scene as create_scene_service,
+    update_scene as update_scene_service,
+    delete_scene as delete_scene_service,
+)
 from .utils import (
     roll_d20, stat_modifier,
     get_effective_stats,
@@ -374,6 +381,93 @@ def quest_builder_canvas(request, quest_id):
         'title': f"Quest Builder - {canvas_data['quest'].title}",
     }
     return render(request, 'admin/quest_builder/canvas.html', context)
+
+
+def scene_panel(request, quest_id, scene_id=None):
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+
+    get_object_or_404(Quest, pk=quest_id)
+    scene = None
+    if scene_id is not None:
+        scene = get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+
+    context = {
+        'quest_id': quest_id,
+        'scene': scene,
+        'scene_types': Scene.SCENE_TYPES,
+        'roll_stat_options': [
+            ('strength', 'muscle'),
+            ('agility', 'reflexes'),
+            ('intellect', 'cunning'),
+            ('charisma', 'nerve'),
+        ],
+        'default_roll_difficulty': 12,
+    }
+    return render(request, 'admin/quest_builder/partials/scene_panel.html', context)
+
+
+def scene_save(request, quest_id, scene_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+    scene = update_scene_service(scene_id, request.POST)
+
+    html = render_to_string(
+        'admin/quest_builder/partials/scene_save_response.html',
+        {
+            'scene': scene,
+            'quest_id': quest_id,
+            'toast_message': f'Scene "{scene.title}" saved.',
+        },
+        request=request,
+    )
+    response = HttpResponse(html)
+    response['HX-Trigger'] = json.dumps({'sceneUpdated': {'sceneId': scene.id}})
+    return response
+
+
+def scene_create(request, quest_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    get_object_or_404(Quest, pk=quest_id)
+    scene = create_scene_service(quest_id, request.POST)
+
+    html = render_to_string(
+        'admin/quest_builder/partials/scene_create_response.html',
+        {
+            'scene': scene,
+            'quest_id': quest_id,
+            'toast_message': f'Scene "{scene.title}" created.',
+        },
+        request=request,
+    )
+    response = HttpResponse(html)
+    response['HX-Trigger'] = json.dumps({'sceneUpdated': {'sceneId': scene.id}})
+    return response
+
+
+def scene_delete(request, quest_id, scene_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    scene = get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+    affected_choice_ids = delete_scene_service(scene_id)
+
+    html = render_to_string(
+        'admin/quest_builder/partials/scene_delete_response.html',
+        {
+            'scene_id': scene_id,
+            'scene_title': scene.title,
+            'affected_choice_ids': affected_choice_ids,
+        },
+        request=request,
+    )
+    response = HttpResponse(html)
+    response['HX-Trigger'] = json.dumps({'sceneUpdated': {'sceneId': scene_id}})
+    return response
 
 
 def use_item(request, item_id):

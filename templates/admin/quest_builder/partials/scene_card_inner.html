@@ -1,0 +1,23 @@
+<div class="scene-card-header">
+    <div class="scene-title" title="{{ scene.title }}">{{ scene.title }}</div>
+    <span class="type-badge type-badge-{{ scene.scene_type }}">{{ scene.scene_type }}</span>
+</div>
+<div class="scene-key">{{ scene.key }}</div>
+<div class="scene-card-footer">
+    {% if scene.requires_roll %}
+        <div class="roll-badge">ROLL</div>
+    {% else %}
+        <div></div>
+    {% endif %}
+    <div class="scene-card-actions">
+        <button
+            type="button"
+            class="qb-card-button"
+            hx-get="{% url 'admin:quest_builder_scene_panel' quest_id scene.id %}"
+            hx-target="#panel"
+            hx-swap="innerHTML">
+            Edit
+        </button>
+        <button type="button" class="qb-card-button">Add Choice</button>
+    </div>
+</div>

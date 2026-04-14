@@ -1,0 +1,9 @@
+<div id="scene-card-{{ scene.id }}" hx-swap-oob="innerHTML">
+    {% include "admin/quest_builder/partials/scene_card_inner.html" with scene=scene quest_id=quest_id only %}
+</div>
+
+<div id="qb-toast-container" hx-swap-oob="beforeend">
+    <div class="qb-toast qb-toast--success">{{ toast_message }}</div>
+</div>
+
+<div id="panel" hx-swap-oob="innerHTML"></div>
