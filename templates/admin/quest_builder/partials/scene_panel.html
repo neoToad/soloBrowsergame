@@ -84,9 +84,8 @@
                     type="button"
                     class="button deletelink"
                     hx-post="{% url 'admin:quest_builder_scene_delete' quest_id scene.id %}"
-                    hx-target="#htmx-sink"
-                    hx-swap="innerHTML"
-                    hx-confirm="Delete this scene? Choices that route here will be cleared.">
+                    hx-target="#panel"
+                    hx-swap="innerHTML">
                     Delete
                 </button>
             {% endif %}

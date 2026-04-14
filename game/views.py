@@ -15,9 +15,11 @@ from .services.inventory   import get_player_inventory, award_scene_items, consu
 from .services.progression import award_xp, maybe_complete_quest, XP_AWARDS, LEVEL_UP_FLAVOR
 from .services.quest_builder import (
     get_canvas_data,
+    validate_quest as validate_quest_service,
     create_scene as create_scene_service,
     update_scene as update_scene_service,
     delete_scene as delete_scene_service,
+    get_delete_scene_consequences as get_delete_scene_consequences_service,
     create_choice as create_choice_service,
     update_choice as update_choice_service,
     delete_choice as delete_choice_service,
@@ -353,6 +355,21 @@ def level_up(request):
     return _htmx_response(request, context)
 
 
+def quest_validate(request, quest_id):
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+
+    get_object_or_404(Quest, pk=quest_id)
+    warnings = validate_quest_service(quest_id)
+
+    html = render_to_string(
+        'admin/quest_builder/partials/validation_panel.html',
+        {'warnings': warnings},
+        request=request,
+    )
+    return HttpResponse(html)
+
+
 def quest_builder_list(request):
     """
     Queries all Quest objects, ordered by arc then title.
@@ -468,7 +485,15 @@ def scene_save(request, quest_id, scene_id):
         return HttpResponseNotAllowed(['POST'])
 
     get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
-    scene = update_scene_service(scene_id, request.POST)
+    try:
+        scene = update_scene_service(scene_id, request.POST)
+    except ValueError as exc:
+        html = render_to_string(
+            'admin/quest_builder/partials/inline_error.html',
+            {'error_message': str(exc)},
+            request=request,
+        )
+        return HttpResponse(html, status=400)
 
     html = render_to_string(
         'admin/quest_builder/partials/scene_save_response.html',
@@ -489,7 +514,15 @@ def scene_create(request, quest_id):
         return HttpResponseNotAllowed(['POST'])
 
     get_object_or_404(Quest, pk=quest_id)
-    scene = create_scene_service(quest_id, request.POST)
+    try:
+        scene = create_scene_service(quest_id, request.POST)
+    except ValueError as exc:
+        html = render_to_string(
+            'admin/quest_builder/partials/inline_error.html',
+            {'error_message': str(exc)},
+            request=request,
+        )
+        return HttpResponse(html, status=400)
 
     html = render_to_string(
         'admin/quest_builder/partials/scene_create_response.html',
@@ -510,6 +543,23 @@ def scene_delete(request, quest_id, scene_id):
         return HttpResponseNotAllowed(['POST'])
 
     scene = get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+
+    # Two-step delete: first POST shows confirmation; second POST with confirmed=1 does the delete.
+    if request.POST.get('confirmed') != '1':
+        consequences = get_delete_scene_consequences_service(scene_id)
+        html = render_to_string(
+            'admin/quest_builder/partials/scene_delete_confirm.html',
+            {
+                'scene': scene,
+                'quest_id': quest_id,
+                'affected_choices': consequences['affected_choices'],
+                'victory_encounters': consequences['victory_encounters'],
+                'defeat_encounters': consequences['defeat_encounters'],
+            },
+            request=request,
+        )
+        return HttpResponse(html)
+
     affected_choice_ids = delete_scene_service(scene_id)
 
     html = render_to_string(

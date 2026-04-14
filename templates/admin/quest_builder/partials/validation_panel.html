@@ -1,0 +1,104 @@
+<div id="validation-panel" style="padding: 18px;">
+    <h2 style="margin-top: 0;">Validation</h2>
+
+    {% if not warnings %}
+        <div style="
+            background: #e6f4ea;
+            border: 1px solid #2f9e44;
+            border-radius: 8px;
+            padding: 14px 16px;
+            color: #1b5e31;
+            font-weight: 600;
+            font-size: 14px;
+        ">
+            Quest looks good &mdash; no issues found.
+        </div>
+    {% else %}
+        <div style="
+            background: #fff8e1;
+            border: 1px solid #c8941a;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #7a5500;
+            font-size: 12px;
+            margin-bottom: 14px;
+        ">
+            {{ warnings|length }} issue{{ warnings|length|pluralize }} found.
+        </div>
+
+        {% regroup warnings by type as warning_groups %}
+        {% for group in warning_groups %}
+            <div style="margin-bottom: 18px;">
+                <div style="
+                    font-size: 11px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.06em;
+                    color: #888;
+                    margin-bottom: 8px;
+                    border-bottom: 1px solid #eee;
+                    padding-bottom: 4px;
+                ">
+                    {% if group.grouper == 'orphan_scene' %}Orphan Scenes
+                    {% elif group.grouper == 'missing_routing' %}Missing Routing
+                    {% elif group.grouper == 'missing_roll_target' %}Missing Roll Target
+                    {% elif group.grouper == 'roll_direct_choice' %}Roll Scene with Direct Choice
+                    {% elif group.grouper == 'empty_scene' %}Empty Scenes
+                    {% elif group.grouper == 'duplicate_key' %}Duplicate Keys
+                    {% elif group.grouper == 'combat_missing_encounter' %}Combat Missing Encounter
+                    {% else %}{{ group.grouper }}
+                    {% endif %}
+                </div>
+
+                {% for w in group.list %}
+                    <div style="
+                        background: #fffbf2;
+                        border: 1px solid #e8c87a;
+                        border-radius: 6px;
+                        padding: 10px 12px;
+                        margin-bottom: 8px;
+                        font-size: 12px;
+                    ">
+                        <div style="color: #5c3d00; margin-bottom: 6px;">{{ w.message }}</div>
+
+                        {% if w.scene_id %}
+                            <button
+                                type="button"
+                                onclick="document.dispatchEvent(new CustomEvent('highlightScene', {detail: {sceneId: {{ w.scene_id }}}}))"
+                                style="
+                                    font-size: 11px;
+                                    padding: 3px 10px;
+                                    border: 1px solid #c8941a;
+                                    border-radius: 6px;
+                                    background: #fff3cd;
+                                    color: #7a5500;
+                                    cursor: pointer;
+                                    font-weight: 600;
+                                ">
+                                Highlight Scene
+                            </button>
+                        {% endif %}
+                        {% if w.choice_id %}
+                            <button
+                                type="button"
+                                onclick="document.dispatchEvent(new CustomEvent('highlightChoice', {detail: {choiceId: {{ w.choice_id }}}}))"
+                                style="
+                                    font-size: 11px;
+                                    padding: 3px 10px;
+                                    border: 1px solid #c8941a;
+                                    border-radius: 6px;
+                                    background: #fff3cd;
+                                    color: #7a5500;
+                                    cursor: pointer;
+                                    font-weight: 600;
+                                    margin-left: 6px;
+                                ">
+                                Highlight Choice
+                            </button>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>

@@ -156,6 +156,11 @@ class QuestAdmin(admin.ModelAdmin):
                 name='quest_builder_canvas',
             ),
             path(
+                'quest-builder/<int:quest_id>/validate/',
+                self.admin_site.admin_view(self.quest_builder_validate_view),
+                name='quest_builder_validate',
+            ),
+            path(
                 'quest-builder/<int:quest_id>/scene/new/',
                 self.admin_site.admin_view(self.quest_builder_scene_panel_view),
                 name='quest_builder_scene_panel_new',
@@ -265,6 +270,10 @@ class QuestAdmin(admin.ModelAdmin):
             'opts': Quest._meta,
         }
         return render(request, 'admin/game/quest_graph.html', context)
+
+    def quest_builder_validate_view(self, request, quest_id):
+        from .views import quest_validate
+        return quest_validate(request, quest_id)
 
     def quest_builder_list_view(self, request):
         from .views import quest_builder_list

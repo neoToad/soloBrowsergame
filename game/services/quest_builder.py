@@ -191,6 +191,127 @@ def get_canvas_data(quest_id):
         'canvas_height': canvas_height,
     }
 
+def validate_quest(quest_id):
+    """
+    Returns a list of warning dicts for the given quest.
+    Each dict has: type, message, and optionally scene_id / choice_id.
+    """
+    quest = Quest.objects.get(pk=quest_id)
+    scenes_qs = Scene.objects.filter(quest=quest).only(
+        'id', 'key', 'title', 'scene_type', 'requires_roll'
+    )
+    scenes = list(scenes_qs)
+    scene_ids = [s.id for s in scenes]
+
+    choices_qs = Choice.objects.filter(scene_id__in=scene_ids).only(
+        'id', 'scene_id', 'label', 'target_scene_id', 'success_scene_id', 'failure_scene_id'
+    )
+    choices = list(choices_qs)
+
+    encounters_qs = CombatEncounter.objects.filter(scene_id__in=scene_ids).only(
+        'id', 'scene_id'
+    )
+    encounter_scene_ids = set(encounters_qs.values_list('scene_id', flat=True))
+
+    warnings = []
+
+    # --- Duplicate keys ---
+    seen_keys = {}
+    for scene in scenes:
+        if scene.key in seen_keys:
+            warnings.append({
+                'type': 'duplicate_key',
+                'scene_id': scene.id,
+                'choice_id': None,
+                'message': f'Duplicate key "{scene.key}" — scene "{scene.title}" shares a key with scene ID {seen_keys[scene.key]}.',
+            })
+        else:
+            seen_keys[scene.key] = scene.id
+
+    # --- Build set of scenes that are pointed to by at least one choice ---
+    pointed_to = set()
+    for c in choices:
+        if c.target_scene_id:
+            pointed_to.add(c.target_scene_id)
+        if c.success_scene_id:
+            pointed_to.add(c.success_scene_id)
+        if c.failure_scene_id:
+            pointed_to.add(c.failure_scene_id)
+
+    entry_scene_id = quest.entrance_scene_id
+
+    # --- Orphan scenes ---
+    for scene in scenes:
+        if scene.id not in pointed_to and scene.id != entry_scene_id:
+            warnings.append({
+                'type': 'orphan_scene',
+                'scene_id': scene.id,
+                'choice_id': None,
+                'message': f'Scene "{scene.title}" is not reachable — no choices point to it and it is not the entry scene.',
+            })
+
+    # --- Missing routing (completely unrouted choices) ---
+    for c in choices:
+        if not c.target_scene_id and not c.success_scene_id and not c.failure_scene_id:
+            warnings.append({
+                'type': 'missing_routing',
+                'scene_id': c.scene_id,
+                'choice_id': c.id,
+                'message': f'Choice "{c.label}" has no routing target set.',
+            })
+
+    # --- Per-scene analysis ---
+    choices_by_scene = {}
+    for c in choices:
+        choices_by_scene.setdefault(c.scene_id, []).append(c)
+
+    for scene in scenes:
+        scene_choices = choices_by_scene.get(scene.id, [])
+
+        # Missing roll target: requires_roll=True but no choice with both success+failure
+        if scene.requires_roll:
+            has_full_roll = any(
+                c.success_scene_id and c.failure_scene_id for c in scene_choices
+            )
+            if not has_full_roll:
+                warnings.append({
+                    'type': 'missing_roll_target',
+                    'scene_id': scene.id,
+                    'choice_id': None,
+                    'message': f'Scene "{scene.title}" requires a roll but has no choice with both success and failure targets set.',
+                })
+
+            # Roll scene with direct choice
+            for c in scene_choices:
+                if c.target_scene_id:
+                    warnings.append({
+                        'type': 'roll_direct_choice',
+                        'scene_id': scene.id,
+                        'choice_id': c.id,
+                        'message': f'Scene "{scene.title}" requires a roll but choice "{c.label}" uses a direct target — this is probably a mistake.',
+                    })
+
+        # Empty scenes (not ending or hub)
+        if not scene_choices and scene.scene_type not in ('ending', 'hub'):
+            warnings.append({
+                'type': 'empty_scene',
+                'scene_id': scene.id,
+                'choice_id': None,
+                'message': f'Scene "{scene.title}" has no choices.',
+            })
+
+        # Combat scene missing encounter
+        if scene.scene_type == 'combat' and scene.id not in encounter_scene_ids:
+            warnings.append({
+                'type': 'combat_missing_encounter',
+                'scene_id': scene.id,
+                'choice_id': None,
+                'message': f'Scene "{scene.title}" is a combat scene but has no combat encounter configured.',
+            })
+
+    return warnings
+
+
 def create_scene(quest_id, data):
     quest = Quest.objects.get(pk=quest_id)
 
@@ -201,6 +322,9 @@ def create_scene(quest_id, data):
 
     if not key and title:
         key = f"{quest.key}__{slugify(title)}"
+
+    if key and Scene.objects.filter(quest=quest, key=key).exists():
+        raise ValueError(f'A scene with key "{key}" already exists in this quest.')
 
     raw_x = str(data.get('canvas_x') or '').strip()
     raw_y = str(data.get('canvas_y') or '').strip()
@@ -249,6 +373,8 @@ def update_scene(scene_id, data):
     if 'key' in allowed_fields:
         incoming_key = (data.get('key') or '').strip()
         if incoming_key:
+            if Scene.objects.filter(quest=scene.quest, key=incoming_key).exclude(pk=scene.pk).exists():
+                raise ValueError(f'A scene with key "{incoming_key}" already exists in this quest.')
             scene.key = incoming_key
     if 'scene_type' in allowed_fields:
         scene.scene_type = (data.get('scene_type') or scene.scene_type).strip() or scene.scene_type
@@ -265,6 +391,33 @@ def update_scene(scene_id, data):
     scene.save()
     return scene
 
+def get_delete_scene_consequences(scene_id):
+    """
+    Returns a dict describing what will happen if this scene is deleted,
+    without actually deleting it. Used for the confirmation step.
+    """
+    target_qs = Choice.objects.filter(target_scene_id=scene_id).select_related('scene')
+    success_qs = Choice.objects.filter(success_scene_id=scene_id).select_related('scene')
+    failure_qs = Choice.objects.filter(failure_scene_id=scene_id).select_related('scene')
+
+    affected_choices = list({
+        c.id: c for c in list(target_qs) + list(success_qs) + list(failure_qs)
+    }.values())
+
+    victory_encounters = list(
+        CombatEncounter.objects.filter(victory_scene_id=scene_id).select_related('scene', 'enemy')
+    )
+    defeat_encounters = list(
+        CombatEncounter.objects.filter(defeat_scene_id=scene_id).select_related('scene', 'enemy')
+    )
+
+    return {
+        'affected_choices': affected_choices,
+        'victory_encounters': victory_encounters,
+        'defeat_encounters': defeat_encounters,
+    }
+
+
 def delete_scene(scene_id):
     scene = Scene.objects.get(pk=scene_id)
 
@@ -277,6 +430,10 @@ def delete_scene(scene_id):
         *success_qs.values_list('id', flat=True),
         *failure_qs.values_list('id', flat=True),
     })
+
+    # Clear combat encounter routing that points to this scene
+    CombatEncounter.objects.filter(victory_scene_id=scene_id).update(victory_scene=None)
+    CombatEncounter.objects.filter(defeat_scene_id=scene_id).update(defeat_scene=None)
 
     with transaction.atomic():
         target_qs.update(target_scene=None)

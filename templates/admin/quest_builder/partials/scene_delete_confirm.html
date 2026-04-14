@@ -1,0 +1,87 @@
+<div style="padding: 18px;">
+    <h2 style="margin-top: 0; color: #c0392b;">Delete &ldquo;{{ scene.title }}&rdquo;?</h2>
+
+    <p style="font-size: 13px; color: #444;">This action cannot be undone. The following will be affected:</p>
+
+    {% if affected_choices %}
+        <div style="margin-bottom: 14px;">
+            <strong style="font-size: 12px; text-transform: uppercase; color: #888; letter-spacing: 0.05em;">
+                Choices that route here (routing will be cleared)
+            </strong>
+            {% for c in affected_choices %}
+                <div style="
+                    background: #fff8e1;
+                    border: 1px solid #f5c84a;
+                    border-radius: 6px;
+                    padding: 8px 12px;
+                    margin-top: 6px;
+                    font-size: 12px;
+                    color: #5c3d00;
+                ">
+                    &ldquo;{{ c.label }}&rdquo; (from scene ID {{ c.scene_id }})
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if victory_encounters or defeat_encounters %}
+        <div style="margin-bottom: 14px;">
+            <strong style="font-size: 12px; text-transform: uppercase; color: #888; letter-spacing: 0.05em;">
+                Combat encounters that route here (routing will be cleared)
+            </strong>
+            {% for enc in victory_encounters %}
+                <div style="
+                    background: #fff0f0;
+                    border: 1px solid #d64545;
+                    border-radius: 6px;
+                    padding: 8px 12px;
+                    margin-top: 6px;
+                    font-size: 12px;
+                    color: #8b0000;
+                ">
+                    Victory route for encounter in scene ID {{ enc.scene_id }}
+                    {% if enc.enemy %} (enemy: {{ enc.enemy.name }}){% endif %}
+                </div>
+            {% endfor %}
+            {% for enc in defeat_encounters %}
+                <div style="
+                    background: #fff0f0;
+                    border: 1px solid #d64545;
+                    border-radius: 6px;
+                    padding: 8px 12px;
+                    margin-top: 6px;
+                    font-size: 12px;
+                    color: #8b0000;
+                ">
+                    Defeat route for encounter in scene ID {{ enc.scene_id }}
+                    {% if enc.enemy %} (enemy: {{ enc.enemy.name }}){% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if not affected_choices and not victory_encounters and not defeat_encounters %}
+        <p style="font-size: 13px; color: #1b5e31; background: #e6f4ea; border: 1px solid #2f9e44; border-radius: 6px; padding: 10px 12px;">
+            No other scenes or choices point to this scene. Safe to delete.
+        </p>
+    {% endif %}
+
+    <div style="display: flex; gap: 10px; margin-top: 18px;">
+        <form
+            hx-post="{% url 'admin:quest_builder_scene_delete' quest_id scene.id %}"
+            hx-target="#htmx-sink"
+            hx-swap="innerHTML">
+            {% csrf_token %}
+            <input type="hidden" name="confirmed" value="1">
+            <button type="submit" class="button deletelink" style="background: #c0392b; color: white;">
+                Confirm Delete
+            </button>
+        </form>
+        <button
+            type="button"
+            class="button"
+            onclick="document.getElementById('panel').innerHTML = '';">
+            Cancel
+        </button>
+    </div>
+</div>
