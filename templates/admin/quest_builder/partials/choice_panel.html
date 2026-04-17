@@ -5,7 +5,7 @@
 
     <form
         hx-post="{% if choice %}{% url 'admin:quest_builder_choice_save' quest_id choice.id %}{% else %}{% url 'admin:quest_builder_choice_create' quest_id %}{% endif %}"
-        hx-target="#htmx-sink"
+        hx-target="{% if choice %}#htmx-sink{% else %}#panel{% endif %}"
         hx-swap="innerHTML">
         {% csrf_token %}
         {% if not choice %}

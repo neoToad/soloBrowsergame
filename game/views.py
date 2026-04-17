@@ -728,7 +728,35 @@ def choice_create(request, quest_id):
     choice = create_choice_service(int(raw_source), request.POST)
     routing_type = 'roll' if (choice.success_scene_id or choice.failure_scene_id) else 'direct'
 
-    response = HttpResponse('')
+    from .models.items import Item as ItemModel
+    from .models.requirements import Requirement
+    from .models.world import Quest as QuestModel
+    from .constants import STAT_FIELD_MAP
+    from django.urls import reverse as url_reverse
+
+    scenes = list(
+        Scene.objects.filter(quest_id=quest_id)
+        .only('id', 'key', 'title')
+        .order_by('order')
+    )
+    html = render_to_string(
+        'admin/quest_builder/partials/choice_panel.html',
+        {
+            'quest_id': quest_id,
+            'source_scene_id': choice.scene_id,
+            'choice': choice,
+            'scenes': scenes,
+            'routing_type': routing_type,
+            'requirement_groups': [],
+            'req_save_url': url_reverse('admin:quest_builder_choice_requirements_save', args=[quest_id, choice.id]),
+            'all_quests': list(QuestModel.objects.order_by('title')),
+            'all_items': list(ItemModel.objects.order_by('name')),
+            'stat_choices': [(v, k) for k, v in STAT_FIELD_MAP.items()],
+            'requirement_types': Requirement.CONDITION_TYPES,
+        },
+        request=request,
+    )
+    response = HttpResponse(html)
     response['HX-Trigger'] = json.dumps({
         'choiceCreated': {
             'id': choice.id,

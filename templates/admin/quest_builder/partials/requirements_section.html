@@ -1,5 +1,5 @@
 <div id="requirements-section" style="border-top: 1px solid #ddd; margin-top: 16px; padding-top: 12px;">
-    <details {% if requirement_groups %}open{% endif %}>
+    <details open>
         <summary style="cursor: pointer; font-weight: 600; font-size: 14px; margin-bottom: 10px;">
             Requirements ({{ requirement_groups|length }})
         </summary>
@@ -347,7 +347,16 @@
     var form = section.querySelector('form');
     form.addEventListener('htmx:configRequest', function (evt) {
         var extra = buildParams();
-        Object.assign(evt.detail.parameters, extra);
+        var params = evt.detail.parameters;
+        if (typeof params.set === 'function') {
+            // HTMX 2.x: parameters is URLSearchParams or FormData
+            Object.keys(extra).forEach(function (key) {
+                params.set(key, String(extra[key]));
+            });
+        } else {
+            // HTMX 1.x: parameters is a plain object
+            Object.assign(params, extra);
+        }
     });
 })();
 </script>
