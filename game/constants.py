@@ -1,4 +1,5 @@
 HUB_START_SCENE_KEY = 'hub__main_square'
+SESSION_KEY = 'game_session_id'
 
 STAT_FIELD_MAP = {
     'muscle':   'strength',

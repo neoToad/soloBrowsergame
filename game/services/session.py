@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from ..models import GameSession, PlayerStats, Scene, CompletedQuest
 from ..models.property import PlayerProperty
-from ..constants import HUB_START_SCENE_KEY
+from ..constants import HUB_START_SCENE_KEY, SESSION_KEY
 from .inventory import get_player_inventory
 from ..utils import get_effective_stats
 
@@ -30,7 +30,7 @@ def create_session(request):
         current_scene=Scene.objects.get(key=HUB_START_SCENE_KEY),
     )
     PlayerStats.objects.create(session=game_session)
-    request.session['game_session_id'] = game_session.pk
+    request.session[SESSION_KEY] = game_session.pk
     return game_session
 
 

@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from .models import Scene, GameSession, PlayerStats, Choice, Quest, CompletedQuest
+from .constants import SESSION_KEY
 
 class GameNavigationTest(TestCase):
     fixtures = [
@@ -32,7 +33,7 @@ class GameNavigationTest(TestCase):
         # Check if stats were created
         self.assertEqual(PlayerStats.objects.count(), 1)
         # Check if session ID is in request.session
-        self.assertIn('game_session_id', self.client.session)
+        self.assertIn(SESSION_KEY, self.client.session)
 
     def test_scene_navigation(self):
         # Initialize session
@@ -53,8 +54,10 @@ class GameNavigationTest(TestCase):
         # Warehouse Job entrance scene
         scene = Scene.objects.get(key='warehouse__loading_dock')
         
-        # Choice 5: "Slip around back."
-        choice_sneak = Choice.objects.get(pk=5)
+        choice_sneak = Choice.objects.get(
+            scene=scene,
+            label__icontains='Slip around back',
+        )
         
         # Create a Requirement for agility 7
         from .models import Requirement, RequirementGroup
@@ -85,11 +88,11 @@ class GameNavigationTest(TestCase):
     def test_persistent_session(self):
         # First visit
         self.client.get('/game/')
-        session_id_1 = self.client.session['game_session_id']
+        session_id_1 = self.client.session[SESSION_KEY]
         
         # Second visit
         self.client.get('/game/')
-        session_id_2 = self.client.session['game_session_id']
+        session_id_2 = self.client.session[SESSION_KEY]
         
         self.assertEqual(session_id_1, session_id_2)
         self.assertEqual(GameSession.objects.count(), 1)
@@ -116,6 +119,83 @@ class GameNavigationTest(TestCase):
         self.assertNotEqual(session.current_scene, initial_scene)
         # For non-roll choices, it uses target_scene
         self.assertEqual(session.current_scene, choice.target_scene)
+
+    def test_choice_flag_effects_update_gated_choice_visibility(self):
+        self.client.get('/game/')
+        session = GameSession.objects.first()
+        current_scene = session.current_scene
+
+        next_scene = Scene.objects.create(
+            key='phase6__flag_next',
+            title='Flag Next',
+            body='next',
+            scene_type='normal',
+        )
+        final_scene = Scene.objects.create(
+            key='phase6__flag_final',
+            title='Flag Final',
+            body='final',
+            scene_type='normal',
+        )
+        set_flag_choice = Choice.objects.create(
+            scene=current_scene,
+            label='Set Secret Flag',
+            target_scene=next_scene,
+            set_flag_name='phase6_secret',
+            order=9000,
+        )
+        clear_flag_choice = Choice.objects.create(
+            scene=current_scene,
+            label='Clear Secret Flag',
+            target_scene=next_scene,
+            clear_flag_name='phase6_secret',
+            order=9001,
+        )
+        gated_choice = Choice.objects.create(
+            scene=current_scene,
+            label='Secret Route',
+            target_scene=final_scene,
+            order=9002,
+        )
+
+        from .models import Requirement, RequirementGroup
+        gate_req = Requirement.objects.create(
+            condition_type='has_flag',
+            flag_name='phase6_secret',
+        )
+        gate_group = RequirementGroup.objects.create(
+            label='Requires phase6_secret',
+            logic='all',
+        )
+        gate_group.requirements.add(gate_req)
+        gated_choice.requirements.add(gate_group)
+
+        response = self.client.get(reverse('scene_detail', kwargs={'scene_key': current_scene.key}))
+        self.assertNotContains(response, gated_choice.label)
+
+        self.client.post(
+            reverse('choice_resolve', kwargs={'choice_id': set_flag_choice.pk}),
+            HTTP_HX_REQUEST='true',
+        )
+        session.refresh_from_db()
+        self.assertTrue(session.flags.get('phase6_secret'))
+
+        session.current_scene = current_scene
+        session.save(update_fields=['current_scene'])
+        response = self.client.get(reverse('scene_detail', kwargs={'scene_key': current_scene.key}))
+        self.assertContains(response, gated_choice.label)
+
+        self.client.post(
+            reverse('choice_resolve', kwargs={'choice_id': clear_flag_choice.pk}),
+            HTTP_HX_REQUEST='true',
+        )
+        session.refresh_from_db()
+        self.assertNotIn('phase6_secret', session.flags)
+
+        session.current_scene = current_scene
+        session.save(update_fields=['current_scene'])
+        response = self.client.get(reverse('scene_detail', kwargs={'scene_key': current_scene.key}))
+        self.assertNotContains(response, gated_choice.label)
 
     def test_choice_resolve_rejects_choice_from_different_scene(self):
         self.client.get('/game/')
@@ -281,8 +361,8 @@ class CombatTest(TestCase):
         self.session.refresh_from_db()
         
         # Should have advanced to victory scene
-        # victory_scene for corner_boy is 22 (debt__enforcer_fight)
-        self.assertEqual(self.session.current_scene.pk, 22)
+        victory_scene = Scene.objects.get(key='debt__enforcer_fight')
+        self.assertEqual(self.session.current_scene, victory_scene)
         
         # Assert CompletedQuest is created if victory scene is an ending
         if self.session.current_scene.is_ending:
@@ -807,4 +887,173 @@ class Phase4PerformanceTest(TestCase):
         )
         self.assertEqual(mock_choice.call_count, 1)
         self.assertIsInstance(mock_choice.call_args.args[0], list)
+
+    def test_resolve_contest_victory_clears_claim_and_contested_flag(self):
+        from .models import Property, PlayerProperty, RivalClaim
+        from .services.property_service import resolve_contest
+
+        resolution_scene = Scene.objects.create(
+            key='phase6__contest_victory_resolution',
+            title='Victory Resolution',
+            body='resolve',
+            scene_type='ending',
+            ending_type='victory',
+        )
+        prop = Property.objects.create(
+            name='Phase6 Victory Property',
+            property_type='business',
+            income_per_turn=2,
+            is_contestable=True,
+            resolution_scene=resolution_scene,
+        )
+        player_property = PlayerProperty.objects.create(
+            session=self.session,
+            property=prop,
+            is_contested=True,
+        )
+        claim = RivalClaim.objects.create(
+            player_property=player_property,
+            resolution_scene=resolution_scene,
+        )
+
+        log = resolve_contest(self.session, claim, 'victory')
+
+        player_property.refresh_from_db()
+        self.assertFalse(player_property.is_contested)
+        self.assertFalse(RivalClaim.objects.filter(pk=claim.pk).exists())
+        self.assertIn('is yours again', log)
+
+    def test_resolve_contest_non_victory_removes_property_and_claim(self):
+        from .models import Property, PlayerProperty, RivalClaim
+        from .services.property_service import resolve_contest
+
+        resolution_scene = Scene.objects.create(
+            key='phase6__contest_defeat_resolution',
+            title='Defeat Resolution',
+            body='resolve',
+            scene_type='ending',
+            ending_type='defeat',
+        )
+        prop = Property.objects.create(
+            name='Phase6 Defeat Property',
+            property_type='business',
+            income_per_turn=2,
+            is_contestable=True,
+            resolution_scene=resolution_scene,
+        )
+        player_property = PlayerProperty.objects.create(
+            session=self.session,
+            property=prop,
+            is_contested=True,
+        )
+        claim = RivalClaim.objects.create(
+            player_property=player_property,
+            resolution_scene=resolution_scene,
+        )
+
+        log = resolve_contest(self.session, claim, 'defeat')
+
+        self.assertFalse(PlayerProperty.objects.filter(pk=player_property.pk).exists())
+        self.assertFalse(RivalClaim.objects.filter(pk=claim.pk).exists())
+        self.assertIn('is gone', log)
+
+
+class EffectiveStatsTest(TestCase):
+    fixtures = [
+        'game/fixtures/choice.json',
+        'game/fixtures/combatencounter.json',
+        'game/fixtures/enemy.json',
+        'game/fixtures/item.json',
+        'game/fixtures/property.json',
+        'game/fixtures/quest.json',
+        'game/fixtures/requirement.json',
+        'game/fixtures/requirementgroup.json',
+        'game/fixtures/scene.json',
+        'game/fixtures/sceneitem.json',
+    ]
+
+    def setUp(self):
+        self.client = Client()
+        self.client.get('/game/')
+        self.session = GameSession.objects.first()
+
+    def test_get_effective_stats_applies_passive_item_bonuses(self):
+        from .models import Item, PlayerInventory
+        from .utils import get_effective_stats
+
+        stats = self.session.stats
+        stats.strength = 8
+        stats.agility = 7
+        stats.save()
+
+        str_item = Item.objects.create(
+            key='phase6__str_charm',
+            name='STR Charm',
+            description='Passive strength bonus.',
+            passive_stat='strength',
+            passive_value=2,
+        )
+        agi_item = Item.objects.create(
+            key='phase6__agi_charm',
+            name='AGI Charm',
+            description='Passive agility bonus.',
+            passive_stat='agility',
+            passive_value=3,
+        )
+        second_str_item = Item.objects.create(
+            key='phase6__str_charm_2',
+            name='STR Charm 2',
+            description='Another passive strength bonus.',
+            passive_stat='strength',
+            passive_value=1,
+        )
+        PlayerInventory.objects.create(session=self.session, item=str_item, quantity=1)
+        PlayerInventory.objects.create(session=self.session, item=agi_item, quantity=1)
+        PlayerInventory.objects.create(session=self.session, item=second_str_item, quantity=1)
+
+        from .services.inventory import get_player_inventory
+        inventory = get_player_inventory(self.session)
+        effective = get_effective_stats(stats, inventory)
+
+        self.assertEqual(effective.strength, 11)
+        self.assertEqual(effective.agility, 10)
+        self.assertEqual(effective.bonuses['strength'], 3)
+        self.assertEqual(effective.bonuses['agility'], 3)
+
+
+class ProgressionTest(TestCase):
+    fixtures = [
+        'game/fixtures/choice.json',
+        'game/fixtures/combatencounter.json',
+        'game/fixtures/enemy.json',
+        'game/fixtures/item.json',
+        'game/fixtures/property.json',
+        'game/fixtures/quest.json',
+        'game/fixtures/requirement.json',
+        'game/fixtures/requirementgroup.json',
+        'game/fixtures/scene.json',
+        'game/fixtures/sceneitem.json',
+    ]
+
+    def setUp(self):
+        self.client = Client()
+        self.client.get('/game/')
+        self.session = GameSession.objects.first()
+        self.stats = self.session.stats
+
+    def test_award_xp_crosses_multiple_levels(self):
+        from .services.progression import award_xp
+
+        self.stats.level = 1
+        self.stats.experience = 150
+        self.stats.stat_points = 0
+        self.stats.save()
+
+        levels = award_xp(self.session, self.stats, 500)
+        self.stats.refresh_from_db()
+
+        self.assertEqual(levels, [2, 3])
+        self.assertEqual(self.stats.level, 3)
+        self.assertEqual(self.stats.stat_points, 2)
+        self.assertEqual(self.stats.experience, 650)
 

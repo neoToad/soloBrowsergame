@@ -1,17 +1,28 @@
-from django.shortcuts import render, redirect, get_object_or_404
 import json
+from collections import defaultdict
 
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
+from django.urls import reverse
 from .models import (
-    GameSession, PlayerStats, Quest, Scene, Choice, EventLog,
-    CompletedQuest, CombatState, PlayerContext, CombatEncounter,
+    Arc, Choice, CombatEncounter, CombatState, CompletedQuest, EventLog,
+    GameSession, Item, PlayerContext, PlayerProperty, Quest, Requirement,
+    RivalClaim, Scene,
 )
 from .models.events import log_event
+from .models.combat import Enemy as EnemyModel
 from .services.session     import load_session_context, create_session, get_completed_map, build_render_context
 from .services.scene       import get_available_choices, complete_scene, get_notice_board, resolve_roll
 from .services.combat      import get_or_create_combat_state, get_active_combat_state, resolve_combat_end, resolve_player_attack as resolve_player_attack_util, resolve_enemy_attack as resolve_enemy_attack_util
 from .services.inventory   import get_player_inventory, award_scene_items, consume_item as consume_item_util
+from .services.flags import set_flag, clear_flag
+from .services.property_service import (
+    check_rival_contests,
+    get_turn_summary,
+    process_turn_income,
+    resolve_contest,
+)
 from .services.progression import award_xp, maybe_complete_quest, XP_AWARDS, LEVEL_UP_FLAVOR
 from .services.quest_builder import (
     get_canvas_data,
@@ -34,7 +45,9 @@ from .utils import (
 )
 from .constants import (
     HUB_START_SCENE_KEY,
-    STAT_FIELD_MAP, USE_ITEM_FLAVOR,
+    SESSION_KEY,
+    STAT_FIELD_MAP,
+    USE_ITEM_FLAVOR,
 )
 
 def _htmx_response(request, context):
@@ -49,8 +62,50 @@ def _htmx_response(request, context):
     mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
     return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
 
+
+def _choice_context(*, quest, quest_id, choice=None, source_scene_id=None, routing_type='direct'):
+    scenes = list(
+        quest.scenes
+        .only('id', 'key', 'title', 'scene_type')
+        .order_by('order')
+    )
+    quest_scene_ids = {s.id for s in scenes}
+    hub_scenes = list(
+        Scene.objects.filter(scene_type='hub')
+        .exclude(pk__in=quest_scene_ids)
+        .only('id', 'key', 'title')
+        .order_by('title')
+    )
+    source_scene = (
+        Scene.objects.filter(pk=source_scene_id).only('id', 'scene_type').first()
+        if source_scene_id else None
+    )
+    requirement_groups = (
+        list(choice.requirements.prefetch_related('requirements').all())
+        if choice else []
+    )
+    req_save_url = (
+        reverse('admin:quest_builder_choice_requirements_save', args=[quest_id, choice.id])
+        if choice else ''
+    )
+    return {
+        'quest_id': quest_id,
+        'source_scene_id': source_scene_id,
+        'source_scene': source_scene,
+        'choice': choice,
+        'scenes': scenes,
+        'hub_scenes': hub_scenes,
+        'routing_type': routing_type,
+        'requirement_groups': requirement_groups,
+        'req_save_url': req_save_url,
+        'all_quests': list(Quest.objects.order_by('title')),
+        'all_items': list(Item.objects.order_by('name')),
+        'stat_choices': [(v, k) for k, v in STAT_FIELD_MAP.items()],
+        'requirement_types': Requirement.CONDITION_TYPES,
+    }
+
 def game_hub(request):
-    session_pk = request.session.get('game_session_id')
+    session_pk = request.session.get(SESSION_KEY)
 
     if not session_pk:
         create_session(request)
@@ -64,7 +119,7 @@ def game_hub(request):
     return redirect('scene_detail', scene_key=HUB_START_SCENE_KEY)
 
 def scene_detail(request, scene_key):
-    session_pk = request.session.get('game_session_id')
+    session_pk = request.session.get(SESSION_KEY)
     if not session_pk:
         return redirect('/game/')
 
@@ -79,7 +134,6 @@ def scene_detail(request, scene_key):
     if scene.is_hub:
         notice_board = get_notice_board(scene, inventory, completed_map, effective_stats, flags=game_session.flags)
 
-    from .models.property import PlayerProperty
     player_properties = PlayerProperty.objects.filter(session=game_session).select_related('property')
     context = {
         'session':           game_session,
@@ -99,7 +153,7 @@ def choice_resolve(request, choice_id):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get('game_session_id')
+    session_pk = request.session.get(SESSION_KEY)
     if not session_pk:
         return redirect('game_hub')
 
@@ -123,7 +177,6 @@ def choice_resolve(request, choice_id):
         log_event(session, choice.arrival_flavor)
 
     # FLAG EFFECTS
-    from .services.flags import set_flag, clear_flag
     if choice.set_flag_name:
         set_flag(session, choice.set_flag_name)
     if choice.clear_flag_name:
@@ -151,11 +204,6 @@ def choice_resolve(request, choice_id):
     # PROPERTY TURN (fires once per quest completion)
     turn_summary = None
     if quest_logs:
-        from .services.property_service import (
-            process_turn_income, check_rival_contests, resolve_contest, get_turn_summary
-        )
-        from .models.property import RivalClaim
-
         # Resolve an active contest if this scene was its resolution
         active_claim = RivalClaim.objects.filter(
             player_property__session=session,
@@ -196,10 +244,9 @@ def choice_resolve(request, choice_id):
 def start_quest(request, quest_key):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    session_pk = request.session.get('game_session_id')
+    session_pk = request.session.get(SESSION_KEY)
     if not session_pk:
         return redirect('game_hub')
-    from .models import Quest, PlayerContext
     session, stats, inventory, effective_stats, completed_map = \
         load_session_context(session_pk)
     quest = get_object_or_404(Quest, key=quest_key, is_unlocked=True)
@@ -231,7 +278,7 @@ def combat_attack(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get('game_session_id')
+    session_pk = request.session.get(SESSION_KEY)
     if not session_pk:
         return redirect('game_hub')
 
@@ -318,7 +365,7 @@ def level_up(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get('game_session_id')
+    session_pk = request.session.get(SESSION_KEY)
     if not session_pk:
         return redirect('game_hub')
 
@@ -374,11 +421,9 @@ def quest_builder_list(request):
     Renders game/templates/admin/quest_builder/list.html.
     Passes quests grouped by Arc to the template.
     """
-    from .models import Quest, Arc
     quests = Quest.objects.select_related('arc').order_by('arc__order', 'arc_order', 'title')
     
     # Group by Arc
-    from collections import defaultdict
     quests_by_arc = defaultdict(list)
     for q in quests:
         arc_title = q.arc.title if q.arc else "No Arc"
@@ -429,16 +474,9 @@ def scene_panel(request, quest_id, scene_id=None):
         except Exception:
             combat_encounter = None
 
-    from .models.items import Item as ItemModel
-    from .models.combat import Enemy as EnemyModel
-    from .models.requirements import Requirement
-    from .models.world import Quest as QuestModel
-    from .constants import STAT_FIELD_MAP
-    from django.urls import reverse as url_reverse
-
-    all_items = list(ItemModel.objects.order_by('name'))
+    all_items = list(Item.objects.order_by('name'))
     all_enemies = list(EnemyModel.objects.order_by('name'))
-    all_quests = list(QuestModel.objects.order_by('title'))
+    all_quests = list(Quest.objects.order_by('title'))
     quest_scenes = list(
         quest.scenes.only('id', 'key', 'title').order_by('order')
     )
@@ -587,7 +625,7 @@ def scene_items_save(request, quest_id, scene_id):
         return HttpResponseNotAllowed(['POST'])
 
     quest = get_object_or_404(Quest, pk=quest_id)
-    get_object_or_404(quest.scenes.all(), pk=scene_id)
+    scene = get_object_or_404(quest.scenes.all(), pk=scene_id)
 
     # Parse indexed POST fields: item_id_0, quantity_0, item_id_1, quantity_1, ...
     items_data = []
@@ -603,11 +641,8 @@ def scene_items_save(request, quest_id, scene_id):
         })
         index += 1
 
-    scene_items = update_scene_items_service(scene_id, items_data)
-
-    from .models.items import Item as ItemModel
-    all_items = list(ItemModel.objects.order_by('name'))
-    scene = Scene.objects.get(pk=scene_id)
+    scene_items = update_scene_items_service(scene.id, items_data)
+    all_items = list(Item.objects.order_by('name'))
 
     html = render_to_string(
         'admin/quest_builder/partials/items_section.html',
@@ -628,16 +663,13 @@ def scene_combat_save(request, quest_id, scene_id):
         return HttpResponseNotAllowed(['POST'])
 
     quest = get_object_or_404(Quest, pk=quest_id)
-    get_object_or_404(quest.scenes.all(), pk=scene_id)
+    scene = get_object_or_404(quest.scenes.all(), pk=scene_id)
 
-    encounter = update_combat_encounter_service(scene_id, request.POST)
-
-    from .models.combat import Enemy as EnemyModel
+    encounter = update_combat_encounter_service(scene.id, request.POST)
     all_enemies = list(EnemyModel.objects.order_by('name'))
     quest_scenes = list(
         quest.scenes.only('id', 'key', 'title').order_by('order')
     )
-    scene = Scene.objects.get(pk=scene_id)
 
     html = render_to_string(
         'admin/quest_builder/partials/combat_section.html',
@@ -668,57 +700,13 @@ def choice_panel(request, quest_id, source_scene_id=None, choice_id=None):
         if choice.success_scene_id or choice.failure_scene_id:
             routing_type = 'roll'
 
-    scenes = list(
-        quest.scenes
-        .only('id', 'key', 'title', 'scene_type')
-        .order_by('order')
+    context = _choice_context(
+        quest=quest,
+        quest_id=quest_id,
+        choice=choice,
+        source_scene_id=source_scene_id,
+        routing_type=routing_type,
     )
-
-    from .models.items import Item as ItemModel
-    from .models.requirements import Requirement
-    from .models.world import Quest as QuestModel
-    from .constants import STAT_FIELD_MAP
-    from django.urls import reverse as url_reverse
-
-    all_items = list(ItemModel.objects.order_by('name'))
-    all_quests = list(QuestModel.objects.order_by('title'))
-
-    requirement_groups = (
-        list(choice.requirements.prefetch_related('requirements').all())
-        if choice else []
-    )
-    req_save_url = (
-        url_reverse('admin:quest_builder_choice_requirements_save', args=[quest_id, choice_id])
-        if choice else ''
-    )
-
-    quest_scene_ids = {s.id for s in scenes}
-    hub_scenes = list(
-        Scene.objects.filter(scene_type='hub')
-        .exclude(pk__in=quest_scene_ids)
-        .only('id', 'key', 'title')
-        .order_by('title')
-    )
-
-    source_scene = None
-    if source_scene_id:
-        source_scene = Scene.objects.filter(pk=source_scene_id).only('id', 'scene_type').first()
-
-    context = {
-        'quest_id': quest_id,
-        'source_scene_id': source_scene_id,
-        'source_scene': source_scene,
-        'choice': choice,
-        'scenes': scenes,
-        'hub_scenes': hub_scenes,
-        'routing_type': routing_type,
-        'requirement_groups': requirement_groups,
-        'req_save_url': req_save_url,
-        'all_quests': all_quests,
-        'all_items': all_items,
-        'stat_choices': [(v, k) for k, v in STAT_FIELD_MAP.items()],
-        'requirement_types': Requirement.CONDITION_TYPES,
-    }
     return render(request, 'admin/quest_builder/partials/choice_panel.html', context)
 
 
@@ -734,42 +722,16 @@ def choice_create(request, quest_id):
     choice = create_choice_service(int(raw_source), request.POST)
     routing_type = 'roll' if (choice.success_scene_id or choice.failure_scene_id) else 'direct'
 
-    from .models.items import Item as ItemModel
-    from .models.requirements import Requirement
-    from .models.world import Quest as QuestModel
-    from .constants import STAT_FIELD_MAP
-    from django.urls import reverse as url_reverse
-
-    scenes = list(
-        quest.scenes
-        .only('id', 'key', 'title', 'scene_type')
-        .order_by('order')
+    context = _choice_context(
+        quest=quest,
+        quest_id=quest_id,
+        choice=choice,
+        source_scene_id=choice.scene_id,
+        routing_type=routing_type,
     )
-    quest_scene_ids = {s.id for s in scenes}
-    hub_scenes = list(
-        Scene.objects.filter(scene_type='hub')
-        .exclude(pk__in=quest_scene_ids)
-        .only('id', 'key', 'title')
-        .order_by('title')
-    )
-    source_scene = Scene.objects.filter(pk=choice.scene_id).only('id', 'scene_type').first()
     html = render_to_string(
         'admin/quest_builder/partials/choice_panel.html',
-        {
-            'quest_id': quest_id,
-            'source_scene_id': choice.scene_id,
-            'source_scene': source_scene,
-            'choice': choice,
-            'scenes': scenes,
-            'hub_scenes': hub_scenes,
-            'routing_type': routing_type,
-            'requirement_groups': [],
-            'req_save_url': url_reverse('admin:quest_builder_choice_requirements_save', args=[quest_id, choice.id]),
-            'all_quests': list(QuestModel.objects.order_by('title')),
-            'all_items': list(ItemModel.objects.order_by('name')),
-            'stat_choices': [(v, k) for k, v in STAT_FIELD_MAP.items()],
-            'requirement_types': Requirement.CONDITION_TYPES,
-        },
+        context,
         request=request,
     )
     response = HttpResponse(html)
@@ -836,20 +798,14 @@ def choice_requirements_save(request, quest_id, choice_id):
     choice = get_object_or_404(Choice, pk=choice_id)
     build_requirement_groups_from_post_service(choice, request.POST)
 
-    from .models.requirements import Requirement
-    from .models.world import Quest as QuestModel
-    from .models.items import Item as ItemModel
-    from .constants import STAT_FIELD_MAP
-    from django.urls import reverse as url_reverse
-
     html = render_to_string(
         'admin/quest_builder/partials/requirements_section.html',
         {
             'quest_id': quest_id,
             'requirement_groups': list(choice.requirements.prefetch_related('requirements').all()),
-            'save_url': url_reverse('admin:quest_builder_choice_requirements_save', args=[quest_id, choice_id]),
-            'all_quests': list(QuestModel.objects.order_by('title')),
-            'all_items': list(ItemModel.objects.order_by('name')),
+            'save_url': reverse('admin:quest_builder_choice_requirements_save', args=[quest_id, choice_id]),
+            'all_quests': list(Quest.objects.order_by('title')),
+            'all_items': list(Item.objects.order_by('name')),
             'stat_choices': [(v, k) for k, v in STAT_FIELD_MAP.items()],
             'requirement_types': Requirement.CONDITION_TYPES,
             'toast_message': 'Requirements saved.',
@@ -863,11 +819,10 @@ def use_item(request, item_id):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get('game_session_id')
+    session_pk = request.session.get(SESSION_KEY)
     if not session_pk:
         return redirect('game_hub')
 
-    from .models import Item
     session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
     item    = get_object_or_404(Item, pk=item_id)
 
