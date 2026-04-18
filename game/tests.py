@@ -416,6 +416,25 @@ class LevelUpTest(TestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_levelup_flavor_filter_uses_level_keyed_lookup(self):
+        from .templatetags.game_filters import levelup_flavor
+
+        self.assertEqual(levelup_flavor(2), "Word travels fast. You're moving up.")
+        self.assertEqual(levelup_flavor(1), "")
+
+    def test_scene_renders_level_up_panel_after_level_gain(self):
+        self.stats.level = 2
+        self.stats.stat_points = 1
+        self.stats.save()
+
+        response = self.client.get(
+            reverse('scene_detail', kwargs={'scene_key': self.session.current_scene.key})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "MOVING UP")
+        self.assertContains(response, "Word travels fast.")
+
 class UseItemTest(TestCase):
     fixtures = []
 

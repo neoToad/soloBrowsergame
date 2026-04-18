@@ -73,13 +73,10 @@ def rank_title(level):
 def levelup_flavor(level):
     """
     Returns the crime-setting flavor string for the given level number.
-    Index 0 of LEVEL_UP_FLAVOR corresponds to reaching level 2.
+    LEVEL_UP_FLAVOR is keyed by level number.
     Usage: {{ stats.level|levelup_flavor }}
     """
     try:
-        idx = int(level) - 2
-        if 0 <= idx < len(LEVEL_UP_FLAVOR):
-            return LEVEL_UP_FLAVOR[idx]
-        return ''
-    except (ValueError, TypeError):
+        return LEVEL_UP_FLAVOR.get(int(level), '')
+    except (ValueError, TypeError, KeyError):
         return ''
