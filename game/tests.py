@@ -106,6 +106,23 @@ class GameNavigationTest(TestCase):
         # For non-roll choices, it uses target_scene
         self.assertEqual(session.current_scene, choice.target_scene)
 
+    def test_choice_resolve_rejects_choice_from_different_scene(self):
+        self.client.get('/game/')
+        session = GameSession.objects.first()
+        initial_scene = session.current_scene
+
+        off_scene_choice = Choice.objects.exclude(scene=initial_scene).first()
+        self.assertIsNotNone(off_scene_choice, "Expected at least one choice from another scene")
+
+        response = self.client.post(
+            reverse('choice_resolve', kwargs={'choice_id': off_scene_choice.pk}),
+            HTTP_HX_REQUEST='true'
+        )
+
+        self.assertEqual(response.status_code, 403)
+        session.refresh_from_db()
+        self.assertEqual(session.current_scene, initial_scene)
+
 class RequirementEvaluationTest(TestCase):
     def test_stat_gte(self):
         from types import SimpleNamespace
@@ -200,7 +217,7 @@ class RequirementEvaluationTest(TestCase):
         self.assertTrue(group_empty.evaluate(PlayerContext(stats_none, {}, {})))
 
 class CombatTest(TestCase):
-    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_warehouse_job.json', 'game/fixtures/quest_street_debt.json']
+    fixtures = []
 
     def setUp(self):
         self.client = Client()
@@ -298,7 +315,7 @@ class LevelUpTest(TestCase):
         self.assertEqual(response.status_code, 400)
 
 class UseItemTest(TestCase):
-    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_warehouse_job.json', 'game/fixtures/items.json']
+    fixtures = []
 
     def setUp(self):
         self.client = Client()

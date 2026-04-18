@@ -76,5 +76,8 @@ class CompletedQuest(models.Model):
     ending_type  = models.CharField(max_length=20)
     completed_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('session', 'quest')
+
     def __str__(self):
         return f"{self.session} — {self.quest.title} ({self.ending_type})"

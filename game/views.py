@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
 from .models import (
     GameSession, PlayerStats, Quest, Scene, Choice, EventLog,
-    CompletedQuest, CombatState, PlayerContext,
+    CompletedQuest, CombatState, PlayerContext, CombatEncounter,
 )
 from .models.events import log_event
 from .services.session     import load_session_context, create_session, get_completed_map, build_render_context
@@ -105,6 +105,8 @@ def choice_resolve(request, choice_id):
 
     session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
     choice    = get_object_or_404(Choice, pk=choice_id)
+    if choice.scene_id != session.current_scene_id:
+        return HttpResponse("Choice is not available from your current scene.", status=403)
 
     scene      = choice.scene
     next_scene = None
@@ -244,6 +246,7 @@ def combat_attack(request):
         return HttpResponse("Combat is not active.", status=400)
 
     enemy         = combat_state.enemy
+    encounter = CombatEncounter.objects.get(scene=session.current_scene)
 
     # ── PLAYER ATTACKS ──────────────────────────────────────────────
     p_hit, p_dmg, p_roll, p_total = resolve_player_attack_util(effective_stats, enemy)
@@ -268,7 +271,7 @@ def combat_attack(request):
         log_event(session, f"{enemy.name} goes down. You walk away.")
         context = resolve_combat_end(
             session, stats, inventory, completed_map,
-            enemy.victory_scene, combat_state,
+            encounter.victory_scene, combat_state,
             xp_award=XP_AWARDS['combat_victory'],
         )
         return _htmx_response(request, context)
@@ -297,7 +300,7 @@ def combat_attack(request):
         log_event(session, "You're down. You lose consciousness.")
         context = resolve_combat_end(
             session, stats, inventory, completed_map,
-            enemy.defeat_scene, combat_state,
+            encounter.defeat_scene, combat_state,
         )
         return _htmx_response(request, context)
 

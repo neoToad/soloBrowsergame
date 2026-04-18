@@ -508,11 +508,9 @@ def delete_scene(scene_id):
         *failure_qs.values_list('id', flat=True),
     })
 
-    # Clear combat encounter routing that points to this scene
-    CombatEncounter.objects.filter(victory_scene_id=scene_id).update(victory_scene=None)
-    CombatEncounter.objects.filter(defeat_scene_id=scene_id).update(defeat_scene=None)
-
     with transaction.atomic():
+        CombatEncounter.objects.filter(victory_scene_id=scene_id).update(victory_scene=None)
+        CombatEncounter.objects.filter(defeat_scene_id=scene_id).update(defeat_scene=None)
         target_qs.update(target_scene=None)
         success_qs.update(success_scene=None)
         failure_qs.update(failure_scene=None)
@@ -663,7 +661,10 @@ def build_requirement_groups_from_post(obj, post_data):
     from ..models.requirements import Requirement, RequirementGroup
 
     with transaction.atomic():
+        old_groups = list(obj.requirements.all())
         obj.requirements.clear()
+        Requirement.objects.filter(groups__in=old_groups).delete()
+        RequirementGroup.objects.filter(pk__in=[g.pk for g in old_groups]).delete()
 
         raw_count = str(post_data.get('group_count') or '').strip()
         try:
