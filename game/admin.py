@@ -68,12 +68,6 @@ class CombatEncounterInline(admin.StackedInline):
     extra = 0
     autocomplete_fields = ('enemy',)
 
-class SceneInline(admin.TabularInline):
-    model = Scene
-    extra = 0
-    fields = ('key', 'title', 'order', 'scene_type')
-    show_change_link = True
-
 class PlayerStatsInline(admin.StackedInline):
     model = PlayerStats
     extra = 0
@@ -109,8 +103,8 @@ class QuestAdmin(admin.ModelAdmin):
     search_fields = ('key', 'title')
     list_select_related = True
     autocomplete_fields = ('entrance_scene',)
-    filter_horizontal = ('requirements', 'hub_scenes')
-    inlines = [SceneInline]
+    filter_horizontal = ('requirements', 'hub_scenes', 'scenes', 'entry_choices')
+    inlines = []
     save_on_top = True
 
     def get_queryset(self, request):
@@ -235,8 +229,7 @@ class QuestAdmin(admin.ModelAdmin):
         from django.shortcuts import get_object_or_404, render
         quest = get_object_or_404(Quest, pk=quest_id)
         scenes = (
-            Scene.objects
-            .filter(quest=quest)
+            quest.scenes
             .prefetch_related(
                 'choices',
                 'choices__target_scene',
@@ -362,8 +355,8 @@ class RequirementGroupAdmin(admin.ModelAdmin):
 
 @admin.register(Scene)
 class SceneAdmin(admin.ModelAdmin):
-    list_display = ('key', 'title', 'quest', 'body_preview', 'scene_type', 'requires_roll', 'order')
-    list_filter = ('quest', 'scene_type', 'requires_roll', 'ending_type')
+    list_display = ('key', 'title', 'body_preview', 'scene_type', 'requires_roll', 'order')
+    list_filter = ('scene_type', 'requires_roll', 'ending_type')
     search_fields = ('key', 'title', 'body')
     list_select_related = True
     prepopulated_fields = {'key': ('title',)}
@@ -371,7 +364,7 @@ class SceneAdmin(admin.ModelAdmin):
     autocomplete_fields = ('consume_item',)
     fieldsets = (
         ('Identity', {
-            'fields': ('key', 'key_format_note', 'title', 'quest', 'order')
+            'fields': ('key', 'key_format_note', 'title', 'order')
         }),
         ('Narrative', {
             'fields': ('body',)
@@ -400,14 +393,14 @@ class SceneAdmin(admin.ModelAdmin):
 
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ('scene', 'label', 'quest', 'target_scene', 'order')
-    list_filter = ('scene__quest',)
+    list_display = ('scene', 'label', 'target_scene', 'order')
+    list_filter = ('scene__quests',)
     search_fields = ('label', 'scene__key')
     list_select_related = True
-    autocomplete_fields = ('target_scene', 'success_scene', 'failure_scene', 'quest')
+    autocomplete_fields = ('target_scene', 'success_scene', 'failure_scene')
     fieldsets = (
         ('Basic', {
-            'fields': ('scene', 'label', 'order', 'quest')
+            'fields': ('scene', 'label', 'order', 'arrival_flavor')
         }),
         ('Routing', {
             'fields': ('target_scene', 'success_scene', 'failure_scene'),

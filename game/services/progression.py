@@ -36,17 +36,18 @@ def maybe_complete_quest(session, stats, next_scene, completed_map):
     from ..models import CompletedQuest
     log_messages = []
 
-    if next_scene.is_ending and next_scene.quest:
-        if not CompletedQuest.objects.filter(session=session, quest=next_scene.quest).exists():
+    quest = next_scene.quests.first() if next_scene.is_ending else None
+    if quest:
+        if not CompletedQuest.objects.filter(session=session, quest=quest).exists():
             CompletedQuest.objects.create(
                 session=session,
-                quest=next_scene.quest,
+                quest=quest,
                 ending_type=next_scene.ending_type
             )
             log_messages.append(
-                f"You have completed: {next_scene.quest.title} ({next_scene.get_ending_type_display()})"
+                f"You have completed: {quest.title} ({next_scene.get_ending_type_display()})"
             )
-            completed_map[next_scene.quest_id] = next_scene.ending_type
+            completed_map[quest.id] = next_scene.ending_type
 
             # AWARD XP
             xp_amount = XP_AWARDS.get(next_scene.ending_type, 0)

@@ -30,7 +30,7 @@ game/
   models/
     player.py       - GameSession (+ flags JSONField), PlayerStats (cash, heat, rep),
                       PlayerInventory, CompletedQuest
-    world.py        - Arc, Quest (+ hub_scenes M2M), Scene, Choice, SceneItem, SceneUnlock
+    world.py        - Arc, Quest (+ hub_scenes, scenes, entry_choices M2M), Scene, Choice, SceneItem, SceneUnlock
     items.py        - Item
     combat.py       - Enemy, CombatEncounter, CombatState
     requirements.py - Requirement, RequirementGroup, PlayerContext
@@ -63,12 +63,13 @@ game/
 ## Data Model
 
 ```text
-Arc --< Quest --< Scene --< Choice
-         |          |         \-- target/success/failure -> Scene
-         |          |--< SceneItem --> Item
-         |          |-- CombatEncounter --> Enemy
-         |          \--< SceneUnlock --> Scene
+Arc --< Quest >--< scenes (M2M) --> Scene --< Choice
+         |                              |         \-- target/success/failure -> Scene
+         |                              |--< SceneItem --> Item
+         |                              |-- CombatEncounter --> Enemy
+         |                              \--< SceneUnlock --> Scene
          \--< hub_scenes (M2M) --> Scene(hub)
+         \--< entry_choices (M2M) --> Choice
 
 GameSession ---- PlayerStats (1:1)
            ---- flags (JSONField)
@@ -79,6 +80,8 @@ GameSession ---- PlayerStats (1:1)
            --< PlayerProperty --> Property --< RivalClaim
 
 Quest, Scene, and Choice each have M2M -> RequirementGroup -> M2M -> Requirement.
+Scene belongs to quests via Quest.scenes (M2M); access via scene.quests or quest.scenes.
+Choice starts a quest via Quest.entry_choices (M2M); access via choice.started_quests or quest.entry_choices.
 ```
 
 ---
@@ -106,7 +109,7 @@ Quest, Scene, and Choice each have M2M -> RequirementGroup -> M2M -> Requirement
   - `success_scene` / `failure_scene` for roll scenes
 - Flag effects:
   - `set_flag_name` / `clear_flag_name` are applied when a choice is taken.
-- Entry choices can link to `Quest` and are hidden after completion unless `Quest.is_repeatable=True`.
+- Entry choices are linked to a `Quest` via `Quest.entry_choices` (M2M) and are hidden after completion unless `Quest.is_repeatable=True`.
 - `Scene.consume_item` (nullable FK to `Item`): if set, the item is removed from inventory when the player arrives at that scene (fires in `complete_scene`).
 
 ---

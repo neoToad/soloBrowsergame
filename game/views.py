@@ -406,13 +406,13 @@ def scene_panel(request, quest_id, scene_id=None):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
-    get_object_or_404(Quest, pk=quest_id)
+    quest = get_object_or_404(Quest, pk=quest_id)
     scene = None
     scene_choices = []
     scene_items = []
     combat_encounter = None
     if scene_id is not None:
-        scene = get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+        scene = get_object_or_404(quest.scenes.all(), pk=scene_id)
         scene_choices = list(
             Choice.objects.filter(scene=scene)
             .select_related('target_scene', 'success_scene', 'failure_scene')
@@ -437,7 +437,7 @@ def scene_panel(request, quest_id, scene_id=None):
     all_enemies = list(EnemyModel.objects.order_by('name'))
     all_quests = list(QuestModel.objects.order_by('title'))
     quest_scenes = list(
-        Scene.objects.filter(quest_id=quest_id).only('id', 'key', 'title').order_by('order')
+        quest.scenes.only('id', 'key', 'title').order_by('order')
     )
 
     context = {
@@ -468,7 +468,8 @@ def scene_save(request, quest_id, scene_id):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+    quest = get_object_or_404(Quest, pk=quest_id)
+    get_object_or_404(quest.scenes.all(), pk=scene_id)
     try:
         scene = update_scene_service(scene_id, request.POST)
     except ValueError as exc:
@@ -526,7 +527,8 @@ def scene_delete(request, quest_id, scene_id):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    scene = get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+    quest = get_object_or_404(Quest, pk=quest_id)
+    scene = get_object_or_404(quest.scenes.all(), pk=scene_id)
 
     # Two-step delete: first POST shows confirmation; second POST with confirmed=1 does the delete.
     if request.POST.get('confirmed') != '1':
@@ -564,7 +566,8 @@ def scene_move(request, quest_id, scene_id):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+    quest = get_object_or_404(Quest, pk=quest_id)
+    get_object_or_404(quest.scenes.all(), pk=scene_id)
 
     try:
         x = int((request.POST.get('x') or '').strip())
@@ -580,7 +583,8 @@ def scene_items_save(request, quest_id, scene_id):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+    quest = get_object_or_404(Quest, pk=quest_id)
+    get_object_or_404(quest.scenes.all(), pk=scene_id)
 
     # Parse indexed POST fields: item_id_0, quantity_0, item_id_1, quantity_1, ...
     items_data = []
@@ -620,14 +624,15 @@ def scene_combat_save(request, quest_id, scene_id):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
+    quest = get_object_or_404(Quest, pk=quest_id)
+    get_object_or_404(quest.scenes.all(), pk=scene_id)
 
     encounter = update_combat_encounter_service(scene_id, request.POST)
 
     from .models.combat import Enemy as EnemyModel
     all_enemies = list(EnemyModel.objects.order_by('name'))
     quest_scenes = list(
-        Scene.objects.filter(quest_id=quest_id).only('id', 'key', 'title').order_by('order')
+        quest.scenes.only('id', 'key', 'title').order_by('order')
     )
     scene = Scene.objects.get(pk=scene_id)
 
@@ -650,7 +655,7 @@ def choice_panel(request, quest_id, source_scene_id=None, choice_id=None):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
-    get_object_or_404(Quest, pk=quest_id)
+    quest = get_object_or_404(Quest, pk=quest_id)
     choice = None
     routing_type = 'direct'
 
@@ -661,7 +666,7 @@ def choice_panel(request, quest_id, source_scene_id=None, choice_id=None):
             routing_type = 'roll'
 
     scenes = list(
-        Scene.objects.filter(quest_id=quest_id)
+        quest.scenes
         .only('id', 'key', 'title', 'scene_type')
         .order_by('order')
     )
@@ -718,7 +723,7 @@ def choice_create(request, quest_id):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    get_object_or_404(Quest, pk=quest_id)
+    quest = get_object_or_404(Quest, pk=quest_id)
     raw_source = (request.POST.get('source_scene_id') or '').strip()
     if not raw_source:
         return HttpResponse("source_scene_id required", status=400)
@@ -733,7 +738,7 @@ def choice_create(request, quest_id):
     from django.urls import reverse as url_reverse
 
     scenes = list(
-        Scene.objects.filter(quest_id=quest_id)
+        quest.scenes
         .only('id', 'key', 'title', 'scene_type')
         .order_by('order')
     )

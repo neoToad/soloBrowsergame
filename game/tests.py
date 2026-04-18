@@ -379,7 +379,7 @@ class QuestBuilderSceneTest(TestCase):
     # ── CREATE ─────────────────────────────────────────────────────────────────
 
     def test_scene_create_saves_to_db(self):
-        self.assertEqual(Scene.objects.filter(quest=self.quest).count(), 0)
+        self.assertEqual(self.quest.scenes.count(), 0)
 
         response = self.client.post(self._create_url(), {
             'title': 'Rooftop',
@@ -392,8 +392,8 @@ class QuestBuilderSceneTest(TestCase):
 
         self.assertEqual(response.status_code, 200,
             f"Expected 200, got {response.status_code}. Body: {response.content[:400]}")
-        self.assertEqual(Scene.objects.filter(quest=self.quest).count(), 1)
-        scene = Scene.objects.get(quest=self.quest)
+        self.assertEqual(self.quest.scenes.count(), 1)
+        scene = self.quest.scenes.get()
         self.assertEqual(scene.title, 'Rooftop')
         self.assertEqual(scene.key, 'test_quest__rooftop')
         self.assertEqual(scene.canvas_x, 100)
@@ -406,7 +406,7 @@ class QuestBuilderSceneTest(TestCase):
             'scene_type': 'normal',
             'description': '',
         })
-        scene = Scene.objects.get(quest=self.quest)
+        scene = self.quest.scenes.get()
         self.assertIn('test_quest', scene.key)
         self.assertIn('dark', scene.key)
 
@@ -436,9 +436,10 @@ class QuestBuilderSceneTest(TestCase):
 
     def test_scene_save_updates_db(self):
         scene = Scene.objects.create(
-            quest=self.quest, key='test_quest__old', title='Old Title',
+            key='test_quest__old', title='Old Title',
             body='old body', scene_type='normal',
         )
+        self.quest.scenes.add(scene)
         response = self.client.post(self._save_url(scene.pk), {
             'title': 'New Title',
             'key': 'test_quest__new',
@@ -454,9 +455,10 @@ class QuestBuilderSceneTest(TestCase):
 
     def test_scene_save_returns_oob_html(self):
         scene = Scene.objects.create(
-            quest=self.quest, key='test_quest__s', title='Spot',
+            key='test_quest__s', title='Spot',
             body='', scene_type='normal',
         )
+        self.quest.scenes.add(scene)
         response = self.client.post(self._save_url(scene.pk), {
             'title': 'Spot', 'key': 'test_quest__s',
             'scene_type': 'normal', 'description': '',
@@ -470,10 +472,13 @@ class QuestBuilderSceneTest(TestCase):
 
     def test_scene_delete_removes_from_db(self):
         scene = Scene.objects.create(
-            quest=self.quest, key='test_quest__del', title='Gone',
+            key='test_quest__del', title='Gone',
             body='', scene_type='normal',
         )
-        response = self.client.post(self._delete_url(scene.pk))
+        self.quest.scenes.add(scene)
+        # First POST shows confirmation; second POST with confirmed=1 executes the delete.
+        self.client.post(self._delete_url(scene.pk))
+        response = self.client.post(self._delete_url(scene.pk), {'confirmed': '1'})
         self.assertEqual(response.status_code, 200,
             f"Expected 200, got {response.content[:400]}")
         self.assertFalse(Scene.objects.filter(pk=scene.pk).exists())

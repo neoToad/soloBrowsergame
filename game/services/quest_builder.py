@@ -21,7 +21,7 @@ def get_canvas_data(quest_id):
     and a list of all choices across those scenes.
     """
     quest = Quest.objects.get(pk=quest_id)
-    scenes_qs = Scene.objects.filter(quest=quest).only(
+    scenes_qs = quest.scenes.only(
         'id', 'canvas_x', 'canvas_y', 'scene_type', 'key', 'title', 'requires_roll'
     )
     
@@ -228,7 +228,7 @@ def validate_quest(quest_id):
     Each dict has: type, message, and optionally scene_id / choice_id.
     """
     quest = Quest.objects.get(pk=quest_id)
-    scenes_qs = Scene.objects.filter(quest=quest).only(
+    scenes_qs = quest.scenes.only(
         'id', 'key', 'title', 'scene_type', 'requires_roll'
     )
     scenes = list(scenes_qs)
@@ -391,7 +391,7 @@ def create_scene(quest_id, data):
     if not key and title:
         key = f"{quest.key}__{slugify(title)}"
 
-    if key and Scene.objects.filter(quest=quest, key=key).exists():
+    if key and quest.scenes.filter(key=key).exists():
         raise ValueError(f'A scene with key "{key}" already exists in this quest.')
 
     raw_x = str(data.get('canvas_x') or '').strip()
@@ -401,7 +401,7 @@ def create_scene(quest_id, data):
         canvas_y = int(raw_y)
     else:
         # Place in the next grid slot so it doesn't overlap existing cards
-        index = Scene.objects.filter(quest=quest).count()
+        index = quest.scenes.count()
         canvas_x = GRID_START_X + (index % 4) * GRID_X_GAP
         canvas_y = GRID_START_Y + (index // 4) * GRID_Y_GAP
 
@@ -412,8 +412,7 @@ def create_scene(quest_id, data):
     raw_item = str(data.get('consume_item_id') or '').strip()
     consume_item_id = int(raw_item) if raw_item else None
 
-    return Scene.objects.create(
-        quest=quest,
+    scene = Scene.objects.create(
         title=title,
         key=key,
         scene_type=scene_type,
@@ -425,6 +424,8 @@ def create_scene(quest_id, data):
         canvas_y=canvas_y,
         consume_item_id=consume_item_id,
     )
+    quest.scenes.add(scene)
+    return scene
 
 def update_scene(scene_id, data):
     scene = Scene.objects.get(pk=scene_id)
@@ -445,7 +446,8 @@ def update_scene(scene_id, data):
     if 'key' in allowed_fields:
         incoming_key = (data.get('key') or '').strip()
         if incoming_key:
-            if Scene.objects.filter(quest=scene.quest, key=incoming_key).exclude(pk=scene.pk).exists():
+            scene_quest = scene.quests.first()
+            if scene_quest and scene_quest.scenes.filter(key=incoming_key).exclude(pk=scene.pk).exists():
                 raise ValueError(f'A scene with key "{incoming_key}" already exists in this quest.')
             scene.key = incoming_key
     if 'scene_type' in allowed_fields:

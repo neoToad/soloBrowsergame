@@ -30,7 +30,7 @@ def get_available_choices(scene, effective_stats, inventory, completed_map, flag
         flags=flags or {},
     )
     choices = []
-    for choice in scene.choices.select_related('quest').all():
+    for choice in scene.choices.prefetch_related('started_quests').all():
         # Gate 1: RequirementGroup check
         if choice.requirements.exists():
             passed = all(
@@ -41,8 +41,9 @@ def get_available_choices(scene, effective_stats, inventory, completed_map, flag
                 continue
 
         # Gate 2: Quest-entry — hide once completed if not repeatable
-        if choice.quest_id is not None and choice.quest_id in completed_map:
-            if not choice.quest.is_repeatable:
+        started_quest = choice.started_quests.first()
+        if started_quest is not None and started_quest.id in completed_map:
+            if not started_quest.is_repeatable:
                 continue
 
         choices.append(choice)

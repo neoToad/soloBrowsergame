@@ -51,6 +51,20 @@ class Quest(models.Model):
         help_text="Hub scenes whose notice board lists this quest.",
     )
 
+    scenes = models.ManyToManyField(
+        'Scene',
+        blank=True,
+        related_name='quests',
+        help_text="Scenes that belong to this quest.",
+    )
+
+    entry_choices = models.ManyToManyField(
+        'Choice',
+        blank=True,
+        related_name='started_quests',
+        help_text="Choices that start this quest (hidden after completion unless repeatable).",
+    )
+
     is_repeatable = models.BooleanField(
         default=False,
         help_text="If True, this quest's entry choice re-appears after completion."
@@ -65,12 +79,6 @@ class Quest(models.Model):
 
 class Scene(models.Model):
     key      = models.SlugField(unique=True)
-    quest    = models.ForeignKey(
-                   Quest,
-                   null=True, blank=True,
-                   on_delete=models.SET_NULL,
-                   related_name='scenes'
-               )
     SCENE_TYPES = [
         ('normal',  'Normal'),
         ('hub',     'Hub'),
@@ -127,7 +135,7 @@ class Scene(models.Model):
         return self.scene_type == 'ending'
 
     class Meta:
-        ordering = ['quest', 'order']
+        ordering = ['order']
 
     def __str__(self):
         return self.key
@@ -178,17 +186,6 @@ class Choice(models.Model):
                        blank=True,
                        related_name='gated_choices'
                    )
-
-    # If set, this choice starts the linked quest; hidden once quest is completed
-    # (unless Quest.is_repeatable is True)
-    quest = models.ForeignKey(
-                'Quest',
-                null=True, blank=True,
-                on_delete=models.SET_NULL,
-                related_name='entry_choices',
-                help_text="If set, this choice starts the linked quest and is hidden "
-                          "once the quest is completed (unless the quest is repeatable)."
-            )
 
     class Meta:
         ordering = ['order']
