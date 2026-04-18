@@ -8,7 +8,7 @@ from game.models.combat import CombatEncounter, Enemy
 from game.models.items import Item
 from game.models.property import Property
 from game.models.requirements import Requirement, RequirementGroup
-from game.models.world import Arc, Choice, Quest, Scene, SceneItem, SceneUnlock
+from game.models.world import Arc, Choice, Quest, Scene, SceneItem
 
 MODELS = [
     ("item", Item),
@@ -17,7 +17,6 @@ MODELS = [
     ("scene", Scene),
     ("choice", Choice),
     ("sceneitem", SceneItem),
-    ("sceneunlock", SceneUnlock),
     ("enemy", Enemy),
     ("combatencounter", CombatEncounter),
     ("requirement", Requirement),

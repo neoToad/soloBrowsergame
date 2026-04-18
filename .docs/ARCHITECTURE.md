@@ -44,7 +44,7 @@ Services are responsible for: all game logic, all DB writes beyond simple sessio
 4. If the scene has `requires_roll=True`, a d20 is rolled and compared to `roll_difficulty`
 5. The session's `current_scene` advances to the resolved target
 6. Quest completion is checked; XP and level-ups are awarded if applicable
-7. Scene unlocks (`SceneUnlock`) are processed; event log entries are generated for each unlocked area
+7. Flag effects and scene item awards are applied; event log entries are generated
 8. Flag effects (`set_flag_name` / `clear_flag_name`) on the taken choice are applied
 9. Scene items are awarded; EventLog entries are created
 10. On quest completion, property turn logic runs (income, contests, summary)
@@ -59,7 +59,7 @@ game/
   models/
     player.py       — GameSession (+ flags JSONField), PlayerStats (cash, heat, rep),
                       PlayerInventory, CompletedQuest
-    world.py        — Arc, Quest (+ hub_scenes M2M), Scene, Choice, SceneItem, SceneUnlock
+    world.py        — Arc, Quest (+ hub_scenes M2M), Scene, Choice, SceneItem
     items.py        — Item
     combat.py       — Enemy, CombatEncounter, CombatState
     requirements.py — Requirement, RequirementGroup, PlayerContext (dataclass)
@@ -100,7 +100,6 @@ Arc ──< Quest ──< Scene ──< Choice
          │          │          └── target_scene / success_scene / failure_scene → Scene
          │          └──< SceneItem ──> Item
          │          └── CombatEncounter ──> Enemy
-         │          └──< SceneUnlock ──> Scene
          └──< hub_scenes (M2M) ──> Scene(hub)
 
 GameSession ──── PlayerStats (1:1)

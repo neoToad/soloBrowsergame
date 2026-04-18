@@ -106,16 +106,6 @@ Session-level boolean flags stored in `GameSession.flags` (JSONField).
 
 ---
 
-## Scene Unlock System
-
-`SceneUnlock` records define conditional scene discovery:
-
-- `from_scene` → `unlocks_scene`: when `from_scene` is completed, `unlocks_scene` becomes available.
-- Optional guards: `requires_choice` (only if a specific choice was taken) and `requires_item` (only if an item is in inventory).
-- When conditions are met, an event log entry "New area unlocked: X" is generated for the player.
-
----
-
 ## Notice Board
 
 Each hub scene has a notice board showing quests assigned to it via `Quest.hub_scenes` (M2M).

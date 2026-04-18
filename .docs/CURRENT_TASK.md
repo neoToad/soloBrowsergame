@@ -14,7 +14,6 @@ Improving **core gameplay depth** and **narrative scale** by expanding the Prope
 - **Admin Polish**: `RequirementGroupInline` added to Scene and Choice admins; `ChoiceInline` expanded with routing fields.
 - **Management Commands**: `scaffold_quest` and `export_quest` for content workflow.
 - **UI Enhancements**: Item detail modals (`<dialog>`) and property turn summaries.
-- **Scene Unlock System**: `SceneUnlock` model for conditional scene discovery; generates event log entries when unlocks fire.
 
 ### In Progress
 - **Property Upgrades**: Implementing logic for `upgrade_tier` affecting income/heat/rep.

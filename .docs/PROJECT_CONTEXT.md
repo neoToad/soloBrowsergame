@@ -30,7 +30,7 @@ game/
   models/
     player.py       - GameSession (+ flags JSONField), PlayerStats (cash, heat, rep),
                       PlayerInventory, CompletedQuest
-    world.py        - Arc, Quest (+ hub_scenes, scenes, entry_choices M2M), Scene, Choice, SceneItem, SceneUnlock
+    world.py        - Arc, Quest (+ hub_scenes, scenes, entry_choices M2M), Scene, Choice, SceneItem
     items.py        - Item
     combat.py       - Enemy, CombatEncounter, CombatState
     requirements.py - Requirement, RequirementGroup, PlayerContext
@@ -67,7 +67,6 @@ Arc --< Quest >--< scenes (M2M) --> Scene --< Choice
          |                              |         \-- target/success/failure -> Scene
          |                              |--< SceneItem --> Item
          |                              |-- CombatEncounter --> Enemy
-         |                              \--< SceneUnlock --> Scene
          \--< hub_scenes (M2M) --> Scene(hub)
          \--< entry_choices (M2M) --> Choice
 
@@ -94,7 +93,7 @@ Choice starts a quest via Quest.entry_choices (M2M); access via choice.started_q
 4. Player takes a choice.
 5. If scene requires a roll, `resolve_roll` decides success/failure routing.
 6. Session advances to the resolved scene.
-7. Scene unlocks (`SceneUnlock`) are processed; flag effects and scene item awards are applied.
+7. Flag effects and scene item awards are applied.
 8. On quest completion, property turn logic runs (income, contests, summary).
 9. HTMX response re-renders core partials.
 
