@@ -120,11 +120,6 @@ def choice_resolve(request, choice_id):
     if choice.arrival_flavor:
         log_event(session, choice.arrival_flavor)
 
-    # CONSUME ITEM (before advancing so inventory is still current)
-    if choice.consume_item and choice.consume_item_id in inventory:
-        consume_item_util(session, choice.consume_item, inventory)
-        log_event(session, f"You used your {choice.consume_item.name}.")
-
     # FLAG EFFECTS
     from .services.flags import set_flag, clear_flag
     if choice.set_flag_name:
@@ -136,8 +131,8 @@ def choice_resolve(request, choice_id):
     session.current_scene = next_scene
     session.save()
 
-    # SCENE UNLOCK
-    unlock_logs = complete_scene(session, scene, choice, inventory)
+    # SCENE UNLOCK + SCENE ARRIVAL (consume_item fires here via complete_scene)
+    unlock_logs = complete_scene(session, scene, choice, inventory, next_scene=next_scene)
     for log_text in unlock_logs:
         log_event(session, log_text)
 

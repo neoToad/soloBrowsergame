@@ -107,6 +107,7 @@ Quest, Scene, and Choice each have M2M -> RequirementGroup -> M2M -> Requirement
 - Flag effects:
   - `set_flag_name` / `clear_flag_name` are applied when a choice is taken.
 - Entry choices can link to `Quest` and are hidden after completion unless `Quest.is_repeatable=True`.
+- `Scene.consume_item` (nullable FK to `Item`): if set, the item is removed from inventory when the player arrives at that scene (fires in `complete_scene`).
 
 ---
 

@@ -63,7 +63,7 @@ Ending scenes additionally have an `ending_type`: `victory`, `defeat`, or `neutr
 Items can have `passive_stat` + `passive_value`. These are applied automatically via `get_effective_stats()` while the item is in inventory. The bonus does **not** persist to the DB — it is computed on every request.
 
 ### Consumables
-If `is_consumable=True`, the item is removed from inventory after use (or when a Choice with `consume_item` set is taken).
+If `is_consumable=True`, the item is removed from inventory after use. Items can also be consumed on scene arrival via `Scene.consume_item` (fires in `complete_scene` regardless of `is_consumable`).
 
 ### Equipment Slots
 `equip_slot` field exists (`weapon`, `armor`, `accessory`) but equip logic is not yet implemented. Reserved for future use.

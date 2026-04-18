@@ -409,6 +409,8 @@ def create_scene(quest_id, data):
     roll_stat = (data.get('roll_stat') or '').strip()
     raw_dc = str(data.get('roll_difficulty') or '').strip()
     roll_difficulty = int(raw_dc) if raw_dc else 12
+    raw_item = str(data.get('consume_item_id') or '').strip()
+    consume_item_id = int(raw_item) if raw_item else None
 
     return Scene.objects.create(
         quest=quest,
@@ -421,6 +423,7 @@ def create_scene(quest_id, data):
         roll_difficulty=roll_difficulty,
         canvas_x=canvas_x,
         canvas_y=canvas_y,
+        consume_item_id=consume_item_id,
     )
 
 def update_scene(scene_id, data):
@@ -434,6 +437,7 @@ def update_scene(scene_id, data):
         'requires_roll',
         'roll_stat',
         'roll_difficulty',
+        'consume_item',
     }
 
     if 'title' in allowed_fields:
@@ -455,6 +459,9 @@ def update_scene(scene_id, data):
     if 'roll_difficulty' in allowed_fields:
         raw_dc = str(data.get('roll_difficulty') or '').strip()
         scene.roll_difficulty = int(raw_dc) if raw_dc else 12
+    if 'consume_item' in allowed_fields:
+        raw_item = str(data.get('consume_item_id') or '').strip()
+        scene.consume_item_id = int(raw_item) if raw_item else None
 
     scene.save()
     return scene

@@ -103,6 +103,14 @@ class Scene(models.Model):
     ambient_sound = models.CharField(max_length=100, blank=True)
     # slug of a static audio file e.g. 'cave_drip', 'tavern_noise'
 
+    consume_item = models.ForeignKey(
+                       Item,
+                       null=True, blank=True,
+                       on_delete=models.SET_NULL,
+                       related_name='consumed_by_scenes',
+                       help_text="If set, this item is removed from inventory when the player arrives at this scene.",
+                   )
+
     canvas_x = models.IntegerField(default=0)
     canvas_y = models.IntegerField(default=0)
 
@@ -158,15 +166,6 @@ class Choice(models.Model):
 
     # Flavor logged to EventLog when this choice leads to its target
     arrival_flavor = models.TextField(blank=True)
-
-    # Item consumption — separate from gating, this is an action on take
-    consume_item = models.ForeignKey(
-                       Item,
-                       null=True, blank=True,
-                       on_delete=models.SET_NULL,
-                       related_name='consumed_by_choices'
-                   )
-    # If set, this item is removed from inventory when the choice is taken
 
     set_flag_name   = models.CharField(max_length=100, blank=True,
                           help_text="If set, this flag is set on the session when this choice is taken.")

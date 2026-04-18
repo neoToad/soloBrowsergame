@@ -53,8 +53,8 @@ class ChoiceInline(admin.TabularInline):
     model = Choice
     fk_name = 'scene'
     extra = 1
-    fields = ('label', 'order', 'target_scene', 'success_scene', 'failure_scene', 'consume_item')
-    autocomplete_fields = ('target_scene', 'success_scene', 'failure_scene', 'consume_item')
+    fields = ('label', 'order', 'target_scene', 'success_scene', 'failure_scene')
+    autocomplete_fields = ('target_scene', 'success_scene', 'failure_scene')
     show_change_link = True
 
 class SceneItemInline(admin.TabularInline):
@@ -242,7 +242,7 @@ class QuestAdmin(admin.ModelAdmin):
                 'choices__target_scene',
                 'choices__success_scene',
                 'choices__failure_scene',
-                'choices__consume_item',
+                'consume_item',
                 'scene_items__item',
                 'combat_encounter__enemy',
                 'combat_encounter__enemy__victory_scene',
@@ -368,6 +368,7 @@ class SceneAdmin(admin.ModelAdmin):
     list_select_related = True
     prepopulated_fields = {'key': ('title',)}
     readonly_fields = ('key_format_note',)
+    autocomplete_fields = ('consume_item',)
     fieldsets = (
         ('Identity', {
             'fields': ('key', 'key_format_note', 'title', 'quest', 'order')
@@ -380,6 +381,10 @@ class SceneAdmin(admin.ModelAdmin):
         }),
         ('Roll Settings', {
             'fields': ('requires_roll', 'roll_difficulty', 'roll_stat')
+        }),
+        ('Arrival Effects', {
+            'fields': ('consume_item',),
+            'description': 'Item consumed from player inventory upon arriving at this scene.',
         }),
     )
     inlines = [ChoiceInline, SceneItemInline, CombatEncounterInline]
@@ -395,14 +400,14 @@ class SceneAdmin(admin.ModelAdmin):
 
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ('scene', 'label', 'quest', 'target_scene', 'consume_item', 'order')
+    list_display = ('scene', 'label', 'quest', 'target_scene', 'order')
     list_filter = ('scene__quest',)
     search_fields = ('label', 'scene__key')
     list_select_related = True
-    autocomplete_fields = ('target_scene', 'success_scene', 'failure_scene', 'consume_item', 'quest')
+    autocomplete_fields = ('target_scene', 'success_scene', 'failure_scene', 'quest')
     fieldsets = (
         ('Basic', {
-            'fields': ('scene', 'label', 'order', 'consume_item', 'quest')
+            'fields': ('scene', 'label', 'order', 'quest')
         }),
         ('Routing', {
             'fields': ('target_scene', 'success_scene', 'failure_scene'),

@@ -71,6 +71,23 @@
             </div>
         </div>
 
+        <div id="arrival-effects" style="border-top: 1px solid #ddd; margin-top: 12px; padding-top: 10px;">
+            <h3 style="margin: 0 0 8px;">Arrival Effects</h3>
+            <div style="margin-bottom: 10px;">
+                <label for="consume-item"><strong>Consume Item on Arrival</strong></label><br>
+                <select id="consume-item" name="consume_item_id" style="width: 100%; margin-top: 4px;">
+                    <option value="">— none —</option>
+                    {% for item in all_items %}
+                        <option value="{{ item.id }}"
+                            {% if scene and scene.consume_item_id == item.id %}selected{% endif %}>
+                            {{ item.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <small style="color: #666;">This item is removed from inventory when the player arrives at this scene.</small>
+            </div>
+        </div>
+
         <div style="display: flex; gap: 8px; margin-top: 16px; margin-bottom: 4px;">
             <button type="submit" class="button default">Save</button>
             <button

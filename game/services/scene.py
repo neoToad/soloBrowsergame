@@ -49,8 +49,9 @@ def get_available_choices(scene, effective_stats, inventory, completed_map, flag
     return choices
 
 
-def complete_scene(session, scene, choice, inventory) -> list[str]:
+def complete_scene(session, scene, choice, inventory, next_scene=None) -> list[str]:
     from ..models import SceneUnlock
+    from .inventory import consume_item as consume_item_util
     unlocks = SceneUnlock.objects.filter(from_scene=scene).select_related('unlocks_scene', 'requires_item')
     logs = []
 
@@ -60,6 +61,11 @@ def complete_scene(session, scene, choice, inventory) -> list[str]:
         if unlock.requires_item_id and unlock.requires_item_id not in inventory:
             continue
         logs.append(f"New area unlocked: {unlock.unlocks_scene.title}.")
+
+    # Consume item on arrival at destination scene
+    if next_scene and next_scene.consume_item_id and next_scene.consume_item_id in inventory:
+        consume_item_util(session, next_scene.consume_item, inventory)
+        logs.append(f"You used your {next_scene.consume_item.name}.")
 
     return logs
 
