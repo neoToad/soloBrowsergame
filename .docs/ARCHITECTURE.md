@@ -44,8 +44,11 @@ Services are responsible for: all game logic, all DB writes beyond simple sessio
 4. If the scene has `requires_roll=True`, a d20 is rolled and compared to `roll_difficulty`
 5. The session's `current_scene` advances to the resolved target
 6. Quest completion is checked; XP and level-ups are awarded if applicable
-7. Scene items are awarded; EventLog entries are created
-8. HTMX response re-renders the five partials in place
+7. Scene unlocks (`SceneUnlock`) are processed; `PlayerSceneState` records are updated
+8. Flag effects (`set_flag_name` / `clear_flag_name`) on the taken choice are applied
+9. Scene items are awarded; EventLog entries are created
+10. On quest completion, property turn logic runs (income, contests, summary)
+11. HTMX response re-renders the five partials in place
 
 ---
 
@@ -54,8 +57,9 @@ Services are responsible for: all game logic, all DB writes beyond simple sessio
 ```
 game/
   models/
-    player.py       — GameSession, PlayerStats (cash, heat, rep), PlayerInventory, CompletedQuest
-    world.py        — Arc, Quest, Scene, Choice, SceneItem
+    player.py       — GameSession (+ flags JSONField), PlayerStats (cash, heat, rep),
+                      PlayerInventory, CompletedQuest, PlayerSceneState
+    world.py        — Arc, Quest (+ hub_scenes M2M), Scene, Choice, SceneItem, SceneUnlock
     items.py        — Item
     combat.py       — Enemy, CombatEncounter, CombatState
     requirements.py — Requirement, RequirementGroup, PlayerContext (dataclass)
@@ -65,18 +69,24 @@ game/
 
   services/
     session.py      — load_session_context, create_session, build_render_context
-    scene.py        — get_available_choices, get_notice_board, get_notice_board_for_scene
+    scene.py        — resolve_roll, get_available_choices, complete_scene,
+                      unlock_scene, get_available_scenes, get_notice_board
     inventory.py    — get_player_inventory, award_scene_items, consume_item
-    combat.py       — get_or_create_combat_state, resolve_player_attack, resolve_enemy_attack, resolve_combat_end
-    progression.py  — award_xp, maybe_complete_quest; also defines XP_THRESHOLDS, XP_AWARDS, RANK_TITLES
+    combat.py       — get_or_create_combat_state, resolve_player_attack,
+                      resolve_enemy_attack, resolve_combat_end
+    progression.py  — award_xp, maybe_complete_quest; also XP_THRESHOLDS, XP_AWARDS, RANK_TITLES
     property_service.py — turn income, rival contests, contest resolution
-    quest_builder.py — AJAX-powered scene/choice CRUD and canvas graph logic
+    flags.py        — has_flag, set_flag, clear_flag
+    quest_builder.py — canvas data, scene/choice CRUD, position saving,
+                       validate_quest, update_scene_items, update_combat_encounter,
+                       build_requirement_groups_from_post
 
   management/commands/
     scaffold_quest.py — creates a stub quest with entrance + victory/defeat ending scenes
     export_quest.py   — dumps a quest and all related objects to a loadable fixture JSON
 
-  views.py          — HTTP handlers; delegates to services; includes Quest Builder AJAX views
+  views.py          — HTTP handlers; delegates to services; Quest Builder AJAX views
+                      are registered via QuestAdmin.get_urls()
   utils.py          — roll_d20, stat_modifier, get_effective_stats
   constants.py      — HUB_START_SCENE_KEY, NOTICE_BOARD_SCENE_KEY, STAT_FIELD_MAP, USE_ITEM_FLAVOR
 ```
@@ -87,20 +97,37 @@ game/
 
 ```
 Arc ──< Quest ──< Scene ──< Choice
-                   │          └── target_scene / success_scene / failure_scene → Scene
-                   └──< SceneItem ──> Item
-                   └── CombatEncounter ──> Enemy
+         │          │          └── target_scene / success_scene / failure_scene → Scene
+         │          └──< SceneItem ──> Item
+         │          └── CombatEncounter ──> Enemy
+         │          └──< SceneUnlock ──> Scene
+         └──< hub_scenes (M2M) ──> Scene(hub)
 
 GameSession ──── PlayerStats (1:1)
+            ──── flags (JSONField)
             ──< PlayerInventory ──> Item
             ──< CompletedQuest ──> Quest
             ──── CombatState (1:1, optional)
             ──< EventLog
+            ──< PlayerSceneState ──> Scene
+            ──< PlayerProperty ──> Property ──< RivalClaim
 
 Quest, Scene, Choice each hold a M2M to RequirementGroup.
 RequirementGroup holds a M2M to Requirement.
 All groups on an object must pass (AND between groups, AND/OR within each group).
 ```
+
+---
+
+## Quest Builder (Admin Tool)
+
+The Quest Builder is a canvas-based admin UI mounted under `QuestAdmin.get_urls()`. It is the primary authoring tool for quest narrative flows.
+
+- **Canvas view**: renders all scenes as draggable cards with SVG arrows for choices and combat routing
+- **Scene panel**: inline form for title, key, type, roll settings, body, items, combat encounter, and requirement groups
+- **Choice panel**: inline form for label, routing type (direct / roll), targets, and flag effects
+- **Validation**: `validate_quest()` returns a list of warnings shown in the sidebar — checks orphan scenes, missing routing, hub assignment, combat misconfigs, and more
+- **Hub assignment**: `Quest.hub_scenes` M2M determines which hub notice boards list the quest; the validator warns if an unlocked quest has none
 
 ---
 
@@ -111,3 +138,4 @@ All groups on an object must pass (AND between groups, AND/OR within each group)
 - **effective_stats**: always use `get_effective_stats(stats, inventory)` for rolls and display. Write mutations to the raw `PlayerStats` instance, then recompute.
 - **EventLog**: services return log message strings; the view creates the DB objects. Services must not create EventLog entries directly.
 - **HTMX**: all POST views return `_htmx_response()` when `HX-Request: true`. Five partials are rendered and concatenated: `scene_panel`, `stats_bar`, `event_log`, `inventory`, `mobile_stats_bar`.
+- **Flags**: session-level boolean flags stored in `GameSession.flags` (JSONField). Use `flags.py` service — never read/write the dict directly in views or other services.

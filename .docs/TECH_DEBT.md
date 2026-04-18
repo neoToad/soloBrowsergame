@@ -14,3 +14,18 @@ Some event writes still happen in `game/services/combat.py` and `game/services/p
 
 **Impact**: Inconsistent EventLog patterns.
 
+---
+
+## Scene key prefix convention is not model-validated
+
+The `{quest_key}__{scene_slug}` convention is documented and the admin shows a hint, but nothing enforces it at the model level. A scene saved with an arbitrary key will pass validation.
+
+**Impact**: Silent breakage risk if a scene key is authored incorrectly.
+
+---
+
+## `export_quest` portability depends on unimplemented natural keys
+
+`export_quest` relies on Django's natural key serialization, but not all related models implement `natural_key()`. Fixtures exported from one database may fail to load into another.
+
+**Impact**: Content workflow is partially broken for cross-database portability.

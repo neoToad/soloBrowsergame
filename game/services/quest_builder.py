@@ -531,6 +531,7 @@ def create_choice(source_scene_id, data):
 
     set_flag_name = (data.get('set_flag_name') or '').strip()
     clear_flag_name = (data.get('clear_flag_name') or '').strip()
+    arrival_flavor = (data.get('arrival_flavor') or '').strip()
 
     return Choice.objects.create(
         scene=scene,
@@ -540,6 +541,7 @@ def create_choice(source_scene_id, data):
         failure_scene_id=failure_scene_id,
         set_flag_name=set_flag_name,
         clear_flag_name=clear_flag_name,
+        arrival_flavor=arrival_flavor,
     )
 
 def update_choice(choice_id, data):
@@ -563,6 +565,7 @@ def update_choice(choice_id, data):
 
     choice.set_flag_name = (data.get('set_flag_name') or '').strip()
     choice.clear_flag_name = (data.get('clear_flag_name') or '').strip()
+    choice.arrival_flavor = (data.get('arrival_flavor') or '').strip()
 
     choice.save()
     return choice

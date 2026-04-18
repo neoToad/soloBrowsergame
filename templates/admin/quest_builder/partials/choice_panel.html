@@ -113,6 +113,18 @@
         </div>
 
         <div style="border-top: 1px solid #ddd; margin-top: 12px; padding-top: 10px;">
+            <h3 style="margin: 0 0 8px;">Arrival Flavor</h3>
+            <div style="margin-bottom: 10px;">
+                <textarea
+                    id="arrival-flavor"
+                    name="arrival_flavor"
+                    rows="2"
+                    style="width: 100%; margin-top: 4px;"
+                    placeholder="Short line logged when this choice resolves (optional)">{{ choice.arrival_flavor|default:'' }}</textarea>
+            </div>
+        </div>
+
+        <div style="border-top: 1px solid #ddd; margin-top: 12px; padding-top: 10px;">
             <h3 style="margin: 0 0 8px;">Flag Effects</h3>
             <div style="margin-bottom: 10px;">
                 <label for="set-flag"><strong>Set Flag</strong></label><br>
