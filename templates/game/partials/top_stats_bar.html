@@ -1,0 +1,14 @@
+<div id="top-stats-bar" {% if oob %}hx-swap-oob="true"{% endif %}>
+    <div class="top-stat">
+        <span class="top-stat-label">CASH</span>
+        <span class="top-stat-value stat-value">${{ stats.cash }}</span>
+    </div>
+    <div class="top-stat">
+        <span class="top-stat-label">REP</span>
+        <span class="top-stat-value stat-value">{{ stats.rep }}</span>
+    </div>
+    <div class="top-stat">
+        <span class="top-stat-label">HEAT</span>
+        <span class="top-stat-value stat-value">{{ stats.heat }}</span>
+    </div>
+</div>

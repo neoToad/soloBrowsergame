@@ -26,19 +26,6 @@
         <span class="mob-stat-value">{{ stats.charisma }}{% if stat_bonuses.charisma %}<span class="stat-bonus">+{{ stat_bonuses.charisma }}</span>{% endif %}</span>
     </span>
 
-    <span class="mob-stat">
-        <span class="mob-stat-label">CASH</span>
-        <span class="mob-stat-value">${{ stats.cash }}</span>
-    </span>
-    <span class="mob-stat">
-        <span class="mob-stat-label">HEAT</span>
-        <span class="mob-stat-value">{{ stats.heat }}</span>
-    </span>
-    <span class="mob-stat">
-        <span class="mob-stat-label">REP</span>
-        <span class="mob-stat-value">{{ stats.rep }}</span>
-    </span>
-
     <span class="mob-stat mob-stat--rank">
         <span class="mob-stat-label">RANK</span>
         <span class="mob-stat-value">{{ stats.level|rank_title }}</span>

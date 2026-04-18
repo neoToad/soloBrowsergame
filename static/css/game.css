@@ -30,6 +30,38 @@ html, body {
     margin: 0 auto;
 }
 
+/* TOP STATS BAR */
+#top-stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    padding: 10px 0;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.top-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.top-stat-label {
+    color: var(--text-dim);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.top-stat-value {
+    color: var(--accent);
+    font-weight: bold;
+    font-size: 15px;
+}
+
 /* PANELS */
 
 #left-column {
@@ -799,7 +831,7 @@ details[open] > .drawer-summary::before {
         background: var(--panel-bg);
         border-bottom: 2px solid var(--border);
         position: sticky;
-        top: 0;
+        top: 41px; /* Height of top-stats-bar */
         z-index: 10;
     }
 
