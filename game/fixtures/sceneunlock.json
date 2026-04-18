@@ -1,0 +1,12 @@
+[
+{
+  "model": "game.sceneunlock",
+  "pk": 1,
+  "fields": {
+    "from_scene": 2,
+    "unlocks_scene": 4,
+    "requires_choice": 1,
+    "requires_item": 1
+  }
+}
+]

@@ -1,0 +1,66 @@
+[
+{
+  "model": "game.enemy",
+  "pk": 1,
+  "fields": {
+    "key": "corner_boy",
+    "name": "Corner Boy",
+    "description": "Young, jumpy, more bark than bite. Stands his ground out of pride.",
+    "max_hp": 8,
+    "attack_modifier": 0,
+    "defense": 10,
+    "damage_min": 1,
+    "damage_max": 1,
+    "victory_scene": 22,
+    "defeat_scene": 24
+  }
+},
+{
+  "model": "game.enemy",
+  "pk": 2,
+  "fields": {
+    "key": "crew_enforcer",
+    "name": "Crew Enforcer",
+    "description": "Thick-necked, deliberate. He's hurt people for a living and it shows.",
+    "max_hp": 2,
+    "attack_modifier": 0,
+    "defense": 0,
+    "damage_min": 0,
+    "damage_max": 0,
+    "victory_scene": 23,
+    "defeat_scene": 24
+  }
+},
+{
+  "model": "game.enemy",
+  "pk": 3,
+  "fields": {
+    "key": "dirty_cop",
+    "name": "Dirty Cop",
+    "description": "Badge on his belt, brass knuckles in his pocket. Knows how to make it look clean.",
+    "max_hp": 12,
+    "attack_modifier": 3,
+    "defense": 13,
+    "damage_min": 2,
+    "damage_max": 8,
+    "victory_scene": 27,
+    "defeat_scene": 24
+  }
+},
+{
+  "model": "game.enemy",
+  "pk": 4,
+  "fields": {
+    "key": "street_captain",
+    "name": "Street Captain",
+    "description": "Runs a mid-tier crew. Methodical and hard to rattle. He's been in more fights than you've eaten hot meals.",
+    "max_hp": 18,
+    "attack_modifier": 3,
+    "defense": 13,
+    "damage_min": 2,
+    "damage_max": 8,
+    "victory_scene": null,
+    "defeat_scene": 42
+  }
+}
+]

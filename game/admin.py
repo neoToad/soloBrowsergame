@@ -5,7 +5,7 @@ from django.utils.html import format_html
 from .models import (
     Arc, Quest, Item, Requirement, RequirementGroup, Scene, Choice,
     GameSession, PlayerStats, PlayerInventory, SceneItem, CompletedQuest,
-    Enemy, CombatEncounter, CombatState, EventLog, SceneUnlock, PlayerSceneState,
+    Enemy, CombatEncounter, CombatState, EventLog, SceneUnlock,
     Property, PlayerProperty, RivalClaim
 )
 
@@ -491,12 +491,6 @@ class SceneUnlockAdmin(admin.ModelAdmin):
     list_select_related = True
     autocomplete_fields = ('from_scene', 'unlocks_scene', 'requires_choice', 'requires_item')
 
-
-@admin.register(PlayerSceneState)
-class PlayerSceneStateAdmin(admin.ModelAdmin):
-    list_display = ('session', 'scene', 'state')
-    list_filter = ('state',)
-    list_select_related = True
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):

@@ -1,7 +1,0 @@
-[
-  {"model": "game.sceneitem", "pk": 1, "fields": {"scene": 2,  "item": 1, "quantity": 1, "award_once": true}},
-  {"model": "game.sceneitem", "pk": 2, "fields": {"scene": 4,  "item": 2, "quantity": 1, "award_once": true}},
-  {"model": "game.sceneitem", "pk": 3, "fields": {"scene": 5,  "item": 3, "quantity": 1, "award_once": false}},
-  {"model": "game.sceneitem", "pk": 4, "fields": {"scene": 7,  "item": 6, "quantity": 1, "award_once": true}},
-  {"model": "game.sceneitem", "pk": 5, "fields": {"scene": 10, "item": 4, "quantity": 1, "award_once": true}}
-]

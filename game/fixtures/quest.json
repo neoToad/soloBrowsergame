@@ -1,0 +1,114 @@
+[
+{
+  "model": "game.quest",
+  "pk": 1,
+  "fields": {
+    "key": "the_warehouse_job",
+    "title": "The Warehouse Job",
+    "description": "A rival crew's been stashing stolen goods in a port warehouse. Someone wants to know what's inside — or wants it gone.",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": 0,
+    "entrance_scene": 4,
+    "is_repeatable": true,
+    "requirements": [],
+    "hub_scenes": [
+      2
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 6,
+  "fields": {
+    "key": "worst_day_job",
+    "title": "The Worst Day Job",
+    "description": "Odd job. Good pay. No questions.",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": 0,
+    "entrance_scene": 49,
+    "is_repeatable": false,
+    "requirements": [],
+    "hub_scenes": [
+      2
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 7,
+  "fields": {
+    "key": "the_squeeze",
+    "title": "The Squeeze",
+    "description": "Collection job. Simple work. Good cut.",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": 0,
+    "entrance_scene": 57,
+    "is_repeatable": false,
+    "requirements": [],
+    "hub_scenes": [
+      2
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 2,
+  "fields": {
+    "key": "street_debt",
+    "title": "Street Debt",
+    "description": "A crew contact says a corner boy is sitting on money that belongs to you. Go collect.",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": 1,
+    "entrance_scene": 20,
+    "is_repeatable": false,
+    "requirements": [],
+    "hub_scenes": [
+      2
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 3,
+  "fields": {
+    "key": "the_middleman",
+    "title": "The Middleman",
+    "description": "A contact needs a case walked across town. Simple job. Ten percent. Until it isn't.",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": 2,
+    "entrance_scene": 30,
+    "is_repeatable": false,
+    "requirements": [
+      3
+    ],
+    "hub_scenes": [
+      2
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 4,
+  "fields": {
+    "key": "corner_tax",
+    "title": "Corner Tax",
+    "description": "An east-side crew has been running protection on shops in your territory. Time to remind them where the lines are.",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": 3,
+    "entrance_scene": 40,
+    "is_repeatable": false,
+    "requirements": [
+      4
+    ],
+    "hub_scenes": [
+      2
+    ]
+  }
+}
+]

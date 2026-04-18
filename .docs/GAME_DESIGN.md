@@ -112,7 +112,7 @@ Session-level boolean flags stored in `GameSession.flags` (JSONField).
 
 - `from_scene` → `unlocks_scene`: when `from_scene` is completed, `unlocks_scene` becomes available.
 - Optional guards: `requires_choice` (only if a specific choice was taken) and `requires_item` (only if an item is in inventory).
-- `PlayerSceneState` tracks per-session state: `locked`, `available`, or `completed`.
+- When conditions are met, an event log entry "New area unlocked: X" is generated for the player.
 
 ---
 

@@ -29,7 +29,7 @@ Rule: business logic belongs in services. Views handle request/response flow and
 game/
   models/
     player.py       - GameSession (+ flags JSONField), PlayerStats (cash, heat, rep),
-                      PlayerInventory, CompletedQuest, PlayerSceneState
+                      PlayerInventory, CompletedQuest
     world.py        - Arc, Quest (+ hub_scenes M2M), Scene, Choice, SceneItem, SceneUnlock
     items.py        - Item
     combat.py       - Enemy, CombatEncounter, CombatState
@@ -39,8 +39,7 @@ game/
 
   services/
     session.py      - load_session_context, create_session, build_render_context
-    scene.py        - resolve_roll, get_available_choices, complete_scene,
-                      unlock_scene, get_available_scenes, get_notice_board
+    scene.py        - resolve_roll, get_available_choices, complete_scene, get_notice_board
     inventory.py    - get_player_inventory, award_scene_items, consume_item
     combat.py       - attack resolution, combat lifecycle, combat-end routing
     progression.py  - award_xp, maybe_complete_quest, XP thresholds/awards
@@ -77,7 +76,6 @@ GameSession ---- PlayerStats (1:1)
            --< CompletedQuest --> Quest
            ---- CombatState (1:1 optional)
            --< EventLog
-           --< PlayerSceneState --> Scene
            --< PlayerProperty --> Property --< RivalClaim
 
 Quest, Scene, and Choice each have M2M -> RequirementGroup -> M2M -> Requirement.
@@ -93,7 +91,7 @@ Quest, Scene, and Choice each have M2M -> RequirementGroup -> M2M -> Requirement
 4. Player takes a choice.
 5. If scene requires a roll, `resolve_roll` decides success/failure routing.
 6. Session advances to the resolved scene.
-7. Scene unlocks (`SceneUnlock`), `PlayerSceneState` updates, flag effects, and scene item awards are applied.
+7. Scene unlocks (`SceneUnlock`) are processed; flag effects and scene item awards are applied.
 8. On quest completion, property turn logic runs (income, contests, summary).
 9. HTMX response re-renders core partials.
 

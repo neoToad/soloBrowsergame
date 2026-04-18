@@ -1,0 +1,68 @@
+[
+{
+  "model": "game.requirementgroup",
+  "pk": 1,
+  "fields": {
+    "label": "Agility >= 7",
+    "logic": "all",
+    "requirements": [
+      1
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 3,
+  "fields": {
+    "label": "Street Debt completed",
+    "logic": "all",
+    "requirements": [
+      3
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 4,
+  "fields": {
+    "label": "Level 2+",
+    "logic": "all",
+    "requirements": [
+      4
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 5,
+  "fields": {
+    "label": "Group 1",
+    "logic": "all",
+    "requirements": [
+      5
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 6,
+  "fields": {
+    "label": "Group 1",
+    "logic": "all",
+    "requirements": [
+      6
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 7,
+  "fields": {
+    "label": "Group 1",
+    "logic": "all",
+    "requirements": [
+      7
+    ]
+  }
+}
+]

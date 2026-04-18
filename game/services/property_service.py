@@ -47,7 +47,6 @@ def check_rival_contests(session):
     """
     from ..models import PlayerProperty
     from ..models.property import RivalClaim
-    from .scene import unlock_scene
 
     stats = session.stats
     contest_chance = stats.heat / 200.0
@@ -70,7 +69,6 @@ def check_rival_contests(session):
 
     resolution_scene = target.property.resolution_scene
     RivalClaim.objects.create(player_property=target, resolution_scene=resolution_scene)
-    unlock_scene(session, resolution_scene)
 
     log = (
         f"A rival crew is moving on {target.property.name}. "

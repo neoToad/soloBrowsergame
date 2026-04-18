@@ -1,0 +1,962 @@
+[
+{
+  "model": "game.choice",
+  "pk": 49,
+  "fields": {
+    "scene": 30,
+    "label": "Test",
+    "order": 0,
+    "target_scene": 32,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 50,
+  "fields": {
+    "scene": 30,
+    "label": "Test",
+    "order": 0,
+    "target_scene": 34,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 52,
+  "fields": {
+    "scene": 49,
+    "label": "Sure, I'll do it.",
+    "order": 0,
+    "target_scene": 54,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 53,
+  "fields": {
+    "scene": 49,
+    "label": "What's in it?",
+    "order": 0,
+    "target_scene": 54,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 54,
+  "fields": {
+    "scene": 49,
+    "label": "No thanks.",
+    "order": 0,
+    "target_scene": null,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 55,
+  "fields": {
+    "scene": 54,
+    "label": "Don't think about it. Just deliver it.",
+    "order": 0,
+    "target_scene": 55,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 56,
+  "fields": {
+    "scene": 54,
+    "label": "Shake it gently",
+    "order": 0,
+    "target_scene": 55,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 57,
+  "fields": {
+    "scene": 54,
+    "label": "Open a corner of the tape.",
+    "order": 0,
+    "target_scene": 55,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 58,
+  "fields": {
+    "scene": 55,
+    "label": "Count the money in the hallway.",
+    "order": 0,
+    "target_scene": 56,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 60,
+  "fields": {
+    "scene": 55,
+    "label": "Count the money outside.",
+    "order": 0,
+    "target_scene": 56,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": [
+      6
+    ]
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 61,
+  "fields": {
+    "scene": 55,
+    "label": "Don't count it, just leave.",
+    "order": 0,
+    "target_scene": 56,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 62,
+  "fields": {
+    "scene": 57,
+    "label": "TO walkup",
+    "order": 0,
+    "target_scene": 58,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "test",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 63,
+  "fields": {
+    "scene": 58,
+    "label": "to marty",
+    "order": 0,
+    "target_scene": 59,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": [
+      5
+    ]
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 64,
+  "fields": {
+    "scene": 58,
+    "label": "test flag",
+    "order": 0,
+    "target_scene": 59,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 65,
+  "fields": {
+    "scene": 56,
+    "label": "Head back to the square",
+    "order": 0,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 66,
+  "fields": {
+    "scene": 59,
+    "label": "test",
+    "order": 0,
+    "target_scene": 60,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 67,
+  "fields": {
+    "scene": 60,
+    "label": "Back to the corner",
+    "order": 0,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": [
+      7
+    ]
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 1,
+  "fields": {
+    "scene": 1,
+    "label": "Check the job board.",
+    "order": 1,
+    "target_scene": 2,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You head into Sal's back room.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 3,
+  "fields": {
+    "scene": 2,
+    "label": "Head back outside.",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You step back out onto the street.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 4,
+  "fields": {
+    "scene": 3,
+    "label": "Head back outside.",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You leave Sal's and step back into the cold.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 5,
+  "fields": {
+    "scene": 4,
+    "label": "Slip around back.",
+    "order": 1,
+    "target_scene": 7,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You move through the shadows and find an unlocked side door.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 8,
+  "fields": {
+    "scene": 5,
+    "label": "Take them down.",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 7,
+    "failure_scene": 8,
+    "arrival_flavor": "Both men are down. You step over them and into the warehouse.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 9,
+  "fields": {
+    "scene": 6,
+    "label": "Head through the service entrance.",
+    "order": 1,
+    "target_scene": 9,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "The side corridor is quiet. Crates of cigarettes, mostly. Nothing worth dying over.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 10,
+  "fields": {
+    "scene": 7,
+    "label": "Move toward the voices.",
+    "order": 1,
+    "target_scene": 10,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You ease around the shelving and find a man alone, going through ledgers.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 12,
+  "fields": {
+    "scene": 8,
+    "label": "Head back to the corner.",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You walk back across town, jaw sore, empty-handed.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 13,
+  "fields": {
+    "scene": 9,
+    "label": "Head back to the corner.",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You take the long way back, making sure no one's behind you.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 14,
+  "fields": {
+    "scene": 10,
+    "label": "Head back to the corner.",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You walk out into the night with leverage.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 15,
+  "fields": {
+    "scene": 11,
+    "label": "Head back to the corner.",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You leave the dock lighter than you expected and heavier where it counts.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 20,
+  "fields": {
+    "scene": 20,
+    "label": "Step to him",
+    "order": 1,
+    "target_scene": 21,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You cross the street. He tenses.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 22,
+  "fields": {
+    "scene": 23,
+    "label": "Head back",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You pocket the envelope and disappear into the crowd.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 23,
+  "fields": {
+    "scene": 24,
+    "label": "Drag yourself home",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You take the back streets to avoid anyone seeing you like this.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 24,
+  "fields": {
+    "scene": 25,
+    "label": "Back to the square",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 25,
+  "fields": {
+    "scene": 27,
+    "label": "Take his money and go",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You're three blocks away before he stirs.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 30,
+  "fields": {
+    "scene": 30,
+    "label": "Take the standard rate and move.",
+    "order": 1,
+    "target_scene": 32,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You take the case. It's light. Russ lights the cigarette at last.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 32,
+  "fields": {
+    "scene": 31,
+    "label": "Hold your ground.",
+    "order": 1,
+    "target_scene": 32,
+    "success_scene": 35,
+    "failure_scene": 32,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 33,
+  "fields": {
+    "scene": 32,
+    "label": "Break your pattern and lose him.",
+    "order": 1,
+    "target_scene": 33,
+    "success_scene": 33,
+    "failure_scene": 34,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 34,
+  "fields": {
+    "scene": 33,
+    "label": "Head back to the corner.",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You fold the envelope into your jacket and take the long route back.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 35,
+  "fields": {
+    "scene": 34,
+    "label": "Walk it off.",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You find a diner three blocks away and sit there until you feel clean.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 36,
+  "fields": {
+    "scene": 35,
+    "label": "Head back to the corner.",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You leave Russ counting his cut and head back. Tonight was easy money.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 40,
+  "fields": {
+    "scene": 40,
+    "label": "Step to him directly.",
+    "order": 1,
+    "target_scene": 41,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You cross the street. He turns to face you without hurrying.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 42,
+  "fields": {
+    "scene": 42,
+    "label": "Drag yourself home.",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You take the back streets. Nobody needs to see this.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 44,
+  "fields": {
+    "scene": 44,
+    "label": "Make him believe it.",
+    "order": 1,
+    "target_scene": 41,
+    "success_scene": 45,
+    "failure_scene": 41,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 45,
+  "fields": {
+    "scene": 45,
+    "label": "Back to the square.",
+    "order": 1,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You leave him with something to think about.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 46,
+  "fields": {
+    "scene": 46,
+    "label": "→ Victory",
+    "order": 1,
+    "target_scene": 47,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 2,
+  "fields": {
+    "scene": 1,
+    "label": "Go to Sal's bar.",
+    "order": 2,
+    "target_scene": 3,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You push through the unmarked door.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 6,
+  "fields": {
+    "scene": 4,
+    "label": "Walk through them.",
+    "order": 2,
+    "target_scene": 5,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 11,
+  "fields": {
+    "scene": 7,
+    "label": "Go for the crates.",
+    "order": 2,
+    "target_scene": 11,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "The padlock is cheap. The contents are not.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 21,
+  "fields": {
+    "scene": 20,
+    "label": "Walk away",
+    "order": 2,
+    "target_scene": 25,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You keep moving.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 26,
+  "fields": {
+    "scene": 27,
+    "label": "Leave him and go",
+    "order": 2,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You leave him where he fell.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 31,
+  "fields": {
+    "scene": 30,
+    "label": "Push for a better cut.",
+    "order": 2,
+    "target_scene": 31,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Russ's jaw tightens. 'Ten percent is the rate.' You hold his eye.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 41,
+  "fields": {
+    "scene": 40,
+    "label": "Talk first.",
+    "order": 2,
+    "target_scene": 44,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "He watches you approach. Arms loose at his sides.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 47,
+  "fields": {
+    "scene": 46,
+    "label": "→ Defeat",
+    "order": 2,
+    "target_scene": 48,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 7,
+  "fields": {
+    "scene": 4,
+    "label": "Bribe them to look away.",
+    "order": 3,
+    "target_scene": 6,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You peel off a few bills. They pocket the cash and find somewhere else to be.",
+    "consume_item": null,
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "quest": null,
+    "requirements": []
+  }
+}
+]
