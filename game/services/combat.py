@@ -90,18 +90,29 @@ def get_or_create_combat_state(session, scene):
     return cs
 
 
-def resolve_combat_end(session, stats, inventory, completed_map, next_scene, combat_state, *, xp_award=0):
-    from ..models import EventLog
+def resolve_combat_end(session, stats, inventory, completed_map, next_scene, combat_state, *, xp_award=0, ending_type='neutral'):
+    from ..models import EventLog, CombatEncounter
     from .progression import maybe_complete_quest, award_xp, LEVEL_UP_FLAVOR
     from .inventory import award_scene_items
     from ..utils import get_effective_stats
     from .session import build_render_context
+
+    try:
+        encounter = CombatEncounter.objects.get(scene=session.current_scene)
+    except CombatEncounter.DoesNotExist:
+        encounter = None
 
     combat_state.is_active = False
     combat_state.save()
 
     session.current_scene = next_scene
     session.save()
+
+    if encounter:
+        if ending_type == 'victory' and encounter.victory_arrival_flavor:
+            EventLog.objects.create(session=session, text=encounter.victory_arrival_flavor)
+        elif ending_type == 'defeat' and encounter.defeat_arrival_flavor:
+            EventLog.objects.create(session=session, text=encounter.defeat_arrival_flavor)
 
     quest_logs = maybe_complete_quest(session, stats, next_scene, completed_map)
     for log_text in quest_logs:

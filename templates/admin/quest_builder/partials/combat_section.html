@@ -28,7 +28,7 @@
                 </select>
             </div>
 
-            <div style="margin-bottom: 8px;">
+            <div style="margin-bottom: 4px;">
                 <label><strong>Victory Scene</strong></label><br>
                 <select name="victory_scene_id" style="width: 100%;">
                     <option value="">— none —</option>
@@ -39,8 +39,15 @@
                     {% endfor %}
                 </select>
             </div>
-
             <div style="margin-bottom: 8px;">
+                <textarea
+                    name="victory_arrival_flavor"
+                    rows="2"
+                    style="width: 100%; margin-top: 4px; font-size: 12px;"
+                    placeholder="Flavor logged on victory arrival (optional)">{{ combat_encounter.victory_arrival_flavor|default:'' }}</textarea>
+            </div>
+
+            <div style="margin-bottom: 4px;">
                 <label><strong>Defeat Scene</strong></label><br>
                 <select name="defeat_scene_id" style="width: 100%;">
                     <option value="">— none —</option>
@@ -50,6 +57,13 @@
                         </option>
                     {% endfor %}
                 </select>
+            </div>
+            <div style="margin-bottom: 8px;">
+                <textarea
+                    name="defeat_arrival_flavor"
+                    rows="2"
+                    style="width: 100%; margin-top: 4px; font-size: 12px;"
+                    placeholder="Flavor logged on defeat arrival (optional)">{{ combat_encounter.defeat_arrival_flavor|default:'' }}</textarea>
             </div>
 
             <div style="margin-top: 10px;">

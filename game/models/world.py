@@ -196,7 +196,9 @@ class Choice(models.Model):
                     )
 
     # Flavor logged to EventLog when this choice leads to its target
-    arrival_flavor = models.TextField(blank=True)
+    arrival_flavor         = models.TextField(blank=True)
+    failure_arrival_flavor = models.TextField(blank=True,
+                                help_text="Logged instead of arrival_flavor when a roll fails.")
 
     set_flag_name   = models.CharField(max_length=100, blank=True,
                           help_text="If set, this flag is set on the session when this choice is taken.")

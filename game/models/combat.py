@@ -38,6 +38,8 @@ class CombatEncounter(models.Model):
                         related_name='+',
                         on_delete=models.SET_NULL,
                     )
+    victory_arrival_flavor = models.TextField(blank=True)
+    defeat_arrival_flavor  = models.TextField(blank=True)
 
     def __str__(self):
         return f"{self.scene.key} vs {self.enemy.name}"

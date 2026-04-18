@@ -115,12 +115,22 @@
         <div style="border-top: 1px solid #ddd; margin-top: 12px; padding-top: 10px;">
             <h3 style="margin: 0 0 8px;">Arrival Flavor</h3>
             <div style="margin-bottom: 10px;">
+                <label for="arrival-flavor" style="font-size: 12px; color: #555;">On success / direct arrival</label>
                 <textarea
                     id="arrival-flavor"
                     name="arrival_flavor"
                     rows="2"
                     style="width: 100%; margin-top: 4px;"
                     placeholder="Short line logged when this choice resolves (optional)">{{ choice.arrival_flavor|default:'' }}</textarea>
+            </div>
+            <div id="failure-flavor-row" {% if routing_type != 'roll' %}style="display: none;"{% endif %}>
+                <label for="failure-arrival-flavor" style="font-size: 12px; color: #555;">On roll failure</label>
+                <textarea
+                    id="failure-arrival-flavor"
+                    name="failure_arrival_flavor"
+                    rows="2"
+                    style="width: 100%; margin-top: 4px;"
+                    placeholder="Replaces arrival flavor when the roll fails (optional)">{{ choice.failure_arrival_flavor|default:'' }}</textarea>
             </div>
         </div>
 
@@ -185,13 +195,17 @@
     const sectionDirect = panel.querySelector('#section-direct');
     const sectionRoll   = panel.querySelector('#section-roll');
 
+    const failureFlavorRow = panel.querySelector('#failure-flavor-row');
+
     function updateSections() {
         if (routeRoll && routeRoll.checked) {
             sectionDirect.style.display = 'none';
             sectionRoll.style.display   = 'block';
+            if (failureFlavorRow) failureFlavorRow.style.display = 'block';
         } else {
             sectionDirect.style.display = 'block';
             sectionRoll.style.display   = 'none';
+            if (failureFlavorRow) failureFlavorRow.style.display = 'none';
         }
     }
 

@@ -400,7 +400,7 @@ class ChoiceAdmin(admin.ModelAdmin):
     autocomplete_fields = ('target_scene', 'success_scene', 'failure_scene')
     fieldsets = (
         ('Basic', {
-            'fields': ('scene', 'label', 'order', 'arrival_flavor')
+            'fields': ('scene', 'label', 'order', 'arrival_flavor', 'failure_arrival_flavor')
         }),
         ('Routing', {
             'fields': ('target_scene', 'success_scene', 'failure_scene'),
@@ -464,6 +464,7 @@ class CombatEncounterAdmin(admin.ModelAdmin):
     list_display = ('scene', 'enemy')
     list_select_related = True
     autocomplete_fields = ('scene', 'enemy')
+    fields = ('scene', 'enemy', 'victory_scene', 'victory_arrival_flavor', 'defeat_scene', 'defeat_arrival_flavor')
 
 @admin.register(CombatState)
 class CombatStateAdmin(admin.ModelAdmin):

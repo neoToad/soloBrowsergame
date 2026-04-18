@@ -537,6 +537,7 @@ def create_choice(source_scene_id, data):
     set_flag_name = (data.get('set_flag_name') or '').strip()
     clear_flag_name = (data.get('clear_flag_name') or '').strip()
     arrival_flavor = (data.get('arrival_flavor') or '').strip()
+    failure_arrival_flavor = (data.get('failure_arrival_flavor') or '').strip()
 
     return Choice.objects.create(
         scene=scene,
@@ -547,6 +548,7 @@ def create_choice(source_scene_id, data):
         set_flag_name=set_flag_name,
         clear_flag_name=clear_flag_name,
         arrival_flavor=arrival_flavor,
+        failure_arrival_flavor=failure_arrival_flavor,
     )
 
 def update_choice(choice_id, data):
@@ -571,6 +573,7 @@ def update_choice(choice_id, data):
     choice.set_flag_name = (data.get('set_flag_name') or '').strip()
     choice.clear_flag_name = (data.get('clear_flag_name') or '').strip()
     choice.arrival_flavor = (data.get('arrival_flavor') or '').strip()
+    choice.failure_arrival_flavor = (data.get('failure_arrival_flavor') or '').strip()
 
     choice.save()
     return choice
@@ -627,12 +630,17 @@ def update_combat_encounter(scene_id, data):
     victory_scene_id = int(raw_victory) if raw_victory else None
     defeat_scene_id  = int(raw_defeat)  if raw_defeat  else None
 
+    victory_arrival_flavor = (data.get('victory_arrival_flavor') or '').strip()
+    defeat_arrival_flavor  = (data.get('defeat_arrival_flavor') or '').strip()
+
     encounter, _ = CombatEncounter.objects.update_or_create(
         scene_id=scene_id,
         defaults={
-            'enemy_id':         int(raw_enemy),
-            'victory_scene_id': victory_scene_id,
-            'defeat_scene_id':  defeat_scene_id,
+            'enemy_id':               int(raw_enemy),
+            'victory_scene_id':       victory_scene_id,
+            'defeat_scene_id':        defeat_scene_id,
+            'victory_arrival_flavor': victory_arrival_flavor,
+            'defeat_arrival_flavor':  defeat_arrival_flavor,
         },
     )
     return encounter

@@ -175,7 +175,9 @@ def choice_resolve(request, choice_id):
         next_scene = choice.target_scene
 
     # ARRIVAL FLAVOR
-    if choice.arrival_flavor:
+    if scene.requires_roll and not roll_result['success'] and choice.failure_arrival_flavor:
+        log_event(session, choice.failure_arrival_flavor)
+    elif choice.arrival_flavor:
         log_event(session, choice.arrival_flavor)
 
     # FLAG EFFECTS
@@ -340,6 +342,7 @@ def combat_attack(request):
             session, stats, inventory, completed_map,
             encounter.victory_scene, combat_state,
             xp_award=XP_AWARDS['combat_victory'],
+            ending_type='victory',
         )
         return _htmx_response(request, context)
 
@@ -383,6 +386,7 @@ def combat_attack(request):
         context = resolve_combat_end(
             session, stats, inventory, completed_map,
             encounter.defeat_scene, combat_state,
+            ending_type='defeat',
         )
         return _htmx_response(request, context)
 
