@@ -59,9 +59,6 @@ Choices are actions, not thoughts.
 ### Gated choices
 If a choice requires a stat, item, or completed quest — the requirement handles the gate. Do not reference the gate in the label ("Use lockpick [requires item]"). The label should read naturally for a player who qualifies.
 
-### Roll choices
-Choices on roll scenes don't need to mention the roll. The scene already implies danger. The roll happens invisibly.
-
 ### `arrival_flavor`
 Short line logged to EventLog when this choice resolves. First person or second person, past tense.
 - "You slipped through the gap before anyone noticed."

@@ -346,26 +346,8 @@ def combat_attack(request):
         )
         return _htmx_response(request, context)
 
-    # ── ENEMY ATTACKS BACK ───────────────────────────────────────────
+    # ── PRE-ROLL ENEMY ATTACK AND WAIT FOR PLAYER TO RESOLVE ────────
     e_hit, e_dmg, e_roll, e_total = resolve_enemy_attack_util(enemy, effective_stats)
-    player_defense = 10 + stat_modifier(effective_stats.agility)
-    e_mod_str = f"+{enemy.attack_modifier}" if enemy.attack_modifier >= 0 else str(enemy.attack_modifier)
-
-    if e_hit:
-        stats.hp = max(0, stats.hp - e_dmg)
-
-    # Log enemy first, then player — so player attack is logs[0] (most recent),
-    # matching the roll widget in the scene panel.
-    if e_hit:
-        log_event(session,
-            f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
-            f"vs {player_defense} — Hit! {e_dmg} damage."
-        )
-    else:
-        log_event(session,
-            f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
-            f"vs {player_defense} — Missed."
-        )
 
     if p_hit:
         log_event(session,
@@ -378,17 +360,11 @@ def combat_attack(request):
             f"vs {enemy.defense} — Missed."
         )
 
-    stats.save()
-
-    # ── CHECK: PLAYER DOWN ───────────────────────────────────────────
-    if stats.hp <= 0:
-        log_event(session, "You're down. You lose consciousness.")
-        context = resolve_combat_end(
-            session, stats, inventory, completed_map,
-            encounter.defeat_scene, combat_state,
-            ending_type='defeat',
-        )
-        return _htmx_response(request, context)
+    combat_state.pending_e_roll  = e_roll
+    combat_state.pending_e_total = e_total
+    combat_state.pending_e_hit   = e_hit
+    combat_state.pending_e_dmg   = e_dmg
+    combat_state.save()
 
     effective_stats = get_effective_stats(stats, inventory)
     roll_result = {
@@ -405,7 +381,83 @@ def combat_attack(request):
         combat_state=combat_state,
         roll_result=roll_result,
     )
-    # Ensure choices is empty for combat
+    context['choices'] = []
+    return _htmx_response(request, context)
+
+
+def combat_resolve_enemy(request):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    session_pk = request.session.get(SESSION_KEY)
+    if not session_pk:
+        return redirect('game_hub')
+
+    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
+
+    try:
+        combat_state = session.combat_state
+    except CombatState.DoesNotExist:
+        return HttpResponse("No active combat.", status=400)
+
+    if not combat_state.is_active or not combat_state.enemy_attack_pending:
+        return HttpResponse("No pending enemy attack.", status=400)
+
+    enemy         = combat_state.enemy
+    encounter     = CombatEncounter.objects.get(scene=session.current_scene)
+    player_defense = 10 + stat_modifier(effective_stats.agility)
+    e_mod_str = f"+{enemy.attack_modifier}" if enemy.attack_modifier >= 0 else str(enemy.attack_modifier)
+
+    e_roll  = combat_state.pending_e_roll
+    e_total = combat_state.pending_e_total
+    e_hit   = combat_state.pending_e_hit
+    e_dmg   = combat_state.pending_e_dmg
+
+    if e_hit:
+        stats.hp = max(0, stats.hp - e_dmg)
+        log_event(session,
+            f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
+            f"vs {player_defense} — Hit! {e_dmg} damage."
+        )
+    else:
+        log_event(session,
+            f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
+            f"vs {player_defense} — Missed."
+        )
+
+    combat_state.pending_e_roll  = None
+    combat_state.pending_e_total = None
+    combat_state.pending_e_hit   = None
+    combat_state.pending_e_dmg   = None
+    combat_state.turn_number    += 1
+    combat_state.save()
+    stats.save()
+
+    if stats.hp <= 0:
+        log_event(session, "You're down. You lose consciousness.")
+        context = resolve_combat_end(
+            session, stats, inventory, completed_map,
+            encounter.defeat_scene, combat_state,
+            ending_type='defeat',
+        )
+        return _htmx_response(request, context)
+
+    effective_stats = get_effective_stats(stats, inventory)
+    e_mod_display = f"+{enemy.attack_modifier}" if enemy.attack_modifier >= 0 else str(enemy.attack_modifier)
+    roll_result = {
+        'roll':        e_roll,
+        'modifier':    enemy.attack_modifier,
+        'mod_display': e_mod_display,
+        'total':       e_total,
+        'dc':          player_defense,
+        'stat':        enemy.name,
+        'success':     e_hit,
+    }
+    context = build_render_context(
+        session, session.current_scene, stats, effective_stats, inventory, completed_map,
+        combat_state=combat_state,
+        roll_result=roll_result,
+    )
     context['choices'] = []
     return _htmx_response(request, context)
 

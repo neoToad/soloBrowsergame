@@ -28,6 +28,17 @@
     <p class="combat-turn">Round {{ combat_state.turn_number }}</p>
 
     <div class="choices">
+        {% if combat_state.enemy_attack_pending %}
+        <p class="combat-incoming">{{ combat_state.enemy.name }} is coming at you —</p>
+        <button
+            hx-post="{% url 'combat_resolve_enemy' %}"
+            hx-target="#scene-panel"
+            hx-swap="innerHTML"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-indicator="#loading-indicator">
+            Brace yourself
+        </button>
+        {% else %}
         <button
             hx-post="{% url 'combat_attack' %}"
             hx-target="#scene-panel"
@@ -36,6 +47,7 @@
             hx-indicator="#loading-indicator">
             Move on him
         </button>
+        {% endif %}
     </div>
 
 </div>

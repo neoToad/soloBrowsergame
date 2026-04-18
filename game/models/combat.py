@@ -55,6 +55,14 @@ class CombatState(models.Model):
     enemy_hp     = models.IntegerField()
     turn_number  = models.IntegerField(default=1)
     is_active    = models.BooleanField(default=True)
+    pending_e_roll  = models.IntegerField(null=True, blank=True)
+    pending_e_total = models.IntegerField(null=True, blank=True)
+    pending_e_hit   = models.BooleanField(null=True, blank=True)
+    pending_e_dmg   = models.IntegerField(null=True, blank=True)
+
+    @property
+    def enemy_attack_pending(self):
+        return self.pending_e_roll is not None
 
     def __str__(self):
         return f"{self.session} vs {self.enemy.name} (turn {self.turn_number})"
