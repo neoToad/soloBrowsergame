@@ -24,7 +24,6 @@ class PlayerProperty(models.Model):
     session      = models.ForeignKey('game.GameSession', related_name='properties', on_delete=models.CASCADE)
     property     = models.ForeignKey(Property, on_delete=models.CASCADE)
     is_contested = models.BooleanField(default=False)
-    upgrade_tier = models.IntegerField(default=1)   # reserved — no logic
 
     def __str__(self):
         return f"{self.session} — {self.property.name}"

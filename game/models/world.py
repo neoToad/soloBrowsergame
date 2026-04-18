@@ -1,6 +1,8 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from .requirements import RequirementGroup
 from .items import Item
+from ..constants import STAT_FIELD_MAP
 
 class Arc(models.Model):
     key   = models.SlugField(unique=True)
@@ -88,7 +90,10 @@ class Scene(models.Model):
     order    = models.IntegerField(default=0)
 
     requires_roll    = models.BooleanField(default=False)
-    roll_stat        = models.CharField(max_length=50, blank=True)
+    roll_stat        = models.CharField(
+                           max_length=50, blank=True,
+                           choices=[('', '---')] + [(v, v) for v in STAT_FIELD_MAP.values()]
+                       )
     roll_difficulty  = models.IntegerField(default=10)
 
     ending_type = models.CharField(
@@ -126,6 +131,12 @@ class Scene(models.Model):
     @property
     def is_ending(self):
         return self.scene_type == 'ending'
+
+    def clean(self):
+        if self.requires_roll and self.roll_stat not in STAT_FIELD_MAP.values():
+            raise ValidationError({'roll_stat': 'Must be a valid stat when requires_roll is True.'})
+        if self.scene_type == 'ending' and not self.ending_type:
+            raise ValidationError({'ending_type': 'Ending scenes must have a non-blank ending_type.'})
 
     class Meta:
         ordering = ['order']
@@ -185,21 +196,6 @@ class Choice(models.Model):
 
     def __str__(self):
         return f"{self.scene.key} → {self.label}"
-
-    def resolve_target(self, roll_succeeded: bool | None = None):
-        """
-        Return the Scene this choice routes to.
-        Pass roll_succeeded=True/False when the parent scene requires a roll.
-        Pass roll_succeeded=None (default) for non-roll scenes.
-        """
-        if self.scene.requires_roll:
-            if roll_succeeded is None:
-                raise ValueError(
-                    f"Choice {self.pk} belongs to a roll scene but "
-                    "roll_succeeded was not provided."
-                )
-            return self.success_scene if roll_succeeded else self.failure_scene
-        return self.target_scene
 
 
 class SceneItem(models.Model):

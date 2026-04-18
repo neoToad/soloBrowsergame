@@ -61,7 +61,7 @@ def maybe_complete_quest(session, stats, next_scene, completed_map):
                 levels = award_xp(session, stats, xp_amount)
                 log_messages.append(f"+{xp_amount} XP.")
                 for new_level in levels:
-                    flavor = LEVEL_UP_FLAVOR[new_level - 2]
+                    flavor = LEVEL_UP_FLAVOR.get(new_level, "You feel stronger.")
                     log_messages.append(flavor)
 
     return log_messages
@@ -88,14 +88,14 @@ RANK_TITLES = {
     7: 'Boss',
 }
 
-LEVEL_UP_FLAVOR = [
-    "Word travels fast. You're moving up.",        # → level 2
-    "The crew is taking notice.",                  # → level 3
-    "You've earned your stripes.",                 # → level 4
-    "They're calling your name across the city.",  # → level 5
-    "Nobody moves without your say-so.",           # → level 6
-    "You run this town. Act like it.",             # → level 7
-]
+LEVEL_UP_FLAVOR = {
+    2: "Word travels fast. You're moving up.",
+    3: "The crew is taking notice.",
+    4: "You've earned your stripes.",
+    5: "They're calling your name across the city.",
+    6: "Nobody moves without your say-so.",
+    7: "You run this town. Act like it.",
+}
 
 XP_AWARDS = {
     'victory':        150,

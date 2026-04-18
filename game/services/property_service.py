@@ -57,8 +57,8 @@ def check_rival_contests(session):
         session=session,
         is_contested=False,
         property__is_contestable=True,
-        property__resolution_scene__isnull=False,   # only contest if a resolution exists
-    ).select_related('property__resolution_scene')
+        property__resolution_scene__isnull=False,
+    ).select_related('property')
 
     contestable_list = list(contestable)
     if not contestable_list:

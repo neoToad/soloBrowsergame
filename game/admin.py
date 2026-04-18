@@ -84,7 +84,7 @@ class PlayerInventoryInline(admin.TabularInline):
 class PlayerPropertyInline(admin.TabularInline):
     model = PlayerProperty
     extra = 0
-    fields = ('property', 'is_contested', 'upgrade_tier')
+    fields = ('property', 'is_contested')
 
 # 4. Admin classes
 @admin.register(Arc)
@@ -490,7 +490,7 @@ class PropertyAdmin(admin.ModelAdmin):
 
 @admin.register(PlayerProperty)
 class PlayerPropertyAdmin(admin.ModelAdmin):
-    list_display = ('session', 'property', 'is_contested', 'upgrade_tier')
+    list_display = ('session', 'property', 'is_contested')
     list_filter = ('is_contested',)
     list_select_related = True
 

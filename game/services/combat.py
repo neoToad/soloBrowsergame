@@ -115,7 +115,7 @@ def resolve_combat_end(session, stats, inventory, completed_map, next_scene, com
         combat_levels = award_xp(session, stats, xp_award)
         EventLog.objects.create(session=session, text=f"+{xp_award} XP.")
         for new_level in combat_levels:
-            EventLog.objects.create(session=session, text=LEVEL_UP_FLAVOR[new_level - 2])
+            EventLog.objects.create(session=session, text=LEVEL_UP_FLAVOR.get(new_level, "You feel stronger."))
 
     effective_stats = get_effective_stats(stats, inventory)
     next_combat_state = get_or_create_combat_state(session, next_scene)

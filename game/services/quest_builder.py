@@ -430,40 +430,21 @@ def create_scene(quest_id, data):
 def update_scene(scene_id, data):
     scene = Scene.objects.get(pk=scene_id)
 
-    allowed_fields = {
-        'title',
-        'key',
-        'scene_type',
-        'description',
-        'requires_roll',
-        'roll_stat',
-        'roll_difficulty',
-        'consume_item',
-    }
-
-    if 'title' in allowed_fields:
-        scene.title = (data.get('title') or scene.title).strip()
-    if 'key' in allowed_fields:
-        incoming_key = (data.get('key') or '').strip()
-        if incoming_key:
-            scene_quest = scene.quests.first()
-            if scene_quest and scene_quest.scenes.filter(key=incoming_key).exclude(pk=scene.pk).exists():
-                raise ValueError(f'A scene with key "{incoming_key}" already exists in this quest.')
-            scene.key = incoming_key
-    if 'scene_type' in allowed_fields:
-        scene.scene_type = (data.get('scene_type') or scene.scene_type).strip() or scene.scene_type
-    if 'description' in allowed_fields:
-        scene.body = (data.get('description') or '').strip()
-    if 'requires_roll' in allowed_fields:
-        scene.requires_roll = str(data.get('requires_roll', '')).lower() in ('1', 'true', 'on', 'yes')
-    if 'roll_stat' in allowed_fields:
-        scene.roll_stat = (data.get('roll_stat') or '').strip()
-    if 'roll_difficulty' in allowed_fields:
-        raw_dc = str(data.get('roll_difficulty') or '').strip()
-        scene.roll_difficulty = int(raw_dc) if raw_dc else 12
-    if 'consume_item' in allowed_fields:
-        raw_item = str(data.get('consume_item_id') or '').strip()
-        scene.consume_item_id = int(raw_item) if raw_item else None
+    scene.title = (data.get('title') or scene.title).strip()
+    incoming_key = (data.get('key') or '').strip()
+    if incoming_key:
+        scene_quest = scene.quests.first()
+        if scene_quest and scene_quest.scenes.filter(key=incoming_key).exclude(pk=scene.pk).exists():
+            raise ValueError(f'A scene with key "{incoming_key}" already exists in this quest.')
+        scene.key = incoming_key
+    scene.scene_type = (data.get('scene_type') or scene.scene_type).strip() or scene.scene_type
+    scene.body = (data.get('description') or '').strip()
+    scene.requires_roll = str(data.get('requires_roll', '')).lower() in ('1', 'true', 'on', 'yes')
+    scene.roll_stat = (data.get('roll_stat') or '').strip()
+    raw_dc = str(data.get('roll_difficulty') or '').strip()
+    scene.roll_difficulty = int(raw_dc) if raw_dc else 12
+    raw_item = str(data.get('consume_item_id') or '').strip()
+    scene.consume_item_id = int(raw_item) if raw_item else None
 
     scene.save()
     return scene
