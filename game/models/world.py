@@ -122,6 +122,22 @@ class Scene(models.Model):
 
     cash_reward = models.IntegerField(default=0, help_text="Cash awarded when arriving at this scene.")
     rep_reward  = models.IntegerField(default=0, help_text="Reputation awarded when arriving at this scene.")
+    heat_change = models.IntegerField(default=0, help_text="Heat change when arriving at this scene (can be negative).")
+
+    receive_property = models.ForeignKey(
+        'game.Property',
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text="Property awarded when arriving at this scene."
+    )
+    lose_property = models.ForeignKey(
+        'game.Property',
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        help_text="Property lost when arriving at this scene."
+    )
 
     @property
     def is_hub(self):

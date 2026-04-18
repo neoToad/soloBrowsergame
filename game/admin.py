@@ -355,13 +355,13 @@ class RequirementGroupAdmin(admin.ModelAdmin):
 
 @admin.register(Scene)
 class SceneAdmin(admin.ModelAdmin):
-    list_display = ('key', 'title', 'body_preview', 'scene_type', 'requires_roll', 'cash_reward', 'rep_reward', 'order')
+    list_display = ('key', 'title', 'body_preview', 'scene_type', 'requires_roll', 'cash_reward', 'rep_reward', 'heat_change', 'order')
     list_filter = ('scene_type', 'requires_roll', 'ending_type')
     search_fields = ('key', 'title', 'body')
     list_select_related = True
     prepopulated_fields = {'key': ('title',)}
     readonly_fields = ('key_format_note',)
-    autocomplete_fields = ('consume_item',)
+    autocomplete_fields = ('consume_item', 'receive_property', 'lose_property')
     fieldsets = (
         ('Identity', {
             'fields': ('key', 'key_format_note', 'title', 'order')
@@ -376,8 +376,8 @@ class SceneAdmin(admin.ModelAdmin):
             'fields': ('requires_roll', 'roll_difficulty', 'roll_stat')
         }),
         ('Arrival Effects', {
-            'fields': ('cash_reward', 'rep_reward', 'consume_item'),
-            'description': 'Stat rewards/penalties and item consumption upon arrival.',
+            'fields': ('cash_reward', 'rep_reward', 'heat_change', 'consume_item', 'receive_property', 'lose_property'),
+            'description': 'Stat rewards/penalties, property changes, and item consumption upon arrival.',
         }),
     )
     inlines = [ChoiceInline, SceneItemInline, CombatEncounterInline]
@@ -487,6 +487,7 @@ class EventLogAdmin(admin.ModelAdmin):
 class PropertyAdmin(admin.ModelAdmin):
     list_display = ('name', 'property_type', 'income_per_turn', 'heat_reduction', 'rep_bonus', 'is_contestable', 'resolution_scene')
     list_filter = ('property_type', 'is_contestable')
+    search_fields = ('name',)
 
 @admin.register(PlayerProperty)
 class PlayerPropertyAdmin(admin.ModelAdmin):

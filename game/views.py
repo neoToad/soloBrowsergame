@@ -8,7 +8,7 @@ from django.urls import reverse
 from .models import (
     Arc, Choice, CombatEncounter, CombatState, CompletedQuest, EventLog,
     GameSession, Item, PlayerContext, PlayerProperty, Quest, Requirement,
-    RivalClaim, Scene,
+    RivalClaim, Scene, Property,
 )
 from .models.events import log_event
 from .models.combat import Enemy as EnemyModel
@@ -22,6 +22,7 @@ from .services.property_service import (
     get_turn_summary,
     process_turn_income,
     resolve_contest,
+    apply_property_rewards,
 )
 from .services.progression import award_xp, maybe_complete_quest, apply_stat_rewards, XP_AWARDS, LEVEL_UP_FLAVOR
 from .services.quest_builder import (
@@ -191,6 +192,11 @@ def choice_resolve(request, choice_id):
     for log_text in scene_reward_logs:
         log_event(session, log_text)
 
+    # PROPERTY REWARDS
+    property_logs = apply_property_rewards(session, next_scene)
+    for log_text in property_logs:
+        log_event(session, log_text)
+
     # SCENE UNLOCK + SCENE ARRIVAL (consume_item fires here via complete_scene)
     unlock_logs = complete_scene(session, scene, choice, inventory, next_scene=next_scene)
     for log_text in unlock_logs:
@@ -265,6 +271,17 @@ def start_quest(request, quest_key):
     session.current_scene = next_scene
     session.save()
     log_event(session, f"You took the job: {quest.title}.")
+
+    # SCENE REWARDS (on arrival at next_scene)
+    scene_reward_logs = apply_stat_rewards(session, stats, next_scene)
+    for log_text in scene_reward_logs:
+        log_event(session, log_text)
+
+    # PROPERTY REWARDS
+    property_logs = apply_property_rewards(session, next_scene)
+    for log_text in property_logs:
+        log_event(session, log_text)
+
     awarded = award_scene_items(session, next_scene, inventory)
     for item, qty in awarded:
         log_event(session, f"You picked up: {item.name} x{qty}.")
@@ -482,6 +499,7 @@ def scene_panel(request, quest_id, scene_id=None):
     all_items = list(Item.objects.order_by('name'))
     all_enemies = list(EnemyModel.objects.order_by('name'))
     all_quests = list(Quest.objects.order_by('title'))
+    all_properties = list(Property.objects.order_by('name'))
     quest_scenes = list(
         quest.scenes.only('id', 'key', 'title').order_by('order')
     )
@@ -501,6 +519,7 @@ def scene_panel(request, quest_id, scene_id=None):
         'scene_items': scene_items,
         'all_items': all_items,
         'all_enemies': all_enemies,
+        'all_properties': all_properties,
         'quest_scenes': quest_scenes,
         'combat_encounter': combat_encounter,
         'all_quests': all_quests,

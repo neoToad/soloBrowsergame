@@ -97,6 +97,30 @@ def resolve_contest(session, claim, ending_type):
         return f"You couldn't hold it. {prop_name} is gone."
 
 
+def apply_property_rewards(session, scene):
+    """
+    Awards or removes properties based on scene arrival effects.
+    Returns a list of log strings.
+    """
+    from ..models.property import PlayerProperty
+    logs = []
+
+    if scene.receive_property:
+        # Check if they already have it
+        if not PlayerProperty.objects.filter(session=session, property=scene.receive_property).exists():
+            PlayerProperty.objects.create(session=session, property=scene.receive_property)
+            logs.append(f"You have acquired: {scene.receive_property.name}")
+
+    if scene.lose_property:
+        # Check if they have it
+        pp = PlayerProperty.objects.filter(session=session, property=scene.lose_property).first()
+        if pp:
+            pp.delete()
+            logs.append(f"You have lost: {scene.lose_property.name}")
+
+    return logs
+
+
 def get_turn_summary(session, income_totals, newly_unlocked):
     """
     Assembles the end-of-turn summary dict for the template.

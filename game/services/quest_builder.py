@@ -414,6 +414,9 @@ def create_scene(quest_id, data):
 
     cash_reward = int(data.get('cash_reward') or 0)
     rep_reward  = int(data.get('rep_reward') or 0)
+    heat_change = int(data.get('heat_change') or 0)
+    receive_prop_id = int(data.get('receive_property_id') or 0) or None
+    lose_prop_id    = int(data.get('lose_property_id') or 0) or None
 
     scene = Scene.objects.create(
         title=title,
@@ -428,6 +431,9 @@ def create_scene(quest_id, data):
         consume_item_id=consume_item_id,
         cash_reward=cash_reward,
         rep_reward=rep_reward,
+        heat_change=heat_change,
+        receive_property_id=receive_prop_id,
+        lose_property_id=lose_prop_id,
     )
     quest.scenes.add(scene)
     return scene
@@ -453,6 +459,9 @@ def update_scene(scene_id, data):
 
     scene.cash_reward = int(data.get('cash_reward') or 0)
     scene.rep_reward  = int(data.get('rep_reward') or 0)
+    scene.heat_change = int(data.get('heat_change') or 0)
+    scene.receive_property_id = int(data.get('receive_property_id') or 0) or None
+    scene.lose_property_id    = int(data.get('lose_property_id') or 0) or None
 
     scene.save()
     return scene

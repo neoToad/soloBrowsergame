@@ -48,6 +48,12 @@ def apply_stat_rewards(session, stats, obj):
         logs.append(f"Reputation: {prefix}{obj.rep_reward}")
         changed = True
 
+    if hasattr(obj, 'heat_change') and obj.heat_change != 0:
+        stats.heat = max(0, stats.heat + obj.heat_change)
+        prefix = "+" if obj.heat_change > 0 else ""
+        logs.append(f"Heat: {prefix}{obj.heat_change}")
+        changed = True
+
     if changed:
         stats.save()
 

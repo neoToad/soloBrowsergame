@@ -83,6 +83,36 @@
                     <label for="scene-rep"><strong>Rep Change</strong></label><br>
                     <input id="scene-rep" type="number" name="rep_reward" value="{{ scene.rep_reward|default:0 }}" style="width: 100%; margin-top: 4px;">
                 </div>
+                <div style="flex: 1;">
+                    <label for="scene-heat"><strong>Heat Change</strong></label><br>
+                    <input id="scene-heat" type="number" name="heat_change" value="{{ scene.heat_change|default:0 }}" style="width: 100%; margin-top: 4px;">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 10px;">
+                <label for="receive-property"><strong>Receive Property</strong></label><br>
+                <select id="receive-property" name="receive_property_id" style="width: 100%; margin-top: 4px;">
+                    <option value="">— none —</option>
+                    {% for prop in all_properties %}
+                        <option value="{{ prop.id }}"
+                            {% if scene and scene.receive_property_id == prop.id %}selected{% endif %}>
+                            {{ prop.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="margin-bottom: 10px;">
+                <label for="lose-property"><strong>Lose Property</strong></label><br>
+                <select id="lose-property" name="lose_property_id" style="width: 100%; margin-top: 4px;">
+                    <option value="">— none —</option>
+                    {% for prop in all_properties %}
+                        <option value="{{ prop.id }}"
+                            {% if scene and scene.lose_property_id == prop.id %}selected{% endif %}>
+                            {{ prop.name }}
+                        </option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div style="margin-bottom: 10px;">
