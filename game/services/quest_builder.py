@@ -54,8 +54,8 @@ def get_canvas_data(quest_id):
     choices_qs = Choice.objects.filter(scene_id__in=scene_ids).only(
         'id', 'scene_id', 'label', 'target_scene_id', 'success_scene_id', 'failure_scene_id'
     )
-    encounters_qs = CombatEncounter.objects.filter(scene_id__in=scene_ids).select_related('enemy').only(
-        'id', 'scene_id', 'enemy_id', 'enemy__victory_scene_id', 'enemy__defeat_scene_id'
+    encounters_qs = CombatEncounter.objects.filter(scene_id__in=scene_ids).select_related('enemy','victory_scene','defeat_scene').only(
+        'id', 'scene_id', 'enemy_id', 'victory_scene_id', 'defeat_scene_id'
     )
     
     choices = []
@@ -149,8 +149,8 @@ def get_canvas_data(quest_id):
                 'label_y': ((source_y + target_y) // 2) - 6,
             })
 
-        append_combat_arrow(encounter.enemy.victory_scene_id, 'success', 'WIN')
-        append_combat_arrow(encounter.enemy.defeat_scene_id, 'failure', 'LOSE')
+        append_combat_arrow(encounter.victory_scene_id, 'success', 'WIN')
+        append_combat_arrow(encounter.defeat_scene_id, 'failure', 'LOSE')
 
     # Spread arrows that share the same source and target so they do not overlap.
     arrows_by_edge = {}

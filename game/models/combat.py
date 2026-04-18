@@ -11,19 +11,6 @@ class Enemy(models.Model):
     defense          = models.IntegerField(default=8)
     damage_min       = models.IntegerField(default=1)
     damage_max       = models.IntegerField(default=4)
-    victory_scene    = models.ForeignKey(
-                           Scene,
-                           null=True, blank=True,
-                           related_name='+',
-                           on_delete=models.SET_NULL
-                       )
-    defeat_scene     = models.ForeignKey(
-                           Scene,
-                           null=True, blank=True,
-                           related_name='+',
-                           on_delete=models.SET_NULL
-                       )
-
     def __str__(self):
         return self.name
 

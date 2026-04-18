@@ -51,6 +51,36 @@ climbs from Errand Boy to Boss.
 
 ---
 
+## XP and Leveling
+
+- Core progression lives in `game/services/progression.py`.
+- XP is cumulative (`stats.experience` is never spent).
+- XP sources:
+  - Quest ending completion (first completion per quest/session only):
+    - `victory`: `+150 XP`
+    - `neutral`: `+75 XP`
+    - `defeat`: `+25 XP`
+  - Combat victory: `+50 XP` (`combat_victory` award).
+- Level thresholds:
+  - Level 1: `0`
+  - Level 2: `200`
+  - Level 3: `600`
+  - Level 4: `1300`
+  - Level 5: `2400`
+  - Level 6: `4000`
+  - Level 7: `6200` (max level)
+- Level-up behavior (`award_xp`):
+  - Adds XP, then iterates thresholds to allow multi-level gains from one award.
+  - Grants `+1 stat_point` per level gained.
+  - At `MAX_LEVEL=7`, XP can still increase but no further levels/stat points are awarded.
+- UI behavior:
+  - Stats bar shows raw total XP (`{{ stats.experience }} XP`).
+  - XP bar shows progress within the current level band.
+  - At max level, XP bar is forced to `100%`.
+- Requirements can gate on total XP via `xp_gte` (`stats.experience >= stat_value`).
+
+---
+
 ## Items and Stats
 
 - Active item effects: `heal_hp`, `add_stat`.
@@ -108,15 +138,3 @@ Evaluation logic:
 - Tone: noir, terse, second person, present tense.
 - Scene keys follow `{quest_key}__{scene_slug}`; hub scenes use `hub__*`.
 
----
-
-## Known Tech Debt
-
-- Some event writes still happen in services (`game/services/combat.py`), conflicting with
-  the service/view logging boundary.
-- Scene key prefix convention is documented but not model-validated.
-- `export_quest` portability depends on natural keys not implemented across all related models.
-- Scene item awarding is triggered in multiple flows (`start_quest`, `choice_resolve`,
-  combat end), increasing maintenance risk.
-
-See `.docs/TECH_DEBT.md` for details.

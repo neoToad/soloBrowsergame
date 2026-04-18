@@ -238,8 +238,8 @@ class QuestAdmin(admin.ModelAdmin):
                 'consume_item',
                 'scene_items__item',
                 'combat_encounter__enemy',
-                'combat_encounter__enemy__victory_scene',
-                'combat_encounter__enemy__defeat_scene',
+                'combat_encounter__victory_scene',
+                'combat_encounter__defeat_scene',
             )
             .order_by('order')
         )
@@ -452,7 +452,7 @@ class EnemyAdmin(admin.ModelAdmin):
     list_display = ('key', 'name', 'max_hp', 'defense', 'attack_modifier', 'damage_range')
     search_fields = ('key', 'name')
     prepopulated_fields = {'key': ('name',)}
-    autocomplete_fields = ('victory_scene', 'defeat_scene')
+    autocomplete_fields = ()
     save_on_top = True
 
     @admin.display(description='Damage')

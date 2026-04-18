@@ -221,8 +221,8 @@
                 {# Win route #}
                 <span class="route-win">
                     &#9650; WIN &rarr;
-                    {% if enemy.victory_scene %}
-                        <a href="{% url 'admin:game_scene_change' enemy.victory_scene.pk %}">{{ enemy.victory_scene.key }}</a>
+                    {% if enc.victory_scene %}
+                        <a href="{% url 'admin:game_scene_change' enc.victory_scene.pk %}">{{ enc.victory_scene.key }}</a>
                     {% else %}
                         <span class="graph-dead-end">&#9888; no victory_scene set</span>
                     {% endif %}
@@ -230,8 +230,8 @@
                 {# Lose route #}
                 <span class="route-lose">
                     &#9660; LOSE &rarr;
-                    {% if enemy.defeat_scene %}
-                        <a href="{% url 'admin:game_scene_change' enemy.defeat_scene.pk %}">{{ enemy.defeat_scene.key }}</a>
+                    {% if enc.defeat_scene %}
+                        <a href="{% url 'admin:game_scene_change' enc.defeat_scene.pk %}">{{ enc.defeat_scene.key }}</a>
                     {% else %}
                         <span class="graph-dead-end">&#9888; no defeat_scene set</span>
                     {% endif %}

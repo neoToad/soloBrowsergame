@@ -10,9 +10,7 @@
     "attack_modifier": 0,
     "defense": 10,
     "damage_min": 1,
-    "damage_max": 1,
-    "victory_scene": 22,
-    "defeat_scene": 24
+    "damage_max": 1
   }
 },
 {
@@ -26,9 +24,7 @@
     "attack_modifier": 0,
     "defense": 0,
     "damage_min": 0,
-    "damage_max": 0,
-    "victory_scene": 23,
-    "defeat_scene": 24
+    "damage_max": 0
   }
 },
 {
@@ -42,9 +38,7 @@
     "attack_modifier": 3,
     "defense": 13,
     "damage_min": 2,
-    "damage_max": 8,
-    "victory_scene": 27,
-    "defeat_scene": 24
+    "damage_max": 8
   }
 },
 {
@@ -58,9 +52,7 @@
     "attack_modifier": 3,
     "defense": 13,
     "damage_min": 2,
-    "damage_max": 8,
-    "victory_scene": null,
-    "defeat_scene": 42
+    "damage_max": 8
   }
 }
 ]
