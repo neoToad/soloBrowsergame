@@ -355,7 +355,7 @@ class RequirementGroupAdmin(admin.ModelAdmin):
 
 @admin.register(Scene)
 class SceneAdmin(admin.ModelAdmin):
-    list_display = ('key', 'title', 'body_preview', 'scene_type', 'requires_roll', 'order')
+    list_display = ('key', 'title', 'body_preview', 'scene_type', 'requires_roll', 'cash_reward', 'rep_reward', 'order')
     list_filter = ('scene_type', 'requires_roll', 'ending_type')
     search_fields = ('key', 'title', 'body')
     list_select_related = True
@@ -376,8 +376,8 @@ class SceneAdmin(admin.ModelAdmin):
             'fields': ('requires_roll', 'roll_difficulty', 'roll_stat')
         }),
         ('Arrival Effects', {
-            'fields': ('consume_item',),
-            'description': 'Item consumed from player inventory upon arriving at this scene.',
+            'fields': ('cash_reward', 'rep_reward', 'consume_item'),
+            'description': 'Stat rewards/penalties and item consumption upon arrival.',
         }),
     )
     inlines = [ChoiceInline, SceneItemInline, CombatEncounterInline]

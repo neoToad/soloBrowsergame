@@ -120,6 +120,9 @@ class Scene(models.Model):
     canvas_x = models.IntegerField(default=0)
     canvas_y = models.IntegerField(default=0)
 
+    cash_reward = models.IntegerField(default=0, help_text="Cash awarded when arriving at this scene.")
+    rep_reward  = models.IntegerField(default=0, help_text="Reputation awarded when arriving at this scene.")
+
     @property
     def is_hub(self):
         return self.scene_type == 'hub'

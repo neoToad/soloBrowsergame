@@ -308,7 +308,12 @@ class RequirementEvaluationTest(TestCase):
         self.assertTrue(group_empty.evaluate(PlayerContext(stats_none, {}, {})))
 
 class CombatTest(TestCase):
-    fixtures = []
+    fixtures = [
+        'game/fixtures/scene.json',
+        'game/fixtures/enemy.json',
+        'game/fixtures/combatencounter.json',
+        'game/fixtures/item.json',
+    ]
 
     def setUp(self):
         self.client = Client()
@@ -436,7 +441,10 @@ class LevelUpTest(TestCase):
         self.assertContains(response, "Word travels fast.")
 
 class UseItemTest(TestCase):
-    fixtures = []
+    fixtures = [
+        'game/fixtures/scene.json',
+        'game/fixtures/item.json',
+    ]
 
     def setUp(self):
         self.client = Client()

@@ -23,7 +23,7 @@ from .services.property_service import (
     process_turn_income,
     resolve_contest,
 )
-from .services.progression import award_xp, maybe_complete_quest, XP_AWARDS, LEVEL_UP_FLAVOR
+from .services.progression import award_xp, maybe_complete_quest, apply_stat_rewards, XP_AWARDS, LEVEL_UP_FLAVOR
 from .services.quest_builder import (
     get_canvas_data,
     validate_quest as validate_quest_service,
@@ -185,6 +185,11 @@ def choice_resolve(request, choice_id):
     # ADVANCE SESSION
     session.current_scene = next_scene
     session.save()
+
+    # SCENE REWARDS (on arrival at next_scene)
+    scene_reward_logs = apply_stat_rewards(session, stats, next_scene)
+    for log_text in scene_reward_logs:
+        log_event(session, log_text)
 
     # SCENE UNLOCK + SCENE ARRIVAL (consume_item fires here via complete_scene)
     unlock_logs = complete_scene(session, scene, choice, inventory, next_scene=next_scene)

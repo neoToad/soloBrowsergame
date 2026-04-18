@@ -412,6 +412,9 @@ def create_scene(quest_id, data):
     raw_item = str(data.get('consume_item_id') or '').strip()
     consume_item_id = int(raw_item) if raw_item else None
 
+    cash_reward = int(data.get('cash_reward') or 0)
+    rep_reward  = int(data.get('rep_reward') or 0)
+
     scene = Scene.objects.create(
         title=title,
         key=key,
@@ -423,6 +426,8 @@ def create_scene(quest_id, data):
         canvas_x=canvas_x,
         canvas_y=canvas_y,
         consume_item_id=consume_item_id,
+        cash_reward=cash_reward,
+        rep_reward=rep_reward,
     )
     quest.scenes.add(scene)
     return scene
@@ -445,6 +450,9 @@ def update_scene(scene_id, data):
     scene.roll_difficulty = int(raw_dc) if raw_dc else 12
     raw_item = str(data.get('consume_item_id') or '').strip()
     scene.consume_item_id = int(raw_item) if raw_item else None
+
+    scene.cash_reward = int(data.get('cash_reward') or 0)
+    scene.rep_reward  = int(data.get('rep_reward') or 0)
 
     scene.save()
     return scene

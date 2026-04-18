@@ -27,6 +27,33 @@ def award_xp(session, stats, amount):
     return levels_gained
 
 
+def apply_stat_rewards(session, stats, obj):
+    """
+    Adds cash_reward and rep_reward from `obj` (Scene or Choice) to stats.
+    Returns a list of log strings. Callers are responsible for logging.
+    Saves stats if any change occurred.
+    """
+    logs = []
+    changed = False
+
+    if hasattr(obj, 'cash_reward') and obj.cash_reward != 0:
+        stats.cash += obj.cash_reward
+        prefix = "+" if obj.cash_reward > 0 else ""
+        logs.append(f"Cash: {prefix}${obj.cash_reward}")
+        changed = True
+
+    if hasattr(obj, 'rep_reward') and obj.rep_reward != 0:
+        stats.rep += obj.rep_reward
+        prefix = "+" if obj.rep_reward > 0 else ""
+        logs.append(f"Reputation: {prefix}{obj.rep_reward}")
+        changed = True
+
+    if changed:
+        stats.save()
+
+    return logs
+
+
 def maybe_complete_quest(session, stats, next_scene, completed_map):
     """
     If next_scene is a quest ending that hasn't been recorded yet,
