@@ -3,7 +3,18 @@ from django.urls import reverse
 from .models import Scene, GameSession, PlayerStats, Choice, Quest, CompletedQuest
 
 class GameNavigationTest(TestCase):
-    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_warehouse_job.json']
+    fixtures = [
+        'game/fixtures/choice.json',
+        'game/fixtures/combatencounter.json',
+        'game/fixtures/enemy.json',
+        'game/fixtures/item.json',
+        'game/fixtures/property.json',
+        'game/fixtures/quest.json',
+        'game/fixtures/requirement.json',
+        'game/fixtures/requirementgroup.json',
+        'game/fixtures/scene.json',
+        'game/fixtures/sceneitem.json',
+    ]
 
     def setUp(self):
         self.client = Client()
@@ -278,7 +289,18 @@ class CombatTest(TestCase):
             self.assertTrue(CompletedQuest.objects.filter(session=self.session, quest__key='street_debt').exists())
 
 class LevelUpTest(TestCase):
-    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_warehouse_job.json']
+    fixtures = [
+        'game/fixtures/choice.json',
+        'game/fixtures/combatencounter.json',
+        'game/fixtures/enemy.json',
+        'game/fixtures/item.json',
+        'game/fixtures/property.json',
+        'game/fixtures/quest.json',
+        'game/fixtures/requirement.json',
+        'game/fixtures/requirementgroup.json',
+        'game/fixtures/scene.json',
+        'game/fixtures/sceneitem.json',
+    ]
 
     def setUp(self):
         self.client = Client()
@@ -502,7 +524,18 @@ class QuestBuilderSceneTest(TestCase):
 
 
 class NoticeBoardTest(TestCase):
-    fixtures = ['game/fixtures/hub.json', 'game/fixtures/quest_warehouse_job.json']
+    fixtures = [
+        'game/fixtures/choice.json',
+        'game/fixtures/combatencounter.json',
+        'game/fixtures/enemy.json',
+        'game/fixtures/item.json',
+        'game/fixtures/property.json',
+        'game/fixtures/quest.json',
+        'game/fixtures/requirement.json',
+        'game/fixtures/requirementgroup.json',
+        'game/fixtures/scene.json',
+        'game/fixtures/sceneitem.json',
+    ]
 
     def setUp(self):
         self.client = Client()

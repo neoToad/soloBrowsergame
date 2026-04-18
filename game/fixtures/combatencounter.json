@@ -1,0 +1,42 @@
+[
+{
+  "model": "game.combatencounter",
+  "pk": 1,
+  "fields": {
+    "scene": 21,
+    "enemy": 1,
+    "victory_scene": 22,
+    "defeat_scene": 24
+  }
+},
+{
+  "model": "game.combatencounter",
+  "pk": 2,
+  "fields": {
+    "scene": 22,
+    "enemy": 2,
+    "victory_scene": 23,
+    "defeat_scene": 24
+  }
+},
+{
+  "model": "game.combatencounter",
+  "pk": 3,
+  "fields": {
+    "scene": 26,
+    "enemy": 3,
+    "victory_scene": null,
+    "defeat_scene": null
+  }
+},
+{
+  "model": "game.combatencounter",
+  "pk": 4,
+  "fields": {
+    "scene": 41,
+    "enemy": 4,
+    "victory_scene": null,
+    "defeat_scene": null
+  }
+}
+]

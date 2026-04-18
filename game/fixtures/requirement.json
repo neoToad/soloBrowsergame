@@ -1,0 +1,80 @@
+[
+{
+  "model": "game.requirement",
+  "pk": 1,
+  "fields": {
+    "condition_type": "stat_gte",
+    "flag_name": "",
+    "stat_name": "agility",
+    "stat_value": 7,
+    "required_item": null,
+    "required_quest": null,
+    "required_ending_type": ""
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 3,
+  "fields": {
+    "condition_type": "quest_completed",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": 2,
+    "required_ending_type": ""
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 4,
+  "fields": {
+    "condition_type": "level_gte",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 2,
+    "required_item": null,
+    "required_quest": null,
+    "required_ending_type": ""
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 5,
+  "fields": {
+    "condition_type": "stat_gte",
+    "flag_name": "",
+    "stat_name": "strength",
+    "stat_value": 4,
+    "required_item": null,
+    "required_quest": null,
+    "required_ending_type": ""
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 6,
+  "fields": {
+    "condition_type": "stat_gte",
+    "flag_name": "",
+    "stat_name": "strength",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": null,
+    "required_ending_type": ""
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 7,
+  "fields": {
+    "condition_type": "stat_gte",
+    "flag_name": "",
+    "stat_name": "strength",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": null,
+    "required_ending_type": ""
+  }
+}
+]
