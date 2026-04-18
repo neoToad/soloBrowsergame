@@ -163,12 +163,13 @@ def choice_resolve(request, choice_id):
     if choice.scene_id != session.current_scene_id:
         return HttpResponse("Choice is not available from your current scene.", status=403)
 
-    scene      = choice.scene
-    next_scene = None
+    scene       = choice.scene
+    next_scene  = None
+    roll_result = None
 
     # ROLL LOGIC — use effective_stats so passive bonuses apply
     if scene.requires_roll:
-        next_scene, roll_log = resolve_roll(scene, choice, effective_stats)
+        next_scene, roll_log, roll_result = resolve_roll(scene, choice, effective_stats)
         log_event(session, roll_log)
     else:
         next_scene = choice.target_scene
@@ -246,6 +247,7 @@ def choice_resolve(request, choice_id):
             session, next_scene, stats, effective_stats, inventory, completed_map,
             combat_state=combat_state,
             turn_summary=turn_summary,
+            roll_result=roll_result,
         )
         return _htmx_response(request, context)
 
@@ -325,18 +327,14 @@ def combat_attack(request):
     if p_hit:
         combat_state.enemy_hp = max(0, combat_state.enemy_hp - p_dmg)
         combat_state.save()
-        log_event(session,
-            f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
-            f"vs {enemy.defense} — Hit! {p_dmg} damage."
-        )
-    else:
-        log_event(session,
-            f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
-            f"vs {enemy.defense} — Missed."
-        )
 
     # ── CHECK: OPPONENT DOWN ─────────────────────────────────────────
     if combat_state.enemy_hp <= 0:
+        if p_hit:
+            log_event(session,
+                f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
+                f"vs {enemy.defense} — Hit! {p_dmg} damage."
+            )
         log_event(session, f"{enemy.name} goes down. You walk away.")
         context = resolve_combat_end(
             session, stats, inventory, completed_map,
@@ -352,6 +350,10 @@ def combat_attack(request):
 
     if e_hit:
         stats.hp = max(0, stats.hp - e_dmg)
+
+    # Log enemy first, then player — so player attack is logs[0] (most recent),
+    # matching the roll widget in the scene panel.
+    if e_hit:
         log_event(session,
             f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
             f"vs {player_defense} — Hit! {e_dmg} damage."
@@ -360,6 +362,17 @@ def combat_attack(request):
         log_event(session,
             f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
             f"vs {player_defense} — Missed."
+        )
+
+    if p_hit:
+        log_event(session,
+            f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
+            f"vs {enemy.defense} — Hit! {p_dmg} damage."
+        )
+    else:
+        log_event(session,
+            f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
+            f"vs {enemy.defense} — Missed."
         )
 
     stats.save()
@@ -374,9 +387,19 @@ def combat_attack(request):
         return _htmx_response(request, context)
 
     effective_stats = get_effective_stats(stats, inventory)
+    roll_result = {
+        'roll':        p_roll,
+        'modifier':    str_mod,
+        'mod_display': mod_str,
+        'total':       p_total,
+        'dc':          enemy.defense,
+        'stat':        'strength',
+        'success':     p_hit,
+    }
     context = build_render_context(
         session, session.current_scene, stats, effective_stats, inventory, completed_map,
-        combat_state=combat_state
+        combat_state=combat_state,
+        roll_result=roll_result,
     )
     # Ensure choices is empty for combat
     context['choices'] = []

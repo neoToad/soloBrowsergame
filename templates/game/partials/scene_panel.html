@@ -9,7 +9,22 @@
         {% include "game/partials/turn_summary.html" %}
     {% endif %}
 
-    {% if logs %}
+    {% if roll_result %}
+    <div class="roll-result {% if roll_result.success %}roll-result--success{% else %}roll-result--failure{% endif %}">
+        <p class="roll-result-header">{{ roll_result.stat|upper }} CHECK</p>
+        <div class="roll-result-body">
+            <div class="roll-die-wrap">
+                <span class="roll-die" data-final="{{ roll_result.roll }}">{{ roll_result.roll }}</span>
+                <span class="roll-die-label">d20</span>
+            </div>
+            <div class="roll-math">
+                <span class="roll-math-line">{{ roll_result.mod_display }} &nbsp;=&nbsp; <strong>{{ roll_result.total }}</strong></span>
+                <span class="roll-math-dc">vs DC {{ roll_result.dc }}</span>
+            </div>
+        </div>
+        <p class="roll-verdict">{% if roll_result.success %}&#x2713;&nbsp; Success{% else %}&#x2717;&nbsp; Failure{% endif %}</p>
+    </div>
+    {% elif logs %}
     <div class="latest-event">{{ logs.0.text }}</div>
     {% endif %}
 

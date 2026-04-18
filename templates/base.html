@@ -25,6 +25,22 @@
         const sp = scenePanel();
         if (sp) sp.classList.remove('is-loading');
 
+        // ── Dice slot-machine flicker ──────────────────────────────────────
+        document.querySelectorAll('.roll-die[data-final]').forEach(function (el) {
+          const final = parseInt(el.dataset.final, 10);
+          el.removeAttribute('data-final');
+          let ticks = 0;
+          const id = setInterval(function () {
+            ticks++;
+            if (ticks >= 10) {
+              clearInterval(id);
+              el.textContent = final;
+            } else {
+              el.textContent = Math.floor(Math.random() * 20) + 1;
+            }
+          }, 50);
+        });
+
         // ── Stat value flash ───────────────────────────────────────────────
         document.querySelectorAll('.stat-value').forEach(function (el) {
           el.classList.remove('stat-updated');

@@ -1009,6 +1009,117 @@ details[open] > .drawer-summary::before {
     to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ROLL RESULT CARD */
+
+.roll-result {
+    border-left: 3px solid var(--warning);
+    padding: 14px 18px;
+    background: rgba(255, 170, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: roll-card-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.roll-result--success {
+    border-left-color: var(--accent);
+    background: rgba(57, 255, 20, 0.04);
+}
+.roll-result--failure {
+    border-left-color: var(--danger);
+    background: rgba(255, 68, 68, 0.04);
+}
+
+.roll-result-header {
+    color: var(--text-dim);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin: 0;
+}
+
+.roll-result-body {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.roll-die-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.roll-die {
+    font-size: 40px;
+    font-weight: bold;
+    color: var(--warning);
+    line-height: 1;
+    min-width: 54px;
+    text-align: center;
+    border: 2px solid var(--warning);
+    padding: 5px 8px;
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+}
+
+.roll-result--success .roll-die { color: var(--accent); border-color: var(--accent); }
+.roll-result--failure .roll-die { color: var(--danger); border-color: var(--danger); }
+
+.roll-die-label {
+    color: var(--text-dim);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.roll-math {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.roll-math-line {
+    font-size: 15px;
+    color: var(--text);
+}
+
+.roll-math-dc {
+    color: var(--text-dim);
+    font-size: 11px;
+    letter-spacing: 1px;
+}
+
+.roll-verdict {
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin: 0;
+    animation: roll-verdict-in 0.4s ease 0.3s both;
+}
+
+.roll-result--success .roll-verdict {
+    color: var(--accent);
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+}
+.roll-result--failure .roll-verdict {
+    color: var(--danger);
+    text-shadow: 0 0 10px rgba(255, 68, 68, 0.4);
+}
+
+@keyframes roll-card-in {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes roll-verdict-in {
+    from { opacity: 0; letter-spacing: 8px; }
+    to   { opacity: 1; letter-spacing: 4px; }
+}
+
 /* 1h. prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
     #scene-panel          { transition: none; }
@@ -1019,4 +1130,6 @@ details[open] > .drawer-summary::before {
     .choices button,
     .item-use-btn         { transition: background 0.15s, color 0.15s; }  /* restore, drop transform */
     #level-up-panel       { animation: levelup-pulse 1.8s ease-in-out infinite; } /* drop enter */
+    .roll-result,
+    .roll-verdict         { animation: none; }
 }
