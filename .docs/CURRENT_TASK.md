@@ -6,6 +6,7 @@ Improving **core gameplay depth** and **narrative scale** by expanding the Prope
 ## Status
 
 ### Done
+- **Two-Phase Combat**: Player attack resolves first (with roll widget); enemy counter-attack pre-rolled and stored on `CombatState`; player clicks "Brace yourself" to reveal enemy roll and apply damage. Enemy roll widget uses the same slot-machine animation as player rolls.
 - **Property & Turn System**: Implemented `Property`, `PlayerProperty`, `RivalClaim`. Turn logic runs on Quest Completion.
 - **Quest Builder (Canvas)**: Graph-based UI for visual quest authoring with AJAX-powered scene/choice editing, drag-and-drop positioning, and per-scene panels for items, combat, and requirements.
 - **Quest Builder — Hub Assignment**: `Quest.hub_scenes` M2M field links quests to hub scenes. Notice board filters by current hub scene. Validator warns when an unlocked quest has no hub scenes assigned.

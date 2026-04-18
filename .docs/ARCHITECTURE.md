@@ -46,7 +46,7 @@ game/
                       PlayerInventory, CompletedQuest, PlayerSceneState
     world.py        — Arc, Quest (+ hub_scenes M2M), Scene, Choice, SceneItem, SceneUnlock
     items.py        — Item
-    combat.py       — Enemy, CombatEncounter, CombatState
+    combat.py       — Enemy, CombatEncounter, CombatState (+ pending_e_* fields for two-phase rounds)
     requirements.py — Requirement, RequirementGroup, PlayerContext (dataclass)
     events.py       — EventLog
     property.py     — Property, PlayerProperty, RivalClaim
@@ -58,7 +58,7 @@ game/
                       unlock_scene, get_available_scenes, get_notice_board
     inventory.py    — get_player_inventory, award_scene_items, consume_item
     combat.py       — get_or_create_combat_state, resolve_player_attack,
-                      resolve_enemy_attack, resolve_combat_end
+                      resolve_enemy_attack, resolve_combat_end, get_active_combat_state
     progression.py  — award_xp, maybe_complete_quest; XP_THRESHOLDS, XP_AWARDS, RANK_TITLES
     property_service.py — turn income, rival contests, contest resolution, turn summaries
     flags.py        — has_flag, set_flag, clear_flag
@@ -119,6 +119,11 @@ All groups on an object must pass (AND between groups, AND/OR within each group)
 10. On quest completion, property turn logic runs (income, contests, summary)
 11. HTMX response re-renders the five partials in place
 
+### Combat sub-loop (two-phase)
+
+- `POST /game/combat/attack/` — phase 1: player attack resolves; enemy counter pre-rolled and stored on `CombatState`; returns panel with "Brace yourself" button and player's roll widget
+- `POST /game/combat/enemy-resolve/` — phase 2: stored enemy attack applied; `turn_number` incremented; returns panel with enemy roll widget and "Move on him" button for next round
+
 ---
 
 ## Quest Builder (Admin Tool)
@@ -146,5 +151,6 @@ Mounted under `QuestAdmin.get_urls()`. Primary authoring tool for quest narrativ
 - **HTMX**: all POST views return `_htmx_response()` when `HX-Request: true`. Five partials
   rendered and concatenated: `scene_panel`, `stats_bar`, `event_log`, `inventory`,
   `mobile_stats_bar`. `turn_summary` is included in context and rendered inside `scene_panel`.
+- **scene_panel layout order**: loading indicator → turn summary → scene title → latest event log entry (always) → roll widget (if present) → scene body → level-up / combat panel / choices.
 - **Flags**: use `flags.py` service only — never read/write `GameSession.flags` directly in
   views or other services.

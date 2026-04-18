@@ -22,7 +22,7 @@ climbs from Errand Boy to Boss.
 4. Player takes a choice.
 5. If the scene requires a roll, `resolve_roll` decides success/failure routing.
 6. Session advances to the resolved scene.
-7. Scene unlocks, `PlayerSceneState` updates, flag effects, and scene item awards are applied.
+7. Updates, flag effects, and scene item awards are applied.
 8. On quest completion, property turn logic runs (income, contests, summary).
 9. HTMX response re-renders core partials.
 
@@ -45,9 +45,13 @@ climbs from Errand Boy to Boss.
 
 - `CombatEncounter` ties one `Enemy` to one combat `Scene`.
 - `CombatState` is one-to-one with `GameSession` (single active fight per session).
+- Rounds are two-phase:
+  1. `POST /game/combat/attack/` — resolves player attack; pre-rolls and stores enemy counter on `CombatState` (`pending_e_roll/total/hit/dmg`). Returns "Brace yourself" state.
+  2. `POST /game/combat/enemy-resolve/` — applies stored enemy attack, clears pending fields, advances `turn_number`.
 - Player attack: `d20 + strength modifier` vs `enemy.defense`.
 - Enemy attack: `d20 + enemy.attack_modifier` vs `10 + agility modifier`.
-- Win routes to `enemy.victory_scene`; loss routes to `enemy.defeat_scene`.
+- Enemy death is checked after phase 1 (no retaliation if already dead).
+- Win routes to `victory_scene`; loss routes to `defeat_scene`.
 
 ---
 

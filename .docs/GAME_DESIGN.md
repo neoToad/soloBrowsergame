@@ -41,11 +41,13 @@ Ending scenes additionally have an `ending_type`: `victory`, `defeat`, or `neutr
 
 - A `CombatEncounter` attaches one `Enemy` to a `Scene`.
 - On entering a combat scene, a `CombatState` is created (or retrieved) for the session.
-- Each round: player attacks, then enemy attacks back (if still alive).
-- **Player attack**: `d20 + strength_modifier` vs `enemy.defense`. Hit deals `d(damage_min–damage_max) + strength_modifier`.
+- Rounds are **two-phase**:
+  1. Player clicks "Move on him" → player attack resolves and is logged; enemy counter-attack is pre-rolled and stored on `CombatState` (`pending_e_roll/total/hit/dmg`).
+  2. Player clicks "Brace yourself" → stored enemy attack is applied; HP updates; turn advances.
+- **Player attack**: `d20 + strength_modifier` vs `enemy.defense`. Hit deals `d6 + strength_modifier`.
 - **Enemy attack**: `d20 + enemy.attack_modifier` vs `10 + player_agility_modifier`. Hit deals `d(damage_min–damage_max)`.
-- Enemy down → routes to `enemy.victory_scene`; awards `combat_victory` XP.
-- Player down → routes to `enemy.defeat_scene`.
+- Enemy down → routes to `victory_scene`; awards `combat_victory` XP. Checked after phase 1 (enemy never retaliates if already dead).
+- Player down → routes to `defeat_scene`. Checked after phase 2.
 - Only one active `CombatState` per session at a time.
 
 ---
