@@ -685,3 +685,126 @@ class NoticeBoardTest(TestCase):
         self.assertIn('id="scene-panel"', response.content.decode())
         self.assertContains(response, self.warehouse_entrance.title)
 
+
+class Phase4PerformanceTest(TestCase):
+    fixtures = [
+        'game/fixtures/choice.json',
+        'game/fixtures/combatencounter.json',
+        'game/fixtures/enemy.json',
+        'game/fixtures/item.json',
+        'game/fixtures/property.json',
+        'game/fixtures/quest.json',
+        'game/fixtures/requirement.json',
+        'game/fixtures/requirementgroup.json',
+        'game/fixtures/scene.json',
+        'game/fixtures/sceneitem.json',
+    ]
+
+    def setUp(self):
+        self.client = Client()
+        self.client.get('/game/')
+        self.session = GameSession.objects.first()
+
+    def test_get_available_choices_uses_prefetch_budget(self):
+        from django.db import connection
+        from django.test.utils import CaptureQueriesContext
+        from .services.scene import get_available_choices
+
+        scene = Scene.objects.get(key='warehouse__loading_dock')
+        with CaptureQueriesContext(connection) as ctx:
+            choices = get_available_choices(scene, self.session.stats, {}, {})
+
+        self.assertGreaterEqual(len(choices), 1)
+        self.assertLessEqual(len(ctx), 4)
+
+    def test_get_notice_board_uses_prefetch_budget(self):
+        from django.db import connection
+        from django.test.utils import CaptureQueriesContext
+        from .services.scene import get_notice_board
+
+        scene = Scene.objects.get(key='hub__notice_board')
+        with CaptureQueriesContext(connection) as ctx:
+            board = get_notice_board(scene, {}, {}, self.session.stats)
+
+        self.assertIn('available', board)
+        self.assertIn('locked', board)
+        self.assertIn('completed', board)
+        self.assertLessEqual(len(ctx), 4)
+
+    def test_process_turn_income_skips_save_when_no_logs(self):
+        from unittest.mock import patch
+        from .services.property_service import process_turn_income
+
+        with patch.object(self.session.stats, 'save') as stats_save:
+            logs, totals = process_turn_income(self.session)
+
+        self.assertEqual(logs, [])
+        self.assertEqual(totals, {'cash': 0, 'heat': 0, 'rep': 0})
+        stats_save.assert_not_called()
+
+    def test_check_rival_contests_returns_none_without_contestable_properties(self):
+        from unittest.mock import patch
+        from .services.property_service import check_rival_contests
+
+        self.session.stats.heat = 200
+        self.session.stats.save()
+        with patch('game.services.property_service.random.random', return_value=0):
+            log, unlocked = check_rival_contests(self.session)
+
+        self.assertIsNone(log)
+        self.assertIsNone(unlocked)
+
+    def test_check_rival_contests_materializes_queryset_once(self):
+        from unittest.mock import patch
+        from .models import Property, PlayerProperty, RivalClaim
+        from .services.property_service import check_rival_contests
+
+        start_scene = Scene.objects.create(
+            key='phase4__contest_start',
+            title='Phase4 Start',
+            body='start',
+            scene_type='normal',
+        )
+        resolution_scene = Scene.objects.create(
+            key='phase4__contest_resolution',
+            title='Phase4 Resolution',
+            body='resolve',
+            scene_type='normal',
+        )
+        self.session.current_scene = start_scene
+        self.session.save(update_fields=['current_scene'])
+        self.session.stats.heat = 200
+        self.session.stats.save()
+
+        prop = Property.objects.create(
+            name='Phase4 Property',
+            property_type='business',
+            income_per_turn=5,
+            heat_reduction=1,
+            rep_bonus=1,
+            is_contestable=True,
+            resolution_scene=resolution_scene,
+        )
+        player_property = PlayerProperty.objects.create(
+            session=self.session,
+            property=prop,
+            is_contested=False,
+        )
+
+        with patch('game.services.property_service.random.random', return_value=0), patch(
+            'game.services.property_service.random.choice', side_effect=lambda seq: seq[0]
+        ) as mock_choice:
+            log, unlocked = check_rival_contests(self.session)
+
+        self.assertIsNotNone(log)
+        self.assertEqual(unlocked, resolution_scene)
+        self.assertTrue(PlayerProperty.objects.filter(pk=player_property.pk, is_contested=True).exists())
+        self.assertTrue(
+            RivalClaim.objects.filter(
+                player_property=player_property,
+                resolution_scene=resolution_scene
+            ).exists()
+        )
+        self.assertEqual(mock_choice.call_count, 1)
+        self.assertIsInstance(mock_choice.call_args.args[0], list)
+

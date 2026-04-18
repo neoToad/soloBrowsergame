@@ -1,5 +1,8 @@
 from ..utils import roll_d20, stat_modifier
 
+def prefetch_choices_with_requirements(qs):
+    return qs.prefetch_related('requirements__requirements')
+
 def resolve_roll(scene, choice, effective_stats) -> tuple[object, str]:
     """
     Rolls d20 + stat modifier vs scene.roll_difficulty.
@@ -30,12 +33,13 @@ def get_available_choices(scene, effective_stats, inventory, completed_map, flag
         flags=flags or {},
     )
     choices = []
-    for choice in scene.choices.all():
+    for choice in prefetch_choices_with_requirements(scene.choices.all()):
         # Gate 1: RequirementGroup check
-        if choice.requirements.exists():
+        requirement_groups = list(choice.requirements.all())
+        if requirement_groups:
             passed = all(
                 rg.evaluate(ctx)
-                for rg in choice.requirements.all()
+                for rg in requirement_groups
             )
             if not passed:
                 continue
@@ -78,9 +82,10 @@ def get_notice_board(scene, inventory, completed_map, effective_stats, flags=Non
                 'ending_type': completed_map[quest.id],
             })
             continue
-        if quest.requirements.exists():
+        requirement_groups = list(quest.requirements.all())
+        if requirement_groups:
             failing = [
-                rg for rg in quest.requirements.all() if not rg.evaluate(ctx)
+                rg for rg in requirement_groups if not rg.evaluate(ctx)
             ]
             if failing:
                 locked.append({

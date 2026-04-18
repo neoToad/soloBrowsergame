@@ -1,28 +1,5 @@
 
 
-## Phase 4 — Performance
-
-### 10. Fix N+1 in `get_available_choices` and `get_notice_board`
-**File:** `game/services/scene.py:35-38,108-117`  
-**Severity:** Medium  
-**Problem:** Every call fires one query per choice × one query per requirement group × one query per requirement. A scene with 5 choices, 2 groups each, 3 requirements each = 25 queries.  
-**Fix:**
-```python
-scene.choices.prefetch_related('requirements__requirements').select_related('quest')
-```
-In `get_notice_board`, replace `quest.requirements.exists()` with `if quest.requirements.all():` to use the prefetch cache instead of firing a new query.  
-**Optional:** Extract as a queryset helper `prefetch_choices_with_requirements(qs)` for reuse in `scene_detail`.
-
----
-
-### 11. Fix queryset double-evaluation in `property_service.py`
-**File:** `game/services/property_service.py:37,62,67`  
-**Severity:** Low  
-**Fixes:**
-- `process_turn_income`: replace `if properties.exists():` with `if logs:` (list already built by the loop).
-- `check_rival_contests`: materialize `contestable_list = list(contestable)` once; replace `.exists()` check with `if not contestable_list:`.
-
----
 
 ## Phase 5 — Model / Data Quality
 

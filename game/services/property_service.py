@@ -34,7 +34,7 @@ def process_turn_income(session):
         if parts:
             logs.append(f"{prop.name}: {', '.join(parts)}.")
 
-    if properties.exists():
+    if logs:
         stats.save()
 
     return logs, totals
@@ -60,10 +60,11 @@ def check_rival_contests(session):
         property__resolution_scene__isnull=False,   # only contest if a resolution exists
     ).select_related('property__resolution_scene')
 
-    if not contestable.exists():
+    contestable_list = list(contestable)
+    if not contestable_list:
         return None, None
 
-    target = random.choice(list(contestable))
+    target = random.choice(contestable_list)
     target.is_contested = True
     target.save()
 
