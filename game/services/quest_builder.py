@@ -173,6 +173,37 @@ def get_canvas_data(quest_id):
             arrow['y2'] += offset
             arrow['label_y'] += offset
 
+    # Annotate ending scenes with hub-exit info for cards that route outside this quest.
+    external_ending_targets: dict[int, list[tuple[int, str]]] = {}
+    for c_data in choices:
+        source = scene_lookup.get(c_data['source_scene_id'])
+        tid = c_data['target_scene_id']
+        if source and source['scene_type'] == 'ending' and tid and tid not in scene_lookup:
+            external_ending_targets.setdefault(tid, []).append(
+                (c_data['source_scene_id'], c_data['label'])
+            )
+
+    if external_ending_targets:
+        hub_map = {
+            s.id: s
+            for s in Scene.objects.filter(
+                pk__in=external_ending_targets.keys(), scene_type='hub'
+            ).only('id', 'key', 'title')
+        }
+        for target_id, source_list in external_ending_targets.items():
+            if target_id not in hub_map:
+                continue
+            hub = hub_map[target_id]
+            for source_scene_id, label in source_list:
+                source = scene_lookup.get(source_scene_id)
+                if not source:
+                    continue
+                source.setdefault('hub_exits', []).append({
+                    'hub_key': hub.key,
+                    'hub_title': hub.title,
+                    'choice_label': label,
+                })
+
     if scenes:
         max_scene_x = max(scene['canvas_x'] for scene in scenes)
         max_scene_y = max(scene['canvas_y'] for scene in scenes)
@@ -181,7 +212,7 @@ def get_canvas_data(quest_id):
     else:
         canvas_width = GRID_START_X + CARD_WIDTH + CANVAS_PADDING
         canvas_height = GRID_START_Y + CARD_HEIGHT + CANVAS_PADDING
-        
+
     return {
         'quest': quest,
         'scenes': scenes,
@@ -207,6 +238,20 @@ def validate_quest(quest_id):
         'id', 'scene_id', 'label', 'target_scene_id', 'success_scene_id', 'failure_scene_id'
     )
     choices = list(choices_qs)
+
+    # Fetch scene_type for any target scenes that live outside this quest (e.g. hub scenes).
+    scene_id_set = set(scene_ids)
+    external_target_ids = set()
+    for c in choices:
+        for tid in (c.target_scene_id, c.success_scene_id, c.failure_scene_id):
+            if tid and tid not in scene_id_set:
+                external_target_ids.add(tid)
+    external_scene_types: dict[int, str] = {}
+    if external_target_ids:
+        external_scene_types = {
+            s.id: s.scene_type
+            for s in Scene.objects.filter(pk__in=external_target_ids).only('id', 'scene_type')
+        }
 
     encounters_qs = CombatEncounter.objects.filter(scene_id__in=scene_ids).only(
         'id', 'scene_id'
@@ -317,6 +362,20 @@ def validate_quest(quest_id):
                 'choice_id': None,
                 'message': f'Scene "{scene.title}" is a combat scene but has no combat encounter configured.',
             })
+
+        # Ending scene with no return-to-hub choice
+        if scene.scene_type == 'ending':
+            has_hub_return = any(
+                c.target_scene_id and external_scene_types.get(c.target_scene_id) == 'hub'
+                for c in scene_choices
+            )
+            if not has_hub_return:
+                warnings.append({
+                    'type': 'ending_no_hub_return',
+                    'scene_id': scene.id,
+                    'choice_id': None,
+                    'message': f'Ending scene "{scene.title}" has no "return to hub" choice — players will have no way to leave after the quest ends.',
+                })
 
     return warnings
 

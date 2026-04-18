@@ -667,7 +667,7 @@ def choice_panel(request, quest_id, source_scene_id=None, choice_id=None):
 
     scenes = list(
         Scene.objects.filter(quest_id=quest_id)
-        .only('id', 'key', 'title')
+        .only('id', 'key', 'title', 'scene_type')
         .order_by('order')
     )
 
@@ -689,11 +689,25 @@ def choice_panel(request, quest_id, source_scene_id=None, choice_id=None):
         if choice else ''
     )
 
+    quest_scene_ids = {s.id for s in scenes}
+    hub_scenes = list(
+        Scene.objects.filter(scene_type='hub')
+        .exclude(pk__in=quest_scene_ids)
+        .only('id', 'key', 'title')
+        .order_by('title')
+    )
+
+    source_scene = None
+    if source_scene_id:
+        source_scene = Scene.objects.filter(pk=source_scene_id).only('id', 'scene_type').first()
+
     context = {
         'quest_id': quest_id,
         'source_scene_id': source_scene_id,
+        'source_scene': source_scene,
         'choice': choice,
         'scenes': scenes,
+        'hub_scenes': hub_scenes,
         'routing_type': routing_type,
         'requirement_groups': requirement_groups,
         'req_save_url': req_save_url,
@@ -725,16 +739,26 @@ def choice_create(request, quest_id):
 
     scenes = list(
         Scene.objects.filter(quest_id=quest_id)
-        .only('id', 'key', 'title')
+        .only('id', 'key', 'title', 'scene_type')
         .order_by('order')
     )
+    quest_scene_ids = {s.id for s in scenes}
+    hub_scenes = list(
+        Scene.objects.filter(scene_type='hub')
+        .exclude(pk__in=quest_scene_ids)
+        .only('id', 'key', 'title')
+        .order_by('title')
+    )
+    source_scene = Scene.objects.filter(pk=choice.scene_id).only('id', 'scene_type').first()
     html = render_to_string(
         'admin/quest_builder/partials/choice_panel.html',
         {
             'quest_id': quest_id,
             'source_scene_id': choice.scene_id,
+            'source_scene': source_scene,
             'choice': choice,
             'scenes': scenes,
+            'hub_scenes': hub_scenes,
             'routing_type': routing_type,
             'requirement_groups': [],
             'req_save_url': url_reverse('admin:quest_builder_choice_requirements_save', args=[quest_id, choice.id]),

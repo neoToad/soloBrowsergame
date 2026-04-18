@@ -3,6 +3,13 @@
     <span class="type-badge type-badge-{{ scene.scene_type }}">{{ scene.scene_type }}</span>
 </div>
 <div class="scene-key">{{ scene.key }}</div>
+{% if scene.hub_exits %}
+    <div class="hub-exit-list">
+        {% for exit in scene.hub_exits %}
+            <div class="hub-exit-item" title="{{ exit.choice_label }}">&#8617; {{ exit.hub_title }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
 <div class="scene-card-footer">
     {% if scene.requires_roll %}
         <div class="roll-badge">ROLL</div>

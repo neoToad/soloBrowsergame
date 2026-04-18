@@ -43,14 +43,37 @@
                 <label for="target-scene"><strong>Target Scene</strong></label><br>
                 <select id="target-scene" name="target_scene" style="width: 100%; margin-top: 4px;">
                     <option value="">— select scene —</option>
-                    {% for scene in scenes %}
-                        {% if scene.id != source_scene_id %}
-                            <option value="{{ scene.id }}"
-                                {% if choice and choice.target_scene_id == scene.id %}selected{% endif %}>
-                                {{ scene.title }} ({{ scene.key }})
-                            </option>
+                    {% if source_scene.scene_type == 'ending' %}
+                        {% if hub_scenes %}
+                            <optgroup label="↩ Return to Hub">
+                                {% for hs in hub_scenes %}
+                                    <option value="{{ hs.id }}"
+                                        {% if choice and choice.target_scene_id == hs.id %}selected{% endif %}>
+                                        {{ hs.title }} ({{ hs.key }})
+                                    </option>
+                                {% endfor %}
+                            </optgroup>
                         {% endif %}
-                    {% endfor %}
+                        <optgroup label="Quest Scenes">
+                            {% for scene in scenes %}
+                                {% if scene.id != source_scene_id and scene.scene_type != 'hub' %}
+                                    <option value="{{ scene.id }}"
+                                        {% if choice and choice.target_scene_id == scene.id %}selected{% endif %}>
+                                        {{ scene.title }} ({{ scene.key }})
+                                    </option>
+                                {% endif %}
+                            {% endfor %}
+                        </optgroup>
+                    {% else %}
+                        {% for scene in scenes %}
+                            {% if scene.id != source_scene_id %}
+                                <option value="{{ scene.id }}"
+                                    {% if choice and choice.target_scene_id == scene.id %}selected{% endif %}>
+                                    {{ scene.title }} ({{ scene.key }})
+                                </option>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                 </select>
             </div>
 
