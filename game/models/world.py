@@ -58,13 +58,6 @@ class Quest(models.Model):
         help_text="Scenes that belong to this quest.",
     )
 
-    entry_choices = models.ManyToManyField(
-        'Choice',
-        blank=True,
-        related_name='started_quests',
-        help_text="Choices that start this quest (hidden after completion unless repeatable).",
-    )
-
     is_repeatable = models.BooleanField(
         default=False,
         help_text="If True, this quest's entry choice re-appears after completion."
