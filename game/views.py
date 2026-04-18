@@ -33,7 +33,7 @@ from .utils import (
     get_effective_stats,
 )
 from .constants import (
-    HUB_START_SCENE_KEY, NOTICE_BOARD_SCENE_KEY,
+    HUB_START_SCENE_KEY,
     STAT_FIELD_MAP, USE_ITEM_FLAVOR,
 )
 
@@ -76,8 +76,8 @@ def scene_detail(request, scene_key):
     logs    = game_session.log.all()[:10]
 
     notice_board = None
-    if scene.key == NOTICE_BOARD_SCENE_KEY:
-        notice_board = get_notice_board(inventory, completed_map, effective_stats, flags=game_session.flags)
+    if scene.is_hub:
+        notice_board = get_notice_board(scene, inventory, completed_map, effective_stats, flags=game_session.flags)
 
     from .models.property import PlayerProperty
     player_properties = PlayerProperty.objects.filter(session=game_session).select_related('property')

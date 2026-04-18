@@ -215,6 +215,15 @@ def validate_quest(quest_id):
 
     warnings = []
 
+    # --- No hub scenes ---
+    if quest.is_unlocked and not quest.hub_scenes.exists():
+        warnings.append({
+            'type': 'no_hub_scenes',
+            'scene_id': None,
+            'choice_id': None,
+            'message': 'Quest is unlocked but has no hub scenes assigned — it will not appear on any notice board.',
+        })
+
     # --- Duplicate keys ---
     seen_keys = {}
     for scene in scenes:

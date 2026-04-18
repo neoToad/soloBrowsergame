@@ -43,6 +43,14 @@ class Quest(models.Model):
                        related_name='gated_quests'
                    )
 
+    hub_scenes = models.ManyToManyField(
+        'Scene',
+        blank=True,
+        related_name='posted_quests',
+        limit_choices_to={'scene_type': 'hub'},
+        help_text="Hub scenes whose notice board lists this quest.",
+    )
+
     is_repeatable = models.BooleanField(
         default=False,
         help_text="If True, this quest's entry choice re-appears after completion."

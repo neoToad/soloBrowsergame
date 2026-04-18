@@ -109,7 +109,7 @@ class QuestAdmin(admin.ModelAdmin):
     search_fields = ('key', 'title')
     list_select_related = True
     autocomplete_fields = ('entrance_scene',)
-    filter_horizontal = ('requirements',)
+    filter_horizontal = ('requirements', 'hub_scenes')
     inlines = [SceneInline]
     save_on_top = True
 

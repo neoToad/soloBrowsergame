@@ -36,10 +36,9 @@ def create_session(request):
 
 def build_render_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state, turn_summary=None):
     from .scene import get_available_choices, get_notice_board
-    from ..constants import NOTICE_BOARD_SCENE_KEY
     notice_board = None
-    if scene.key == NOTICE_BOARD_SCENE_KEY:
-        notice_board = get_notice_board(inventory, completed_map, effective_stats, flags=session.flags)
+    if scene.is_hub:
+        notice_board = get_notice_board(scene, inventory, completed_map, effective_stats, flags=session.flags)
     player_properties = PlayerProperty.objects.filter(session=session).select_related('property')
     return {
         'scene':             scene,

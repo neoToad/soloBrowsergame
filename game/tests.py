@@ -488,6 +488,8 @@ class NoticeBoardTest(TestCase):
         self.session = GameSession.objects.first()
         self.warehouse_job     = Quest.objects.get(key='the_warehouse_job')
         self.warehouse_entrance = Scene.objects.get(key='warehouse__loading_dock')
+        self.notice_board_scene = Scene.objects.get(key='hub__notice_board')
+        self.warehouse_job.hub_scenes.add(self.notice_board_scene)
 
     def test_notice_board_initial_state(self):
         response = self.client.get(reverse('scene_detail', kwargs={'scene_key': 'hub__notice_board'}))
@@ -514,7 +516,8 @@ class NoticeBoardTest(TestCase):
         )
         group.requirements.add(req)
         second_quest.requirements.add(group)
-        
+        second_quest.hub_scenes.add(self.notice_board_scene)
+
         # Check it's locked
         response = self.client.get(reverse('scene_detail', kwargs={'scene_key': 'hub__notice_board'}))
         self.assertContains(response, "[ LOCKED JOBS ]")
@@ -549,7 +552,8 @@ class NoticeBoardTest(TestCase):
         )
         group.requirements.add(req)
         intellect_quest.requirements.add(group)
-        
+        intellect_quest.hub_scenes.add(self.notice_board_scene)
+
         # Initial stats: intellect is 5
         self.session.stats.intellect = 6
         self.session.stats.save()
