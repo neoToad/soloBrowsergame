@@ -162,5 +162,23 @@
 
     if (routeDirect) routeDirect.addEventListener('change', updateSections);
     if (routeRoll)   routeRoll.addEventListener('change', updateSections);
+
+    /* Inject requirements data into the main Save POST */
+    var mainForm = panel.querySelector('form');
+    if (mainForm) {
+        mainForm.addEventListener('htmx:configRequest', function (evt) {
+            var section = document.getElementById('requirements-section');
+            if (!section || !section.buildReqParams) return;
+            var extra = section.buildReqParams();
+            var params = evt.detail.parameters;
+            if (typeof params.set === 'function') {
+                Object.keys(extra).forEach(function (k) {
+                    params.set(k, String(extra[k]));
+                });
+            } else {
+                Object.assign(params, extra);
+            }
+        });
+    }
 })();
 </script>

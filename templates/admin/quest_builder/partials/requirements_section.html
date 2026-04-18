@@ -344,6 +344,9 @@
         return params;
     }
 
+    /* Expose serialiser so parent forms (e.g. choice_panel) can include req data */
+    section.buildReqParams = buildParams;
+
     var form = section.querySelector('form');
     form.addEventListener('htmx:configRequest', function (evt) {
         var extra = buildParams();

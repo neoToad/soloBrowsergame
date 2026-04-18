@@ -92,13 +92,6 @@ class Scene(models.Model):
                       blank=True
                   )
 
-    # Access requirements — all groups must pass to enter this scene
-    requirements = models.ManyToManyField(
-                       RequirementGroup,
-                       blank=True,
-                       related_name='gated_scenes'
-                   )
-
     ambient_sound = models.CharField(max_length=100, blank=True)
     # slug of a static audio file e.g. 'cave_drip', 'tavern_noise'
 

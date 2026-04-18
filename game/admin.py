@@ -42,13 +42,6 @@ class RequirementInline(admin.TabularInline):
     def required_quest(self, obj):
         return obj.requirement.required_quest if obj.requirement else ""
 
-class SceneRequirementGroupInline(admin.StackedInline):
-    model = Scene.requirements.through
-    extra = 0
-    verbose_name = 'Requirement Group'
-    verbose_name_plural = 'Requirement Groups'
-    show_change_link = True
-
 class ChoiceRequirementGroupInline(admin.StackedInline):
     model = Choice.requirements.through
     extra = 0
@@ -226,11 +219,6 @@ class QuestAdmin(admin.ModelAdmin):
                 name='quest_builder_scene_combat_save',
             ),
             path(
-                'quest-builder/<int:quest_id>/scene/<int:scene_id>/requirements/save/',
-                self.admin_site.admin_view(self.quest_builder_scene_requirements_save_view),
-                name='quest_builder_scene_requirements_save',
-            ),
-            path(
                 'quest-builder/<int:quest_id>/choice/<int:choice_id>/requirements/save/',
                 self.admin_site.admin_view(self.quest_builder_choice_requirements_save_view),
                 name='quest_builder_choice_requirements_save',
@@ -327,10 +315,6 @@ class QuestAdmin(admin.ModelAdmin):
         from .views import scene_combat_save
         return scene_combat_save(request, quest_id, scene_id)
 
-    def quest_builder_scene_requirements_save_view(self, request, quest_id, scene_id):
-        from .views import scene_requirements_save
-        return scene_requirements_save(request, quest_id, scene_id)
-
     def quest_builder_choice_requirements_save_view(self, request, quest_id, choice_id):
         from .views import choice_requirements_save
         return choice_requirements_save(request, quest_id, choice_id)
@@ -398,7 +382,7 @@ class SceneAdmin(admin.ModelAdmin):
             'fields': ('requires_roll', 'roll_difficulty', 'roll_stat')
         }),
     )
-    inlines = [ChoiceInline, SceneItemInline, CombatEncounterInline, SceneRequirementGroupInline]
+    inlines = [ChoiceInline, SceneItemInline, CombatEncounterInline]
     save_on_top = True
 
     @admin.display(description='Body Preview')
@@ -423,6 +407,9 @@ class ChoiceAdmin(admin.ModelAdmin):
         ('Routing', {
             'fields': ('target_scene', 'success_scene', 'failure_scene'),
             'description': 'For non-roll choices use target_scene. For roll choices use success_scene / failure_scene and leave target_scene blank.'
+        }),
+        ('Flags', {
+            'fields': ('set_flag_name', 'clear_flag_name'),
         }),
     )
     inlines = [ChoiceRequirementGroupInline]

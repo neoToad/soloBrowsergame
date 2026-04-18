@@ -445,15 +445,6 @@ def scene_panel(request, quest_id, scene_id=None):
         Scene.objects.filter(quest_id=quest_id).only('id', 'key', 'title').order_by('order')
     )
 
-    requirement_groups = (
-        list(scene.requirements.prefetch_related('requirements').all())
-        if scene else []
-    )
-    req_save_url = (
-        url_reverse('admin:quest_builder_scene_requirements_save', args=[quest_id, scene_id])
-        if scene else ''
-    )
-
     context = {
         'quest_id': quest_id,
         'scene': scene,
@@ -471,8 +462,6 @@ def scene_panel(request, quest_id, scene_id=None):
         'all_enemies': all_enemies,
         'quest_scenes': quest_scenes,
         'combat_encounter': combat_encounter,
-        'requirement_groups': requirement_groups,
-        'req_save_url': req_save_url,
         'all_quests': all_quests,
         'stat_choices': [(v, k) for k, v in STAT_FIELD_MAP.items()],
         'requirement_types': Requirement.CONDITION_TYPES,
@@ -778,6 +767,7 @@ def choice_save(request, quest_id, choice_id):
 
     get_object_or_404(Choice, pk=choice_id)
     choice = update_choice_service(choice_id, request.POST)
+    build_requirement_groups_from_post_service(choice, request.POST)
     routing_type = 'roll' if (choice.success_scene_id or choice.failure_scene_id) else 'direct'
 
     response = HttpResponse('')
@@ -810,36 +800,6 @@ def choice_delete(request, quest_id, choice_id):
         }
     })
     return response
-
-
-def scene_requirements_save(request, quest_id, scene_id):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-
-    scene = get_object_or_404(Scene, pk=scene_id, quest_id=quest_id)
-    build_requirement_groups_from_post_service(scene, request.POST)
-
-    from .models.requirements import Requirement
-    from .models.world import Quest as QuestModel
-    from .models.items import Item as ItemModel
-    from .constants import STAT_FIELD_MAP
-    from django.urls import reverse as url_reverse
-
-    html = render_to_string(
-        'admin/quest_builder/partials/requirements_section.html',
-        {
-            'quest_id': quest_id,
-            'requirement_groups': list(scene.requirements.prefetch_related('requirements').all()),
-            'save_url': url_reverse('admin:quest_builder_scene_requirements_save', args=[quest_id, scene_id]),
-            'all_quests': list(QuestModel.objects.order_by('title')),
-            'all_items': list(ItemModel.objects.order_by('name')),
-            'stat_choices': [(v, k) for k, v in STAT_FIELD_MAP.items()],
-            'requirement_types': Requirement.CONDITION_TYPES,
-            'toast_message': 'Requirements saved.',
-        },
-        request=request,
-    )
-    return HttpResponse(html)
 
 
 def choice_requirements_save(request, quest_id, choice_id):
