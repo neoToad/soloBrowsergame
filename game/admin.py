@@ -302,7 +302,7 @@ class RequirementGroupAdmin(admin.ModelAdmin):
 
 @admin.register(Scene)
 class SceneAdmin(admin.ModelAdmin):
-    list_display = ('key', 'title', 'body_preview', 'scene_type', 'requires_roll', 'cash_reward', 'rep_reward', 'heat_change', 'order')
+    list_display = ('key', 'title', 'body_preview', 'scene_type', 'requires_roll', 'cash_change', 'rep_change', 'heat_change', 'order')
     list_filter = ('scene_type', 'requires_roll', 'ending_type')
     search_fields = ('key', 'title', 'body')
     list_select_related = True
@@ -323,7 +323,7 @@ class SceneAdmin(admin.ModelAdmin):
             'fields': ('requires_roll', 'roll_difficulty', 'roll_stat')
         }),
         ('Arrival Effects', {
-            'fields': ('cash_reward', 'rep_reward', 'heat_change', 'consume_item', 'receive_property', 'lose_property'),
+            'fields': ('cash_change', 'rep_change', 'heat_change', 'consume_item', 'receive_property', 'lose_property'),
             'description': 'Stat rewards/penalties, property changes, and item consumption upon arrival.',
         }),
     )
@@ -433,7 +433,7 @@ class EventLogAdmin(admin.ModelAdmin):
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'property_type', 'income_per_turn', 'heat_reduction', 'rep_bonus', 'is_contestable', 'resolution_scene')
+    list_display = ('name', 'property_type', 'cash_per_turn', 'heat_per_turn', 'rep_per_turn', 'is_contestable', 'resolution_scene')
     list_filter = ('property_type', 'is_contestable')
     search_fields = ('name',)
 

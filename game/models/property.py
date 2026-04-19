@@ -8,9 +8,9 @@ class Property(models.Model):
     ]
     name             = models.CharField(max_length=200)
     property_type    = models.CharField(max_length=20, choices=PROPERTY_TYPES)
-    income_per_turn  = models.IntegerField(default=0)
-    heat_reduction   = models.IntegerField(default=0)
-    rep_bonus        = models.IntegerField(default=0)
+    cash_per_turn    = models.IntegerField(default=0)
+    heat_per_turn    = models.IntegerField(default=0)
+    rep_per_turn     = models.IntegerField(default=0)
     is_contestable   = models.BooleanField(default=False)
     resolution_scene = models.ForeignKey(
         'game.Scene', null=True, blank=True,

@@ -29,23 +29,23 @@ def award_xp(session, stats, amount):
 
 def apply_stat_rewards(session, stats, obj):
     """
-    Adds cash_reward and rep_reward from `obj` (Scene or Choice) to stats.
+    Applies cash_change, rep_change, heat_change from `obj` (Scene or Choice) to stats.
     Returns a list of log strings. Callers are responsible for logging.
     Saves stats if any change occurred.
     """
     logs = []
     changed = False
 
-    if hasattr(obj, 'cash_reward') and obj.cash_reward != 0:
-        stats.cash += obj.cash_reward
-        prefix = "+" if obj.cash_reward > 0 else ""
-        logs.append(f"Cash: {prefix}${obj.cash_reward}")
+    if hasattr(obj, 'cash_change') and obj.cash_change != 0:
+        stats.cash += obj.cash_change
+        prefix = "+" if obj.cash_change > 0 else ""
+        logs.append(f"Cash: {prefix}${obj.cash_change}")
         changed = True
 
-    if hasattr(obj, 'rep_reward') and obj.rep_reward != 0:
-        stats.rep += obj.rep_reward
-        prefix = "+" if obj.rep_reward > 0 else ""
-        logs.append(f"Reputation: {prefix}{obj.rep_reward}")
+    if hasattr(obj, 'rep_change') and obj.rep_change != 0:
+        stats.rep += obj.rep_change
+        prefix = "+" if obj.rep_change > 0 else ""
+        logs.append(f"Reputation: {prefix}{obj.rep_change}")
         changed = True
 
     if hasattr(obj, 'heat_change') and obj.heat_change != 0:

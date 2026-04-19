@@ -6,15 +6,10 @@ from .constants import SESSION_KEY
 class GameNavigationTest(TestCase):
     fixtures = [
         'game/fixtures/choice.json',
-        'game/fixtures/combatencounter.json',
-        'game/fixtures/enemy.json',
-        'game/fixtures/item.json',
-        'game/fixtures/property.json',
         'game/fixtures/quest.json',
         'game/fixtures/requirement.json',
         'game/fixtures/requirementgroup.json',
         'game/fixtures/scene.json',
-        'game/fixtures/sceneitem.json',
     ]
 
     def setUp(self):
@@ -374,23 +369,10 @@ class CombatTest(TestCase):
             self.assertTrue(CompletedQuest.objects.filter(session=self.session, quest__key='street_debt').exists())
 
 class LevelUpTest(TestCase):
-    fixtures = [
-        'game/fixtures/choice.json',
-        'game/fixtures/combatencounter.json',
-        'game/fixtures/enemy.json',
-        'game/fixtures/item.json',
-        'game/fixtures/property.json',
-        'game/fixtures/quest.json',
-        'game/fixtures/requirement.json',
-        'game/fixtures/requirementgroup.json',
-        'game/fixtures/scene.json',
-        'game/fixtures/sceneitem.json',
-    ]
-
     def setUp(self):
+        from .test_factories import make_game_session
         self.client = Client()
-        self.client.get('/game/')
-        self.session = GameSession.objects.first()
+        self.session = make_game_session(self.client)
         self.stats = self.session.stats
 
     def test_level_up_success(self):
@@ -633,15 +615,10 @@ class QuestBuilderSceneTest(TestCase):
 class NoticeBoardTest(TestCase):
     fixtures = [
         'game/fixtures/choice.json',
-        'game/fixtures/combatencounter.json',
-        'game/fixtures/enemy.json',
-        'game/fixtures/item.json',
-        'game/fixtures/property.json',
         'game/fixtures/quest.json',
         'game/fixtures/requirement.json',
         'game/fixtures/requirementgroup.json',
         'game/fixtures/scene.json',
-        'game/fixtures/sceneitem.json',
     ]
 
     def setUp(self):
@@ -796,15 +773,10 @@ class NoticeBoardTest(TestCase):
 class Phase4PerformanceTest(TestCase):
     fixtures = [
         'game/fixtures/choice.json',
-        'game/fixtures/combatencounter.json',
-        'game/fixtures/enemy.json',
-        'game/fixtures/item.json',
-        'game/fixtures/property.json',
         'game/fixtures/quest.json',
         'game/fixtures/requirement.json',
         'game/fixtures/requirementgroup.json',
         'game/fixtures/scene.json',
-        'game/fixtures/sceneitem.json',
     ]
 
     def setUp(self):
@@ -886,9 +858,9 @@ class Phase4PerformanceTest(TestCase):
         prop = Property.objects.create(
             name='Phase4 Property',
             property_type='business',
-            income_per_turn=5,
-            heat_reduction=1,
-            rep_bonus=1,
+            cash_per_turn=5,
+            heat_per_turn=1,
+            rep_per_turn=1,
             is_contestable=True,
             resolution_scene=resolution_scene,
         )
@@ -929,7 +901,7 @@ class Phase4PerformanceTest(TestCase):
         prop = Property.objects.create(
             name='Phase6 Victory Property',
             property_type='business',
-            income_per_turn=2,
+            cash_per_turn=2,
             is_contestable=True,
             resolution_scene=resolution_scene,
         )
@@ -964,7 +936,7 @@ class Phase4PerformanceTest(TestCase):
         prop = Property.objects.create(
             name='Phase6 Defeat Property',
             property_type='business',
-            income_per_turn=2,
+            cash_per_turn=2,
             is_contestable=True,
             resolution_scene=resolution_scene,
         )
@@ -986,23 +958,10 @@ class Phase4PerformanceTest(TestCase):
 
 
 class EffectiveStatsTest(TestCase):
-    fixtures = [
-        'game/fixtures/choice.json',
-        'game/fixtures/combatencounter.json',
-        'game/fixtures/enemy.json',
-        'game/fixtures/item.json',
-        'game/fixtures/property.json',
-        'game/fixtures/quest.json',
-        'game/fixtures/requirement.json',
-        'game/fixtures/requirementgroup.json',
-        'game/fixtures/scene.json',
-        'game/fixtures/sceneitem.json',
-    ]
-
     def setUp(self):
+        from .test_factories import make_game_session
         self.client = Client()
-        self.client.get('/game/')
-        self.session = GameSession.objects.first()
+        self.session = make_game_session(self.client)
 
     def test_get_effective_stats_applies_passive_item_bonuses(self):
         from .models import Item, PlayerInventory
@@ -1049,23 +1008,10 @@ class EffectiveStatsTest(TestCase):
 
 
 class ProgressionTest(TestCase):
-    fixtures = [
-        'game/fixtures/choice.json',
-        'game/fixtures/combatencounter.json',
-        'game/fixtures/enemy.json',
-        'game/fixtures/item.json',
-        'game/fixtures/property.json',
-        'game/fixtures/quest.json',
-        'game/fixtures/requirement.json',
-        'game/fixtures/requirementgroup.json',
-        'game/fixtures/scene.json',
-        'game/fixtures/sceneitem.json',
-    ]
-
     def setUp(self):
+        from .test_factories import make_game_session
         self.client = Client()
-        self.client.get('/game/')
-        self.session = GameSession.objects.first()
+        self.session = make_game_session(self.client)
         self.stats = self.session.stats
 
     def test_award_xp_crosses_multiple_levels(self):

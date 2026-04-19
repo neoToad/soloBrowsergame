@@ -120,8 +120,8 @@ class Scene(models.Model):
     canvas_x = models.IntegerField(default=0)
     canvas_y = models.IntegerField(default=0)
 
-    cash_reward = models.IntegerField(default=0, help_text="Cash awarded when arriving at this scene.")
-    rep_reward  = models.IntegerField(default=0, help_text="Reputation awarded when arriving at this scene.")
+    cash_change = models.IntegerField(default=0, help_text="Cash delta when arriving at this scene.")
+    rep_change  = models.IntegerField(default=0, help_text="Reputation delta when arriving at this scene.")
     heat_change = models.IntegerField(default=0, help_text="Heat change when arriving at this scene (can be negative).")
 
     receive_property = models.ForeignKey(

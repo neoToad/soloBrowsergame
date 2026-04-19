@@ -65,7 +65,7 @@
                 <div class="property-row{% if pp.is_contested %} property-contested{% endif %}">
                     <span class="property-name">{{ pp.property.name }}</span>
                     <span class="property-meta">
-                        {% if pp.property.income_per_turn %}+${{ pp.property.income_per_turn }}{% endif %}
+                        {% if pp.property.cash_per_turn %}+${{ pp.property.cash_per_turn }}{% endif %}
                         {% if pp.is_contested %}<span class="property-contested-badge">!</span>{% endif %}
                     </span>
                 </div>

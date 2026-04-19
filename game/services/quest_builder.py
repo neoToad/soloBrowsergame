@@ -222,162 +222,182 @@ def get_canvas_data(quest_id):
         'canvas_height': canvas_height,
     }
 
-def validate_quest(quest_id):
-    """
-    Returns a list of warning dicts for the given quest.
-    Each dict has: type, message, and optionally scene_id / choice_id.
-    """
-    quest = Quest.objects.get(pk=quest_id)
-    scenes_qs = quest.scenes.only(
-        'id', 'key', 'title', 'scene_type', 'requires_roll'
-    )
-    scenes = list(scenes_qs)
-    scene_ids = [s.id for s in scenes]
+class QuestValidator:
+    def __init__(self, quest_id):
+        self.quest = Quest.objects.get(pk=quest_id)
+        scenes_qs = self.quest.scenes.only('id', 'key', 'title', 'scene_type', 'requires_roll')
+        self.scenes = list(scenes_qs)
+        scene_ids = [s.id for s in self.scenes]
+        self.scene_id_set = set(scene_ids)
+        self.entry_scene_id = self.quest.entrance_scene_id
 
-    choices_qs = Choice.objects.filter(scene_id__in=scene_ids).only(
-        'id', 'scene_id', 'label', 'target_scene_id', 'success_scene_id', 'failure_scene_id'
-    )
-    choices = list(choices_qs)
+        choices_qs = Choice.objects.filter(scene_id__in=scene_ids).only(
+            'id', 'scene_id', 'label', 'target_scene_id', 'success_scene_id', 'failure_scene_id'
+        )
+        self.choices = list(choices_qs)
 
-    # Fetch scene_type for any target scenes that live outside this quest (e.g. hub scenes).
-    scene_id_set = set(scene_ids)
-    external_target_ids = set()
-    for c in choices:
-        for tid in (c.target_scene_id, c.success_scene_id, c.failure_scene_id):
-            if tid and tid not in scene_id_set:
-                external_target_ids.add(tid)
-    external_scene_types: dict[int, str] = {}
-    if external_target_ids:
-        external_scene_types = {
-            s.id: s.scene_type
-            for s in Scene.objects.filter(pk__in=external_target_ids).only('id', 'scene_type')
-        }
+        external_target_ids = set()
+        for c in self.choices:
+            for tid in (c.target_scene_id, c.success_scene_id, c.failure_scene_id):
+                if tid and tid not in self.scene_id_set:
+                    external_target_ids.add(tid)
+        self.external_scene_types: dict[int, str] = {}
+        if external_target_ids:
+            self.external_scene_types = {
+                s.id: s.scene_type
+                for s in Scene.objects.filter(pk__in=external_target_ids).only('id', 'scene_type')
+            }
 
-    encounters_qs = CombatEncounter.objects.filter(scene_id__in=scene_ids).only(
-        'id', 'scene_id'
-    )
-    encounter_scene_ids = set(encounters_qs.values_list('scene_id', flat=True))
+        self.encounter_scene_ids = set(
+            CombatEncounter.objects.filter(scene_id__in=scene_ids)
+            .only('id', 'scene_id')
+            .values_list('scene_id', flat=True)
+        )
 
-    warnings = []
+        self.choices_by_scene: dict[int, list] = {}
+        for c in self.choices:
+            self.choices_by_scene.setdefault(c.scene_id, []).append(c)
 
-    # --- No hub scenes ---
-    if quest.is_unlocked and not quest.hub_scenes.exists():
-        warnings.append({
-            'type': 'no_hub_scenes',
-            'scene_id': None,
+        self.pointed_to: set[int] = set()
+        for c in self.choices:
+            for tid in (c.target_scene_id, c.success_scene_id, c.failure_scene_id):
+                if tid:
+                    self.pointed_to.add(tid)
+
+    def validate(self):
+        warnings = []
+        warnings += self._check_no_hub_scenes()
+        warnings += self._check_duplicate_keys()
+        warnings += self._check_orphan_scenes()
+        warnings += self._check_missing_routing()
+        for scene in self.scenes:
+            warnings += self._check_scene(scene)
+        return warnings
+
+    def _check_no_hub_scenes(self):
+        if self.quest.is_unlocked and not self.quest.hub_scenes.exists():
+            return [{
+                'type': 'no_hub_scenes',
+                'scene_id': None,
+                'choice_id': None,
+                'message': 'Quest is unlocked but has no hub scenes assigned — it will not appear on any notice board.',
+            }]
+        return []
+
+    def _check_duplicate_keys(self):
+        warnings = []
+        seen_keys = {}
+        for scene in self.scenes:
+            if scene.key in seen_keys:
+                warnings.append({
+                    'type': 'duplicate_key',
+                    'scene_id': scene.id,
+                    'choice_id': None,
+                    'message': f'Duplicate key "{scene.key}" — scene "{scene.title}" shares a key with scene ID {seen_keys[scene.key]}.',
+                })
+            else:
+                seen_keys[scene.key] = scene.id
+        return warnings
+
+    def _check_orphan_scenes(self):
+        warnings = []
+        for scene in self.scenes:
+            if scene.id not in self.pointed_to and scene.id != self.entry_scene_id:
+                warnings.append({
+                    'type': 'orphan_scene',
+                    'scene_id': scene.id,
+                    'choice_id': None,
+                    'message': f'Scene "{scene.title}" is not reachable — no choices point to it and it is not the entry scene.',
+                })
+        return warnings
+
+    def _check_missing_routing(self):
+        warnings = []
+        for c in self.choices:
+            if not c.target_scene_id and not c.success_scene_id and not c.failure_scene_id:
+                warnings.append({
+                    'type': 'missing_routing',
+                    'scene_id': c.scene_id,
+                    'choice_id': c.id,
+                    'message': f'Choice "{c.label}" has no routing target set.',
+                })
+        return warnings
+
+    def _check_scene(self, scene):
+        warnings = []
+        scene_choices = self.choices_by_scene.get(scene.id, [])
+        warnings += self._check_missing_roll_target(scene, scene_choices)
+        warnings += self._check_roll_direct_choice(scene, scene_choices)
+        warnings += self._check_empty_scene(scene, scene_choices)
+        warnings += self._check_combat_missing_encounter(scene)
+        warnings += self._check_ending_no_hub_return(scene, scene_choices)
+        return warnings
+
+    def _check_missing_roll_target(self, scene, scene_choices):
+        if not scene.requires_roll:
+            return []
+        has_full_roll = any(c.success_scene_id and c.failure_scene_id for c in scene_choices)
+        if has_full_roll:
+            return []
+        return [{
+            'type': 'missing_roll_target',
+            'scene_id': scene.id,
             'choice_id': None,
-            'message': 'Quest is unlocked but has no hub scenes assigned — it will not appear on any notice board.',
-        })
+            'message': f'Scene "{scene.title}" requires a roll but has no choice with both success and failure targets set.',
+        }]
 
-    # --- Duplicate keys ---
-    seen_keys = {}
-    for scene in scenes:
-        if scene.key in seen_keys:
-            warnings.append({
-                'type': 'duplicate_key',
+    def _check_roll_direct_choice(self, scene, scene_choices):
+        if not scene.requires_roll:
+            return []
+        return [
+            {
+                'type': 'roll_direct_choice',
                 'scene_id': scene.id,
-                'choice_id': None,
-                'message': f'Duplicate key "{scene.key}" — scene "{scene.title}" shares a key with scene ID {seen_keys[scene.key]}.',
-            })
-        else:
-            seen_keys[scene.key] = scene.id
-
-    # --- Build set of scenes that are pointed to by at least one choice ---
-    pointed_to = set()
-    for c in choices:
-        if c.target_scene_id:
-            pointed_to.add(c.target_scene_id)
-        if c.success_scene_id:
-            pointed_to.add(c.success_scene_id)
-        if c.failure_scene_id:
-            pointed_to.add(c.failure_scene_id)
-
-    entry_scene_id = quest.entrance_scene_id
-
-    # --- Orphan scenes ---
-    for scene in scenes:
-        if scene.id not in pointed_to and scene.id != entry_scene_id:
-            warnings.append({
-                'type': 'orphan_scene',
-                'scene_id': scene.id,
-                'choice_id': None,
-                'message': f'Scene "{scene.title}" is not reachable — no choices point to it and it is not the entry scene.',
-            })
-
-    # --- Missing routing (completely unrouted choices) ---
-    for c in choices:
-        if not c.target_scene_id and not c.success_scene_id and not c.failure_scene_id:
-            warnings.append({
-                'type': 'missing_routing',
-                'scene_id': c.scene_id,
                 'choice_id': c.id,
-                'message': f'Choice "{c.label}" has no routing target set.',
-            })
+                'message': f'Scene "{scene.title}" requires a roll but choice "{c.label}" uses a direct target — this is probably a mistake.',
+            }
+            for c in scene_choices if c.target_scene_id
+        ]
 
-    # --- Per-scene analysis ---
-    choices_by_scene = {}
-    for c in choices:
-        choices_by_scene.setdefault(c.scene_id, []).append(c)
+    def _check_empty_scene(self, scene, scene_choices):
+        if scene_choices or scene.scene_type in ('ending', 'hub'):
+            return []
+        return [{
+            'type': 'empty_scene',
+            'scene_id': scene.id,
+            'choice_id': None,
+            'message': f'Scene "{scene.title}" has no choices.',
+        }]
 
-    for scene in scenes:
-        scene_choices = choices_by_scene.get(scene.id, [])
+    def _check_combat_missing_encounter(self, scene):
+        if scene.scene_type != 'combat' or scene.id in self.encounter_scene_ids:
+            return []
+        return [{
+            'type': 'combat_missing_encounter',
+            'scene_id': scene.id,
+            'choice_id': None,
+            'message': f'Scene "{scene.title}" is a combat scene but has no combat encounter configured.',
+        }]
 
-        # Missing roll target: requires_roll=True but no choice with both success+failure
-        if scene.requires_roll:
-            has_full_roll = any(
-                c.success_scene_id and c.failure_scene_id for c in scene_choices
-            )
-            if not has_full_roll:
-                warnings.append({
-                    'type': 'missing_roll_target',
-                    'scene_id': scene.id,
-                    'choice_id': None,
-                    'message': f'Scene "{scene.title}" requires a roll but has no choice with both success and failure targets set.',
-                })
+    def _check_ending_no_hub_return(self, scene, scene_choices):
+        if scene.scene_type != 'ending':
+            return []
+        has_hub_return = any(
+            c.target_scene_id and self.external_scene_types.get(c.target_scene_id) == 'hub'
+            for c in scene_choices
+        )
+        if has_hub_return:
+            return []
+        return [{
+            'type': 'ending_no_hub_return',
+            'scene_id': scene.id,
+            'choice_id': None,
+            'message': f'Ending scene "{scene.title}" has no "return to hub" choice — players will have no way to leave after the quest ends.',
+        }]
 
-            # Roll scene with direct choice
-            for c in scene_choices:
-                if c.target_scene_id:
-                    warnings.append({
-                        'type': 'roll_direct_choice',
-                        'scene_id': scene.id,
-                        'choice_id': c.id,
-                        'message': f'Scene "{scene.title}" requires a roll but choice "{c.label}" uses a direct target — this is probably a mistake.',
-                    })
 
-        # Empty scenes (not ending or hub)
-        if not scene_choices and scene.scene_type not in ('ending', 'hub'):
-            warnings.append({
-                'type': 'empty_scene',
-                'scene_id': scene.id,
-                'choice_id': None,
-                'message': f'Scene "{scene.title}" has no choices.',
-            })
-
-        # Combat scene missing encounter
-        if scene.scene_type == 'combat' and scene.id not in encounter_scene_ids:
-            warnings.append({
-                'type': 'combat_missing_encounter',
-                'scene_id': scene.id,
-                'choice_id': None,
-                'message': f'Scene "{scene.title}" is a combat scene but has no combat encounter configured.',
-            })
-
-        # Ending scene with no return-to-hub choice
-        if scene.scene_type == 'ending':
-            has_hub_return = any(
-                c.target_scene_id and external_scene_types.get(c.target_scene_id) == 'hub'
-                for c in scene_choices
-            )
-            if not has_hub_return:
-                warnings.append({
-                    'type': 'ending_no_hub_return',
-                    'scene_id': scene.id,
-                    'choice_id': None,
-                    'message': f'Ending scene "{scene.title}" has no "return to hub" choice — players will have no way to leave after the quest ends.',
-                })
-
-    return warnings
+def validate_quest(quest_id):
+    return QuestValidator(quest_id).validate()
 
 
 def _parse_scene_form(data):
@@ -393,8 +413,8 @@ def _parse_scene_form(data):
         'roll_stat':           (data.get('roll_stat') or '').strip(),
         'roll_difficulty':     int(raw_dc) if raw_dc else 12,
         'consume_item_id':     int(raw_item) if raw_item else None,
-        'cash_reward':         int(data.get('cash_reward') or 0),
-        'rep_reward':          int(data.get('rep_reward') or 0),
+        'cash_change':         int(data.get('cash_change') or 0),
+        'rep_change':          int(data.get('rep_change') or 0),
         'heat_change':         int(data.get('heat_change') or 0),
         'receive_property_id': int(data.get('receive_property_id') or 0) or None,
         'lose_property_id':    int(data.get('lose_property_id') or 0) or None,
@@ -475,8 +495,8 @@ def create_scene(quest_id, data):
         canvas_x=canvas_x,
         canvas_y=canvas_y,
         consume_item_id=parsed['consume_item_id'],
-        cash_reward=parsed['cash_reward'],
-        rep_reward=parsed['rep_reward'],
+        cash_change=parsed['cash_change'],
+        rep_change=parsed['rep_change'],
         heat_change=parsed['heat_change'],
         receive_property_id=parsed['receive_property_id'],
         lose_property_id=parsed['lose_property_id'],
@@ -501,8 +521,8 @@ def update_scene(scene_id, data):
     scene.roll_stat        = parsed['roll_stat']
     scene.roll_difficulty  = parsed['roll_difficulty']
     scene.consume_item_id  = parsed['consume_item_id']
-    scene.cash_reward      = parsed['cash_reward']
-    scene.rep_reward       = parsed['rep_reward']
+    scene.cash_change      = parsed['cash_change']
+    scene.rep_change       = parsed['rep_change']
     scene.heat_change      = parsed['heat_change']
     scene.receive_property_id = parsed['receive_property_id']
     scene.lose_property_id    = parsed['lose_property_id']

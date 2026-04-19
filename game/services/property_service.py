@@ -17,20 +17,20 @@ def process_turn_income(session):
 
     for pp in properties:
         prop = pp.property
-        stats.cash += prop.income_per_turn
-        totals['cash'] += prop.income_per_turn
+        stats.cash += prop.cash_per_turn
+        totals['cash'] += prop.cash_per_turn
 
-        actual_heat_removed = min(prop.heat_reduction, stats.heat)
-        stats.heat = max(0, stats.heat - prop.heat_reduction)
+        actual_heat_removed = min(prop.heat_per_turn, stats.heat)
+        stats.heat = max(0, stats.heat - prop.heat_per_turn)
         totals['heat'] -= actual_heat_removed
 
-        stats.rep += prop.rep_bonus
-        totals['rep'] += prop.rep_bonus
+        stats.rep += prop.rep_per_turn
+        totals['rep'] += prop.rep_per_turn
 
         parts = []
-        if prop.income_per_turn:  parts.append(f"+${prop.income_per_turn}")
-        if actual_heat_removed:   parts.append(f"-{actual_heat_removed} heat")
-        if prop.rep_bonus:        parts.append(f"+{prop.rep_bonus} rep")
+        if prop.cash_per_turn:        parts.append(f"+${prop.cash_per_turn}")
+        if actual_heat_removed:       parts.append(f"-{actual_heat_removed} heat")
+        if prop.rep_per_turn:         parts.append(f"+{prop.rep_per_turn} rep")
         if parts:
             logs.append(f"{prop.name}: {', '.join(parts)}.")
 

@@ -5,9 +5,9 @@
   "fields": {
     "name": "Sals Bar",
     "property_type": "safehouse",
-    "income_per_turn": 50,
-    "heat_reduction": 0,
-    "rep_bonus": 0,
+    "cash_per_turn": 50,
+    "heat_per_turn": 0,
+    "rep_per_turn": 0,
     "is_contestable": false,
     "resolution_scene": null
   }
