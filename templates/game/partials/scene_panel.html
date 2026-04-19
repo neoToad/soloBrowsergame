@@ -46,6 +46,17 @@
             </div>
             <p class="roll-verdict">&#x2020;&nbsp; {{ damage_result.total }} dmg</p>
         </div>
+        {% else %}
+        <div class="roll-result roll-result--miss">
+            <p class="roll-result-header">ATTACK</p>
+            <div class="roll-result-body">
+                <div class="roll-math">
+                    <span class="roll-math-line"><strong>Missed</strong></span>
+                    <span class="roll-math-dc">no damage dealt</span>
+                </div>
+            </div>
+            <p class="roll-verdict">&#x2014;&nbsp; 0 dmg</p>
+        </div>
         {% endif %}
     </div>
     {% endif %}

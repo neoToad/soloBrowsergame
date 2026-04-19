@@ -1071,6 +1071,15 @@ details[open] > .drawer-summary::before {
     color: var(--warning);
 }
 
+.roll-result--miss {
+    border-left-color: var(--text-dim);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.roll-result--miss .roll-verdict {
+    color: var(--text-dim);
+}
+
 .roll-result {
     border-left: 3px solid var(--warning);
     padding: 14px 18px;
