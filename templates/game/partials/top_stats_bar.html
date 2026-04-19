@@ -1,3 +1,4 @@
+{% load game_filters %}
 <div id="top-stats-bar" {% if oob %}hx-swap-oob="true"{% endif %}>
     <div class="top-stat">
         <span class="top-stat-label">CASH</span>
@@ -10,5 +11,9 @@
     <div class="top-stat">
         <span class="top-stat-label">HEAT</span>
         <span class="top-stat-value stat-value">{{ stats.heat }}</span>
+    </div>
+    <div class="top-stat top-stat--mobile-hp">
+        <span class="top-stat-label">HP</span>
+        <span class="top-stat-value stat-value {{ stats.hp|hp_color_class:stats.max_hp }}">{{ stats.hp }}/{{ stats.max_hp }}</span>
     </div>
 </div>

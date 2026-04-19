@@ -46,6 +46,10 @@ html, body {
     flex-shrink: 0;
 }
 
+.top-stat--mobile-hp {
+    display: none;
+}
+
 .top-stat {
     display: flex;
     align-items: baseline;
@@ -867,6 +871,10 @@ details[open] > .drawer-summary::before {
         position: sticky;
         top: 0;
         z-index: 11;
+    }
+
+    .top-stat--mobile-hp {
+        display: flex;
     }
 
     /* Slim top bar: visible and sticky */
