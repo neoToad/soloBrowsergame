@@ -1,4 +1,5 @@
-from ..utils import roll_d20, stat_modifier, RollResult
+from ..utils import roll_d20, stat_modifier
+from .types import RollResult
 
 def prefetch_choices_with_requirements(qs):
     return qs.prefetch_related('requirements__requirements')

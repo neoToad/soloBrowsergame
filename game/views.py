@@ -6,7 +6,7 @@ from .models import (
     Choice, CombatEncounter, CombatState, GameSession, Item,
     PlayerContext, PlayerProperty, Quest, Scene,
 )
-from .models.events import log_event
+from .models.events import log_event, flush_event_log
 from .services.session     import load_session_context, create_session, build_render_context
 from .services.scene       import get_available_choices, get_notice_board, resolve_roll
 from .services.combat      import (
@@ -92,18 +92,20 @@ def choice_resolve(request, choice_id):
 
     scene = choice.scene
 
+    log_queue = []
+
     # ROUTING
     if scene.requires_roll:
         next_scene, roll_log, roll_result = resolve_roll(scene, choice, effective_stats)
-        log_event(session, roll_log)
+        log_queue.append(roll_log)
     else:
         next_scene, roll_result = choice.target_scene, None
 
     # ARRIVAL FLAVOR
     if roll_result and not roll_result.success and choice.failure_arrival_flavor:
-        log_event(session, choice.failure_arrival_flavor)
+        log_queue.append(choice.failure_arrival_flavor)
     elif choice.arrival_flavor:
-        log_event(session, choice.arrival_flavor)
+        log_queue.append(choice.arrival_flavor)
 
     # FLAGS
     if choice.set_flag_name:
@@ -115,8 +117,8 @@ def choice_resolve(request, choice_id):
     session.save()
 
     arrival_logs, turn_summary = process_arrival(session, stats, inventory, completed_map, next_scene)
-    for log_text in arrival_logs:
-        log_event(session, log_text)
+    log_queue.extend(arrival_logs)
+    flush_event_log(session, log_queue)
 
     combat_state    = get_or_create_combat_state(session, next_scene)
     effective_stats = get_effective_stats(stats, inventory)
@@ -155,11 +157,9 @@ def start_quest(request, quest_key):
     next_scene = quest.entrance_scene
     session.current_scene = next_scene
     session.save()
-    log_event(session, f"You took the job: {quest.title}.")
 
     arrival_logs, _ = process_arrival(session, stats, inventory, completed_map, next_scene)
-    for log_text in arrival_logs:
-        log_event(session, log_text)
+    flush_event_log(session, [f"You took the job: {quest.title}.", *arrival_logs])
 
     combat_state    = get_or_create_combat_state(session, next_scene)
     effective_stats = get_effective_stats(stats, inventory)

@@ -380,16 +380,75 @@ def validate_quest(quest_id):
     return warnings
 
 
+def _parse_scene_form(data):
+    requires_roll = str(data.get('requires_roll', '')).lower() in ('1', 'true', 'on', 'yes')
+    raw_dc = str(data.get('roll_difficulty') or '').strip()
+    raw_item = str(data.get('consume_item_id') or '').strip()
+    return {
+        'title':               (data.get('title') or '').strip(),
+        'key':                 (data.get('key') or '').strip(),
+        'description':         (data.get('description') or '').strip(),
+        'scene_type':          (data.get('scene_type') or 'normal').strip() or 'normal',
+        'requires_roll':       requires_roll,
+        'roll_stat':           (data.get('roll_stat') or '').strip(),
+        'roll_difficulty':     int(raw_dc) if raw_dc else 12,
+        'consume_item_id':     int(raw_item) if raw_item else None,
+        'cash_reward':         int(data.get('cash_reward') or 0),
+        'rep_reward':          int(data.get('rep_reward') or 0),
+        'heat_change':         int(data.get('heat_change') or 0),
+        'receive_property_id': int(data.get('receive_property_id') or 0) or None,
+        'lose_property_id':    int(data.get('lose_property_id') or 0) or None,
+    }
+
+
+def _parse_choice_form(data):
+    routing_type = (data.get('routing_type') or 'direct').strip()
+    if routing_type == 'roll':
+        raw_success = str(data.get('success_scene') or '').strip()
+        raw_failure = str(data.get('failure_scene') or '').strip()
+        target_scene_id   = None
+        success_scene_id  = int(raw_success) if raw_success else None
+        failure_scene_id  = int(raw_failure) if raw_failure else None
+    else:
+        raw_target = str(data.get('target_scene') or '').strip()
+        target_scene_id   = int(raw_target) if raw_target else None
+        success_scene_id  = None
+        failure_scene_id  = None
+    return {
+        'label':                  (data.get('label') or '').strip(),
+        'routing_type':           routing_type,
+        'target_scene_id':        target_scene_id,
+        'success_scene_id':       success_scene_id,
+        'failure_scene_id':       failure_scene_id,
+        'set_flag_name':          (data.get('set_flag_name') or '').strip(),
+        'clear_flag_name':        (data.get('clear_flag_name') or '').strip(),
+        'arrival_flavor':         (data.get('arrival_flavor') or '').strip(),
+        'failure_arrival_flavor': (data.get('failure_arrival_flavor') or '').strip(),
+    }
+
+
+def _parse_combat_form(data):
+    raw_enemy = str(data.get('enemy_id') or '').strip()
+    if not raw_enemy:
+        return None
+    raw_victory = str(data.get('victory_scene_id') or '').strip()
+    raw_defeat  = str(data.get('defeat_scene_id') or '').strip()
+    return {
+        'enemy_id':               int(raw_enemy),
+        'victory_scene_id':       int(raw_victory) if raw_victory else None,
+        'defeat_scene_id':        int(raw_defeat) if raw_defeat else None,
+        'victory_arrival_flavor': (data.get('victory_arrival_flavor') or '').strip(),
+        'defeat_arrival_flavor':  (data.get('defeat_arrival_flavor') or '').strip(),
+    }
+
+
 def create_scene(quest_id, data):
     quest = Quest.objects.get(pk=quest_id)
+    parsed = _parse_scene_form(data)
 
-    title = (data.get('title') or '').strip()
-    key = (data.get('key') or '').strip()
-    description = (data.get('description') or '').strip()
-    scene_type = (data.get('scene_type') or 'normal').strip() or 'normal'
-
-    if not key and title:
-        key = f"{quest.key}__{slugify(title)}"
+    key = parsed['key']
+    if not key and parsed['title']:
+        key = f"{quest.key}__{slugify(parsed['title'])}"
 
     if key and quest.scenes.filter(key=key).exists():
         raise ValueError(f'A scene with key "{key}" already exists in this quest.')
@@ -405,63 +464,48 @@ def create_scene(quest_id, data):
         canvas_x = GRID_START_X + (index % 4) * GRID_X_GAP
         canvas_y = GRID_START_Y + (index // 4) * GRID_Y_GAP
 
-    requires_roll = str(data.get('requires_roll', '')).lower() in ('1', 'true', 'on', 'yes')
-    roll_stat = (data.get('roll_stat') or '').strip()
-    raw_dc = str(data.get('roll_difficulty') or '').strip()
-    roll_difficulty = int(raw_dc) if raw_dc else 12
-    raw_item = str(data.get('consume_item_id') or '').strip()
-    consume_item_id = int(raw_item) if raw_item else None
-
-    cash_reward = int(data.get('cash_reward') or 0)
-    rep_reward  = int(data.get('rep_reward') or 0)
-    heat_change = int(data.get('heat_change') or 0)
-    receive_prop_id = int(data.get('receive_property_id') or 0) or None
-    lose_prop_id    = int(data.get('lose_property_id') or 0) or None
-
     scene = Scene.objects.create(
-        title=title,
+        title=parsed['title'],
         key=key,
-        scene_type=scene_type,
-        body=description,
-        requires_roll=requires_roll,
-        roll_stat=roll_stat,
-        roll_difficulty=roll_difficulty,
+        scene_type=parsed['scene_type'],
+        body=parsed['description'],
+        requires_roll=parsed['requires_roll'],
+        roll_stat=parsed['roll_stat'],
+        roll_difficulty=parsed['roll_difficulty'],
         canvas_x=canvas_x,
         canvas_y=canvas_y,
-        consume_item_id=consume_item_id,
-        cash_reward=cash_reward,
-        rep_reward=rep_reward,
-        heat_change=heat_change,
-        receive_property_id=receive_prop_id,
-        lose_property_id=lose_prop_id,
+        consume_item_id=parsed['consume_item_id'],
+        cash_reward=parsed['cash_reward'],
+        rep_reward=parsed['rep_reward'],
+        heat_change=parsed['heat_change'],
+        receive_property_id=parsed['receive_property_id'],
+        lose_property_id=parsed['lose_property_id'],
     )
     quest.scenes.add(scene)
     return scene
 
 def update_scene(scene_id, data):
     scene = Scene.objects.get(pk=scene_id)
+    parsed = _parse_scene_form(data)
 
-    scene.title = (data.get('title') or scene.title).strip()
-    incoming_key = (data.get('key') or '').strip()
+    scene.title = parsed['title'] or scene.title
+    incoming_key = parsed['key']
     if incoming_key:
         scene_quest = scene.quests.first()
         if scene_quest and scene_quest.scenes.filter(key=incoming_key).exclude(pk=scene.pk).exists():
             raise ValueError(f'A scene with key "{incoming_key}" already exists in this quest.')
         scene.key = incoming_key
-    scene.scene_type = (data.get('scene_type') or scene.scene_type).strip() or scene.scene_type
-    scene.body = (data.get('description') or '').strip()
-    scene.requires_roll = str(data.get('requires_roll', '')).lower() in ('1', 'true', 'on', 'yes')
-    scene.roll_stat = (data.get('roll_stat') or '').strip()
-    raw_dc = str(data.get('roll_difficulty') or '').strip()
-    scene.roll_difficulty = int(raw_dc) if raw_dc else 12
-    raw_item = str(data.get('consume_item_id') or '').strip()
-    scene.consume_item_id = int(raw_item) if raw_item else None
-
-    scene.cash_reward = int(data.get('cash_reward') or 0)
-    scene.rep_reward  = int(data.get('rep_reward') or 0)
-    scene.heat_change = int(data.get('heat_change') or 0)
-    scene.receive_property_id = int(data.get('receive_property_id') or 0) or None
-    scene.lose_property_id    = int(data.get('lose_property_id') or 0) or None
+    scene.scene_type       = parsed['scene_type'] or scene.scene_type
+    scene.body             = parsed['description']
+    scene.requires_roll    = parsed['requires_roll']
+    scene.roll_stat        = parsed['roll_stat']
+    scene.roll_difficulty  = parsed['roll_difficulty']
+    scene.consume_item_id  = parsed['consume_item_id']
+    scene.cash_reward      = parsed['cash_reward']
+    scene.rep_reward       = parsed['rep_reward']
+    scene.heat_change      = parsed['heat_change']
+    scene.receive_property_id = parsed['receive_property_id']
+    scene.lose_property_id    = parsed['lose_property_id']
 
     scene.save()
     return scene
@@ -518,62 +562,31 @@ def delete_scene(scene_id):
 
 def create_choice(source_scene_id, data):
     scene = Scene.objects.get(pk=source_scene_id)
-    label = (data.get('label') or '').strip()
-    routing_type = (data.get('routing_type') or 'direct').strip()
-
-    target_scene_id = None
-    success_scene_id = None
-    failure_scene_id = None
-
-    if routing_type == 'roll':
-        raw_success = str(data.get('success_scene') or '').strip()
-        raw_failure = str(data.get('failure_scene') or '').strip()
-        success_scene_id = int(raw_success) if raw_success else None
-        failure_scene_id = int(raw_failure) if raw_failure else None
-    else:
-        raw_target = str(data.get('target_scene') or '').strip()
-        target_scene_id = int(raw_target) if raw_target else None
-
-    set_flag_name = (data.get('set_flag_name') or '').strip()
-    clear_flag_name = (data.get('clear_flag_name') or '').strip()
-    arrival_flavor = (data.get('arrival_flavor') or '').strip()
-    failure_arrival_flavor = (data.get('failure_arrival_flavor') or '').strip()
-
+    parsed = _parse_choice_form(data)
     return Choice.objects.create(
         scene=scene,
-        label=label,
-        target_scene_id=target_scene_id,
-        success_scene_id=success_scene_id,
-        failure_scene_id=failure_scene_id,
-        set_flag_name=set_flag_name,
-        clear_flag_name=clear_flag_name,
-        arrival_flavor=arrival_flavor,
-        failure_arrival_flavor=failure_arrival_flavor,
+        label=parsed['label'],
+        target_scene_id=parsed['target_scene_id'],
+        success_scene_id=parsed['success_scene_id'],
+        failure_scene_id=parsed['failure_scene_id'],
+        set_flag_name=parsed['set_flag_name'],
+        clear_flag_name=parsed['clear_flag_name'],
+        arrival_flavor=parsed['arrival_flavor'],
+        failure_arrival_flavor=parsed['failure_arrival_flavor'],
     )
 
 def update_choice(choice_id, data):
     choice = Choice.objects.get(pk=choice_id)
-    label = (data.get('label') or '').strip()
-    routing_type = (data.get('routing_type') or 'direct').strip()
+    parsed = _parse_choice_form(data)
 
-    choice.label = label
-
-    if routing_type == 'roll':
-        raw_success = str(data.get('success_scene') or '').strip()
-        raw_failure = str(data.get('failure_scene') or '').strip()
-        choice.success_scene_id = int(raw_success) if raw_success else None
-        choice.failure_scene_id = int(raw_failure) if raw_failure else None
-        choice.target_scene_id = None
-    else:
-        raw_target = str(data.get('target_scene') or '').strip()
-        choice.target_scene_id = int(raw_target) if raw_target else None
-        choice.success_scene_id = None
-        choice.failure_scene_id = None
-
-    choice.set_flag_name = (data.get('set_flag_name') or '').strip()
-    choice.clear_flag_name = (data.get('clear_flag_name') or '').strip()
-    choice.arrival_flavor = (data.get('arrival_flavor') or '').strip()
-    choice.failure_arrival_flavor = (data.get('failure_arrival_flavor') or '').strip()
+    choice.label                  = parsed['label']
+    choice.target_scene_id        = parsed['target_scene_id']
+    choice.success_scene_id       = parsed['success_scene_id']
+    choice.failure_scene_id       = parsed['failure_scene_id']
+    choice.set_flag_name          = parsed['set_flag_name']
+    choice.clear_flag_name        = parsed['clear_flag_name']
+    choice.arrival_flavor         = parsed['arrival_flavor']
+    choice.failure_arrival_flavor = parsed['failure_arrival_flavor']
 
     choice.save()
     return choice
@@ -620,28 +633,14 @@ def update_combat_encounter(scene_id, data):
     If enemy_id is blank/null, deletes any existing encounter and returns None.
     Returns the encounter object or None.
     """
-    raw_enemy = str(data.get('enemy_id') or '').strip()
-    if not raw_enemy:
+    parsed = _parse_combat_form(data)
+    if parsed is None:
         CombatEncounter.objects.filter(scene_id=scene_id).delete()
         return None
 
-    raw_victory = str(data.get('victory_scene_id') or '').strip()
-    raw_defeat  = str(data.get('defeat_scene_id') or '').strip()
-    victory_scene_id = int(raw_victory) if raw_victory else None
-    defeat_scene_id  = int(raw_defeat)  if raw_defeat  else None
-
-    victory_arrival_flavor = (data.get('victory_arrival_flavor') or '').strip()
-    defeat_arrival_flavor  = (data.get('defeat_arrival_flavor') or '').strip()
-
     encounter, _ = CombatEncounter.objects.update_or_create(
         scene_id=scene_id,
-        defaults={
-            'enemy_id':               int(raw_enemy),
-            'victory_scene_id':       victory_scene_id,
-            'defeat_scene_id':        defeat_scene_id,
-            'victory_arrival_flavor': victory_arrival_flavor,
-            'defeat_arrival_flavor':  defeat_arrival_flavor,
-        },
+        defaults=parsed,
     )
     return encounter
 

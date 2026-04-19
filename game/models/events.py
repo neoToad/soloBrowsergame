@@ -7,6 +7,19 @@ _EVENT_LOG_CAP = 20
 
 def log_event(session, text: str) -> None:
     EventLog.objects.create(session=session, text=text)
+    _trim_overflow(session)
+
+
+def flush_event_log(session, texts) -> None:
+    if not texts:
+        return
+    EventLog.objects.bulk_create(
+        [EventLog(session=session, text=t) for t in texts]
+    )
+    _trim_overflow(session)
+
+
+def _trim_overflow(session) -> None:
     overflow_ids = (
         EventLog.objects
         .filter(session=session)

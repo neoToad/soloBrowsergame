@@ -1,39 +1,15 @@
 import random
-from dataclasses import dataclass, field
 
+from .services.types import RollResult, EffectiveStats
 
-@dataclass
-class RollResult:
-    roll:        int
-    modifier:    int
-    mod_display: str
-    total:       int
-    dc:          int
-    stat:        str
-    success:     bool
+__all__ = ['RollResult', 'EffectiveStats', 'roll_d20', 'stat_modifier', 'get_effective_stats']
+
 
 def roll_d20():
     return random.randint(1, 20)
 
 def stat_modifier(stat_value):
     return (stat_value - 10) // 2
-
-
-@dataclass
-class EffectiveStats:
-    strength:    int
-    agility:     int
-    intellect:   int
-    charisma:    int
-    hp:          int
-    max_hp:      int
-    level:       int
-    experience:  int
-    stat_points: int
-    cash:        int
-    heat:        int
-    rep:         int
-    bonuses:     dict = field(default_factory=dict)
 
 
 def get_effective_stats(stats, inventory) -> EffectiveStats:
