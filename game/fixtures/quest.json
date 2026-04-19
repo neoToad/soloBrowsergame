@@ -35,10 +35,10 @@
     "title": "The Worst Day Job",
     "description": "Odd job. Good pay. No questions.",
     "is_unlocked": true,
-    "arc": null,
+    "arc": 1,
     "arc_order": 0,
     "entrance_scene": 49,
-    "is_repeatable": false,
+    "is_repeatable": true,
     "requirements": [],
     "hub_scenes": [
       2
@@ -59,10 +59,10 @@
     "title": "The Squeeze",
     "description": "Collection job. Simple work. Good cut.",
     "is_unlocked": true,
-    "arc": null,
+    "arc": 1,
     "arc_order": 0,
     "entrance_scene": 57,
-    "is_repeatable": false,
+    "is_repeatable": true,
     "requirements": [],
     "hub_scenes": [
       2
@@ -83,10 +83,10 @@
     "title": "Street Debt",
     "description": "A crew contact says a corner boy is sitting on money that belongs to you. Go collect.",
     "is_unlocked": true,
-    "arc": null,
+    "arc": 1,
     "arc_order": 1,
     "entrance_scene": 20,
-    "is_repeatable": false,
+    "is_repeatable": true,
     "requirements": [],
     "hub_scenes": [
       1
@@ -112,7 +112,7 @@
     "arc": null,
     "arc_order": 2,
     "entrance_scene": 30,
-    "is_repeatable": false,
+    "is_repeatable": true,
     "requirements": [
       3
     ],
@@ -140,7 +140,7 @@
     "arc": null,
     "arc_order": 3,
     "entrance_scene": 40,
-    "is_repeatable": false,
+    "is_repeatable": true,
     "requirements": [
       4
     ],

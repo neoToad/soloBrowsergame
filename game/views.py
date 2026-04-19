@@ -42,14 +42,14 @@ def game_hub(request):
     session_pk = request.session.get(SESSION_KEY)
 
     if not session_pk:
-        create_session(request)
+        game_session = create_session(request)
     else:
         try:
-            GameSession.objects.get(pk=session_pk)
+            game_session = GameSession.objects.get(pk=session_pk)
         except GameSession.DoesNotExist:
-            create_session(request)
+            game_session = create_session(request)
 
-    return redirect('scene_detail', scene_key=HUB_START_SCENE_KEY)
+    return redirect('scene_detail', scene_key=game_session.current_scene.key)
 
 
 def scene_detail(request, scene_key):

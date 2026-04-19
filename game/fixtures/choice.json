@@ -10,6 +10,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -26,6 +27,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -42,6 +44,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -58,6 +61,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -74,6 +78,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -90,6 +95,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -106,6 +112,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -122,6 +129,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -138,6 +146,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -154,6 +163,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -170,6 +180,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -186,6 +197,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "test",
     "clear_flag_name": "",
     "requirements": []
@@ -202,6 +214,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -218,6 +231,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -234,6 +248,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -250,6 +265,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -266,6 +282,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -282,6 +299,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You head into Sal's back room.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -298,6 +316,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You step back out onto the street.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -314,6 +333,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You leave Sal's and step back into the cold.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -330,6 +350,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You move through the shadows and find an unlocked side door.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -346,6 +367,7 @@
     "success_scene": 7,
     "failure_scene": 8,
     "arrival_flavor": "Both men are down. You step over them and into the warehouse.",
+    "failure_arrival_flavor": "They kick your ass. Quickly and without mercy.",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -362,6 +384,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "The side corridor is quiet. Crates of cigarettes, mostly. Nothing worth dying over.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -378,6 +401,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You ease around the shelving and find a man alone, going through ledgers.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -394,6 +418,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You walk back across town, jaw sore, empty-handed.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -410,6 +435,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You take the long way back, making sure no one's behind you.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -426,6 +452,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You walk out into the night with leverage.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -442,6 +469,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You leave the dock lighter than you expected and heavier where it counts.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -458,6 +486,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You cross the street. He tenses.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -474,6 +503,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You pocket the envelope and disappear into the crowd.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -490,6 +520,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You take the back streets to avoid anyone seeing you like this.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -506,6 +537,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -522,6 +554,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You're three blocks away before he stirs.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -538,6 +571,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You take the case. It's light. Russ lights the cigarette at last.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -554,6 +588,7 @@
     "success_scene": 35,
     "failure_scene": 32,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -570,6 +605,7 @@
     "success_scene": 33,
     "failure_scene": 34,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -586,6 +622,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You fold the envelope into your jacket and take the long route back.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -602,6 +639,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You find a diner three blocks away and sit there until you feel clean.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -618,6 +656,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You leave Russ counting his cut and head back. Tonight was easy money.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -634,6 +673,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You cross the street. He turns to face you without hurrying.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -650,6 +690,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You take the back streets. Nobody needs to see this.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -666,6 +707,7 @@
     "success_scene": 45,
     "failure_scene": 41,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -682,6 +724,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You leave him with something to think about.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -698,6 +741,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You push through the unmarked door.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -714,6 +758,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -730,6 +775,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "The padlock is cheap. The contents are not.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -746,6 +792,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You keep moving.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -762,6 +809,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You leave him where he fell.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -778,6 +826,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "Russ's jaw tightens. 'Ten percent is the rate.' You hold his eye.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -794,6 +843,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "He watches you approach. Arms loose at his sides.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
@@ -810,6 +860,7 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You peel off a few bills. They pocket the cash and find somewhere else to be.",
+    "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []

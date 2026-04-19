@@ -15,7 +15,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 60,
-    "canvas_y": 60
+    "canvas_y": 60,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -34,7 +39,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 333,
-    "canvas_y": 68
+    "canvas_y": 68,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -52,8 +62,13 @@
     "ending_type": "",
     "ambient_sound": "",
     "consume_item": null,
-    "canvas_x": 607,
-    "canvas_y": 66
+    "canvas_x": 648,
+    "canvas_y": 86,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -72,7 +87,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 900,
-    "canvas_y": 60
+    "canvas_y": 60,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -91,7 +111,12 @@
     "ambient_sound": "city_ambience",
     "consume_item": null,
     "canvas_x": 0,
-    "canvas_y": 0
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -110,7 +135,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 60,
-    "canvas_y": 60
+    "canvas_y": 60,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -129,7 +159,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 46,
-    "canvas_y": 61
+    "canvas_y": 61,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -148,7 +183,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 60,
-    "canvas_y": 60
+    "canvas_y": 60,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -167,7 +207,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 0,
-    "canvas_y": 0
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -186,7 +231,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 60,
-    "canvas_y": 60
+    "canvas_y": 60,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -205,7 +255,12 @@
     "ambient_sound": "paper_rustle",
     "consume_item": null,
     "canvas_x": 0,
-    "canvas_y": 0
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -224,7 +279,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 362,
-    "canvas_y": 162
+    "canvas_y": 162,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -243,7 +303,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 340,
-    "canvas_y": 60
+    "canvas_y": 60,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -262,7 +327,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 171,
-    "canvas_y": 271
+    "canvas_y": 271,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -281,7 +351,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 0,
-    "canvas_y": 0
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -300,7 +375,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 340,
-    "canvas_y": 60
+    "canvas_y": 60,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -319,7 +399,12 @@
     "ambient_sound": "tavern_noise",
     "consume_item": null,
     "canvas_x": 0,
-    "canvas_y": 0
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -338,7 +423,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 112,
-    "canvas_y": 279
+    "canvas_y": 279,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -357,7 +447,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 641,
-    "canvas_y": 56
+    "canvas_y": 56,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -376,7 +471,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 517,
-    "canvas_y": 56
+    "canvas_y": 56,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -395,7 +495,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 0,
-    "canvas_y": 0
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -414,7 +519,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 632,
-    "canvas_y": 62
+    "canvas_y": 62,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -433,7 +543,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 634,
-    "canvas_y": 44
+    "canvas_y": 44,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -452,7 +567,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 1005,
-    "canvas_y": 21
+    "canvas_y": 21,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -471,7 +591,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 900,
-    "canvas_y": 60
+    "canvas_y": 60,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -490,7 +615,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 908,
-    "canvas_y": 40
+    "canvas_y": 40,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -508,8 +638,13 @@
     "ending_type": "defeat",
     "ambient_sound": "",
     "consume_item": null,
-    "canvas_x": 646,
-    "canvas_y": 252
+    "canvas_x": 675,
+    "canvas_y": 308,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -528,7 +663,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 745,
-    "canvas_y": 351
+    "canvas_y": 351,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -547,7 +687,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 926,
-    "canvas_y": 277
+    "canvas_y": 277,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -566,7 +711,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 0,
-    "canvas_y": 0
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -585,7 +735,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 410,
-    "canvas_y": 407
+    "canvas_y": 407,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -604,7 +759,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 371,
-    "canvas_y": 306
+    "canvas_y": 306,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -623,7 +783,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 576,
-    "canvas_y": 342
+    "canvas_y": 342,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -642,7 +807,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 0,
-    "canvas_y": 0
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -661,26 +831,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 1042,
-    "canvas_y": 33
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 26,
-  "fields": {
-    "key": "debt__cop_confrontation",
-    "scene_type": "combat",
-    "title": "Badge Problem",
-    "body": "He followed you from the corner. Off-duty, no radio. Just him and his reputation. He wants a piece of whatever you just collected.",
-    "order": 7,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "canvas_x": 0,
-    "canvas_y": 0
+    "canvas_y": 33,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -699,7 +855,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 985,
-    "canvas_y": 256
+    "canvas_y": 256,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 },
 {
@@ -718,7 +879,12 @@
     "ambient_sound": "",
     "consume_item": null,
     "canvas_x": 0,
-    "canvas_y": 0
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null
   }
 }
 ]

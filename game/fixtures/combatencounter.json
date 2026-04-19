@@ -6,7 +6,9 @@
     "scene": 21,
     "enemy": 1,
     "victory_scene": 22,
-    "defeat_scene": 24
+    "defeat_scene": 24,
+    "victory_arrival_flavor": "",
+    "defeat_arrival_flavor": ""
   }
 },
 {
@@ -16,17 +18,9 @@
     "scene": 22,
     "enemy": 2,
     "victory_scene": 23,
-    "defeat_scene": 24
-  }
-},
-{
-  "model": "game.combatencounter",
-  "pk": 3,
-  "fields": {
-    "scene": 26,
-    "enemy": 3,
-    "victory_scene": null,
-    "defeat_scene": null
+    "defeat_scene": 24,
+    "victory_arrival_flavor": "",
+    "defeat_arrival_flavor": ""
   }
 },
 {
@@ -36,7 +30,9 @@
     "scene": 41,
     "enemy": 4,
     "victory_scene": null,
-    "defeat_scene": null
+    "defeat_scene": null,
+    "victory_arrival_flavor": "",
+    "defeat_arrival_flavor": ""
   }
 }
 ]

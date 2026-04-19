@@ -1,0 +1,11 @@
+[
+{
+  "model": "game.arc",
+  "pk": 1,
+  "fields": {
+    "key": "test",
+    "title": "Test",
+    "order": 0
+  }
+}
+]
