@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from .models import Choice, Item, Property, Quest, Requirement, Scene
+from .models import Choice, Contact, Item, Property, Quest, Requirement, Scene
 from .models.combat import Enemy as EnemyModel
 from .services.quest_builder import (
     get_canvas_data,
@@ -131,6 +131,8 @@ def scene_panel(request, quest_id, scene_id=None):
         except Exception:
             combat_encounter = None
 
+    scene_contacts = list(scene.scene_contacts.select_related('contact').order_by('id')) if scene else []
+    all_contacts = list(Contact.objects.order_by('name'))
     all_items = list(Item.objects.order_by('name'))
     all_enemies = list(EnemyModel.objects.order_by('name'))
     all_quests = list(Quest.objects.order_by('title'))
@@ -153,6 +155,8 @@ def scene_panel(request, quest_id, scene_id=None):
         'default_roll_difficulty': 12,
         'scene_items':           scene_items,
         'all_items':             all_items,
+        'scene_contacts':        scene_contacts,
+        'all_contacts':          all_contacts,
         'all_enemies':           all_enemies,
         'all_properties':        all_properties,
         'quest_scenes':          quest_scenes,
@@ -463,6 +467,7 @@ def choice_requirements_save(request, quest_id, choice_id):
             'save_url':           reverse('admin:quest_builder_choice_requirements_save', args=[quest_id, choice_id]),
             'all_quests':         list(Quest.objects.order_by('title')),
             'all_items':          list(Item.objects.order_by('name')),
+            'all_contacts':       list(Contact.objects.order_by('name')),
             'stat_choices':       [(v, k) for k, v in STAT_FIELD_MAP.items()],
             'requirement_types':  Requirement.CONDITION_TYPES,
             'toast_message':      'Requirements saved.',

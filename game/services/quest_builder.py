@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.utils.text import slugify
 
-from ..models.world import Quest, Scene, Choice, SceneItem
+from ..models.world import Quest, Scene, Choice, SceneItem, SceneContact
 from ..models.items import Item
 from ..models.combat import CombatEncounter, Enemy
 
@@ -647,6 +647,35 @@ def update_scene_items(scene_id, items_data):
     return created
 
 
+def update_scene_contacts(scene_id, contacts_data):
+    """
+    Replaces all SceneContact records for this scene with the provided list.
+    contacts_data: list of dicts with 'contact_id', 'action', and 'award_once' keys.
+    Skips entries where contact_id is blank/None.
+    Returns the updated list of SceneContact objects.
+    """
+    with transaction.atomic():
+        SceneContact.objects.filter(scene_id=scene_id).delete()
+        created = []
+        for entry in contacts_data:
+            raw_id = str(entry.get('contact_id') or '').strip()
+            if not raw_id:
+                continue
+            raw_action = str(entry.get('action') or '').strip()
+            action = raw_action if raw_action in ('gain', 'lose') else 'gain'
+            award_once = entry.get('award_once', True)
+            if award_once is None:
+                award_once = True
+            scene_contact = SceneContact.objects.create(
+                scene_id=scene_id,
+                contact_id=int(raw_id),
+                action=action,
+                award_once=bool(award_once),
+            )
+            created.append(scene_contact)
+    return created
+
+
 def update_combat_encounter(scene_id, data):
     """
     Creates or updates the CombatEncounter for this scene.
@@ -764,6 +793,13 @@ def build_requirement_groups_from_post(obj, post_data):
                     if param:
                         try:
                             req_kwargs['required_item_id'] = int(param)
+                        except ValueError:
+                            pass
+
+                elif ctype in ('has_contact', 'missing_contact'):
+                    if param:
+                        try:
+                            req_kwargs['required_contact_id'] = int(param)
                         except ValueError:
                             pass
 
