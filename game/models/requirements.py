@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from django.db import models
 from .items import Item
 
@@ -8,10 +8,13 @@ class PlayerContext:
     inventory: dict      # {item_id: PlayerInventory instance}
     completed_map: dict  # {quest_id: ending_type string}
     flags: dict = None
+    contacts: dict = None  # {contact_id: PlayerContact instance}
 
     def __post_init__(self):
         if self.flags is None:
             self.flags = {}
+        if self.contacts is None:
+            self.contacts = {}
 
 class Requirement(models.Model):
     """
@@ -29,8 +32,10 @@ class Requirement(models.Model):
         ('quest_ending',    'Quest completed with specific ending'),
         ('level_gte',       'Player level >= value'),
         ('xp_gte',          'Player XP >= value'),
-        ('has_flag',     'Flag is set'),
-        ('missing_flag', 'Flag is not set'),
+        ('has_flag',        'Flag is set'),
+        ('missing_flag',    'Flag is not set'),
+        ('has_contact',     'Has contact'),
+        ('missing_contact', 'Does not have contact'),
     ]
 
     condition_type = models.CharField(max_length=50, choices=CONDITION_TYPES)
@@ -58,6 +63,14 @@ class Requirement(models.Model):
                          related_name='+'
                      )
     required_ending_type = models.CharField(max_length=20, blank=True)
+
+    # Contact conditions
+    required_contact = models.ForeignKey(
+                           'Contact',
+                           null=True, blank=True,
+                           on_delete=models.SET_NULL,
+                           related_name='+'
+                       )
 
     def evaluate(self, ctx: PlayerContext):
         """
@@ -90,6 +103,11 @@ class Requirement(models.Model):
             return bool(ctx.flags.get(self.flag_name))
         if ct == 'missing_flag':
             return not ctx.flags.get(self.flag_name)
+
+        if ct == 'has_contact':
+            return self.required_contact_id in ctx.contacts
+        if ct == 'missing_contact':
+            return self.required_contact_id not in ctx.contacts
 
         return False
 

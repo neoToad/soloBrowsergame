@@ -47,7 +47,7 @@ html, body {
 }
 
 .top-stat--mobile-hp {
-    display: none;
+    display: none !important;
 }
 
 .top-stat {
@@ -874,7 +874,7 @@ details[open] > .drawer-summary::before {
     }
 
     .top-stat--mobile-hp {
-        display: flex;
+        display: flex !important;
     }
 
     /* Slim top bar: visible and sticky */

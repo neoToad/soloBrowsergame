@@ -1,3 +1,36 @@
+def get_player_contacts(session):
+    """
+    Returns a dict keyed by contact_id: {contact_id: PlayerContact instance}.
+    """
+    from ..models import PlayerContact
+    qs = PlayerContact.objects.filter(session=session).select_related('contact')
+    return {pc.contact_id: pc for pc in qs}
+
+
+def award_scene_contacts(session, scene, contacts: dict) -> tuple[list, list]:
+    """
+    Processes all SceneContacts attached to `scene`.
+    Gains: creates PlayerContact if not already held (respects award_once).
+    Losses: deletes PlayerContact if present.
+    Mutates `contacts` dict in-place. Returns (awarded, lost) contact lists.
+    """
+    from ..models import PlayerContact
+    awarded, lost = [], []
+    for sc in scene.scene_contacts.select_related('contact').all():
+        contact = sc.contact
+        if sc.action == 'gain':
+            if sc.award_once and contact.id in contacts:
+                continue
+            pc, _ = PlayerContact.objects.get_or_create(session=session, contact=contact)
+            contacts[contact.id] = pc
+            awarded.append(contact)
+        elif sc.action == 'lose':
+            PlayerContact.objects.filter(session=session, contact=contact).delete()
+            contacts.pop(contact.id, None)
+            lost.append(contact)
+    return awarded, lost
+
+
 def get_player_inventory(session):
     """
     Returns a dict keyed by item_id: {item_id: PlayerInventory instance}.

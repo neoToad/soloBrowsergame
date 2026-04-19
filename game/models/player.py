@@ -1,5 +1,5 @@
 from django.db import models
-from .world import Scene, Quest
+from .world import Scene, Quest, Contact, Gang
 from .items import Item
 
 class GameSession(models.Model):
@@ -61,6 +61,47 @@ class PlayerInventory(models.Model):
 
     def __str__(self):
         return f"{self.session} — {self.item.name} x{self.quantity}"
+
+
+class PlayerContact(models.Model):
+    session     = models.ForeignKey(
+                      GameSession,
+                      related_name='contacts',
+                      on_delete=models.CASCADE
+                  )
+    contact     = models.ForeignKey(
+                      Contact,
+                      related_name='held_by',
+                      on_delete=models.CASCADE
+                  )
+    acquired_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('session', 'contact')
+        ordering        = ['acquired_at']
+
+    def __str__(self):
+        return f"{self.session} — {self.contact.name}"
+
+
+class PlayerGangStanding(models.Model):
+    session  = models.ForeignKey(
+                   GameSession,
+                   related_name='gang_standings',
+                   on_delete=models.CASCADE
+               )
+    gang     = models.ForeignKey(
+                   Gang,
+                   related_name='player_standings',
+                   on_delete=models.CASCADE
+               )
+    standing = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = ('session', 'gang')
+
+    def __str__(self):
+        return f"{self.session} — {self.gang.name}: {self.standing}"
 
 
 class CompletedQuest(models.Model):

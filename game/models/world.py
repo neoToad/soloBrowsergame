@@ -235,3 +235,47 @@ class SceneItem(models.Model):
 
     def __str__(self):
         return f"{self.item.name} x{self.quantity} in {self.scene.key}"
+
+
+class Gang(models.Model):
+    key         = models.SlugField(unique=True)
+    name        = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Contact(models.Model):
+    key         = models.SlugField(unique=True)
+    name        = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class SceneContact(models.Model):
+    ACTION_CHOICES = [
+        ('gain', 'Gain'),
+        ('lose', 'Lose'),
+    ]
+
+    scene      = models.ForeignKey(
+        Scene,
+        related_name='scene_contacts',
+        on_delete=models.CASCADE
+    )
+    contact    = models.ForeignKey(
+        Contact,
+        related_name='found_in',
+        on_delete=models.CASCADE
+    )
+    action     = models.CharField(max_length=10, choices=ACTION_CHOICES, default='gain')
+    award_once = models.BooleanField(
+        default=True,
+        help_text="If True, gaining this contact is skipped when the player already has it."
+    )
+
+    def __str__(self):
+        return f"{self.action} {self.contact.name} in {self.scene.key}"

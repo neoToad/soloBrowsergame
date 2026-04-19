@@ -7,16 +7,19 @@ from .property_service import (
     get_turn_summary,
     resolve_contest,
 )
-from .inventory import award_scene_items
+from .inventory import award_scene_items, award_scene_contacts, get_player_contacts
 from .scene import consume_arrival_item
 
 
-def process_arrival(session, stats, inventory, completed_map, next_scene):
+def process_arrival(session, stats, inventory, completed_map, next_scene, contacts=None):
     """
     Applies all arrival effects when the player transitions to next_scene.
     Returns (logs: list[str], turn_summary: dict | None).
     Callers are responsible for writing EventLog entries from the returned logs.
     """
+    if contacts is None:
+        contacts = get_player_contacts(session)
+
     logs = []
 
     logs += apply_stat_rewards(session, stats, next_scene)
@@ -28,6 +31,12 @@ def process_arrival(session, stats, inventory, completed_map, next_scene):
 
     for item, qty in award_scene_items(session, next_scene, inventory):
         logs.append(f"You picked up: {item.name} x{qty}.")
+
+    gained, lost = award_scene_contacts(session, next_scene, contacts)
+    for contact in gained:
+        logs.append(f"You gained a contact: {contact.name}.")
+    for contact in lost:
+        logs.append(f"You lost contact with {contact.name}.")
 
     turn_summary = None
     if quest_logs:
