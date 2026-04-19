@@ -1,94 +1,71 @@
-Codebase Audit: soloBrowserGame
+Codebase Audit: Prioritized Refactor Plan
 
-  Critical Issues
+  Phase 1 — Critical (Fix Before Production)
 
-  1. God view file — views.py (968 lines)
-  - choice_resolve() (L153–256, 103 lines) is the worst offender: it orchestrates rolls, flags, stats, property, inventory, quests, turn income, and rival contests — all in one function
-  - combat_attack() (L303–385) and combat_resolve_enemy() (L388–462) are 80+ lines each with duplicated roll-dict creation and no shared structure
-  - Quest builder views (L504–969, 464 lines) have no business being in views.py — they're an entirely separate feature domain
+  1. Wrap process_arrival() in transaction.atomic() (services/arrival.py)
+  The arrival sequence makes 6 sequential DB-writing service calls with no transaction boundary. A mid-sequence failure (e.g. DB error in process_turn_income()) will leave the player in a corrupted state — some mutations applied, some not. Wrap the entire function body in transaction.atomic().
 
-  2. No orchestration layer
-  Views directly choreograph 8+ service calls in sequence. There's no coordinator — the view is doing business logic coordination that should live in a GameFlow or TurnOrchestrator service.
+  2. Validate choice targets before use (views.py:~102)
+  choice.target_scene is used without checking if it's None. A broken quest (author forgot to set a target) raises an unhandled NoneType error. Add a guard or a service-level validate_choice_routing(choice) check.
 
-  3. Service-to-service imports (circular risk)
-  - combat.py → progression.py
-  - session.py → inventory.py
-  - admin.py → views.py
+  3. Services must not write EventLog directly (services/combat.py:71-74, property_service.py:97-114)
+  Your own ARCHITECTURE.md states services return log strings and views create EventLog entries — but combat.py and property_service.py both violate this. This makes services untestable without a DB. Return strings; let the view flush them.
 
-  Django's late imports hide the symptoms now, but this is a ticking clock.
+  4. Enforce ending scene invariant (models/world.py:clean())
+  clean() doesn't enforce that ending_type implies scene_type == 'ending'. A scene can have ending_type='victory' while being scene_type='normal', silently breaking quest completion in progression.py.
 
   ---
-  High Issues
+  Phase 2 — High Priority
 
-  4. Inconsistent return types across services
+  5. Split quest_builder.py (776 LOC) (services/quest_builder.py)
+  One file does 7 unrelated things: canvas rendering, 11-rule validation, form parsing, scene/choice CRUD, combat encounter management, requirements building. Split into: QuestCanvasRenderer, QuestValidator, QuestFormParser, CRUD functions. Each will be individually testable.
 
-  ┌─────────────────────────┬────────────────────────────────────────────┐
-  │         Service         │                  Returns                   │
-  ├─────────────────────────┼────────────────────────────────────────────┤
-  │ resolve_player_attack() │ (bool, int, int, int)                      │
-  ├─────────────────────────┼────────────────────────────────────────────┤
-  │ resolve_enemy_attack()  │ (bool, int, int, int) — opposite arg order │
-  ├─────────────────────────┼────────────────────────────────────────────┤
-  │ apply_stat_rewards()    │ list[str]                                  │
-  ├─────────────────────────┼────────────────────────────────────────────┤
-  │ process_turn_income()   │ (list[str], dict)                          │
-  ├─────────────────────────┼────────────────────────────────────────────┤
-  │ resolve_roll()          │ (Scene, str, dict)                         │
-  └─────────────────────────┴────────────────────────────────────────────┘
+  6. Extract PlayerContext construction (services/scene.py:37-44, 70-81, and elsewhere)
+  The same 4-line PlayerContext(stats, inventory, completed_map, flags) block appears 3+ times. A signature change requires hunting all call sites. Extract to build_player_context() in session.py.
 
-  Every caller must memorize each signature. A RollResult dataclass would fix 4 duplicate dict constructions across views.py and scene.py.
+  7. Create a session-loading decorator (views.py)
+  Every view calls load_session_context(session_pk) and then repeats the if not session_pk: redirect('game_hub') guard. Extract to a @require_game_session decorator so the pattern lives in one place.
 
-  5. log_event() has a hidden cascade side effect
-  models/events.py:8–17 — Every call also runs a DB query to find and delete overflow entries. Called 30+ times across views and services. Should batch or defer the cleanup.
-
-  6. Bloated admin.py (503 lines)
-  get_urls() (L128–221) defines 93 lines of paths. L255–313 are 18 thin wrapper methods that just from .views import X; return X(request, ...). These wrappers do nothing.
-
-  7. quest_builder.py is untested (757 lines, 0 tests)
-  Validation logic (validate_quest(), L225–380, 155 lines), canvas layout (get_canvas_data(), L18–223, 206 lines), and form parsing are all in one file with no safety net.
+  8. Fix quest completion race condition (services/progression.py:77-85)
+  The exists-then-create pattern has a TOCTOU window. Replace with CompletedQuest.objects.get_or_create(...) — the created flag tells you whether to award XP and append logs.
 
   ---
-  Medium Issues
+  Phase 3 — Refactor
 
-  8. Duplicated code
-  - Roll result dict built 4 different ways (views.py L370, L447; scene.py L23; choice_resolve's resolve_roll() call)
-  - Form field parsing repeated 6 times in quest_builder.py (L386, L444, L521, L556, etc.)
-  - session, stats, inventory, effective_stats, completed_map = load_session_context(...) destructured identically at 7 call sites
+  9. Clarify stat naming (constants.py, views.py)
+  DB names (strength, agility) and display names (muscle, reflexes) are mixed across layers. Create explicit STAT_DISPLAY_NAMES = {'strength': 'muscle', ...} and STAT_DB_NAMES (its inverse) so the mapping direction is unambiguous.
 
-  9. Inconsistent mutation patterns
-  - award_xp() — mutates stats, saves session, returns list[str] (logs)
-  - award_scene_items() — mutates inventory dict passed in, does not save session
-  - resolve_roll() — pure, returns tuple
+  10. Strategy pattern for Requirement.evaluate() (models/requirements.py:62-94)
+  A 30-line if-elif chain over 11 condition types. Adding a new type means modifying the class. Replace with an evaluator registry — new types are registered, not patched in.
 
-  No convention for when a service saves vs. returns vs. mutates.
-
-  10. Misleading names
-  - check_rival_contests() — sounds like a query; actually creates DB records and mutates state
-  - get_or_create_combat_state() — creates on first call, misleading for a "get" function
-  - build_render_context() — called with very different parameters throughout; "context" is meaningless
-  - pi used for PlayerInventory in 5 places
+  11. Collapse CombatState pending attack fields (models/combat.py:58-65)
+  4 separate nullable fields (pending_e_roll, pending_e_damage, pending_e_mod_str, pending_e_hit) represent one optional object. Replace with a single pending_enemy_attack = JSONField(null=True).
 
   ---
-  Low Issues
+  Phase 4 — Cleanup
 
-  11. Fixture-heavy tests
-  tests.py loads 8 fixtures at the top of every test class. One fixture change can cascade-break hundreds of lines of tests. No factory pattern; no in-memory object construction.
+  12. _htmx_response() hardcoded template list (views.py)
+  Adding a 6th partial requires editing this function. Replace the 5-template string concatenation with a single base template that {% include %}s the partials, or drive the list from a setting.
 
-  12. Model field naming inconsistency
-  Scene has cash_reward, rep_reward, heat_change — three different suffixes for the same conceptual thing. Property uses income_per_turn, heat_reduction, rep_bonus. Makes templates error-prone.
+  13. Add prefetch helper for quest requirements (services/scene.py, quest_builder.py)
+  prefetch_related('requirements__requirements') appears in 3 places. Any call site that forgets it causes N+1 queries. Extract to a get_quests_with_requirements(queryset) helper.
 
-  ---
-Phase 4 — Polish (Low)
-
-  ┌─────┬─────────────────────────────────────────────────────────────────────────────────────────┬──────────────────────┐
-  │  #  │                                          Task                                           │         File         │
-  ├─────┼─────────────────────────────────────────────────────────────────────────────────────────┼──────────────────────┤
-  │ 12  │ Standardize model field suffixes — _reward vs _bonus vs _change                         │ models/              │
-  ├─────┼─────────────────────────────────────────────────────────────────────────────────────────┼──────────────────────┤
-  │ 13  │ Replace fixture-heavy test setup with factory functions                                 │ tests.py             │
-  ├─────┼─────────────────────────────────────────────────────────────────────────────────────────┼──────────────────────┤
-  │ 14  │ Break validate_quest() (155 lines) into a QuestValidator class with one method per rule │ quest_builder.py:225 │
-  └─────┴─────────────────────────────────────────────────────────────────────────────────────────┴──────────────────────┘
+  14. Docstrings on all public service functions
+  Most functions in services/ have no docstring. Given the non-obvious parameter combinations (e.g. effective_stats vs stats), at minimum document args and return types.
 
   ---
-  Biggest risk area right now: choice_resolve() in views.py. It's the most-touched function in the game loop, has 10+ concerns, no tests targeting its internals, and any bug in any one service call cascades silently. That's where I'd start.
+  Risk Areas to Watch
+
+  ┌─────────────────────────────────────────┬───────────────────────┬─────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │                  Area                   │         Risk          │                                               Why                                               │
+  ├─────────────────────────────────────────┼───────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ arrival.py + property_service.py        │ State corruption      │ No atomicity across 6 DB-writing service calls                                                  │
+  ├─────────────────────────────────────────┼───────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ progression.py:maybe_complete_quest     │ Silent wrong behavior │ Assumes scene belongs to exactly 1 quest (M2M allows many)                                      │
+  ├─────────────────────────────────────────┼───────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ views.py:choice_resolve                 │ Hard crash            │ No null-check on choice target scene                                                            │
+  ├─────────────────────────────────────────┼───────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ quest_builder.py                        │ Regression on change  │ 776 LOC, low cohesion, nothing is isolated enough to test                                       │
+  ├─────────────────────────────────────────┼───────────────────────┼─────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ property_service.py:process_turn_income │ Silent wrong income   │ Income skips contested properties based on hidden is_contested flag — easy to break in refactor │
+  └─────────────────────────────────────────┴───────────────────────┴─────────────────────────────────────────────────────────────────────────────────────────────────┘
