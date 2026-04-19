@@ -1,0 +1,92 @@
+<div id="contacts-section" style="border-top: 1px solid #ddd; margin-top: 16px; padding-top: 12px;">
+    <details {% if scene_contacts %}open{% endif %}>
+        <summary style="cursor: pointer; font-weight: 600; font-size: 14px; margin-bottom: 10px;">
+            Contacts ({{ scene_contacts|length }})
+        </summary>
+
+        {% if toast_message %}
+            <div class="success" style="padding: 6px 10px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px; margin-bottom: 10px; font-size: 13px; color: #155724;">
+                {{ toast_message }}
+            </div>
+        {% endif %}
+
+        <form
+            hx-post="{% url 'admin:quest_builder_scene_contacts_save' quest_id scene.id %}"
+            hx-target="#contacts-section"
+            hx-swap="outerHTML">
+            {% csrf_token %}
+
+            <div id="contacts-rows">
+                {% for sc in scene_contacts %}
+                    <div class="contact-row" style="display: flex; gap: 6px; align-items: center; margin-bottom: 6px;">
+                        <select name="contact_id_{{ forloop.counter0 }}" style="flex: 1;">
+                            <option value="">— select contact —</option>
+                            {% for contact in all_contacts %}
+                                <option value="{{ contact.id }}" {% if sc.contact_id == contact.id %}selected{% endif %}>
+                                    {{ contact.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <select name="action_{{ forloop.counter0 }}" style="width: 80px;">
+                            <option value="gain" {% if sc.action == "gain" %}selected{% endif %}>gain</option>
+                            <option value="lose" {% if sc.action == "lose" %}selected{% endif %}>lose</option>
+                        </select>
+                        <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap;">
+                            <input type="checkbox" name="award_once_{{ forloop.counter0 }}" {% if sc.award_once %}checked{% endif %}>
+                            once
+                        </label>
+                        <button type="button" class="button" onclick="this.closest('.contact-row').remove();" style="background: #dc3545; color: #fff; border: none; padding: 4px 8px; cursor: pointer;">✕</button>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <template id="contact-row-template">
+                <div class="contact-row" style="display: flex; gap: 6px; align-items: center; margin-bottom: 6px;">
+                    <select name="__CONTACT_NAME__" style="flex: 1;">
+                        <option value="">— select contact —</option>
+                        {% for contact in all_contacts %}
+                            <option value="{{ contact.id }}">{{ contact.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <select name="__ACTION_NAME__" style="width: 80px;">
+                        <option value="gain">gain</option>
+                        <option value="lose">lose</option>
+                    </select>
+                    <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; white-space: nowrap;">
+                        <input type="checkbox" name="__ONCE_NAME__">
+                        once
+                    </label>
+                    <button type="button" class="button" onclick="this.closest('.contact-row').remove();" style="background: #dc3545; color: #fff; border: none; padding: 4px 8px; cursor: pointer;">✕</button>
+                </div>
+            </template>
+
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <button type="button" class="button" id="add-contact-btn" style="font-size: 12px;">+ Add Contact</button>
+                <button type="submit" class="button default" style="font-size: 12px;">Save Contacts</button>
+            </div>
+        </form>
+    </details>
+</div>
+
+<script>
+(function () {
+    var section = document.getElementById('contacts-section');
+    if (!section) return;
+
+    var addBtn = section.querySelector('#add-contact-btn');
+    if (!addBtn) return;
+
+    addBtn.addEventListener('click', function () {
+        var rows = section.querySelectorAll('.contact-row');
+        var index = rows.length;
+        var tpl = section.querySelector('#contact-row-template');
+        if (!tpl) return;
+        var clone = tpl.content.cloneNode(true);
+        var div = clone.querySelector('.contact-row');
+        div.querySelector('select[name="__CONTACT_NAME__"]').name = 'contact_id_' + index;
+        div.querySelector('select[name="__ACTION_NAME__"]').name = 'action_' + index;
+        div.querySelector('input[type="checkbox"]').name = 'award_once_' + index;
+        section.querySelector('#contacts-rows').appendChild(div);
+    });
+})();
+</script>
