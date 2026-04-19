@@ -1044,6 +1044,74 @@ details[open] > .drawer-summary::before {
         letter-spacing: 2px;
     }
 
+    /* ── MOBILE COMBAT ── */
+
+    /* Side-by-side: enemy left, HP bars right, button full-width below */
+    #combat-panel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+            "opponent bars"
+            "action   action";
+        gap: 12px 16px;
+        align-items: center;
+    }
+
+    .combat-opponent {
+        grid-area: opponent;
+        padding: 12px;
+        align-self: stretch;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .combat-bars {
+        grid-area: bars;
+    }
+
+    /* Hide non-essential elements to save vertical space */
+    .combat-opp-desc,
+    .combat-turn {
+        display: none;
+    }
+
+    .combat-opp-name {
+        font-size: 15px;
+        letter-spacing: 2px;
+    }
+
+    .hp-track {
+        height: 14px;
+    }
+
+    .bar-label {
+        min-width: 40px;
+        font-size: 11px;
+    }
+
+    .bar-val {
+        font-size: 11px;
+        min-width: 40px;
+    }
+
+    /* Sticky full-width action button */
+    #combat-panel .choices {
+        grid-area: action;
+        position: sticky;
+        bottom: 0;
+        background: var(--bg);
+        padding: 8px 0 14px;
+        margin: 0;
+    }
+
+    #combat-panel .choices button {
+        width: 100%;
+        padding: 16px;
+        font-size: 15px;
+        letter-spacing: 2px;
+    }
+
 }
 
 
@@ -1110,6 +1178,54 @@ details[open] > .drawer-summary::before {
 .roll-result-row .roll-result {
     flex: 1 1 0;
     min-width: 0;
+}
+
+@media (max-width: 639px) {
+    .roll-result-row {
+        flex-direction: column;
+    }
+
+    /* Compact card: die on left, header/math/verdict stacked on right */
+    .roll-result {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-areas:
+            "die header"
+            "die math"
+            "die verdict";
+        padding: 8px 12px;
+        gap: 2px 12px;
+        align-items: center;
+    }
+
+    .roll-result-body {
+        display: contents; /* lift die-wrap and math into the grid */
+    }
+
+    .roll-die-wrap {
+        grid-area: die;
+        align-self: center;
+    }
+
+    .roll-math {
+        grid-area: math;
+    }
+
+    .roll-result-header {
+        grid-area: header;
+        align-self: end;
+    }
+
+    .roll-verdict {
+        grid-area: verdict;
+        align-self: start;
+    }
+
+    .roll-die {
+        font-size: 26px;
+        min-width: 38px;
+        padding: 4px 6px;
+    }
 }
 
 .roll-result--damage {
