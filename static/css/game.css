@@ -863,18 +863,57 @@ details[open] > .drawer-summary::before {
         overflow: auto;
     }
 
+    #top-stats-bar {
+        position: sticky;
+        top: 0;
+        z-index: 11;
+    }
+
     /* Slim top bar: visible and sticky */
     #mobile-stats-bar {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-start;
-        gap: 8px 18px;
-        padding: 8px 12px;
         background: var(--panel-bg);
         border-bottom: 2px solid var(--border);
         position: sticky;
         top: 41px; /* Height of top-stats-bar */
         z-index: 10;
+    }
+
+    /* Summary row: always-visible HP + RANK chips */
+    .mob-stats-summary {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 8px 18px;
+        padding: 8px 12px;
+        cursor: pointer;
+        list-style: none;
+        user-select: none;
+    }
+
+    .mob-stats-summary::-webkit-details-marker {
+        display: none;
+    }
+
+    /* Collapse arrow appended after RANK */
+    .mob-stats-summary::after {
+        content: '▾';
+        align-self: center;
+        color: var(--text-dim);
+        font-size: 10px;
+        margin-left: auto;
+    }
+
+    #mobile-stats-details[open] .mob-stats-summary::after {
+        content: '▴';
+    }
+
+    /* Extra stats shown when expanded */
+    .mob-stats-extra {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 8px 18px;
+        padding: 0 12px 8px;
     }
 
     /* Switch game-layout from grid to flex column */
