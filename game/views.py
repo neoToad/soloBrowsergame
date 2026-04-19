@@ -19,7 +19,7 @@ from .services.inventory   import get_player_inventory, consume_item as consume_
 from .services.flags       import set_flag, clear_flag
 from .services.arrival     import process_arrival
 from .services.progression import XP_AWARDS, LEVEL_UP_FLAVOR
-from .utils import roll_d20, stat_modifier, get_effective_stats, RollResult
+from .utils import roll_d20, stat_modifier, get_effective_stats, RollResult, DamageResult
 from .constants import HUB_START_SCENE_KEY, SESSION_KEY, STAT_FIELD_MAP, USE_ITEM_FLAVOR
 
 
@@ -260,10 +260,22 @@ def combat_attack(request):
         stat        = 'strength',
         success     = p.hit,
     )
+    damage_result = None
+    if p.hit:
+        dmg_mod     = max(0, str_mod)
+        dmg_mod_str = f"+{dmg_mod}" if dmg_mod >= 0 else str(dmg_mod)
+        damage_result = DamageResult(
+            die_roll    = p.damage_die,
+            die_label   = 'd6',
+            modifier    = dmg_mod,
+            mod_display = dmg_mod_str,
+            total       = p.damage,
+        )
     context = build_render_context(
         session, session.current_scene, stats, effective_stats, inventory, completed_map,
         combat_state=combat_state,
         roll_result=roll_result,
+        damage_result=damage_result,
     )
     context['choices'] = []
     return _htmx_response(request, context)
@@ -336,10 +348,21 @@ def combat_resolve_enemy(request):
         stat        = enemy.name,
         success     = e_hit,
     )
+    damage_result = None
+    if e_hit:
+        dmg_label = f'd({enemy.damage_min}–{enemy.damage_max})'
+        damage_result = DamageResult(
+            die_roll    = e_dmg,
+            die_label   = dmg_label,
+            modifier    = 0,
+            mod_display = '+0',
+            total       = e_dmg,
+        )
     context = build_render_context(
         session, session.current_scene, stats, effective_stats, inventory, completed_map,
         combat_state=combat_state,
         roll_result=roll_result,
+        damage_result=damage_result,
     )
     context['choices'] = []
     return _htmx_response(request, context)

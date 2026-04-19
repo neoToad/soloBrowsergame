@@ -1,8 +1,8 @@
 import random
 
-from .services.types import RollResult, EffectiveStats
+from .services.types import RollResult, DamageResult, EffectiveStats
 
-__all__ = ['RollResult', 'EffectiveStats', 'roll_d20', 'stat_modifier', 'get_effective_stats']
+__all__ = ['RollResult', 'DamageResult', 'EffectiveStats', 'roll_d20', 'stat_modifier', 'get_effective_stats']
 
 
 def roll_d20():

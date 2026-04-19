@@ -3,10 +3,20 @@ from dataclasses import dataclass, field
 
 @dataclass
 class CombatRollResult:
-    hit:    bool
-    damage: int
-    roll:   int
-    total:  int
+    hit:        bool
+    damage:     int
+    damage_die: int   # raw die value before modifier
+    roll:       int
+    total:      int
+
+
+@dataclass
+class DamageResult:
+    die_roll:    int
+    die_label:   str
+    modifier:    int
+    mod_display: str
+    total:       int
 
 
 @dataclass

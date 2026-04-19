@@ -34,7 +34,7 @@ def create_session(request):
     return game_session
 
 
-def build_render_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state, turn_summary=None, roll_result=None):
+def build_render_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state, turn_summary=None, roll_result=None, damage_result=None):
     from .scene import get_available_choices, get_notice_board
     notice_board = None
     if scene.is_hub:
@@ -56,6 +56,7 @@ def build_render_context(session, scene, stats, effective_stats, inventory, comp
         'notice_board':         notice_board,
         'turn_summary':         turn_summary,
         'roll_result':          roll_result,
+        'damage_result':        damage_result,
         'player_properties':    player_properties,
         'all_territories':      all_territories,
         'owned_territory_ids':  owned_territory_ids,

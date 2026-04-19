@@ -16,19 +16,37 @@
     {% endif %}
 
     {% if roll_result %}
-    <div class="roll-result {% if roll_result.success %}roll-result--success{% else %}roll-result--failure{% endif %}">
-        <p class="roll-result-header">{{ roll_result.stat|upper }} CHECK</p>
-        <div class="roll-result-body">
-            <div class="roll-die-wrap">
-                <span class="roll-die" data-final="{{ roll_result.roll }}">{{ roll_result.roll }}</span>
-                <span class="roll-die-label">d20</span>
+    <div class="roll-result-row">
+        <div class="roll-result {% if roll_result.success %}roll-result--success{% else %}roll-result--failure{% endif %}">
+            <p class="roll-result-header">{{ roll_result.stat|upper }} CHECK</p>
+            <div class="roll-result-body">
+                <div class="roll-die-wrap">
+                    <span class="roll-die" data-final="{{ roll_result.roll }}">{{ roll_result.roll }}</span>
+                    <span class="roll-die-label">d20</span>
+                </div>
+                <div class="roll-math">
+                    <span class="roll-math-line">{{ roll_result.mod_display }} &nbsp;=&nbsp; <strong>{{ roll_result.total }}</strong></span>
+                    <span class="roll-math-dc">vs DC {{ roll_result.dc }}</span>
+                </div>
             </div>
-            <div class="roll-math">
-                <span class="roll-math-line">{{ roll_result.mod_display }} &nbsp;=&nbsp; <strong>{{ roll_result.total }}</strong></span>
-                <span class="roll-math-dc">vs DC {{ roll_result.dc }}</span>
-            </div>
+            <p class="roll-verdict">{% if roll_result.success %}&#x2713;&nbsp; Success{% else %}&#x2717;&nbsp; Failure{% endif %}</p>
         </div>
-        <p class="roll-verdict">{% if roll_result.success %}&#x2713;&nbsp; Success{% else %}&#x2717;&nbsp; Failure{% endif %}</p>
+        {% if damage_result %}
+        <div class="roll-result roll-result--damage">
+            <p class="roll-result-header">DAMAGE</p>
+            <div class="roll-result-body">
+                <div class="roll-die-wrap">
+                    <span class="roll-die">{{ damage_result.die_roll }}</span>
+                    <span class="roll-die-label">{{ damage_result.die_label }}</span>
+                </div>
+                <div class="roll-math">
+                    <span class="roll-math-line">{{ damage_result.mod_display }} &nbsp;=&nbsp; <strong>{{ damage_result.total }}</strong></span>
+                    <span class="roll-math-dc">damage dealt</span>
+                </div>
+            </div>
+            <p class="roll-verdict">&#x2020;&nbsp; {{ damage_result.total }} dmg</p>
+        </div>
+        {% endif %}
     </div>
     {% endif %}
 

@@ -1045,6 +1045,32 @@ details[open] > .drawer-summary::before {
 
 /* ROLL RESULT CARD */
 
+.roll-result-row {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.roll-result-row .roll-result {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.roll-result--damage {
+    border-left-color: var(--warning);
+    background: rgba(255, 170, 0, 0.06);
+}
+
+.roll-result--damage .roll-die {
+    color: var(--warning);
+    border-color: var(--warning);
+}
+
+.roll-result--damage .roll-verdict {
+    color: var(--warning);
+}
+
 .roll-result {
     border-left: 3px solid var(--warning);
     padding: 14px 18px;

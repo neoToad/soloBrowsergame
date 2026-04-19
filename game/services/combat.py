@@ -7,8 +7,9 @@ def resolve_player_attack(stats, enemy) -> CombatRollResult:
     roll  = roll_d20()
     total = roll + modifier
     hit   = total >= enemy.defense
-    damage = random.randint(1, 6) + max(0, modifier) if hit else 0
-    return CombatRollResult(hit=hit, damage=damage, roll=roll, total=total)
+    damage_die = random.randint(1, 6) if hit else 0
+    damage     = damage_die + max(0, modifier) if hit else 0
+    return CombatRollResult(hit=hit, damage=damage, damage_die=damage_die, roll=roll, total=total)
 
 
 def resolve_enemy_attack(enemy, stats) -> CombatRollResult:
@@ -16,8 +17,8 @@ def resolve_enemy_attack(enemy, stats) -> CombatRollResult:
     roll  = roll_d20()
     total = roll + enemy.attack_modifier
     hit   = total >= player_defense
-    damage = random.randint(enemy.damage_min, enemy.damage_max) if hit else 0
-    return CombatRollResult(hit=hit, damage=damage, roll=roll, total=total)
+    damage_die = random.randint(enemy.damage_min, enemy.damage_max) if hit else 0
+    return CombatRollResult(hit=hit, damage=damage_die, damage_die=damage_die, roll=roll, total=total)
 
 
 def get_active_combat_state(session):
