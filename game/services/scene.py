@@ -1,14 +1,13 @@
-from ..utils import roll_d20, stat_modifier
+from ..utils import roll_d20, stat_modifier, RollResult
 
 def prefetch_choices_with_requirements(qs):
     return qs.prefetch_related('requirements__requirements')
 
-def resolve_roll(scene, choice, effective_stats) -> tuple[object, str, dict]:
+def resolve_roll(scene, choice, effective_stats) -> tuple[object, str, RollResult]:
     """
     Rolls d20 + stat modifier vs scene.roll_difficulty.
     Returns (next_scene, log_text, roll_result). Does NOT write to the DB.
     """
-
     stat_value = getattr(effective_stats, scene.roll_stat, 10)
     modifier   = stat_modifier(stat_value)
     roll       = roll_d20()
@@ -20,15 +19,15 @@ def resolve_roll(scene, choice, effective_stats) -> tuple[object, str, dict]:
     res_str = "Success!" if success else "Failure."
     log_text = f"You rolled a {roll} ({mod_str} modifier) = {total} vs DC {dc} — {res_str}"
 
-    roll_result = {
-        'roll':        roll,
-        'modifier':    modifier,
-        'mod_display': f"+{modifier}" if modifier >= 0 else str(modifier),
-        'total':       total,
-        'dc':          dc,
-        'stat':        scene.roll_stat,
-        'success':     success,
-    }
+    roll_result = RollResult(
+        roll        = roll,
+        modifier    = modifier,
+        mod_display = f"+{modifier}" if modifier >= 0 else str(modifier),
+        total       = total,
+        dc          = dc,
+        stat        = scene.roll_stat,
+        success     = success,
+    )
 
     next_scene = choice.success_scene if success else choice.failure_scene
     return (next_scene, log_text, roll_result)
@@ -58,16 +57,13 @@ def get_available_choices(scene, effective_stats, inventory, completed_map, flag
     return choices
 
 
-def complete_scene(session, scene, choice, inventory, next_scene=None) -> list[str]:
+def consume_arrival_item(session, inventory, next_scene) -> list[str]:
+    """Consumes an item required to enter next_scene, if the player carries it."""
     from .inventory import consume_item as consume_item_util
-    logs = []
-
-    # Consume item on arrival at destination scene
     if next_scene and next_scene.consume_item_id and next_scene.consume_item_id in inventory:
         consume_item_util(session, next_scene.consume_item, inventory)
-        logs.append(f"You used your {next_scene.consume_item.name}.")
-
-    return logs
+        return [f"You used your {next_scene.consume_item.name}."]
+    return []
 
 
 def get_notice_board(scene, inventory, completed_map, effective_stats, flags=None):

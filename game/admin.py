@@ -253,63 +253,63 @@ class QuestAdmin(admin.ModelAdmin):
         return render(request, 'admin/game/quest_graph.html', context)
 
     def quest_builder_validate_view(self, request, quest_id):
-        from .views import quest_validate
+        from .quest_builder_views import quest_validate
         return quest_validate(request, quest_id)
 
     def quest_builder_list_view(self, request):
-        from .views import quest_builder_list
+        from .quest_builder_views import quest_builder_list
         return quest_builder_list(request)
 
     def quest_builder_canvas_view(self, request, quest_id):
-        from .views import quest_builder_canvas
+        from .quest_builder_views import quest_builder_canvas
         return quest_builder_canvas(request, quest_id)
 
     def quest_builder_scene_panel_view(self, request, quest_id, scene_id=None):
-        from .views import scene_panel
+        from .quest_builder_views import scene_panel
         return scene_panel(request, quest_id, scene_id=scene_id)
 
     def quest_builder_scene_save_view(self, request, quest_id, scene_id):
-        from .views import scene_save
+        from .quest_builder_views import scene_save
         return scene_save(request, quest_id, scene_id)
 
     def quest_builder_scene_create_view(self, request, quest_id):
-        from .views import scene_create
+        from .quest_builder_views import scene_create
         return scene_create(request, quest_id)
 
     def quest_builder_scene_delete_view(self, request, quest_id, scene_id):
-        from .views import scene_delete
+        from .quest_builder_views import scene_delete
         return scene_delete(request, quest_id, scene_id)
 
     def quest_builder_scene_move_view(self, request, quest_id, scene_id):
-        from .views import scene_move
+        from .quest_builder_views import scene_move
         return scene_move(request, quest_id, scene_id)
 
     def quest_builder_choice_panel_view(self, request, quest_id, source_scene_id=None, choice_id=None):
-        from .views import choice_panel
+        from .quest_builder_views import choice_panel
         return choice_panel(request, quest_id, source_scene_id=source_scene_id, choice_id=choice_id)
 
     def quest_builder_choice_create_view(self, request, quest_id):
-        from .views import choice_create
+        from .quest_builder_views import choice_create
         return choice_create(request, quest_id)
 
     def quest_builder_choice_save_view(self, request, quest_id, choice_id):
-        from .views import choice_save
+        from .quest_builder_views import choice_save
         return choice_save(request, quest_id, choice_id)
 
     def quest_builder_choice_delete_view(self, request, quest_id, choice_id):
-        from .views import choice_delete
+        from .quest_builder_views import choice_delete
         return choice_delete(request, quest_id, choice_id)
 
     def quest_builder_scene_items_save_view(self, request, quest_id, scene_id):
-        from .views import scene_items_save
+        from .quest_builder_views import scene_items_save
         return scene_items_save(request, quest_id, scene_id)
 
     def quest_builder_scene_combat_save_view(self, request, quest_id, scene_id):
-        from .views import scene_combat_save
+        from .quest_builder_views import scene_combat_save
         return scene_combat_save(request, quest_id, scene_id)
 
     def quest_builder_choice_requirements_save_view(self, request, quest_id, choice_id):
-        from .views import choice_requirements_save
+        from .quest_builder_views import choice_requirements_save
         return choice_requirements_save(request, quest_id, choice_id)
 
 @admin.register(Item)

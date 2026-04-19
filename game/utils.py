@@ -1,6 +1,17 @@
 import random
 from dataclasses import dataclass, field
 
+
+@dataclass
+class RollResult:
+    roll:        int
+    modifier:    int
+    mod_display: str
+    total:       int
+    dc:          int
+    stat:        str
+    success:     bool
+
 def roll_d20():
     return random.randint(1, 20)
 

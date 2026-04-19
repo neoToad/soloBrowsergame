@@ -1,0 +1,136 @@
+Codebase Audit: soloBrowserGame
+
+  Critical Issues
+
+  1. God view file — views.py (968 lines)
+  - choice_resolve() (L153–256, 103 lines) is the worst offender: it orchestrates rolls, flags, stats, property, inventory, quests, turn income, and rival contests — all in one function
+  - combat_attack() (L303–385) and combat_resolve_enemy() (L388–462) are 80+ lines each with duplicated roll-dict creation and no shared structure
+  - Quest builder views (L504–969, 464 lines) have no business being in views.py — they're an entirely separate feature domain
+
+  2. No orchestration layer
+  Views directly choreograph 8+ service calls in sequence. There's no coordinator — the view is doing business logic coordination that should live in a GameFlow or TurnOrchestrator service.
+
+  3. Service-to-service imports (circular risk)
+  - combat.py → progression.py
+  - session.py → inventory.py
+  - admin.py → views.py
+
+  Django's late imports hide the symptoms now, but this is a ticking clock.
+
+  ---
+  High Issues
+
+  4. Inconsistent return types across services
+
+  ┌─────────────────────────┬────────────────────────────────────────────┐
+  │         Service         │                  Returns                   │
+  ├─────────────────────────┼────────────────────────────────────────────┤
+  │ resolve_player_attack() │ (bool, int, int, int)                      │
+  ├─────────────────────────┼────────────────────────────────────────────┤
+  │ resolve_enemy_attack()  │ (bool, int, int, int) — opposite arg order │
+  ├─────────────────────────┼────────────────────────────────────────────┤
+  │ apply_stat_rewards()    │ list[str]                                  │
+  ├─────────────────────────┼────────────────────────────────────────────┤
+  │ process_turn_income()   │ (list[str], dict)                          │
+  ├─────────────────────────┼────────────────────────────────────────────┤
+  │ resolve_roll()          │ (Scene, str, dict)                         │
+  └─────────────────────────┴────────────────────────────────────────────┘
+
+  Every caller must memorize each signature. A RollResult dataclass would fix 4 duplicate dict constructions across views.py and scene.py.
+
+  5. log_event() has a hidden cascade side effect
+  models/events.py:8–17 — Every call also runs a DB query to find and delete overflow entries. Called 30+ times across views and services. Should batch or defer the cleanup.
+
+  6. Bloated admin.py (503 lines)
+  get_urls() (L128–221) defines 93 lines of paths. L255–313 are 18 thin wrapper methods that just from .views import X; return X(request, ...). These wrappers do nothing.
+
+  7. quest_builder.py is untested (757 lines, 0 tests)
+  Validation logic (validate_quest(), L225–380, 155 lines), canvas layout (get_canvas_data(), L18–223, 206 lines), and form parsing are all in one file with no safety net.
+
+  ---
+  Medium Issues
+
+  8. Duplicated code
+  - Roll result dict built 4 different ways (views.py L370, L447; scene.py L23; choice_resolve's resolve_roll() call)
+  - Form field parsing repeated 6 times in quest_builder.py (L386, L444, L521, L556, etc.)
+  - session, stats, inventory, effective_stats, completed_map = load_session_context(...) destructured identically at 7 call sites
+
+  9. Inconsistent mutation patterns
+  - award_xp() — mutates stats, saves session, returns list[str] (logs)
+  - award_scene_items() — mutates inventory dict passed in, does not save session
+  - resolve_roll() — pure, returns tuple
+
+  No convention for when a service saves vs. returns vs. mutates.
+
+  10. Misleading names
+  - check_rival_contests() — sounds like a query; actually creates DB records and mutates state
+  - get_or_create_combat_state() — creates on first call, misleading for a "get" function
+  - build_render_context() — called with very different parameters throughout; "context" is meaningless
+  - pi used for PlayerInventory in 5 places
+
+  ---
+  Low Issues
+
+  11. Fixture-heavy tests
+  tests.py loads 8 fixtures at the top of every test class. One fixture change can cascade-break hundreds of lines of tests. No factory pattern; no in-memory object construction.
+
+  12. Model field naming inconsistency
+  Scene has cash_reward, rep_reward, heat_change — three different suffixes for the same conceptual thing. Property uses income_per_turn, heat_reduction, rep_bonus. Makes templates error-prone.
+
+  ---
+  Prioritized Refactor Plan
+
+  Phase 1 — Stop the bleeding (Critical)
+
+  ┌─────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────────────┬────────────────────────────────────────────────────────┐
+  │  #  │                                                                  Task                                                                  │         File         │                       Why first                        │
+  ├─────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────────┼────────────────────────────────────────────────────────┤
+  │ 1   │ Extract choice_resolve() into 4 functions: _resolve_routing(), _apply_arrival_effects(), _process_turn_end(), _build_choice_response() │ views.py:153         │ Worst single function; blocking all other service work │
+  ├─────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────────┼────────────────────────────────────────────────────────┤
+  │ 2   │ Move quest builder views (L504–969) to quest_builder_views.py                                                                          │ views.py             │ 464 lines that don't belong here                       │
+  ├─────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────────┼────────────────────────────────────────────────────────┤
+  │ 3   │ Create RollResult dataclass; consolidate 4 roll-dict constructions                                                                     │ views.py, scene.py   │ Fixes duplication and removes implicit coupling        │
+  ├─────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────────┼────────────────────────────────────────────────────────┤
+  │ 4   │ Create TurnOrchestrator service to own the choice_resolve sequence                                                                     │ new services/turn.py │ View should dispatch, not orchestrate                  │
+  └─────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────────────┴────────────────────────────────────────────────────────┘
+
+  Phase 2 — Fix the architecture (High)
+
+  ┌─────┬──────────────────────────────────────────────────────────────────────────────────────────────────────┬──────────────────┬───────────────────────────────────────────┐
+  │  #  │                                                 Task                                                 │       File       │                    Why                    │
+  ├─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────┼───────────────────────────────────────────┤
+  │ 5   │ Break service-to-service imports; introduce a shared types.py or contracts.py for shared dataclasses │ services/        │ Eliminate circular dependency risk        │
+  ├─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────┼───────────────────────────────────────────┤
+  │ 6   │ Batch log_event() — collect logs in context and flush once per request                               │ models/events.py │ Removes hidden DB cascade from hot path   │
+  ├─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────┼───────────────────────────────────────────┤
+  │ 7   │ Remove 18 thin wrappers in admin.py; route directly                                                  │ admin.py:255–313 │ Dead code masquerading as structure       │
+  ├─────┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼──────────────────┼───────────────────────────────────────────┤
+  │ 8   │ Add _parse_scene_form() and _parse_choice_form() helpers; eliminate 6 duplicate parsers              │ quest_builder.py │ Low-risk deduplication with obvious scope │
+  └─────┴──────────────────────────────────────────────────────────────────────────────────────────────────────┴──────────────────┴───────────────────────────────────────────┘
+
+  Phase 3 — Improve testability (Medium)
+
+  ┌─────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────┬────────────────────────────────────────┐
+  │  #  │                                                              Task                                                               │   File    │                  Why                   │
+  ├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼────────────────────────────────────────┤
+  │ 9   │ Add tests for quest_builder.py using an in-memory factory, not fixtures                                                         │ tests.py  │ 757 lines of zero coverage             │
+  ├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼────────────────────────────────────────┤
+  │ 10  │ Standardize service return convention: all services return (result, list[str] logs) or a dedicated dataclass                    │ services/ │ Callers can stop memorizing signatures │
+  ├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼────────────────────────────────────────┤
+  │ 11  │ Rename misleading functions: check_rival_contests → trigger_rival_contest, get_or_create_combat_state → initialize_combat_state │ services/ │ Low-risk, high-clarity                 │
+  └─────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────┴────────────────────────────────────────┘
+
+  Phase 4 — Polish (Low)
+
+  ┌─────┬─────────────────────────────────────────────────────────────────────────────────────────┬──────────────────────┐
+  │  #  │                                          Task                                           │         File         │
+  ├─────┼─────────────────────────────────────────────────────────────────────────────────────────┼──────────────────────┤
+  │ 12  │ Standardize model field suffixes — _reward vs _bonus vs _change                         │ models/              │
+  ├─────┼─────────────────────────────────────────────────────────────────────────────────────────┼──────────────────────┤
+  │ 13  │ Replace fixture-heavy test setup with factory functions                                 │ tests.py             │
+  ├─────┼─────────────────────────────────────────────────────────────────────────────────────────┼──────────────────────┤
+  │ 14  │ Break validate_quest() (155 lines) into a QuestValidator class with one method per rule │ quest_builder.py:225 │
+  └─────┴─────────────────────────────────────────────────────────────────────────────────────────┴──────────────────────┘
+
+  ---
+  Biggest risk area right now: choice_resolve() in views.py. It's the most-touched function in the game loop, has 10+ concerns, no tests targeting its internals, and any bug in any one service call cascades silently. That's where I'd start.
