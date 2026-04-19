@@ -1,0 +1,24 @@
+<div id="territories-panel" {% if oob %}hx-swap-oob="true"{% endif %}>
+    <p class="panel-label">[ TERRITORIES ]</p>
+    {% if all_territories %}
+        <div class="item-list">
+            {% for territory in all_territories %}
+                {% if territory.id in owned_territory_ids %}
+                    <div class="property-row territory-row territory-owned">
+                        <span class="property-name">{{ territory.name }}</span>
+                        <span class="property-meta">
+                            {% if territory.cash_per_turn %}+${{ territory.cash_per_turn }}{% endif %}
+                        </span>
+                    </div>
+                {% else %}
+                    <div class="property-row territory-row territory-unowned">
+                        <span class="property-name">{{ territory.name }}</span>
+                        <span class="property-meta territory-unowned-label">—</span>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="item-empty">No territories exist.</p>
+    {% endif %}
+</div>

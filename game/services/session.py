@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from ..models import GameSession, PlayerStats, Scene, CompletedQuest
-from ..models.property import PlayerProperty
+from ..models.property import PlayerProperty, Property
 from ..constants import HUB_START_SCENE_KEY, SESSION_KEY
 from .inventory import get_player_inventory
 from ..utils import get_effective_stats
@@ -40,17 +40,23 @@ def build_render_context(session, scene, stats, effective_stats, inventory, comp
     if scene.is_hub:
         notice_board = get_notice_board(scene, inventory, completed_map, effective_stats, flags=session.flags)
     player_properties = PlayerProperty.objects.filter(session=session).select_related('property')
+    all_territories   = Property.objects.filter(property_type='territory')
+    owned_territory_ids = {
+        pp.property_id for pp in player_properties if pp.property.property_type == 'territory'
+    }
     return {
-        'scene':             scene,
-        'choices':           get_available_choices(scene, effective_stats, inventory, completed_map, flags=session.flags),
-        'stats':             stats,
-        'stat_bonuses':      effective_stats.bonuses,
-        'inventory':         inventory,
-        'logs':              session.log.all()[:10],
-        'oob':               True,
-        'combat_state':      combat_state,
-        'notice_board':      notice_board,
-        'turn_summary':      turn_summary,
-        'roll_result':       roll_result,
-        'player_properties': player_properties,
+        'scene':                scene,
+        'choices':              get_available_choices(scene, effective_stats, inventory, completed_map, flags=session.flags),
+        'stats':                stats,
+        'stat_bonuses':         effective_stats.bonuses,
+        'inventory':            inventory,
+        'logs':                 session.log.all()[:10],
+        'oob':                  True,
+        'combat_state':         combat_state,
+        'notice_board':         notice_board,
+        'turn_summary':         turn_summary,
+        'roll_result':          roll_result,
+        'player_properties':    player_properties,
+        'all_territories':      all_territories,
+        'owned_territory_ids':  owned_territory_ids,
     }

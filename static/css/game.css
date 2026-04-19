@@ -116,6 +116,15 @@ html, body {
     gap: 0;
 }
 
+#territories-panel {
+    background: var(--panel-bg);
+    border-left: 1px solid var(--border);
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
 .panel-label {
     color: var(--accent);
     font-size: 11px;
@@ -322,6 +331,14 @@ html, body {
     margin-left: 4px;
 }
 
+.territory-unowned .property-name {
+    color: var(--text-dim);
+}
+
+.territory-unowned .property-meta {
+    color: var(--text-dim);
+}
+
 /* EVENT LOG */
 
 .log-entry {
@@ -347,7 +364,7 @@ html, body {
 
 /* SCROLLBARS */
 
-#stats-bar, #scene-panel, #event-log, #inventory-panel {
+#stats-bar, #scene-panel, #event-log, #inventory-panel, #territories-panel {
     scrollbar-width: thin;
     scrollbar-color: var(--accent-dim) var(--panel-bg);
 }
@@ -355,21 +372,24 @@ html, body {
 #stats-bar::-webkit-scrollbar,
 #scene-panel::-webkit-scrollbar,
 #event-log::-webkit-scrollbar,
-#inventory-panel::-webkit-scrollbar {
+#inventory-panel::-webkit-scrollbar,
+#territories-panel::-webkit-scrollbar {
     width: 4px;
 }
 
 #stats-bar::-webkit-scrollbar-track,
 #scene-panel::-webkit-scrollbar-track,
 #event-log::-webkit-scrollbar-track,
-#inventory-panel::-webkit-scrollbar-track {
+#inventory-panel::-webkit-scrollbar-track,
+#territories-panel::-webkit-scrollbar-track {
     background: var(--panel-bg);
 }
 
 #stats-bar::-webkit-scrollbar-thumb,
 #scene-panel::-webkit-scrollbar-thumb,
 #event-log::-webkit-scrollbar-thumb,
-#inventory-panel::-webkit-scrollbar-thumb {
+#inventory-panel::-webkit-scrollbar-thumb,
+#territories-panel::-webkit-scrollbar-thumb {
     background: var(--accent-dim);
 }
 
@@ -744,16 +764,27 @@ details[open] > .drawer-summary::before {
     }
 
     #drawer-log {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #drawer-territories {
         flex: 1;
         display: flex;
         flex-direction: column;
         overflow: hidden;
     }
 
-    /* #event-log no longer needs its own border-left (moved to #right-column) */
+    /* #event-log and #territories-panel no longer need border-left (moved to #right-column) */
     #event-log {
+        border-left: none;
+    }
+
+    #territories-panel {
         flex: 1;
         border-left: none;
+        overflow-y: auto;
     }
 
 }

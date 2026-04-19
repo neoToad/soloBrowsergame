@@ -6,6 +6,7 @@ from .models import (
     Choice, CombatEncounter, CombatState, GameSession, Item,
     PlayerContext, PlayerProperty, Quest, Scene,
 )
+from .models.property import Property
 from .models.events import log_event, flush_event_log
 from .services.session     import load_session_context, create_session, build_render_context
 from .services.scene       import get_available_choices, get_notice_board, resolve_roll
@@ -23,12 +24,18 @@ from .constants import HUB_START_SCENE_KEY, SESSION_KEY, STAT_FIELD_MAP, USE_ITE
 
 
 def _htmx_response(request, context):
-    scene_html     = render_to_string('game/partials/scene_panel.html',      context, request)
-    stats_html     = render_to_string('game/partials/stats_bar.html',        context, request)
-    log_html       = render_to_string('game/partials/event_log.html',        context, request)
-    inventory_html = render_to_string('game/partials/inventory.html',        context, request)
-    mobile_html    = render_to_string('game/partials/mobile_stats_bar.html', context, request)
-    return HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html)
+    scene_html       = render_to_string('game/partials/scene_panel.html',      context, request)
+    stats_html       = render_to_string('game/partials/stats_bar.html',        context, request)
+    log_html         = render_to_string('game/partials/event_log.html',        context, request)
+    inventory_html   = render_to_string('game/partials/inventory.html',        context, request)
+    mobile_html      = render_to_string('game/partials/mobile_stats_bar.html', context, request)
+    territories_html = render_to_string('game/partials/territories.html',      context, request)
+    response = HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html + territories_html)
+    scene = context.get('scene')
+    if scene:
+        from django.urls import reverse
+        response['HX-Push-Url'] = reverse('scene_detail', kwargs={'scene_key': scene.key})
+    return response
 
 
 def game_hub(request):
@@ -62,17 +69,23 @@ def scene_detail(request, scene_key):
         notice_board = get_notice_board(scene, inventory, completed_map, effective_stats, flags=game_session.flags)
 
     player_properties = PlayerProperty.objects.filter(session=game_session).select_related('property')
+    all_territories   = Property.objects.filter(property_type='territory')
+    owned_territory_ids = {
+        pp.property_id for pp in player_properties if pp.property.property_type == 'territory'
+    }
     context = {
-        'session':           game_session,
-        'scene':             scene,
-        'stats':             stats,
-        'stat_bonuses':      effective_stats.bonuses,
-        'inventory':         inventory,
-        'choices':           choices,
-        'logs':              logs,
-        'combat_state':      combat_state,
-        'notice_board':      notice_board,
-        'player_properties': player_properties,
+        'session':              game_session,
+        'scene':                scene,
+        'stats':                stats,
+        'stat_bonuses':         effective_stats.bonuses,
+        'inventory':            inventory,
+        'choices':              choices,
+        'logs':                 logs,
+        'combat_state':         combat_state,
+        'notice_board':         notice_board,
+        'player_properties':    player_properties,
+        'all_territories':      all_territories,
+        'owned_territory_ids':  owned_territory_ids,
     }
     return render(request, 'game/scene.html', context)
 
