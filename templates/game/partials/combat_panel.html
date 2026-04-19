@@ -33,7 +33,7 @@
         <button
             hx-post="{% url 'combat_continue' %}"
             hx-target="#scene-panel"
-            hx-swap="innerHTML"
+            hx-swap="outerHTML"
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             hx-indicator="#loading-indicator">
             Continue
@@ -43,7 +43,7 @@
         <button
             hx-post="{% url 'combat_resolve_enemy' %}"
             hx-target="#scene-panel"
-            hx-swap="innerHTML"
+            hx-swap="outerHTML"
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             hx-indicator="#loading-indicator">
             Brace yourself
@@ -52,7 +52,7 @@
         <button
             hx-post="{% url 'combat_attack' %}"
             hx-target="#scene-panel"
-            hx-swap="innerHTML"
+            hx-swap="outerHTML"
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             hx-indicator="#loading-indicator">
             Move on him

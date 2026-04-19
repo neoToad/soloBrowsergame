@@ -80,7 +80,7 @@
                     {% if stats.stat_points > 0 %}disabled{% endif %}
                     hx-post="/game/choose/{{ choice.id }}/"
                     hx-target="#scene-panel"
-                    hx-swap="innerHTML"
+                    hx-swap="outerHTML"
                     hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                     hx-indicator="#loading-indicator">
                     {{ choice.label }}

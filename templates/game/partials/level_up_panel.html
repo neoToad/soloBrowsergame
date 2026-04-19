@@ -9,7 +9,7 @@
         <button
             hx-post="{% url 'level_up' %}"
             hx-target="#scene-panel"
-            hx-swap="innerHTML"
+            hx-swap="outerHTML"
             hx-vals='{"stat": "muscle"}'
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             hx-indicator="#loading-indicator">
@@ -18,7 +18,7 @@
         <button
             hx-post="{% url 'level_up' %}"
             hx-target="#scene-panel"
-            hx-swap="innerHTML"
+            hx-swap="outerHTML"
             hx-vals='{"stat": "reflexes"}'
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             hx-indicator="#loading-indicator">
@@ -27,7 +27,7 @@
         <button
             hx-post="{% url 'level_up' %}"
             hx-target="#scene-panel"
-            hx-swap="innerHTML"
+            hx-swap="outerHTML"
             hx-vals='{"stat": "cunning"}'
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             hx-indicator="#loading-indicator">
@@ -36,7 +36,7 @@
         <button
             hx-post="{% url 'level_up' %}"
             hx-target="#scene-panel"
-            hx-swap="innerHTML"
+            hx-swap="outerHTML"
             hx-vals='{"stat": "nerve"}'
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             hx-indicator="#loading-indicator">

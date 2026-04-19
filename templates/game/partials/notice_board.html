@@ -9,7 +9,7 @@
     <button
       hx-post="{% url 'start_quest' entry.quest.key %}"
       hx-target="#scene-panel"
-      hx-swap="innerHTML"
+      hx-swap="outerHTML"
       hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
       hx-indicator="#loading-indicator">
       Take the job
@@ -40,7 +40,7 @@
     <button
       hx-post="{% url 'start_quest' entry.quest.key %}"
       hx-target="#scene-panel"
-      hx-swap="innerHTML"
+      hx-swap="outerHTML"
       hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
       hx-indicator="#loading-indicator">
       Play again
