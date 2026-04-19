@@ -4,7 +4,7 @@ from django.template.loader import render_to_string
 
 from .models import (
     Choice, CombatEncounter, CombatState, GameSession, Item,
-    PlayerContext, PlayerProperty, Quest, Scene,
+    PlayerContact, PlayerContext, PlayerGangStanding, PlayerProperty, Quest, Scene,
 )
 from .models.property import Property
 from .models.events import log_event, flush_event_log
@@ -73,19 +73,23 @@ def scene_detail(request, scene_key):
     owned_territory_ids = {
         pp.property_id for pp in player_properties if pp.property.property_type == 'territory'
     }
+    player_contacts       = PlayerContact.objects.filter(session=game_session).select_related('contact')
+    player_gang_standings = PlayerGangStanding.objects.filter(session=game_session).select_related('gang')
     context = {
-        'session':              game_session,
-        'scene':                scene,
-        'stats':                stats,
-        'stat_bonuses':         effective_stats.bonuses,
-        'inventory':            inventory,
-        'choices':              choices,
-        'logs':                 logs,
-        'combat_state':         combat_state,
-        'notice_board':         notice_board,
-        'player_properties':    player_properties,
-        'all_territories':      all_territories,
-        'owned_territory_ids':  owned_territory_ids,
+        'session':                game_session,
+        'scene':                  scene,
+        'stats':                  stats,
+        'stat_bonuses':           effective_stats.bonuses,
+        'inventory':              inventory,
+        'choices':                choices,
+        'logs':                   logs,
+        'combat_state':           combat_state,
+        'notice_board':           notice_board,
+        'player_properties':      player_properties,
+        'all_territories':        all_territories,
+        'owned_territory_ids':    owned_territory_ids,
+        'player_contacts':        player_contacts,
+        'player_gang_standings':  player_gang_standings,
     }
     return render(request, 'game/scene.html', context)
 

@@ -11,14 +11,26 @@
                         </span>
                     </div>
                 {% else %}
-                    <div class="property-row territory-row territory-unowned">
+                    <div class="property-row territory-row">
                         <span class="property-name">{{ territory.name }}</span>
-                        <span class="property-meta territory-unowned-label">—</span>
+                        <span class="property-meta">—</span>
                     </div>
                 {% endif %}
             {% endfor %}
         </div>
     {% else %}
         <p class="item-empty">No territories exist.</p>
+    {% endif %}
+
+    {% if player_gang_standings %}
+        <p class="panel-label" style="margin-top: 14px;">[ Gangs ]</p>
+        <div class="item-list">
+            {% for pgs in player_gang_standings %}
+                <div class="property-row territory-row">
+                    <span class="property-name">{{ pgs.gang.name }}</span>
+                    <span class="property-meta">{{ pgs.standing }}</span>
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
 </div>

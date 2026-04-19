@@ -72,4 +72,15 @@
             {% endfor %}
         </div>
     {% endif %}
+
+    {% if player_contacts %}
+        <p class="panel-label" style="margin-top: 14px;">[ Contacts ]</p>
+        <div class="item-list">
+            {% for pc in player_contacts %}
+                <div class="property-row">
+                    <span class="property-name">{{ pc.contact.name }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>

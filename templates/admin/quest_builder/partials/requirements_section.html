@@ -98,6 +98,16 @@
                                         </select>
                                     </div>
 
+                                    <!-- Contact param -->
+                                    <div class="param-area param-area--contact" style="display: {% if req.condition_type == 'has_contact' or req.condition_type == 'missing_contact' %}block{% else %}none{% endif %};">
+                                        <select class="req-contact-id" style="font-size: 12px; min-width: 140px;">
+                                            <option value="">— select contact —</option>
+                                            {% for contact in all_contacts %}
+                                                <option value="{{ contact.id }}" {% if req.required_contact_id == contact.id %}selected{% endif %}>{{ contact.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
                                     <button type="button" class="button req-remove-row-btn" style="font-size: 11px; padding: 2px 7px; background: #dc3545; color: #fff; border: none; cursor: pointer;">✕</button>
                                 </div>
                             {% endfor %}
@@ -187,6 +197,16 @@
                         </select>
                     </div>
 
+                    <!-- Contact param -->
+                    <div class="param-area param-area--contact" style="display: none;">
+                        <select class="req-contact-id" style="font-size: 12px; min-width: 140px;">
+                            <option value="">— select contact —</option>
+                            {% for contact in all_contacts %}
+                                <option value="{{ contact.id }}">{{ contact.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
                     <button type="button" class="button req-remove-row-btn" style="font-size: 11px; padding: 2px 7px; background: #dc3545; color: #fff; border: none; cursor: pointer;">✕</button>
                 </div>
             </template>
@@ -221,8 +241,10 @@
         xp_gte:          'number',
         has_item:        'item',
         missing_item:    'item',
+        has_contact:     'contact',
+        missing_contact: 'contact',
     };
-    var allAreas = ['stat', 'flag', 'quest', 'number', 'item'];
+    var allAreas = ['stat', 'flag', 'quest', 'number', 'item', 'contact'];
 
     function updateParamVisibility(row, type) {
         allAreas.forEach(function (a) {
@@ -332,6 +354,8 @@
                     param = (row.querySelector('.req-number-val').value || '0').trim();
                 } else if (type === 'has_item' || type === 'missing_item') {
                     param = (row.querySelector('.req-item-id').value || '').trim();
+                } else if (type === 'has_contact' || type === 'missing_contact') {
+                    param = (row.querySelector('.req-contact-id').value || '').trim();
                 }
 
                 params['group_' + gi + '_req_' + ri + '_param']  = param;

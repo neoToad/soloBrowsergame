@@ -335,13 +335,6 @@ html, body {
     margin-left: 4px;
 }
 
-.territory-unowned .property-name {
-    color: var(--text-dim);
-}
-
-.territory-unowned .property-meta {
-    color: var(--text-dim);
-}
 
 /* EVENT LOG */
 
