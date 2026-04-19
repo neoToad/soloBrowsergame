@@ -12,7 +12,8 @@ from .models import (
     Arc, Quest, Item, Requirement, RequirementGroup, Scene, Choice,
     GameSession, PlayerStats, PlayerInventory, SceneItem, CompletedQuest,
     Enemy, CombatEncounter, CombatState, EventLog,
-    Property, PlayerProperty, RivalClaim
+    Property, PlayerProperty, RivalClaim,
+    Gang, Contact, SceneContact, PlayerContact, PlayerGangStanding,
 )
 
 # 2. Custom actions
@@ -25,8 +26,8 @@ def close_combat_states(modeladmin, request, queryset):
 class RequirementInline(admin.TabularInline):
     model = RequirementGroup.requirements.through
     extra = 1
-    fields = ('requirement', 'condition_type', 'stat_name', 'stat_value', 'required_item', 'required_quest')
-    readonly_fields = ('condition_type', 'stat_name', 'stat_value', 'required_item', 'required_quest')
+    fields = ('requirement', 'condition_type', 'stat_name', 'stat_value', 'required_item', 'required_quest', 'required_contact')
+    readonly_fields = ('condition_type', 'stat_name', 'stat_value', 'required_item', 'required_quest', 'required_contact')
 
     @admin.display(description='Type')
     def condition_type(self, obj):
@@ -48,6 +49,10 @@ class RequirementInline(admin.TabularInline):
     def required_quest(self, obj):
         return obj.requirement.required_quest if obj.requirement else ""
 
+    @admin.display(description='Contact')
+    def required_contact(self, obj):
+        return obj.requirement.required_contact if obj.requirement else ""
+
 class ChoiceRequirementGroupInline(admin.StackedInline):
     model = Choice.requirements.through
     extra = 0
@@ -67,6 +72,11 @@ class SceneItemInline(admin.TabularInline):
     model = SceneItem
     extra = 0
     fields = ('item', 'quantity', 'award_once')
+
+class SceneContactInline(admin.TabularInline):
+    model = SceneContact
+    extra = 0
+    fields = ('contact', 'action', 'award_once')
 
 class CombatEncounterInline(admin.StackedInline):
     model = CombatEncounter
@@ -91,6 +101,17 @@ class PlayerPropertyInline(admin.TabularInline):
     model = PlayerProperty
     extra = 0
     fields = ('property', 'is_contested')
+
+class PlayerContactInline(admin.TabularInline):
+    model = PlayerContact
+    extra = 0
+    fields = ('contact', 'acquired_at')
+    readonly_fields = ('acquired_at',)
+
+class PlayerGangStandingInline(admin.TabularInline):
+    model = PlayerGangStanding
+    extra = 0
+    fields = ('gang', 'standing')
 
 # 4. Admin classes
 @admin.register(Arc)
@@ -291,7 +312,7 @@ class ItemAdmin(admin.ModelAdmin):
 
 @admin.register(Requirement)
 class RequirementAdmin(admin.ModelAdmin):
-    list_display = ('condition_type', 'stat_name', 'required_item', 'required_quest', 'stat_value')
+    list_display = ('condition_type', 'stat_name', 'required_item', 'required_quest', 'required_contact', 'stat_value')
     search_fields = ('stat_name',)
 
 @admin.register(RequirementGroup)
@@ -327,7 +348,7 @@ class SceneAdmin(admin.ModelAdmin):
             'description': 'Stat rewards/penalties, property changes, and item consumption upon arrival.',
         }),
     )
-    inlines = [ChoiceInline, SceneItemInline, CombatEncounterInline]
+    inlines = [ChoiceInline, SceneItemInline, SceneContactInline, CombatEncounterInline]
     save_on_top = True
 
     @admin.display(description='Body Preview')
@@ -365,7 +386,7 @@ class GameSessionAdmin(admin.ModelAdmin):
     list_display = ('session_key', 'current_scene', 'created_at')
     search_fields = ('session_key',)
     readonly_fields = ('session_key', 'created_at')
-    inlines = [PlayerStatsInline, PlayerInventoryInline, PlayerPropertyInline]
+    inlines = [PlayerStatsInline, PlayerInventoryInline, PlayerPropertyInline, PlayerContactInline, PlayerGangStandingInline]
 
 @admin.register(PlayerStats)
 class PlayerStatsAdmin(admin.ModelAdmin):
@@ -448,3 +469,15 @@ class RivalClaimAdmin(admin.ModelAdmin):
     list_display = ('player_property', 'resolution_scene', 'created_at')
     list_select_related = True
     readonly_fields = ('created_at',)
+
+@admin.register(Gang)
+class GangAdmin(admin.ModelAdmin):
+    list_display = ('key', 'name')
+    search_fields = ('key', 'name')
+    prepopulated_fields = {'key': ('name',)}
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    list_display = ('key', 'name')
+    search_fields = ('key', 'name')
+    prepopulated_fields = {'key': ('name',)}
