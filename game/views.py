@@ -18,6 +18,7 @@ from .services.combat      import (
 from .services.inventory   import get_player_inventory, consume_item as consume_item_util
 from .services.flags       import set_flag, clear_flag
 from .services.arrival     import process_arrival
+from .services.property_service import apply_property_rewards
 from .services.progression import XP_AWARDS, LEVEL_UP_FLAVOR
 from .utils import roll_d20, stat_modifier, get_effective_stats, RollResult, DamageResult
 from .constants import HUB_START_SCENE_KEY, SESSION_KEY, STAT_FIELD_MAP, USE_ITEM_FLAVOR
@@ -26,11 +27,12 @@ from .constants import HUB_START_SCENE_KEY, SESSION_KEY, STAT_FIELD_MAP, USE_ITE
 def _htmx_response(request, context):
     scene_html       = render_to_string('game/partials/scene_panel.html',      context, request)
     stats_html       = render_to_string('game/partials/stats_bar.html',        context, request)
+    top_stats_html   = render_to_string('game/partials/top_stats_bar.html',    context, request)
     log_html         = render_to_string('game/partials/event_log.html',        context, request)
     inventory_html   = render_to_string('game/partials/inventory.html',        context, request)
     mobile_html      = render_to_string('game/partials/mobile_stats_bar.html', context, request)
     territories_html = render_to_string('game/partials/territories.html',      context, request)
-    response = HttpResponse(scene_html + stats_html + log_html + inventory_html + mobile_html + territories_html)
+    response = HttpResponse(scene_html + stats_html + top_stats_html + log_html + inventory_html + mobile_html + territories_html)
     scene = context.get('scene')
     if scene:
         from django.urls import reverse
@@ -67,6 +69,8 @@ def scene_detail(request, scene_key):
     notice_board = None
     if scene.is_hub:
         notice_board = get_notice_board(scene, inventory, completed_map, effective_stats, flags=game_session.flags)
+
+    apply_property_rewards(game_session, scene)
 
     player_properties = PlayerProperty.objects.filter(session=game_session).select_related('property')
     all_territories   = Property.objects.filter(property_type='territory')

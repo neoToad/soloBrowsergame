@@ -9,7 +9,8 @@
     "stat_value": 7,
     "required_item": null,
     "required_quest": null,
-    "required_ending_type": ""
+    "required_ending_type": "",
+    "required_contact": null
   }
 },
 {
@@ -22,7 +23,8 @@
     "stat_value": 0,
     "required_item": null,
     "required_quest": 2,
-    "required_ending_type": ""
+    "required_ending_type": "",
+    "required_contact": null
   }
 },
 {
@@ -35,7 +37,8 @@
     "stat_value": 2,
     "required_item": null,
     "required_quest": null,
-    "required_ending_type": ""
+    "required_ending_type": "",
+    "required_contact": null
   }
 },
 {
@@ -48,7 +51,8 @@
     "stat_value": 4,
     "required_item": null,
     "required_quest": null,
-    "required_ending_type": ""
+    "required_ending_type": "",
+    "required_contact": null
   }
 },
 {
@@ -61,7 +65,8 @@
     "stat_value": 0,
     "required_item": null,
     "required_quest": null,
-    "required_ending_type": ""
+    "required_ending_type": "",
+    "required_contact": null
   }
 },
 {
@@ -74,7 +79,8 @@
     "stat_value": 0,
     "required_item": null,
     "required_quest": null,
-    "required_ending_type": ""
+    "required_ending_type": "",
+    "required_contact": null
   }
 }
 ]

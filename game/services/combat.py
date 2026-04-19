@@ -78,8 +78,8 @@ def initialize_combat_state(session, scene):
 
 def resolve_combat_end(session, stats, inventory, completed_map, next_scene, combat_state, *, xp_award=0, ending_type='neutral'):
     from ..models import EventLog, CombatEncounter
-    from .progression import maybe_complete_quest, award_xp, LEVEL_UP_FLAVOR
-    from .inventory import award_scene_items
+    from .progression import award_xp, LEVEL_UP_FLAVOR
+    from .arrival import process_arrival
     from ..utils import get_effective_stats
     from .session import build_render_context
 
@@ -94,25 +94,25 @@ def resolve_combat_end(session, stats, inventory, completed_map, next_scene, com
     session.current_scene = next_scene
     session.save()
 
+    log_queue = []
+
     if encounter:
         if ending_type == 'victory' and encounter.victory_arrival_flavor:
-            EventLog.objects.create(session=session, text=encounter.victory_arrival_flavor)
+            log_queue.append(encounter.victory_arrival_flavor)
         elif ending_type == 'defeat' and encounter.defeat_arrival_flavor:
-            EventLog.objects.create(session=session, text=encounter.defeat_arrival_flavor)
+            log_queue.append(encounter.defeat_arrival_flavor)
 
-    quest_logs = maybe_complete_quest(session, stats, next_scene, completed_map)
-    for log_text in quest_logs:
-        EventLog.objects.create(session=session, text=log_text)
-
-    awarded = award_scene_items(session, next_scene, inventory)
-    for item, qty in awarded:
-        EventLog.objects.create(session=session, text=f"You picked up: {item.name} x{qty}.")
+    arrival_logs, _ = process_arrival(session, stats, inventory, completed_map, next_scene)
+    log_queue.extend(arrival_logs)
 
     if xp_award:
         combat_levels = award_xp(session, stats, xp_award)
-        EventLog.objects.create(session=session, text=f"+{xp_award} XP.")
+        log_queue.append(f"+{xp_award} XP.")
         for new_level in combat_levels:
-            EventLog.objects.create(session=session, text=LEVEL_UP_FLAVOR.get(new_level, "You feel stronger."))
+            log_queue.append(LEVEL_UP_FLAVOR.get(new_level, "You feel stronger."))
+
+    for text in log_queue:
+        EventLog.objects.create(session=session, text=text)
 
     effective_stats = get_effective_stats(stats, inventory)
     next_combat_state = initialize_combat_state(session, next_scene)

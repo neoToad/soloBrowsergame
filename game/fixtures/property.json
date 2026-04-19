@@ -24,5 +24,18 @@
     "is_contestable": false,
     "resolution_scene": null
   }
+},
+{
+  "model": "game.property",
+  "pk": 3,
+  "fields": {
+    "name": "Your dingy apartment",
+    "property_type": "safehouse",
+    "cash_per_turn": 0,
+    "heat_per_turn": 0,
+    "rep_per_turn": 0,
+    "is_contestable": false,
+    "resolution_scene": null
+  }
 }
 ]

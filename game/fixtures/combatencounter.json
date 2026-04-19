@@ -34,5 +34,17 @@
     "victory_arrival_flavor": "",
     "defeat_arrival_flavor": ""
   }
+},
+{
+  "model": "game.combatencounter",
+  "pk": 5,
+  "fields": {
+    "scene": 69,
+    "enemy": 1,
+    "victory_scene": 70,
+    "defeat_scene": 72,
+    "victory_arrival_flavor": "Terrell's on the ground. He's breathing. That's generous of you.",
+    "defeat_arrival_flavor": "The pavement comes up fast. Last thing you hear is footsteps leaving."
+  }
 }
 ]

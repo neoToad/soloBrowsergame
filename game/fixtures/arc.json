@@ -7,5 +7,14 @@
     "title": "Test",
     "order": 0
   }
+},
+{
+  "model": "game.arc",
+  "pk": 2,
+  "fields": {
+    "key": "intro",
+    "title": "Intro",
+    "order": 0
+  }
 }
 ]

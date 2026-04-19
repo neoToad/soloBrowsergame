@@ -77,6 +77,35 @@
 },
 {
   "model": "game.quest",
+  "pk": 8,
+  "fields": {
+    "key": "sisters_trouble",
+    "title": "Sisters Trouble",
+    "description": "Your phone buzzes. Your sister's name on the screen.\r\nYou haven't spoken since the trial.",
+    "is_unlocked": true,
+    "arc": 2,
+    "arc_order": 0,
+    "entrance_scene": 62,
+    "is_repeatable": true,
+    "requirements": [],
+    "hub_scenes": [
+      61
+    ],
+    "scenes": [
+      62,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73
+    ]
+  }
+},
+{
+  "model": "game.quest",
   "pk": 2,
   "fields": {
     "key": "street_debt",

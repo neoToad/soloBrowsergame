@@ -290,6 +290,193 @@
 },
 {
   "model": "game.choice",
+  "pk": 70,
+  "fields": {
+    "scene": 62,
+    "label": "Answer it",
+    "order": 0,
+    "target_scene": 66,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You pick up. Neither of you says anything for a moment.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 71,
+  "fields": {
+    "scene": 62,
+    "label": "Let it ring out",
+    "order": 0,
+    "target_scene": 66,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "It goes to voicemail. Twenty seconds later, a text: 'I need help. Please.' You decide to call back.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 73,
+  "fields": {
+    "scene": 66,
+    "label": "Tell her you'll handle it",
+    "order": 0,
+    "target_scene": 73,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "She hangs up before you can say anything else.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 74,
+  "fields": {
+    "scene": 66,
+    "label": "Ask her why she called you specifically",
+    "order": 0,
+    "target_scene": 67,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Silence. Then: 'Because you owe me one. You owe me about a thousand.'",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 75,
+  "fields": {
+    "scene": 67,
+    "label": "Tell her you'll handle it",
+    "order": 0,
+    "target_scene": 73,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "She hangs up. You sit with it for a minute before you move.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 76,
+  "fields": {
+    "scene": 73,
+    "label": "Talk him down",
+    "order": 0,
+    "target_scene": 68,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You keep your voice low. Make sure he has to lean in to hear you.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 77,
+  "fields": {
+    "scene": 73,
+    "label": "Don't waste words",
+    "order": 0,
+    "target_scene": 69,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You close the distance before he finishes the sentence.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 78,
+  "fields": {
+    "scene": 68,
+    "label": "Let him think about it",
+    "order": 0,
+    "target_scene": null,
+    "success_scene": 70,
+    "failure_scene": 69,
+    "arrival_flavor": "",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 80,
+  "fields": {
+    "scene": 71,
+    "label": "Back to the apartment",
+    "order": 0,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 81,
+  "fields": {
+    "scene": 72,
+    "label": "Back to the apartment",
+    "order": 0,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 82,
+  "fields": {
+    "scene": 70,
+    "label": "Go home",
+    "order": 0,
+    "target_scene": 71,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "The walk back is quiet. That's fine.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
   "pk": 1,
   "fields": {
     "scene": 1,

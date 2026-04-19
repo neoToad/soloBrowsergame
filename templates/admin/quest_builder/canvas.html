@@ -453,12 +453,12 @@
 <div id="htmx-sink" style="display:none;" aria-hidden="true"></div>
 
 <script>
-    document.body.addEventListener('htmx:afterSwap', function (event) {
-        if (event.target.id !== 'qb-toast-container') {
+    document.body.addEventListener('htmx:oobAfterSwap', function (event) {
+        if (event.detail.target.id !== 'qb-toast-container') {
             return;
         }
 
-        const toasts = event.target.querySelectorAll('.qb-toast');
+        const toasts = event.detail.target.querySelectorAll('.qb-toast');
         toasts.forEach(function (toast) {
             setTimeout(function () {
                 toast.remove();

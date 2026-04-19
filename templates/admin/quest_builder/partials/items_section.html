@@ -33,7 +33,7 @@
                             value="{{ si.quantity }}"
                             min="1"
                             style="width: 60px;">
-                        <button type="button" class="button" onclick="this.closest('.item-row').remove();" style="background: #dc3545; color: #fff; border: none; padding: 4px 8px; cursor: pointer;">✕</button>
+                        <button type="button" class="button js-remove-item-row" style="background: #dc3545; color: #fff; border: none; padding: 4px 8px; cursor: pointer;">✕</button>
                     </div>
                 {% endfor %}
             </div>
@@ -52,7 +52,7 @@
                         value="1"
                         min="1"
                         style="width: 60px;">
-                    <button type="button" class="button" onclick="this.closest('.item-row').remove();" style="background: #dc3545; color: #fff; border: none; padding: 4px 8px; cursor: pointer;">✕</button>
+                    <button type="button" class="button js-remove-item-row" style="background: #dc3545; color: #fff; border: none; padding: 4px 8px; cursor: pointer;">✕</button>
                 </div>
             </template>
 
@@ -69,19 +69,29 @@
     var section = document.getElementById('items-section');
     if (!section) return;
 
-    var addBtn = section.querySelector('#add-item-btn');
-    if (!addBtn) return;
+    function reindexRows() {
+        section.querySelectorAll('.item-row').forEach(function (row, i) {
+            row.querySelector('select').name = 'item_id_' + i;
+            row.querySelector('input[type="number"]').name = 'quantity_' + i;
+        });
+    }
 
-    addBtn.addEventListener('click', function () {
-        var rows = section.querySelectorAll('.item-row');
-        var index = rows.length;
-        var tpl = section.querySelector('#item-row-template');
-        if (!tpl) return;
-        var clone = tpl.content.cloneNode(true);
-        var div = clone.querySelector('.item-row');
-        div.querySelector('select').name = 'item_id_' + index;
-        div.querySelector('input[type="number"]').name = 'quantity_' + index;
-        section.querySelector('#items-rows').appendChild(div);
+    var addBtn = section.querySelector('#add-item-btn');
+    if (addBtn) {
+        addBtn.addEventListener('click', function () {
+            var tpl = section.querySelector('#item-row-template');
+            if (!tpl) return;
+            var clone = tpl.content.cloneNode(true);
+            section.querySelector('#items-rows').appendChild(clone);
+            reindexRows();
+        });
+    }
+
+    section.querySelector('#items-rows').addEventListener('click', function (e) {
+        var btn = e.target.closest('.js-remove-item-row');
+        if (!btn) return;
+        btn.closest('.item-row').remove();
+        reindexRows();
     });
 })();
 </script>
