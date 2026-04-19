@@ -6,7 +6,7 @@ from .quest_builder_views import (
     quest_validate, quest_builder_list, quest_builder_canvas,
     scene_panel, scene_save, scene_create, scene_delete, scene_move,
     choice_panel, choice_create, choice_save, choice_delete,
-    scene_items_save, scene_combat_save, choice_requirements_save,
+    scene_items_save, scene_combat_save, choice_requirements_save, scene_contacts_save,
 )
 from .models import (
     Arc, Quest, Item, Requirement, RequirementGroup, Scene, Choice,
@@ -233,6 +233,11 @@ class QuestAdmin(admin.ModelAdmin):
                 'quest-builder/<int:quest_id>/scene/<int:scene_id>/items/save/',
                 self.admin_site.admin_view(scene_items_save),
                 name='quest_builder_scene_items_save',
+            ),
+            path(
+                'quest-builder/<int:quest_id>/scene/<int:scene_id>/contacts/save/',
+                self.admin_site.admin_view(scene_contacts_save),
+                name='quest_builder_scene_contacts_save',
             ),
             path(
                 'quest-builder/<int:quest_id>/scene/<int:scene_id>/combat/save/',

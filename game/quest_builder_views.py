@@ -22,6 +22,7 @@ from .services.quest_builder import (
     update_scene_items as update_scene_items_service,
     update_combat_encounter as update_combat_encounter_service,
     build_requirement_groups_from_post as build_requirement_groups_from_post_service,
+    update_scene_contacts as update_scene_contacts_service,
 )
 from .constants import STAT_FIELD_MAP
 
@@ -313,6 +314,46 @@ def scene_items_save(request, quest_id, scene_id):
             'scene_items':   scene_items,
             'all_items':     all_items,
             'toast_message': 'Items saved.',
+        },
+        request=request,
+    )
+    return HttpResponse(html)
+
+
+def scene_contacts_save(request, quest_id, scene_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    quest = get_object_or_404(Quest, pk=quest_id)
+    scene = get_object_or_404(quest.scenes.all(), pk=scene_id)
+
+    contacts_data = []
+    index = 0
+    while True:
+        contact_id_key = f'contact_id_{index}'
+        action_key = f'action_{index}'
+        award_once_key = f'award_once_{index}'
+        if contact_id_key not in request.POST and action_key not in request.POST and award_once_key not in request.POST:
+            break
+        raw_award_once = (request.POST.get(award_once_key) or '').strip().lower()
+        contacts_data.append({
+            'contact_id': request.POST.get(contact_id_key, ''),
+            'action': request.POST.get(action_key, ''),
+            'award_once': raw_award_once in ('on', '1', 'true', 'yes'),
+        })
+        index += 1
+
+    scene_contacts = update_scene_contacts_service(scene.id, contacts_data)
+    all_contacts = list(Contact.objects.order_by('name'))
+
+    html = render_to_string(
+        'admin/quest_builder/partials/contacts_section.html',
+        {
+            'quest_id':      quest_id,
+            'scene':         scene,
+            'scene_contacts': scene_contacts,
+            'all_contacts':  all_contacts,
+            'toast_message': 'Contacts saved.',
         },
         request=request,
     )

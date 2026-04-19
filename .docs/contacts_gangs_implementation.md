@@ -3,25 +3,7 @@
 Work through these in order. Each prompt is self-contained and safe to hand to a fresh conversation.
 
 
-## 4. Quest Builder Views — `scene_panel` contact context
 
-**Context:** `scene_panel` in `game/quest_builder_views.py` (line 110) loads `scene_items` and `all_items` into its context. The template is `admin/quest_builder/partials/scene_panel.html`.
-
-**Task:**
-
-1. Import `Contact` from `..models` at the top of `quest_builder_views.py` (alongside the existing model imports).
-
-2. In `scene_panel`, after the `scene_items` load:
-   ```python
-   scene_contacts = list(scene.scene_contacts.select_related('contact').order_by('id')) if scene else []
-   all_contacts = list(Contact.objects.order_by('name'))
-   ```
-
-3. Add both to the context dict alongside `scene_items` / `all_items`.
-
-4. In `choice_requirements_save`, add `'all_contacts': list(Contact.objects.order_by('name'))` to the `render_to_string` context dict so the requirements partial can render a contact dropdown.
-
----
 
 ## 5. Quest Builder Views — `scene_contacts_save`
 
