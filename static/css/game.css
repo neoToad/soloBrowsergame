@@ -474,6 +474,14 @@ html, body {
     text-transform: uppercase;
 }
 
+.combat-defeated-msg {
+    color: var(--accent);
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
 /* XP / RANK (stats bar) */
 
 .rank-block {

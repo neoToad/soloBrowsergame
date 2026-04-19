@@ -222,13 +222,27 @@ def combat_attack(request):
                 f"You move on him — roll {p.roll} ({mod_str}) = {p.total} "
                 f"vs {enemy.defense} — Hit! {p.damage} damage."
             )
-        log_event(session, f"{enemy.name} goes down. You walk away.")
-        context = resolve_combat_end(
-            session, stats, inventory, completed_map,
-            encounter.victory_scene, combat_state,
-            xp_award=XP_AWARDS['combat_victory'],
-            ending_type='victory',
+        log_event(session, f"{enemy.name} goes down.")
+        combat_state.pending_victory = True
+        combat_state.save()
+        str_mod = stat_modifier(effective_stats.strength)
+        roll_result = RollResult(
+            roll=p.roll, modifier=str_mod, mod_display=mod_str,
+            total=p.total, dc=enemy.defense, stat='strength', success=p.hit,
         )
+        dmg_mod = max(0, str_mod)
+        damage_result = DamageResult(
+            die_roll=p.damage_die, die_label='d6',
+            modifier=dmg_mod, mod_display=f"+{dmg_mod}" if dmg_mod >= 0 else str(dmg_mod),
+            total=p.damage,
+        )
+        context = build_render_context(
+            session, session.current_scene, stats, effective_stats, inventory, completed_map,
+            combat_state=combat_state,
+            roll_result=roll_result,
+            damage_result=damage_result,
+        )
+        context['choices'] = []
         return _htmx_response(request, context)
 
     e = resolve_enemy_attack_util(enemy, effective_stats)
@@ -365,6 +379,34 @@ def combat_resolve_enemy(request):
         damage_result=damage_result,
     )
     context['choices'] = []
+    return _htmx_response(request, context)
+
+
+def combat_continue(request):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    session_pk = request.session.get(SESSION_KEY)
+    if not session_pk:
+        return redirect('game_hub')
+
+    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
+
+    try:
+        combat_state = session.combat_state
+    except CombatState.DoesNotExist:
+        return HttpResponse("No combat state.", status=400)
+
+    if not combat_state.pending_victory:
+        return HttpResponse("No pending victory.", status=400)
+
+    encounter = CombatEncounter.objects.get(scene=session.current_scene)
+    context = resolve_combat_end(
+        session, stats, inventory, completed_map,
+        encounter.victory_scene, combat_state,
+        xp_award=XP_AWARDS['combat_victory'],
+        ending_type='victory',
+    )
     return _htmx_response(request, context)
 
 

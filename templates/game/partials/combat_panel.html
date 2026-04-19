@@ -28,7 +28,17 @@
     <p class="combat-turn">Round {{ combat_state.turn_number }}</p>
 
     <div class="choices">
-        {% if combat_state.enemy_attack_pending %}
+        {% if combat_state.pending_victory %}
+        <p class="combat-defeated-msg">{{ combat_state.enemy.name }} has been defeated.</p>
+        <button
+            hx-post="{% url 'combat_continue' %}"
+            hx-target="#scene-panel"
+            hx-swap="innerHTML"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+            hx-indicator="#loading-indicator">
+            Continue
+        </button>
+        {% elif combat_state.enemy_attack_pending %}
         <p class="combat-incoming">{{ combat_state.enemy.name }} is coming at you —</p>
         <button
             hx-post="{% url 'combat_resolve_enemy' %}"
