@@ -40,7 +40,7 @@ def process_turn_income(session):
     return logs, totals
 
 
-def check_rival_contests(session):
+def trigger_rival_contest(session):
     """
     Rolls against heat to trigger a rival contest on a random contestable property.
     Returns (log_string: str | None, unlocked_scene: Scene | None).

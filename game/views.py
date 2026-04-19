@@ -10,7 +10,7 @@ from .models.events import log_event, flush_event_log
 from .services.session     import load_session_context, create_session, build_render_context
 from .services.scene       import get_available_choices, get_notice_board, resolve_roll
 from .services.combat      import (
-    get_or_create_combat_state, get_active_combat_state, resolve_combat_end,
+    initialize_combat_state, get_active_combat_state, resolve_combat_end,
     resolve_player_attack as resolve_player_attack_util,
     resolve_enemy_attack as resolve_enemy_attack_util,
 )
@@ -52,7 +52,7 @@ def scene_detail(request, scene_key):
 
     game_session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
     scene        = get_object_or_404(Scene, key=scene_key)
-    combat_state = get_or_create_combat_state(game_session, scene)
+    combat_state = initialize_combat_state(game_session, scene)
 
     choices = get_available_choices(scene, effective_stats, inventory, completed_map, flags=game_session.flags)
     logs    = game_session.log.all()[:10]
@@ -120,7 +120,7 @@ def choice_resolve(request, choice_id):
     log_queue.extend(arrival_logs)
     flush_event_log(session, log_queue)
 
-    combat_state    = get_or_create_combat_state(session, next_scene)
+    combat_state    = initialize_combat_state(session, next_scene)
     effective_stats = get_effective_stats(stats, inventory)
 
     is_htmx = request.headers.get('HX-Request') == 'true'
@@ -161,7 +161,7 @@ def start_quest(request, quest_key):
     arrival_logs, _ = process_arrival(session, stats, inventory, completed_map, next_scene)
     flush_event_log(session, [f"You took the job: {quest.title}.", *arrival_logs])
 
-    combat_state    = get_or_create_combat_state(session, next_scene)
+    combat_state    = initialize_combat_state(session, next_scene)
     effective_stats = get_effective_stats(stats, inventory)
 
     is_htmx = request.headers.get('HX-Request') == 'true'
@@ -195,19 +195,19 @@ def combat_attack(request):
     enemy     = combat_state.enemy
     encounter = CombatEncounter.objects.get(scene=session.current_scene)
 
-    p_hit, p_dmg, p_roll, p_total = resolve_player_attack_util(effective_stats, enemy)
+    p = resolve_player_attack_util(effective_stats, enemy)
     str_mod = stat_modifier(effective_stats.strength)
     mod_str = f"+{str_mod}" if str_mod >= 0 else str(str_mod)
 
-    if p_hit:
-        combat_state.enemy_hp = max(0, combat_state.enemy_hp - p_dmg)
+    if p.hit:
+        combat_state.enemy_hp = max(0, combat_state.enemy_hp - p.damage)
         combat_state.save()
 
     if combat_state.enemy_hp <= 0:
-        if p_hit:
+        if p.hit:
             log_event(session,
-                f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
-                f"vs {enemy.defense} — Hit! {p_dmg} damage."
+                f"You move on him — roll {p.roll} ({mod_str}) = {p.total} "
+                f"vs {enemy.defense} — Hit! {p.damage} damage."
             )
         log_event(session, f"{enemy.name} goes down. You walk away.")
         context = resolve_combat_end(
@@ -218,34 +218,34 @@ def combat_attack(request):
         )
         return _htmx_response(request, context)
 
-    e_hit, e_dmg, e_roll, e_total = resolve_enemy_attack_util(enemy, effective_stats)
+    e = resolve_enemy_attack_util(enemy, effective_stats)
 
-    if p_hit:
+    if p.hit:
         log_event(session,
-            f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
-            f"vs {enemy.defense} — Hit! {p_dmg} damage."
+            f"You move on him — roll {p.roll} ({mod_str}) = {p.total} "
+            f"vs {enemy.defense} — Hit! {p.damage} damage."
         )
     else:
         log_event(session,
-            f"You move on him — roll {p_roll} ({mod_str}) = {p_total} "
+            f"You move on him — roll {p.roll} ({mod_str}) = {p.total} "
             f"vs {enemy.defense} — Missed."
         )
 
-    combat_state.pending_e_roll  = e_roll
-    combat_state.pending_e_total = e_total
-    combat_state.pending_e_hit   = e_hit
-    combat_state.pending_e_dmg   = e_dmg
+    combat_state.pending_e_roll  = e.roll
+    combat_state.pending_e_total = e.total
+    combat_state.pending_e_hit   = e.hit
+    combat_state.pending_e_dmg   = e.damage
     combat_state.save()
 
     effective_stats = get_effective_stats(stats, inventory)
     roll_result = RollResult(
-        roll        = p_roll,
+        roll        = p.roll,
         modifier    = str_mod,
         mod_display = mod_str,
-        total       = p_total,
+        total       = p.total,
         dc          = enemy.defense,
         stat        = 'strength',
-        success     = p_hit,
+        success     = p.hit,
     )
     context = build_render_context(
         session, session.current_scene, stats, effective_stats, inventory, completed_map,

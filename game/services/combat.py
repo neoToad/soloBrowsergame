@@ -1,38 +1,23 @@
 import random
 from ..utils import roll_d20, stat_modifier
+from .types import CombatRollResult
 
-def resolve_player_attack(stats, enemy):
-    """
-    Resolves one player attack against enemy.
-    Player rolls: d20 + stat_modifier(strength) vs enemy.defense.
-    Damage on hit: d6 + max(0, stat_modifier(strength)).
-    Returns (hit: bool, damage: int, roll: int, total: int).
-    """
+def resolve_player_attack(stats, enemy) -> CombatRollResult:
     modifier = stat_modifier(stats.strength)
     roll  = roll_d20()
     total = roll + modifier
     hit   = total >= enemy.defense
-    damage = 0
-    if hit:
-        damage = random.randint(1, 6) + max(0, modifier)
-    return hit, damage, roll, total
+    damage = random.randint(1, 6) + max(0, modifier) if hit else 0
+    return CombatRollResult(hit=hit, damage=damage, roll=roll, total=total)
 
 
-def resolve_enemy_attack(enemy, stats):
-    """
-    Resolves one enemy attack against the player.
-    Enemy rolls: d20 + enemy.attack_modifier vs (10 + stat_modifier(agility)).
-    Damage on hit: random(enemy.damage_min, enemy.damage_max).
-    Returns (hit: bool, damage: int, roll: int, total: int).
-    """
+def resolve_enemy_attack(enemy, stats) -> CombatRollResult:
     player_defense = 10 + stat_modifier(stats.agility)
     roll  = roll_d20()
     total = roll + enemy.attack_modifier
     hit   = total >= player_defense
-    damage = 0
-    if hit:
-        damage = random.randint(enemy.damage_min, enemy.damage_max)
-    return hit, damage, roll, total
+    damage = random.randint(enemy.damage_min, enemy.damage_max) if hit else 0
+    return CombatRollResult(hit=hit, damage=damage, roll=roll, total=total)
 
 
 def get_active_combat_state(session):
@@ -50,7 +35,7 @@ def get_active_combat_state(session):
     return None
 
 
-def get_or_create_combat_state(session, scene):
+def initialize_combat_state(session, scene):
     """
     For a combat scene: returns an active CombatState, creating one if needed.
     If an inactive state exists for a combat scene, deletes and recreates it.
@@ -129,7 +114,7 @@ def resolve_combat_end(session, stats, inventory, completed_map, next_scene, com
             EventLog.objects.create(session=session, text=LEVEL_UP_FLAVOR.get(new_level, "You feel stronger."))
 
     effective_stats = get_effective_stats(stats, inventory)
-    next_combat_state = get_or_create_combat_state(session, next_scene)
+    next_combat_state = initialize_combat_state(session, next_scene)
     return build_render_context(
         session, next_scene, stats, effective_stats, inventory, completed_map,
         combat_state=next_combat_state,

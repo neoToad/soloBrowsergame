@@ -113,7 +113,6 @@ All groups on an object must pass (AND between groups, AND/OR within each group)
 4. If the scene has `requires_roll=True`, a d20 is rolled and compared to `roll_difficulty`
 5. The session's `current_scene` advances to the resolved target
 6. Quest completion is checked; XP and level-ups are awarded if applicable
-7. Scene unlocks (`SceneUnlock`) and `PlayerSceneState` are updated
 8. Flag effects (`set_flag_name` / `clear_flag_name`) on the taken choice are applied
 9. Scene items are awarded; `EventLog` entries are created
 10. On quest completion, property turn logic runs (income, contests, summary)

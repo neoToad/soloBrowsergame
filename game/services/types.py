@@ -2,6 +2,14 @@ from dataclasses import dataclass, field
 
 
 @dataclass
+class CombatRollResult:
+    hit:    bool
+    damage: int
+    roll:   int
+    total:  int
+
+
+@dataclass
 class RollResult:
     roll:        int
     modifier:    int

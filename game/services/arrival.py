@@ -3,7 +3,7 @@ from .progression import apply_stat_rewards, maybe_complete_quest
 from .property_service import (
     apply_property_rewards,
     process_turn_income,
-    check_rival_contests,
+    trigger_rival_contest,
     get_turn_summary,
     resolve_contest,
 )
@@ -41,7 +41,7 @@ def process_arrival(session, stats, inventory, completed_map, next_scene):
         income_logs, income_totals = process_turn_income(session)
         logs += income_logs
 
-        contest_warning, unlocked_scene = check_rival_contests(session)
+        contest_warning, unlocked_scene = trigger_rival_contest(session)
         if contest_warning:
             logs.append(contest_warning)
         newly_unlocked = [unlocked_scene] if unlocked_scene else []

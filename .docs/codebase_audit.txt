@@ -78,21 +78,7 @@ Codebase Audit: soloBrowserGame
   Scene has cash_reward, rep_reward, heat_change — three different suffixes for the same conceptual thing. Property uses income_per_turn, heat_reduction, rep_bonus. Makes templates error-prone.
 
   ---
-  Prioritized Refactor Plan
-
-  Phase 3 — Improve testability (Medium)
-
-  ┌─────┬─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┬───────────┬────────────────────────────────────────┐
-  │  #  │                                                              Task                                                               │   File    │                  Why                   │
-  ├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼────────────────────────────────────────┤
-  │ 9   │ Add tests for quest_builder.py using an in-memory factory, not fixtures                                                         │ tests.py  │ 757 lines of zero coverage             │
-  ├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼────────────────────────────────────────┤
-  │ 10  │ Standardize service return convention: all services return (result, list[str] logs) or a dedicated dataclass                    │ services/ │ Callers can stop memorizing signatures │
-  ├─────┼─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────┼────────────────────────────────────────┤
-  │ 11  │ Rename misleading functions: check_rival_contests → trigger_rival_contest, get_or_create_combat_state → initialize_combat_state │ services/ │ Low-risk, high-clarity                 │
-  └─────┴─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┴───────────┴────────────────────────────────────────┘
-
-  Phase 4 — Polish (Low)
+Phase 4 — Polish (Low)
 
   ┌─────┬─────────────────────────────────────────────────────────────────────────────────────────┬──────────────────────┐
   │  #  │                                          Task                                           │         File         │

@@ -849,22 +849,22 @@ class Phase4PerformanceTest(TestCase):
         self.assertEqual(totals, {'cash': 0, 'heat': 0, 'rep': 0})
         stats_save.assert_not_called()
 
-    def test_check_rival_contests_returns_none_without_contestable_properties(self):
+    def test_trigger_rival_contest_returns_none_without_contestable_properties(self):
         from unittest.mock import patch
-        from .services.property_service import check_rival_contests
+        from .services.property_service import trigger_rival_contest
 
         self.session.stats.heat = 200
         self.session.stats.save()
         with patch('game.services.property_service.random.random', return_value=0):
-            log, unlocked = check_rival_contests(self.session)
+            log, unlocked = trigger_rival_contest(self.session)
 
         self.assertIsNone(log)
         self.assertIsNone(unlocked)
 
-    def test_check_rival_contests_materializes_queryset_once(self):
+    def test_trigger_rival_contest_materializes_queryset_once(self):
         from unittest.mock import patch
         from .models import Property, PlayerProperty, RivalClaim
-        from .services.property_service import check_rival_contests
+        from .services.property_service import trigger_rival_contest
 
         start_scene = Scene.objects.create(
             key='phase4__contest_start',
@@ -901,7 +901,7 @@ class Phase4PerformanceTest(TestCase):
         with patch('game.services.property_service.random.random', return_value=0), patch(
             'game.services.property_service.random.choice', side_effect=lambda seq: seq[0]
         ) as mock_choice:
-            log, unlocked = check_rival_contests(self.session)
+            log, unlocked = trigger_rival_contest(self.session)
 
         self.assertIsNotNone(log)
         self.assertEqual(unlocked, resolution_scene)
@@ -1084,3 +1084,201 @@ class ProgressionTest(TestCase):
         self.assertEqual(self.stats.stat_points, 2)
         self.assertEqual(self.stats.experience, 650)
 
+
+class QuestBuilderValidationTest(TestCase):
+    """Tests for validate_quest() using factory-created objects — no fixtures."""
+
+    def _make_quest(self, key='qbv__quest', **kwargs):
+        return Quest.objects.create(key=key, title='QB Quest', description='', **kwargs)
+
+    def _make_scene(self, quest, key, scene_type='normal', **kwargs):
+        scene = Scene.objects.create(key=key, title=key, body='', scene_type=scene_type, **kwargs)
+        quest.scenes.add(scene)
+        return scene
+
+    def _make_choice(self, scene, label='Go', **kwargs):
+        return Choice.objects.create(scene=scene, label=label, order=1, **kwargs)
+
+    def _warning_types(self, quest):
+        from .services.quest_builder import validate_quest
+        return [w['type'] for w in validate_quest(quest.pk)]
+
+    # ── Task 9.1: orphan scene ──────────────────────────────────────────────────
+
+    def test_orphan_scene_detected(self):
+        quest = self._make_quest()
+        entry = self._make_scene(quest, 'qbv__entry')
+        quest.entrance_scene = entry
+        quest.save()
+        orphan = self._make_scene(quest, 'qbv__orphan')
+
+        self.assertIn('orphan_scene', self._warning_types(quest))
+
+    def test_no_orphan_when_pointed_to(self):
+        quest = self._make_quest()
+        entry = self._make_scene(quest, 'qbv__e')
+        dest  = self._make_scene(quest, 'qbv__d', scene_type='ending')
+        quest.entrance_scene = entry
+        quest.save()
+        self._make_choice(entry, target_scene=dest)
+
+        types = self._warning_types(quest)
+        self.assertNotIn('orphan_scene', types)
+
+    # ── Task 9.2: missing routing ───────────────────────────────────────────────
+
+    def test_missing_routing_detected(self):
+        quest = self._make_quest()
+        entry = self._make_scene(quest, 'qbv__e2')
+        quest.entrance_scene = entry
+        quest.save()
+        self._make_choice(entry, label='Nowhere')  # no target set
+
+        self.assertIn('missing_routing', self._warning_types(quest))
+
+    def test_no_missing_routing_when_target_set(self):
+        quest = self._make_quest()
+        entry = self._make_scene(quest, 'qbv__e3')
+        dest  = self._make_scene(quest, 'qbv__d3', scene_type='ending')
+        quest.entrance_scene = entry
+        quest.save()
+        self._make_choice(entry, target_scene=dest)
+
+        self.assertNotIn('missing_routing', self._warning_types(quest))
+
+    # ── Task 9.3: missing roll target ──────────────────────────────────────────
+
+    def test_missing_roll_target_detected(self):
+        quest = self._make_quest()
+        entry = self._make_scene(quest, 'qbv__e4', requires_roll=True)
+        quest.entrance_scene = entry
+        quest.save()
+        # Choice with only success set — no failure
+        dest = self._make_scene(quest, 'qbv__d4', scene_type='ending')
+        self._make_choice(entry, success_scene=dest)
+
+        self.assertIn('missing_roll_target', self._warning_types(quest))
+
+    def test_no_missing_roll_target_when_both_set(self):
+        quest = self._make_quest()
+        entry = self._make_scene(quest, 'qbv__e5', requires_roll=True)
+        win   = self._make_scene(quest, 'qbv__w5', scene_type='ending')
+        lose  = self._make_scene(quest, 'qbv__l5', scene_type='ending')
+        quest.entrance_scene = entry
+        quest.save()
+        self._make_choice(entry, success_scene=win, failure_scene=lose)
+
+        self.assertNotIn('missing_roll_target', self._warning_types(quest))
+
+    # ── Task 9.4: roll scene with direct choice ─────────────────────────────────
+
+    def test_roll_direct_choice_detected(self):
+        quest = self._make_quest()
+        entry = self._make_scene(quest, 'qbv__e6', requires_roll=True)
+        win   = self._make_scene(quest, 'qbv__w6', scene_type='ending')
+        lose  = self._make_scene(quest, 'qbv__l6', scene_type='ending')
+        quest.entrance_scene = entry
+        quest.save()
+        self._make_choice(entry, success_scene=win, failure_scene=lose)
+        # Add a stray direct-target choice on the roll scene
+        direct = self._make_scene(quest, 'qbv__direct6', scene_type='ending')
+        self._make_choice(entry, label='Direct', target_scene=direct)
+
+        self.assertIn('roll_direct_choice', self._warning_types(quest))
+
+    # ── Task 9.5: empty non-ending scene ───────────────────────────────────────
+
+    def test_empty_scene_detected(self):
+        quest = self._make_quest()
+        entry = self._make_scene(quest, 'qbv__e7')
+        empty = self._make_scene(quest, 'qbv__empty7')
+        quest.entrance_scene = entry
+        quest.save()
+        self._make_choice(entry, target_scene=empty)  # points to empty, no choices on empty
+
+        self.assertIn('empty_scene', self._warning_types(quest))
+
+    def test_ending_scene_no_empty_warning(self):
+        quest = self._make_quest()
+        entry = self._make_scene(quest, 'qbv__e8')
+        end   = self._make_scene(quest, 'qbv__end8', scene_type='ending')
+        quest.entrance_scene = entry
+        quest.save()
+        self._make_choice(entry, target_scene=end)
+
+        self.assertNotIn('empty_scene', self._warning_types(quest))
+
+    # ── Task 9.6: combat scene missing encounter ────────────────────────────────
+
+    def test_combat_missing_encounter_detected(self):
+        quest = self._make_quest()
+        entry  = self._make_scene(quest, 'qbv__e9')
+        combat = self._make_scene(quest, 'qbv__combat9', scene_type='combat')
+        quest.entrance_scene = entry
+        quest.save()
+        self._make_choice(entry, target_scene=combat)
+
+        self.assertIn('combat_missing_encounter', self._warning_types(quest))
+
+    # ── Task 9.7: ending scene with no hub-return choice ───────────────────────
+
+    def test_ending_no_hub_return_detected(self):
+        quest = self._make_quest()
+        entry = self._make_scene(quest, 'qbv__e10')
+        end   = self._make_scene(quest, 'qbv__end10', scene_type='ending')
+        quest.entrance_scene = entry
+        quest.save()
+        self._make_choice(entry, target_scene=end)
+        # ending has no choice pointing to a hub scene
+
+        self.assertIn('ending_no_hub_return', self._warning_types(quest))
+
+    def test_ending_with_hub_return_no_warning(self):
+        hub   = Scene.objects.create(key='qbv__hub', title='Hub', body='', scene_type='hub')
+        quest = self._make_quest(key='qbv__quest2')
+        entry = self._make_scene(quest, 'qbv__e11')
+        end   = self._make_scene(quest, 'qbv__end11', scene_type='ending')
+        quest.entrance_scene = entry
+        quest.save()
+        self._make_choice(entry, target_scene=end)
+        self._make_choice(end, label='Return', target_scene=hub)
+
+        self.assertNotIn('ending_no_hub_return', self._warning_types(quest))
+
+    # ── Task 9.8: duplicate scene keys ─────────────────────────────────────────
+    # Scene.key is unique at the DB level so duplicates can't exist in reality;
+    # we mock the queryset to verify the validator catches the case if it ever
+    # arises (e.g. after a data migration or manual DB edit).
+
+    def test_duplicate_key_detected(self):
+        from unittest.mock import patch, MagicMock
+        from types import SimpleNamespace
+        from .services.quest_builder import validate_quest
+
+        quest = self._make_quest(key='qbv__quest3')
+        entry = self._make_scene(quest, 'qbv__dupkey_a')
+        quest.entrance_scene = entry
+        quest.save()
+
+        fake_a = SimpleNamespace(id=1, key='shared_key', title='A', scene_type='normal', requires_roll=False)
+        fake_b = SimpleNamespace(id=2, key='shared_key', title='B', scene_type='normal', requires_roll=False)
+
+        with patch('game.services.quest_builder.Quest') as MockQuest, \
+             patch('game.services.quest_builder.Choice') as MockChoice, \
+             patch('game.services.quest_builder.CombatEncounter') as MockCE:
+
+            mock_q = MagicMock()
+            MockQuest.objects.get.return_value = mock_q
+            mock_q.entrance_scene_id = None
+            mock_q.is_unlocked = False
+            mock_q.hub_scenes.exists.return_value = False
+            mock_q.scenes.only.return_value = [fake_a, fake_b]
+            MockChoice.objects.filter.return_value.only.return_value = []
+            mock_ce_qs = MagicMock()
+            mock_ce_qs.only.return_value = mock_ce_qs
+            mock_ce_qs.values_list.return_value = []
+            MockCE.objects.filter.return_value = mock_ce_qs
+
+            types = [w['type'] for w in validate_quest(quest.pk)]
+
+        self.assertIn('duplicate_key', types)
