@@ -6,23 +6,7 @@
 
 ---
 
-## Prompt 1 — Scaffold + Quest + Scene base records
 
-Create `game/management/commands/import_quest.py`.
-
-### What to implement:
-- `Command.handle()` reads the YAML path argument, loads the file with `yaml.safe_load`, wraps everything in `transaction.atomic`.
-- **Step 1 – Quest:** `update_or_create` keyed on `key`. Set `title`, `description`, `is_repeatable`, `arc_order`. If `arc` is non-null, look up `Arc.objects.get(key=...)`. Leave `entrance_scene=None` and requirements/M2M empty for now.
-- **Step 2 – Scenes (pass 1):** Iterate `data['scenes']`. For each, `update_or_create` keyed on `key`. Set all scalar fields: `scene_type`, `title`, `body`, `order`, `requires_roll`, `roll_stat` (empty string if null), `roll_difficulty` (default 10 if null), `ending_type` (empty string if null), `cash_change`, `rep_change`, `heat_change`. Leave all FK fields (`consume_item`, `receive_property`, `lose_property`) as `None` for now. Collect results into `scene_map: dict[str, Scene]`.
-- **Step 3 – entrance_scene:** After all scenes exist, resolve `quest.entrance_scene = scene_map[data['quest']['entrance_scene']]` and `quest.save()`.
-- Print a summary line per step using `self.stdout.write`.
-
-### Notes:
-- `roll_stat`: YAML uses `null` when no roll — store as `""` (blank) in DB.
-- `ending_type`: YAML uses `null` when no ending — store as `""`.
-- `roll_difficulty`: YAML sends `null` when unused — store as `10` (model default).
-
----
 
 ## Prompt 2 — Choices
 

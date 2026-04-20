@@ -409,6 +409,7 @@ def _parse_scene_form(data):
         'key':                 (data.get('key') or '').strip(),
         'description':         (data.get('description') or '').strip(),
         'scene_type':          (data.get('scene_type') or 'normal').strip() or 'normal',
+        'ending_type':         (data.get('ending_type') or '').strip(),
         'requires_roll':       requires_roll,
         'roll_stat':           (data.get('roll_stat') or '').strip(),
         'roll_difficulty':     int(raw_dc) if raw_dc else 12,
@@ -488,6 +489,7 @@ def create_scene(quest_id, data):
         title=parsed['title'],
         key=key,
         scene_type=parsed['scene_type'],
+        ending_type=parsed['ending_type'],
         body=parsed['description'],
         requires_roll=parsed['requires_roll'],
         roll_stat=parsed['roll_stat'],
@@ -516,6 +518,7 @@ def update_scene(scene_id, data):
             raise ValueError(f'A scene with key "{incoming_key}" already exists in this quest.')
         scene.key = incoming_key
     scene.scene_type       = parsed['scene_type'] or scene.scene_type
+    scene.ending_type      = parsed['ending_type']
     scene.body             = parsed['description']
     scene.requires_roll    = parsed['requires_roll']
     scene.roll_stat        = parsed['roll_stat']

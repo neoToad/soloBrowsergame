@@ -34,6 +34,16 @@
             </select>
         </div>
 
+        <div id="ending-type-row" style="margin-bottom: 10px;">
+            <label for="ending-type"><strong>Ending Type</strong></label><br>
+            <select id="ending-type" name="ending_type" style="width: 100%;">
+                <option value="">— select —</option>
+                <option value="victory" {% if scene and scene.ending_type == 'victory' %}selected{% endif %}>Victory</option>
+                <option value="defeat"  {% if scene and scene.ending_type == 'defeat'  %}selected{% endif %}>Defeat</option>
+                <option value="neutral" {% if scene and scene.ending_type == 'neutral' %}selected{% endif %}>Neutral</option>
+            </select>
+        </div>
+
         <div style="margin-bottom: 12px;">
             <label for="scene-description"><strong>Description</strong></label><br>
             <textarea id="scene-description" name="description" rows="6" style="width: 100%;">{{ scene.body|default:'' }}</textarea>
@@ -213,6 +223,11 @@
             const combatSection = document.getElementById('combat-section');
             if (combatSection) {
                 combatSection.style.display = (type === 'combat') ? 'block' : 'none';
+            }
+
+            const endingTypeRow = panel.querySelector('#ending-type-row');
+            if (endingTypeRow) {
+                endingTypeRow.style.display = (type === 'ending') ? 'block' : 'none';
             }
         }
 
