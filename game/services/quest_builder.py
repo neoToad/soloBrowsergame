@@ -248,11 +248,11 @@ class QuestValidator:
                 for s in Scene.objects.filter(pk__in=external_target_ids).only('id', 'scene_type')
             }
 
-        self.encounter_scene_ids = set(
-            CombatEncounter.objects.filter(scene_id__in=scene_ids)
-            .only('id', 'scene_id')
-            .values_list('scene_id', flat=True)
+        encounters_qs = CombatEncounter.objects.filter(scene_id__in=scene_ids).only(
+            'id', 'scene_id', 'victory_scene_id', 'defeat_scene_id'
         )
+        self.encounters = list(encounters_qs)
+        self.encounter_scene_ids = {e.scene_id for e in self.encounters}
 
         self.choices_by_scene: dict[int, list] = {}
         for c in self.choices:
@@ -261,6 +261,10 @@ class QuestValidator:
         self.pointed_to: set[int] = set()
         for c in self.choices:
             for tid in (c.target_scene_id, c.success_scene_id, c.failure_scene_id):
+                if tid:
+                    self.pointed_to.add(tid)
+        for e in self.encounters:
+            for tid in (e.victory_scene_id, e.defeat_scene_id):
                 if tid:
                     self.pointed_to.add(tid)
 
@@ -361,6 +365,8 @@ class QuestValidator:
 
     def _check_empty_scene(self, scene, scene_choices):
         if scene_choices or scene.scene_type in ('ending', 'hub'):
+            return []
+        if scene.scene_type == 'combat' and scene.id in self.encounter_scene_ids:
             return []
         return [{
             'type': 'empty_scene',

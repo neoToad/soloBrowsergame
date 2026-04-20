@@ -3,9 +3,10 @@ import yaml
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from game.models.world import Arc, Quest, Scene, Choice, Contact
+from game.models.world import Arc, Quest, Scene, Choice, Contact, SceneItem, SceneContact
 from game.models.items import Item
 from game.models.requirements import Requirement, RequirementGroup
+from game.models.combat import CombatEncounter, Enemy
 
 
 class Command(BaseCommand):
@@ -97,12 +98,37 @@ class Command(BaseCommand):
             quest.requirements.set(quest_groups)
             self.stdout.write("Step 5 — Requirements processed")
 
+            # Step 6 — SceneItems, SceneContacts, CombatEncounters
+            for sdata in data["scenes"]:
+                scene_obj = scene_map[sdata["key"]]
+                self._import_scene_items(sdata, scene_obj)
+                self._import_scene_contacts(sdata, scene_obj)
+                self._import_combat_encounter(sdata, scene_obj, scene_map)
+            self.stdout.write("Step 6 — SceneItems, SceneContacts, CombatEncounters processed")
+
+            # Step 7 — M2M finalisation
+            quest.scenes.set(scene_map.values())
+            hub_keys = qdata.get("hub_scenes") or []
+            quest.hub_scenes.set(Scene.objects.filter(key__in=hub_keys))
+            self.stdout.write("Step 7 — M2M finalised")
+
+    def _get_or_warn(self, model, key):
+        if not key:
+            return None
+        try:
+            return model.objects.get(key=key)
+        except model.DoesNotExist:
+            self.stdout.write(self.style.WARNING(f"  WARNING: {model.__name__} '{key}' not found in DB — FK set to null"))
+
     def _resolve_scene(self, key, scene_map):
         if key is None:
             return None
         if key in scene_map:
             return scene_map[key]
-        return Scene.objects.get(key=key)
+        try:
+            return Scene.objects.get(key=key)
+        except Scene.DoesNotExist:
+            self.stdout.write(self.style.WARNING(f"  WARNING: scene '{key}' not found in DB — FK set to null"))
 
     def _import_choices(self, scene_data, scene_obj, scene_map):
         for choice in (scene_data.get("choices") or []):
@@ -136,10 +162,49 @@ class Command(BaseCommand):
                     stat_name=cdata.get("stat_name") or "",
                     stat_value=cdata.get("stat_value") or 0,
                     required_ending_type=cdata.get("required_ending_type") or "",
-                    required_item=Item.objects.get(key=cdata["required_item"]) if cdata.get("required_item") else None,
-                    required_quest=Quest.objects.get(key=cdata["required_quest"]) if cdata.get("required_quest") else None,
-                    required_contact=Contact.objects.get(key=cdata["required_contact"]) if cdata.get("required_contact") else None,
+                    required_item=self._get_or_warn(Item, cdata.get("required_item")),
+                    required_quest=self._get_or_warn(Quest, cdata.get("required_quest")),
+                    required_contact=self._get_or_warn(Contact, cdata.get("required_contact")),
                 )
                 group.requirements.add(req)
             groups.append(group)
         return groups
+
+    def _import_scene_items(self, scene_data, scene_obj):
+        SceneItem.objects.filter(scene=scene_obj).delete()
+        for entry in (scene_data.get("scene_items") or scene_data.get("items") or []):
+            SceneItem.objects.create(
+                scene=scene_obj,
+                item=self._get_or_warn(Item, entry["item"]),
+                quantity=entry.get("quantity", 1),
+                award_once=entry.get("award_once", True),
+            )
+
+    def _import_scene_contacts(self, scene_data, scene_obj):
+        SceneContact.objects.filter(scene=scene_obj).delete()
+        for entry in (scene_data.get("scene_contacts") or scene_data.get("contacts") or []):
+            SceneContact.objects.create(
+                scene=scene_obj,
+                contact=self._get_or_warn(Contact, entry["contact"]),
+                action=entry.get("action", "gain"),
+                award_once=entry.get("award_once", True),
+            )
+
+    def _import_combat_encounter(self, scene_data, scene_obj, scene_map):
+        if scene_data.get("scene_type") != "combat":
+            return
+        combat = scene_data.get("combat_encounter") or scene_data.get("combat") or {}
+        enemy = self._get_or_warn(Enemy, combat.get("enemy"))
+        if enemy is None:
+            self.stdout.write(self.style.WARNING(f"  WARNING: skipping CombatEncounter for '{scene_obj.key}' — enemy not found"))
+            return
+        CombatEncounter.objects.update_or_create(
+            scene=scene_obj,
+            defaults={
+                "enemy": enemy,
+                "victory_scene": self._resolve_scene(combat.get("victory_scene"), scene_map),
+                "defeat_scene":  self._resolve_scene(combat.get("defeat_scene"), scene_map),
+                "victory_arrival_flavor": combat.get("victory_arrival_flavor") or "",
+                "defeat_arrival_flavor":  combat.get("defeat_arrival_flavor") or "",
+            },
+        )
