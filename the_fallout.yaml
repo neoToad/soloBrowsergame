@@ -1,0 +1,541 @@
+quest:
+  key: the-fallout
+  title: The Fallout
+  description: >
+    Roughing up Terrell didn't end it. It made it worse.
+    Now your sister is being watched and someone wants
+    a conversation.
+  arc: null
+  arc_order: null
+  is_repeatable: false
+  hub_scenes: []
+  entrance_scene: the-fallout__the-second-call
+  requirements:
+    - label: Must have completed the call
+      logic: all
+      conditions:
+        - condition_type: quest_completed
+          required_quest: the-call
+          flag_name: null
+          stat_name: null
+          stat_value: null
+          required_item: null
+          required_ending_type: null
+          required_contact: null
+
+scenes:
+
+  # -------------------------
+  # ENTRANCE SCENE
+  # -------------------------
+
+  - key: the-fallout__the-second-call
+    scene_type: normal
+    title: The Second Call
+    order: 10
+    body: |
+      Three days since Terrell. You'd almost let yourself think it was
+      over.
+
+      Your sister's name on the screen again. You pick up before the
+      second ring. She doesn't bother with the anger this time. Just
+      tells you there's been a car outside her building since yesterday
+      morning. Different plates each time, same two guys. She noticed
+      because she's been noticing everything since you left.
+
+      She doesn't ask if you can help. She just stays on the line.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Ask where she is
+        order: 1
+        target_scene: the-fallout__her-building
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: She's inside. Has been since last night.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Tell her not to move
+        order: 2
+        target_scene: the-fallout__her-building
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: She says she knows. She wasn't planning on it.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # NORMAL SCENE
+  # -------------------------
+
+  - key: the-fallout__her-building
+    scene_type: normal
+    title: Her Building
+    order: 20
+    body: |
+      Decker Avenue looks the same as it always does. Except for the
+      grey sedan idling across the street. You clock the plates, clock
+      the two guys inside, clock the way they don't look at you when
+      you walk past. Professionals. Or close enough.
+
+      Your sister buzzes you in before you even knock. She's been
+      watching from the window.
+
+      She looks tired. Not scared — she's past scared. Just tired and
+      waiting to find out how bad it gets.
+
+      She hands you a card. Plain white. A name — Emilio — and an
+      address on the south side. It was slipped under her door this
+      morning. No note. Just the card.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Go meet Emilio
+        order: 1
+        target_scene: the-fallout__emilios-place
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You pocket the card. Your sister doesn't say goodbye.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # NORMAL SCENE
+  # -------------------------
+
+  - key: the-fallout__emilios-place
+    scene_type: normal
+    title: Emilio's Place
+    order: 30
+    body: |
+      The address takes you to a dry cleaning business on Harrow Street.
+      Clean windows, closed sign, lights on in the back. The guy at the
+      door looks you over and steps aside without a word.
+
+      Emilio is sitting at a small table with two cups of coffee. He's
+      older than you expected. Neat. The kind of man who folds his
+      jacket before he sits down. He gestures to the chair across from
+      him like you're here for a job interview.
+
+      He lets the silence do the work for a moment. Then he says he
+      understands you had an interaction with one of his people.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Sit down
+        order: 1
+        target_scene: the-fallout__the-sit-down
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You sit. You don't touch the coffee.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # ROLL SCENE
+  # -------------------------
+
+  - key: the-fallout__the-sit-down
+    scene_type: normal
+    title: The Sit Down
+    order: 40
+    body: |
+      Emilio lays it out simply. Terrell works for him. What happened
+      to Terrell was an insult, however justified the provocation.
+      Insults have costs. He's not angry about it — anger is
+      inefficient. He just needs the ledger balanced.
+
+      He slides a folded piece of paper across the table. A number.
+      You could pay it, if you had it. You don't. Which means you
+      need to give him something else — a reason to write it off.
+      You have about sixty seconds to figure out what that is.
+
+    roll:
+      requires_roll: true
+      roll_stat: charisma
+      roll_difficulty: 13
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Make him see it your way
+        order: 1
+        target_scene: null
+        success_scene: the-fallout__the-deal
+        failure_scene: the-fallout__the-fight
+        arrival_flavor: Emilio listens. Really listens. Then he nods, once, slowly.
+        failure_arrival_flavor: Something shifts in his expression. He folds the paper away. Two guys appear from the back.
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # COMBAT SCENE
+  # -------------------------
+
+  - key: the-fallout__the-fight
+    scene_type: combat
+    title: The Fight
+    order: 50
+    body: |
+      The two guys from the back are efficient. This isn't personal for
+      them either. Just business. The table goes over. The coffee spills.
+      Emilio watches from his chair like a man waiting for a meeting
+      to finish.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+    choices: []
+
+    combat_encounter:
+      enemy: emilios_guys
+      victory_scene: the-fallout__walked-out
+      defeat_scene: the-fallout__beaten
+      victory_arrival_flavor: Both of them are down. Emilio stands, straightens his jacket, and looks at you with something close to interest.
+      defeat_arrival_flavor: The floor comes up. Somewhere above you Emilio says to put you outside.
+
+  # -------------------------
+  # NORMAL SCENE
+  # -------------------------
+
+  - key: the-fallout__the-deal
+    scene_type: normal
+    title: The Deal
+    order: 60
+    body: |
+      Emilio picks up his coffee. Takes a sip. Sets it down.
+
+      He says your sister's debt is cleared. The guys outside her
+      building will be gone by tonight. In return you owe him one
+      job — nothing violent, nothing that puts you back inside.
+      He'll be in touch when he needs it.
+
+      He says it the way you'd confirm a delivery time. No threat in
+      it. No warmth either. Just the transaction, concluded.
+
+      He stands. The meeting is over.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Shake on it
+        order: 1
+        target_scene: the-fallout__done
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: His grip is firm. His eyes are already somewhere else.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # NORMAL SCENE
+  # -------------------------
+
+  - key: the-fallout__walked-out
+    scene_type: normal
+    title: Walked Out
+    order: 70
+    body: |
+      Emilio doesn't run. He just stands there while you step over his
+      guys and walk toward the door. You'd almost respect it.
+
+      At the door he says your name. You turn. He says the debt still
+      stands. Fighting his people doesn't clear it — it adds to it.
+      He'll be in touch.
+
+      He says it without any particular feeling. That's the part that
+      stays with you on the walk back.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Leave
+        order: 1
+        target_scene: the-fallout__done-hard
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: The door closes quietly behind you. No drama. Just business.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # NEUTRAL ENDING (negotiated)
+  # -------------------------
+
+  - key: the-fallout__done
+    scene_type: ending
+    title: Done
+    order: 80
+    body: |
+      Your sister calls that evening. The car is gone. She doesn't ask
+      what you said or what it cost you. You don't tell her.
+
+      She says thank you. First time in three years. It lands somewhere
+      quiet and stays there.
+
+      You've got a debt you didn't want and a man you don't know who
+      knows where to find you. Could be worse. Has been worse.
+
+      The corkboard has two jobs on it now.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: neutral
+
+    arrival:
+      cash_change: 0
+      rep_change: 5
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You put the kettle on. Small victories.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # NEUTRAL ENDING (fought out)
+  # -------------------------
+
+  - key: the-fallout__done-hard
+    scene_type: ending
+    title: Done Hard
+    order: 90
+    body: |
+      Your sister calls that evening. The car is gone. You don't know
+      if Emilio pulled them as a gesture or because he's regrouping.
+      Either way she sounds like she can breathe again.
+
+      You don't tell her about the debt. Or that it got worse tonight
+      instead of better. She's had enough for one week.
+
+      You've got heat you didn't need and a man with a long memory who
+      now has a reason to use it. The city feels a little smaller than
+      it did this morning.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: neutral
+
+    arrival:
+      cash_change: 0
+      rep_change: 5
+      heat_change: 15
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You take the long way home. Old habit. Good one.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # DEFEAT ENDING
+  # -------------------------
+
+  - key: the-fallout__beaten
+    scene_type: ending
+    title: Beaten
+    order: 100
+    body: |
+      You come to in the alley behind Harrow Street. They were
+      professional about it — nothing broken, nothing that won't
+      heal. Just enough to make the point.
+
+      Your phone has a text from an unknown number. One line.
+
+      The debt still stands. We'll be in touch.
+
+      You don't text back. You just sit in the alley for a while
+      and let the city go about its business around you.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: defeat
+
+    arrival:
+      cash_change: -50
+      rep_change: -10
+      heat_change: 20
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You walk slow. Nothing to rush home to.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []

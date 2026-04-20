@@ -3,7 +3,9 @@ import yaml
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from game.models.world import Arc, Quest, Scene, Choice
+from game.models.world import Arc, Quest, Scene, Choice, Contact
+from game.models.items import Item
+from game.models.requirements import Requirement, RequirementGroup
 
 
 class Command(BaseCommand):
@@ -79,6 +81,22 @@ class Command(BaseCommand):
                 total_choices += len(sdata.get("choices") or [])
             self.stdout.write(f"Step 4 — Choices: {total_choices} processed")
 
+            # Step 5 — Requirements
+            for sdata in data["scenes"]:
+                scene_obj = scene_map[sdata["key"]]
+                for choice_data in (sdata.get("choices") or []):
+                    choice_obj = Choice.objects.get(
+                        scene=scene_obj,
+                        label=choice_data["label"],
+                        order=choice_data.get("order", 0),
+                    )
+                    groups = self._import_requirement_groups(choice_data.get("requirements") or [])
+                    choice_obj.requirements.set(groups)
+
+            quest_groups = self._import_requirement_groups(qdata.get("requirements") or [])
+            quest.requirements.set(quest_groups)
+            self.stdout.write("Step 5 — Requirements processed")
+
     def _resolve_scene(self, key, scene_map):
         if key is None:
             return None
@@ -102,4 +120,26 @@ class Command(BaseCommand):
                     "failure_scene":          self._resolve_scene(choice.get("failure_scene"), scene_map),
                 },
             )
-            obj.requirements.clear()
+            obj.requirements.clear()  # populated in Step 5
+
+    def _import_requirement_groups(self, groups_data):
+        groups = []
+        for gdata in (groups_data or []):
+            group, _ = RequirementGroup.objects.get_or_create(label=gdata["label"])
+            group.logic = gdata.get("logic", "all")
+            group.save()
+            group.requirements.clear()
+            for cdata in (gdata.get("conditions") or []):
+                req = Requirement.objects.create(
+                    condition_type=cdata["condition_type"],
+                    flag_name=cdata.get("flag_name") or "",
+                    stat_name=cdata.get("stat_name") or "",
+                    stat_value=cdata.get("stat_value") or 0,
+                    required_ending_type=cdata.get("required_ending_type") or "",
+                    required_item=Item.objects.get(key=cdata["required_item"]) if cdata.get("required_item") else None,
+                    required_quest=Quest.objects.get(key=cdata["required_quest"]) if cdata.get("required_quest") else None,
+                    required_contact=Contact.objects.get(key=cdata["required_contact"]) if cdata.get("required_contact") else None,
+                )
+                group.requirements.add(req)
+            groups.append(group)
+        return groups

@@ -4,28 +4,8 @@
 **Run with:** `python manage.py import_quest quests/the-call.yaml`
 **Reference:** `.docs/QUEST_YAML_IMPORT.md`
 
----
 
 
-
-
----
-
-## Prompt 3 — Requirements (Quest + Choice)
-
-Add `_import_requirement_groups(groups_data)` helper that returns a list of saved `RequirementGroup` instances.
-
-### What to implement:
-- For each group dict, `get_or_create` a `RequirementGroup` by `label`. Set `logic`. Then for each condition in `conditions`:
-  - `create` (or reuse) a `Requirement` — set `condition_type`, `flag_name`, `stat_name`, `stat_value`.
-  - FK lookups: `required_item` → `Item.objects.get(key=...)`, `required_quest` → `Quest.objects.get(key=...)`, `required_contact` → `Contact.objects.get(key=...)`. Each is null if the YAML field is null.
-  - `group.requirements.add(req)`.
-- Return list of groups.
-- After choices are created: iterate scenes → iterate choices → call helper → `choice.requirements.set(groups)`.
-- For quest requirements: call helper → `quest.requirements.set(groups)`.
-
-### Notes:
-- Requirements are re-created cleanly each import run: clear the group's `requirements` M2M before re-adding, so re-runs don't duplicate conditions.
 
 ---
 
