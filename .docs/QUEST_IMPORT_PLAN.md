@@ -8,15 +8,6 @@
 
 
 
-## Prompt 2 — Choices
-
-Add a `_import_choices(scene_data, scene_obj, scene_map)` helper and call it in `handle()` after all scenes exist.
-
-### What to implement:
-- For each choice dict in `scene_data['choices']`, `update_or_create` keyed on `(scene=scene_obj, label=..., order=...)`.
-- Set `arrival_flavor`, `failure_arrival_flavor` (empty string if null), `set_flag_name`, `clear_flag_name` (empty string if null).
-- Resolve FKs: `target_scene`, `success_scene`, `failure_scene` — look up from `scene_map` if non-null, else `None`. These keys may point to hub scenes not in this YAML (e.g. `hub__apartment`), so fall back to `Scene.objects.get(key=...)` if not in scene_map.
-- Requirements left empty for now (`choice.requirements.clear()` — handled in Prompt 3).
 
 ---
 

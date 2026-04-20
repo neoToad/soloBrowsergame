@@ -3,7 +3,7 @@ import yaml
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from game.models.world import Arc, Quest, Scene
+from game.models.world import Arc, Quest, Scene, Choice
 
 
 class Command(BaseCommand):
@@ -70,3 +70,36 @@ class Command(BaseCommand):
             quest.entrance_scene = scene_map[entrance_key]
             quest.save()
             self.stdout.write(f"Step 3 — entrance_scene set to '{entrance_key}'")
+
+            # Step 4 — Choices
+            total_choices = 0
+            for sdata in data["scenes"]:
+                scene_obj = scene_map[sdata["key"]]
+                self._import_choices(sdata, scene_obj, scene_map)
+                total_choices += len(sdata.get("choices") or [])
+            self.stdout.write(f"Step 4 — Choices: {total_choices} processed")
+
+    def _resolve_scene(self, key, scene_map):
+        if key is None:
+            return None
+        if key in scene_map:
+            return scene_map[key]
+        return Scene.objects.get(key=key)
+
+    def _import_choices(self, scene_data, scene_obj, scene_map):
+        for choice in (scene_data.get("choices") or []):
+            obj, _ = Choice.objects.update_or_create(
+                scene=scene_obj,
+                label=choice["label"],
+                order=choice.get("order", 0),
+                defaults={
+                    "arrival_flavor":         choice.get("arrival_flavor") or "",
+                    "failure_arrival_flavor": choice.get("failure_arrival_flavor") or "",
+                    "set_flag_name":          choice.get("set_flag_name") or "",
+                    "clear_flag_name":        choice.get("clear_flag_name") or "",
+                    "target_scene":           self._resolve_scene(choice.get("target_scene"), scene_map),
+                    "success_scene":          self._resolve_scene(choice.get("success_scene"), scene_map),
+                    "failure_scene":          self._resolve_scene(choice.get("failure_scene"), scene_map),
+                },
+            )
+            obj.requirements.clear()
