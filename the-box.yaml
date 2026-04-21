@@ -1,0 +1,475 @@
+quest:
+  key: the-box
+  title: The Box
+  description: >
+    A jewelry store. A lockbox nobody's supposed to know about.
+    A job you're running alone. Should be simple.
+  arc: null
+  arc_order: null
+  is_repeatable: false
+  hub_scenes:
+    - hub__apartment
+  entrance_scene: the-box__casing-it
+  requirements: []
+
+scenes:
+
+  # -------------------------
+  # ENTRANCE SCENE
+  # -------------------------
+
+  - key: the-box__casing-it
+    scene_type: normal
+    title: Casing It
+    order: 10
+    body: |
+      You've been watching Marello's Fine Jewelers for a week. Long
+      enough to know the last staff member locks up at six-fifteen,
+      walks to the corner, catches the 47 bus. Long enough to know
+      the owner leaves separately, twenty minutes later, always the
+      same route. Long enough to have clocked the lockbox through the
+      window during a recon visit — you went in as a customer, asked
+      about a watch, left with nothing and a good look at the back
+      office.
+
+      The box is under the desk behind a false panel. Heavy. Combination
+      lock. You don't know what's in it. You know it's worth finding out.
+
+      It's nine-forty. The street is quiet. There are two ways in.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Take the alley door
+        order: 1
+        target_scene: the-box__inside
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: The lock gives on the third pick. You're in.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Go through the front window
+        order: 2
+        target_scene: the-box__inside
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Glass on the mat. Thirty seconds of exposure. Nobody sees.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # INSIDE THE STORE
+  # -------------------------
+
+  - key: the-box__inside
+    scene_type: normal
+    title: Inside
+    order: 20
+    body: |
+      Watch cases and ring displays glinting in the light bleeding
+      through the blinds. You move through to the back office, find
+      the false panel, pull out the lockbox. Heavier than you expected.
+      Combination-locked — no time to crack it here. You tuck it under
+      your arm.
+
+      Then the alarm goes.
+
+      Not the one you expected. A silent sensor on the office door you
+      didn't clock. Somewhere across the city a monitoring board just
+      lit up. You've got maybe four minutes before a patrol car rolls.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Move fast — straight out the way you came
+        order: 1
+        target_scene: the-box__the-run
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You move. Box under one arm, back the way you came, into the alley.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Kill the lights and wait it out
+        order: 2
+        target_scene: the-box__cornered
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Bad call. A patrol car rolls up in two minutes flat.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # ROLL SCENE — THE RUN
+  # -------------------------
+
+  - key: the-box__the-run
+    scene_type: normal
+    title: The Run
+    order: 30
+    body: |
+      Through the alley, box under your arm, moving fast. A patrol car
+      sweeps its light across the far end. You press into a doorway.
+      Hold your breath. The light moves slow.
+
+    roll:
+      requires_roll: true
+      roll_stat: agility
+      roll_difficulty: 12
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Wait for the gap and go
+        order: 1
+        target_scene: null
+        success_scene: the-box__clean
+        failure_scene: the-box__cornered
+        arrival_flavor: The light passes. They don't stop. You're three blocks away before you hear the sirens.
+        failure_arrival_flavor: A second car comes around the other end. Nowhere left to go.
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # CORNERED
+  # -------------------------
+
+  - key: the-box__cornered
+    scene_type: normal
+    title: Cornered
+    order: 40
+    body: |
+      Two officers. One car. They haven't drawn yet — the call came in
+      as a possible, not a confirmed. You still have the box. The street
+      is quiet enough that this could still go either way.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Talk your way out
+        order: 1
+        target_scene: the-box__talked-out
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You keep your voice level. Wrong street, wrong night, wrong person.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Run for it
+        order: 2
+        target_scene: the-box__fought-out
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You don't wait for them to decide.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # ROLL SCENE — TALKED OUT
+  # -------------------------
+
+  - key: the-box__talked-out
+    scene_type: normal
+    title: Talked Out
+    order: 50
+    body: |
+      Wrong address, wrong night, wrong person. You spin it quietly,
+      without any particular urgency. The box is explained or hidden.
+      The trick is meaning it more than they doubt it.
+
+    roll:
+      requires_roll: true
+      roll_stat: charisma
+      roll_difficulty: 13
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Hold the story together
+        order: 1
+        target_scene: null
+        success_scene: the-box__beaten
+        failure_scene: the-box__busted
+        arrival_flavor: Something shifts. They let you go. You don't look back.
+        failure_arrival_flavor: The story falls apart. One of them reaches for the radio.
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # COMBAT SCENE — FOUGHT OUT
+  # -------------------------
+
+  - key: the-box__fought-out
+    scene_type: combat
+    title: Fought Out
+    order: 60
+    body: |
+      It goes loud. They call it in before you're clear. The street
+      wakes up around you one light at a time.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+    choices: []
+
+    combat_encounter:
+      enemy: patrol_officers
+      victory_scene: the-box__beaten
+      defeat_scene: the-box__busted
+      victory_arrival_flavor: You're out a side door before the radio crackles. Two blocks, then walking pace.
+      defeat_arrival_flavor: They put you on the ground fast. Everything after that is paperwork.
+
+  # -------------------------
+  # VICTORY ENDING — CLEAN
+  # -------------------------
+
+  - key: the-box__clean
+    scene_type: ending
+    title: Clean
+    order: 70
+    body: |
+      Back at the apartment with the box on the table. You crack it
+      open twenty minutes later with a chisel and patience — the
+      combination lock gives at the hinge, not the dial. Inside:
+      a dozen pieces, mixed cut, wrapped in cloth. Rings, a bracelet,
+      something that might be a brooch. Nothing traceable on sight.
+
+      Nobody has your face. The city doesn't know your name.
+
+      You'll need to find someone who can move these. But that's
+      tomorrow's problem. Tonight you got out clean.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: victory
+
+    arrival:
+      cash_change: 100
+      rep_change: 10
+      heat_change: 5
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You put the box under the floorboard and sleep better than you have in weeks.
+        failure_arrival_flavor: null
+        set_flag_name: box_clean_exit
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # NEUTRAL ENDING — BEATEN
+  # -------------------------
+
+  - key: the-box__beaten
+    scene_type: ending
+    title: Beaten
+    order: 80
+    body: |
+      You got out. Barely. The box is on the table and the jewels
+      are inside it, which is the part that matters. But someone
+      saw something — a partial, a face, a figure in an alley. The
+      city is a little warmer now.
+
+      You crack the box open. A dozen pieces, mixed cut. Worth
+      finding someone to move them. Worth being careful about how.
+
+      You're still in this. Just more exposed than you planned to be.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: neutral
+
+    arrival:
+      cash_change: 0
+      rep_change: 5
+      heat_change: 20
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You take the long way. Keep your head down. The box stays under your jacket.
+        failure_arrival_flavor: null
+        set_flag_name: box_rough_exit
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # DEFEAT ENDING — BUSTED
+  # -------------------------
+
+  - key: the-box__busted
+    scene_type: ending
+    title: Busted
+    order: 90
+    body: |
+      Processed, printed, held overnight, released on a technicality
+      that won't hold twice. The box was confiscated before you found
+      out what was in it. Your parole officer is going to hear about
+      this. The job was a wash. Worse than a wash.
+
+      You walk out of the precinct into a grey morning with empty
+      pockets and a new entry on your record. The city looks exactly
+      the same as it did yesterday. It always does.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: defeat
+
+    arrival:
+      cash_change: -50
+      rep_change: -10
+      heat_change: 30
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Nothing to show for it. You put the kettle on and don't think about what's next.
+        failure_arrival_flavor: null
+        set_flag_name: box_busted
+        clear_flag_name: null
+        requirements: []

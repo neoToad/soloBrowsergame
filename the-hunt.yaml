@@ -1,0 +1,952 @@
+quest:
+  key: the-hunt
+  title: The Hunt
+  description: >
+    Marek's dry cleaner's has been dark for three days. He's still
+    in the city. You've been asking around. So has he.
+  arc: null
+  arc_order: null
+  is_repeatable: false
+  hub_scenes:
+    - hub__apartment
+  entrance_scene: the-hunt__word-on-marek
+  requirements:
+    - label: Must have completed the fence with victory or neutral
+      logic: any
+      conditions:
+        - condition_type: quest_ending
+          required_quest: the-fence
+          required_ending_type: victory
+          flag_name: null
+          stat_name: null
+          stat_value: null
+          required_item: null
+          required_contact: null
+        - condition_type: quest_ending
+          required_quest: the-fence
+          required_ending_type: neutral
+          flag_name: null
+          stat_name: null
+          stat_value: null
+          required_item: null
+          required_contact: null
+
+scenes:
+
+  # -------------------------
+  # ENTRANCE SCENE
+  # -------------------------
+
+  - key: the-hunt__word-on-marek
+    scene_type: normal
+    title: Word On Marek
+    order: 10
+    body: |
+      Marek's dry cleaner's has been dark for three days. Shutters
+      down, no sign, the kind of absence that means something. You've
+      been asking around — carefully, through the right people. Word
+      comes back that Marek hasn't skipped. He's still in the city,
+      staying low, waiting to see if the heat from the Ansel Street
+      job dies down. Someone puts a name to an address: a storage
+      facility off Crane Road he uses to stage goods before they move.
+      He's been seen there twice this week.
+
+      What nobody mentions — because nobody knows — is that Marek
+      has been asking around too.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Go to the storage facility
+        order: 1
+        target_scene: the-hunt__crane-road
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You go at night. The place is quieter than it should be.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # CRANE ROAD
+  # -------------------------
+
+  - key: the-hunt__crane-road
+    scene_type: normal
+    title: Crane Road
+    order: 20
+    body: |
+      A row of orange roller doors under a sodium light. Unit 14
+      at the far end has a padlock that's been opened recently —
+      the ground around it scuffed, a coffee cup by the door. Inside:
+      empty crates, packing materials, a folding table with a city
+      map pinned to it. Marek's been planning something.
+
+      Then the roller door behind you comes down.
+
+      Three men. Marek's not among them. One of them says Marek
+      sends his regards.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Fight your way out
+        order: 1
+        target_scene: the-hunt__brawl
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Three men, tight quarters, low light. You've had worse.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Stall — find out what they know
+        order: 2
+        target_scene: the-hunt__stall
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You keep your hands loose and your voice calm. Like you expected this.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # ROLL SCENE — STALL
+  # -------------------------
+
+  - key: the-hunt__stall
+    scene_type: normal
+    title: Stall
+    order: 30
+    body: |
+      You buy time with words — calm, unhurried, like you're not
+      the one who's cornered. Like you walked in knowing exactly
+      what was waiting. The trick is making it convincing enough
+      that one of them blinks first.
+
+    roll:
+      requires_roll: true
+      roll_stat: charisma
+      roll_difficulty: 12
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Hold the performance together
+        order: 1
+        target_scene: null
+        success_scene: the-hunt__cracks
+        failure_scene: the-hunt__brawl
+        arrival_flavor: One of them glances at the other. Just for a second. That's enough.
+        failure_arrival_flavor: They stop listening. The closest one moves first.
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # COMBAT SCENE — BRAWL
+  # -------------------------
+
+  - key: the-hunt__brawl
+    scene_type: combat
+    title: Brawl
+    order: 40
+    body: |
+      Three men in a storage unit. The map on the folding table
+      is the only thing worth saving.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+    choices: []
+
+    combat_encounter:
+      enemy: mareks_men
+      victory_scene: the-hunt__after-the-brawl
+      defeat_scene: the-hunt__worked-over
+      victory_arrival_flavor: Two of them are down. The third one runs. You let him — you need him to carry a message back.
+      defeat_arrival_flavor: Three on one in a locked room. The numbers catch up with you.
+
+  # -------------------------
+  # AFTER THE BRAWL
+  # -------------------------
+
+  - key: the-hunt__after-the-brawl
+    scene_type: normal
+    title: After The Brawl
+    order: 50
+    body: |
+      You search the unit. The city map has three locations circled
+      in red marker — one of them is crossed out, which means two
+      still matter. There's also a phone on the folding table,
+      unlocked. Recent calls, one number that keeps coming up.
+
+      Sitting in the corner, zip-tied to a folding chair and furious
+      about it, is a woman. She was already here when Marek's men
+      arrived. She's been trying to get to Marek herself for two months.
+      Her name is Sable.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Cut her loose and hear her out
+        order: 1
+        target_scene: the-hunt__sable
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: She works the zip tie off her wrists and doesn't say thank you. You appreciate that.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Cut her loose and take the map
+        order: 2
+        target_scene: the-hunt__sable
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: She picks up the phone before you can. Says she's coming whether you like it or not.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # CRACKS (stall success path)
+  # -------------------------
+
+  - key: the-hunt__cracks
+    scene_type: normal
+    title: Cracks
+    order: 55
+    body: |
+      One of Marek's men — younger, less certain — starts filling
+      silence with information. Marek's moving tonight. The goods,
+      the cash, all of it. There's a woman they were supposed to
+      deal with too, already in the unit when they arrived. They
+      haven't decided what to do with her yet.
+
+      You use the distraction to move. Two uncertain seconds are
+      enough.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Take out the men and free the woman
+        order: 1
+        target_scene: the-hunt__sable
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Fast and clean. The woman is already pulling at her zip ties when you reach her.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # SABLE
+  # -------------------------
+
+  - key: the-hunt__sable
+    scene_type: normal
+    title: Sable
+    order: 60
+    body: |
+      Sable ran errands for Marek eighteen months ago — courier work,
+      nothing heavy. Then Marek decided she knew too much about a
+      particular shipment and made her life difficult in the specific
+      way that people like Marek do. She's been building a picture
+      of his operation ever since.
+
+      She knows where he's going tonight. She also knows she can't
+      get there alone. She makes clear she prefers not to go there
+      alone.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_contacts:
+      - contact: sable
+        action: gain
+        award_once: true
+
+    scene_items: []
+
+    choices:
+      - label: Take her in
+        order: 1
+        target_scene: the-hunt__together
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: She nods. Doesn't smile. You head out.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Take the information and go alone
+        order: 2
+        target_scene: the-hunt__alone
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: She reads you immediately. Folds her arms.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # ROLL SCENE — ALONE
+  # -------------------------
+
+  - key: the-hunt__alone
+    scene_type: normal
+    title: Alone
+    order: 70
+    body: |
+      You try to extract Marek's location without committing to
+      the alliance. Sable reads you immediately. She wants a
+      commitment, not a maybe.
+
+    roll:
+      requires_roll: true
+      roll_stat: charisma
+      roll_difficulty: 12
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Hold your ground
+        order: 1
+        target_scene: null
+        success_scene: the-hunt__marek-found
+        failure_scene: the-hunt__together
+        arrival_flavor: She gives it up. Says she hopes you're better at finishing things than starting them.
+        failure_arrival_flavor: The information and her come as a package. You can take it or leave it.
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # TOGETHER
+  # -------------------------
+
+  - key: the-hunt__together
+    scene_type: normal
+    title: Together
+    order: 80
+    body: |
+      Marek is at a warehouse on the south docks, loading a van.
+      He's moving faster than expected — someone told him the
+      storage unit went wrong. You and Sable have a narrow window.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Hit it now before he's gone
+        order: 1
+        target_scene: the-hunt__the-warehouse
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: No time for a plan. You move.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Cut off his exit first
+        order: 2
+        target_scene: the-hunt__cut-off
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You split up. Sable keeps eyes on Marek while you move to block the van.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # ROLL SCENE — CUT OFF
+  # -------------------------
+
+  - key: the-hunt__cut-off
+    scene_type: normal
+    title: Cut Off
+    order: 85
+    body: |
+      One exit. If you can block it before he loads up, Marek
+      has nowhere to go. Sable's on the other side. Timing is
+      everything.
+
+    roll:
+      requires_roll: true
+      roll_stat: agility
+      roll_difficulty: 11
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Move into position
+        order: 1
+        target_scene: null
+        success_scene: the-hunt__the-warehouse
+        failure_scene: the-hunt__the-warehouse
+        arrival_flavor: Marek's cornered before he knows it.
+        failure_arrival_flavor: He clocks you. By the time you reach the warehouse he's ready.
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # COMBAT SCENE — THE WAREHOUSE
+  # -------------------------
+
+  - key: the-hunt__the-warehouse
+    scene_type: combat
+    title: The Warehouse
+    order: 90
+    body: |
+      Marek and two men. He's not a fighter but he doesn't need
+      to be — his men are. Sable takes one side. You take the other.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+    choices: []
+
+    combat_encounter:
+      enemy: mareks_men
+      victory_scene: the-hunt__marek-cornered
+      defeat_scene: the-hunt__worked-over
+      victory_arrival_flavor: Marek backs into the van. Nowhere left to go.
+      defeat_arrival_flavor: They're ready for you. The warehouse floor comes up fast.
+
+  # -------------------------
+  # MAREK FOUND (solo path)
+  # -------------------------
+
+  - key: the-hunt__marek-found
+    scene_type: normal
+    title: Marek Found
+    order: 88
+    body: |
+      Same warehouse, same window. But you're alone and Marek
+      has one more man than you expected. You watch from outside
+      for a minute. There's a smarter angle here if you're patient
+      enough to find it.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Go in anyway
+        order: 1
+        target_scene: the-hunt__the-warehouse
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Three on one. You've had worse. You tell yourself that.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Wait and find a smarter angle
+        order: 2
+        target_scene: the-hunt__wait
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You settle in. Watch the pattern. There's something here.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # ROLL SCENE — WAIT
+  # -------------------------
+
+  - key: the-hunt__wait
+    scene_type: normal
+    title: Wait
+    order: 89
+    body: |
+      Patience. The warehouse has a rhythm — a loading pattern,
+      a blind spot on the north side where the van blocks the
+      sight line. If you move at the right moment, you're inside
+      before anyone knows it.
+
+    roll:
+      requires_roll: true
+      roll_stat: intellect
+      roll_difficulty: 13
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Move when the moment comes
+        order: 1
+        target_scene: null
+        success_scene: the-hunt__marek-cornered
+        failure_scene: the-hunt__the-warehouse
+        arrival_flavor: You're behind Marek before his men see you. Clean entry.
+        failure_arrival_flavor: The moment doesn't come. You go in anyway.
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # MAREK CORNERED
+  # -------------------------
+
+  - key: the-hunt__marek-cornered
+    scene_type: normal
+    title: Marek Cornered
+    order: 100
+    body: |
+      Marek, cornered, does what cornered men do — he offers
+      something. Not the jewels, those are already moved. But
+      he has information. There's a buyer, a name, someone
+      further up the chain. He's offering it as a trade: walk
+      away, and the name is yours.
+
+      Sable, if she's here, doesn't trust it. The player has
+      to decide.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: null
+
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Take the name and let him go
+        order: 1
+        target_scene: the-hunt__took-the-deal
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: He says the name. Callum Voss. Import business, clean on paper.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Take the name and don't honor the deal
+        order: 2
+        target_scene: the-hunt__took-everything
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: He gives up the name. Then you take the rest anyway.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Ignore the offer — this was never about information
+        order: 3
+        target_scene: the-hunt__no-deal
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You didn't come here for names. Marek knows that now.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # VICTORY ENDING — TOOK THE DEAL
+  # -------------------------
+
+  - key: the-hunt__took-the-deal
+    scene_type: ending
+    title: Took The Deal
+    order: 110
+    body: |
+      The name Marek gives is Callum Voss. Import business, clean
+      on paper, not clean underneath. Sable writes it down like
+      she already half-knew it. Marek walks. Neither of you watch
+      him go.
+
+      The jewels are gone. But Voss is a door, and doors are worth
+      more than jewelry.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: victory
+
+    arrival:
+      cash_change: 200
+      rep_change: 20
+      heat_change: 5
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Sable says she'll be in touch. You believe her.
+        failure_arrival_flavor: null
+        set_flag_name: hunt_victory
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # VICTORY ENDING — TOOK EVERYTHING
+  # -------------------------
+
+  - key: the-hunt__took-everything
+    scene_type: ending
+    title: Took Everything
+    order: 120
+    body: |
+      The name, the cash from the van, and Marek's phone. You
+      don't honor the deal. Sable doesn't object. Marek watches
+      you walk out with everything he has left and doesn't say
+      a word — which means he's already thinking about what
+      comes next.
+
+      So are you.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: victory
+
+    arrival:
+      cash_change: 350
+      rep_change: 25
+      heat_change: 15
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Marek's phone has seventeen contacts you don't recognize yet. That's tomorrow's problem.
+        failure_arrival_flavor: null
+        set_flag_name: hunt_victory
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # VICTORY ENDING — NO DEAL
+  # -------------------------
+
+  - key: the-hunt__no-deal
+    scene_type: ending
+    title: No Deal
+    order: 130
+    body: |
+      You didn't come here for information. Marek knows that now.
+      Sable zip-ties him to the van door — returning the favor —
+      and you're gone before anyone comes looking.
+
+      Clean. Uncomplicated. The kind of ending that doesn't
+      follow you home.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: victory
+
+    arrival:
+      cash_change: 100
+      rep_change: 15
+      heat_change: 5
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Sable walks with you as far as the corner. Doesn't say anything. Doesn't need to.
+        failure_arrival_flavor: null
+        set_flag_name: hunt_victory
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # DEFEAT ENDING — WORKED OVER
+  # -------------------------
+
+  - key: the-hunt__worked-over
+    scene_type: ending
+    title: Worked Over
+    order: 140
+    body: |
+      You come to outside — the storage unit, or the warehouse,
+      depending on how far you got. Sable is gone, or was never
+      there. Marek is gone. Whatever you came for is gone with him.
+
+      He's still out there, still moving, and now he knows you're
+      serious enough to be a problem. That's something. Not much.
+      But something.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+
+    ending:
+      ending_type: defeat
+
+    arrival:
+      cash_change: -50
+      rep_change: -5
+      heat_change: 10
+      consume_item: null
+      receive_property: null
+      lose_property: null
+
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You walk it off. The city doesn't care either way.
+        failure_arrival_flavor: null
+        set_flag_name: hunt_defeat
+        clear_flag_name: null
+        requirements: []

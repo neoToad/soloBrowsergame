@@ -7,7 +7,7 @@ from ..constants import STAT_FIELD_MAP
 class Arc(models.Model):
     key   = models.SlugField(unique=True)
     title = models.CharField(max_length=200)
-    order = models.IntegerField(default=0, null=True, blank=True)
+    order = models.IntegerField(default=0)
 
     class Meta:
         ordering = ['order']
@@ -30,7 +30,7 @@ class Quest(models.Model):
                       on_delete=models.SET_NULL,
                       related_name='quests'
                   )
-    arc_order       = models.IntegerField(default=0)
+    arc_order       = models.IntegerField(default=0, null=True, blank=True,)
     entrance_scene  = models.ForeignKey(
                           'Scene',
                           null=True, blank=True,

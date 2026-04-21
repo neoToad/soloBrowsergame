@@ -1,4 +1,4 @@
-HUB_START_SCENE_KEY = 'hub__back_home'
+HUB_START_SCENE_KEY = 'hub__apartment'
 SESSION_KEY = 'game_session_id'
 
 STAT_FIELD_MAP = {
