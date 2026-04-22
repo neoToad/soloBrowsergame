@@ -518,7 +518,7 @@ html, body {
 
 /* LEVEL UP PANEL */
 
-#level-up-panel {
+.level-up-panel {
     border: 1px solid var(--warning);
     padding: 14px 16px;
     display: flex;
@@ -1362,7 +1362,7 @@ details[open] > .drawer-summary::before {
     .bar-val.damage-flash { animation: none; }
     .choices button,
     .item-use-btn         { transition: background 0.15s, color 0.15s; }  /* restore, drop transform */
-    #level-up-panel       { animation: levelup-pulse 1.8s ease-in-out infinite; } /* drop enter */
+    .level-up-panel       { animation: levelup-pulse 1.8s ease-in-out infinite; } /* drop enter */
     .roll-result,
     .roll-verdict         { animation: none; }
 }

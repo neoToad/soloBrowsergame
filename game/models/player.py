@@ -31,6 +31,7 @@ class PlayerStats(models.Model):
     level       = models.IntegerField(default=1)
     experience  = models.IntegerField(default=0)
     stat_points = models.IntegerField(default=0)
+    stat_points_awarded = models.IntegerField(default=0)
     cash = models.IntegerField(default=0)
     heat = models.IntegerField(default=0)
     # TODO: heat decay per turn is planned behaviour — subtract a fixed amount

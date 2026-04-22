@@ -6,7 +6,8 @@ def award_xp(session, stats, amount):
     """
     Adds `amount` XP to stats.experience.
     Handles multiple level-ups if a single award bridges more than one threshold.
-    Awards 1 stat_point per level gained. Caps at MAX_LEVEL.
+    Awards unspent stat points from lifetime XP milestones (1 per 100 XP).
+    Uses stat_points_awarded as the high-water mark to avoid over/under granting.
     Saves stats before returning.
     Returns a list of new level numbers reached (empty list if no level-up).
     Callers are responsible for creating EventLog entries from the return value.
@@ -18,13 +19,39 @@ def award_xp(session, stats, amount):
         next_level = stats.level + 1
         if stats.experience >= XP_THRESHOLDS[next_level]:
             stats.level = next_level
-            stats.stat_points += 1
             levels_gained.append(next_level)
         else:
             break
 
+    eligible_points = stats.experience // 100
+    new_points = max(0, eligible_points - stats.stat_points_awarded)
+    if new_points:
+        stats.stat_points += new_points
+    stats.stat_points_awarded = eligible_points
+
     stats.save()
     return levels_gained
+
+
+def spend_stat_point(stats, stat_name, stat_field_map):
+    """
+    Spends one unspent stat point on one of the four spendable player stats.
+    Returns a tuple: (public_stat_name, db_field_name, new_value).
+    Raises ValueError on invalid stat name or when no points are available.
+    """
+    if stats.stat_points <= 0:
+        raise ValueError("No stat points available.")
+
+    public_name = (stat_name or "").lower()
+    field = stat_field_map.get(public_name)
+    if not field:
+        raise ValueError("Invalid stat.")
+
+    current_val = getattr(stats, field)
+    setattr(stats, field, current_val + 1)
+    stats.stat_points -= 1
+    stats.save()
+    return public_name, field, current_val + 1
 
 
 def apply_stat_rewards(session, stats, obj):

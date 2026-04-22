@@ -19,7 +19,7 @@ from .services.inventory   import get_player_inventory, consume_item as consume_
 from .services.flags       import set_flag, clear_flag
 from .services.arrival     import process_arrival
 from .services.property_service import apply_property_rewards
-from .services.progression import XP_AWARDS, LEVEL_UP_FLAVOR
+from .services.progression import XP_AWARDS, LEVEL_UP_FLAVOR, spend_stat_point
 from .utils import roll_d20, stat_modifier, get_effective_stats, RollResult, DamageResult
 from .constants import HUB_START_SCENE_KEY, SESSION_KEY, STAT_FIELD_MAP, USE_ITEM_FLAVOR
 
@@ -428,20 +428,13 @@ def level_up(request):
 
     session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
 
-    if stats.stat_points <= 0:
-        return HttpResponse("No stat points available.", status=400)
+    stat_name = request.POST.get('stat', '')
+    try:
+        public_name, _field, new_value = spend_stat_point(stats, stat_name, STAT_FIELD_MAP)
+    except ValueError as exc:
+        return HttpResponse(str(exc), status=400)
 
-    stat_name = request.POST.get('stat', '').lower()
-    field = STAT_FIELD_MAP.get(stat_name)
-    if not field:
-        return HttpResponse("Invalid stat.", status=400)
-
-    current_val = getattr(stats, field)
-    setattr(stats, field, current_val + 1)
-    stats.stat_points -= 1
-    stats.save()
-
-    log_event(session, f"{stat_name.upper()} increased to {current_val + 1}.")
+    log_event(session, f"{public_name.upper()} increased to {new_value}.")
 
     scene           = session.current_scene
     effective_stats = get_effective_stats(stats, inventory)

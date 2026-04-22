@@ -412,6 +412,17 @@ class LevelUpTest(TestCase):
         self.assertContains(response, "MOVING UP")
         self.assertContains(response, "Word travels fast.")
 
+    def test_scene_hides_level_up_panel_when_none_available(self):
+        self.stats.stat_points = 0
+        self.stats.save()
+
+        response = self.client.get(
+            reverse('scene_detail', kwargs={'scene_key': self.session.current_scene.key})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "MOVING UP")
+
 class UseItemTest(TestCase):
     def setUp(self):
         from ..models import Item, PlayerInventory
@@ -996,6 +1007,7 @@ class ProgressionTest(TestCase):
         self.stats.level = 1
         self.stats.experience = 150
         self.stats.stat_points = 0
+        self.stats.stat_points_awarded = 0
         self.stats.save()
 
         levels = award_xp(self.session, self.stats, 500)
@@ -1003,8 +1015,41 @@ class ProgressionTest(TestCase):
 
         self.assertEqual(levels, [2, 3])
         self.assertEqual(self.stats.level, 3)
-        self.assertEqual(self.stats.stat_points, 2)
         self.assertEqual(self.stats.experience, 650)
+        self.assertEqual(self.stats.stat_points, 6)
+        self.assertEqual(self.stats.stat_points_awarded, 6)
+
+    def test_award_xp_irregular_increments_do_not_over_or_under_grant_points(self):
+        from ..services.progression import award_xp
+
+        self.stats.experience = 0
+        self.stats.stat_points = 0
+        self.stats.stat_points_awarded = 0
+        self.stats.save()
+
+        award_xp(self.session, self.stats, 7)
+        award_xp(self.session, self.stats, 133)
+        award_xp(self.session, self.stats, 250)
+        self.stats.refresh_from_db()
+
+        self.assertEqual(self.stats.experience, 390)
+        self.assertEqual(self.stats.stat_points, 3)
+        self.assertEqual(self.stats.stat_points_awarded, 3)
+
+    def test_award_xp_catches_up_legacy_rows_on_first_post_migration_xp_gain(self):
+        from ..services.progression import award_xp
+
+        self.stats.experience = 550
+        self.stats.stat_points = 0
+        self.stats.stat_points_awarded = 0
+        self.stats.save()
+
+        award_xp(self.session, self.stats, 1)
+        self.stats.refresh_from_db()
+
+        self.assertEqual(self.stats.experience, 551)
+        self.assertEqual(self.stats.stat_points, 5)
+        self.assertEqual(self.stats.stat_points_awarded, 5)
 
 
 class QuestBuilderValidationTest(TestCase):

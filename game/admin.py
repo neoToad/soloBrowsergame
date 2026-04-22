@@ -88,7 +88,7 @@ class PlayerStatsInline(admin.StackedInline):
     model = PlayerStats
     extra = 0
     fields = ('strength', 'agility', 'intellect', 'charisma', 'hp', 'max_hp', 'cash', 'heat', 'rep')
-    readonly_fields = ('level', 'experience', 'stat_points')
+    readonly_fields = ('level', 'experience', 'stat_points', 'stat_points_awarded')
     can_delete = False
 
 class PlayerInventoryInline(admin.TabularInline):
