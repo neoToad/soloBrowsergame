@@ -2,6 +2,9 @@
     <div class="scene-title" title="{{ scene.title }}">{{ scene.title }}</div>
     <span class="type-badge type-badge-{{ scene.scene_type }}">{{ scene.scene_type }}</span>
 </div>
+{% if scene.scene_type == 'ending' and scene.ending_type %}
+    <div class="ending-type-badge ending-type-badge-{{ scene.ending_type }}">{{ scene.ending_type }}</div>
+{% endif %}
 <div class="scene-key">{{ scene.key }}</div>
 {% if scene.hub_exits %}
     <div class="hub-exit-list">

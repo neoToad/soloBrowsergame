@@ -22,7 +22,7 @@ def get_canvas_data(quest_id):
     """
     quest = Quest.objects.get(pk=quest_id)
     scenes_qs = quest.scenes.only(
-        'id', 'canvas_x', 'canvas_y', 'scene_type', 'key', 'title', 'requires_roll'
+        'id', 'canvas_x', 'canvas_y', 'scene_type', 'key', 'title', 'requires_roll', 'ending_type'
     )
     
     scenes = []
@@ -45,6 +45,7 @@ def get_canvas_data(quest_id):
             'key': s.key,
             'title': s.title,
             'requires_roll': s.requires_roll,
+            'ending_type': s.ending_type,
         }
         scenes.append(scene_data)
         scene_ids.append(s.id)
@@ -221,6 +222,34 @@ def get_canvas_data(quest_id):
         'canvas_width': canvas_width,
         'canvas_height': canvas_height,
     }
+
+
+def get_scene_hub_exits(scene_id, quest_id):
+    quest_scene_ids = set(
+        Scene.objects.filter(quests__id=quest_id).values_list('id', flat=True)
+    )
+    choices = list(
+        Choice.objects.filter(scene_id=scene_id).only('id', 'label', 'target_scene_id')
+    )
+    external_ids = [
+        c.target_scene_id for c in choices
+        if c.target_scene_id and c.target_scene_id not in quest_scene_ids
+    ]
+    if not external_ids:
+        return []
+    hub_map = {
+        s.id: s for s in Scene.objects.filter(
+            pk__in=external_ids, scene_type='hub'
+        ).only('id', 'key', 'title')
+    }
+    return [
+        {'hub_key': hub_map[c.target_scene_id].key,
+         'hub_title': hub_map[c.target_scene_id].title,
+         'choice_label': c.label}
+        for c in choices
+        if c.target_scene_id in hub_map
+    ]
+
 
 class QuestValidator:
     def __init__(self, quest_id):

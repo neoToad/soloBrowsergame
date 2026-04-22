@@ -31,5 +31,73 @@
       4
     ]
   }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 8,
+  "fields": {
+    "label": "Must have completed sisters trouble",
+    "logic": "all",
+    "requirements": [
+      10
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 9,
+  "fields": {
+    "label": "Clean or rough exit from the box",
+    "logic": "any",
+    "requirements": [
+      15,
+      16
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 10,
+  "fields": {
+    "label": "Got busted on the box",
+    "logic": "all",
+    "requirements": [
+      17
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 11,
+  "fields": {
+    "label": "Must have completed the box",
+    "logic": "all",
+    "requirements": [
+      18
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 12,
+  "fields": {
+    "label": "Must have completed the fence with victory or neutral",
+    "logic": "any",
+    "requirements": [
+      21,
+      22
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 13,
+  "fields": {
+    "label": "Must have been defeated by the fence",
+    "logic": "all",
+    "requirements": [
+      24
+    ]
+  }
 }
 ]

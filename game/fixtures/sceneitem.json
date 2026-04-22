@@ -98,5 +98,35 @@
     "quantity": 1,
     "award_once": true
   }
+},
+{
+  "model": "game.sceneitem",
+  "pk": 15,
+  "fields": {
+    "scene": 69,
+    "item": 1,
+    "quantity": 1,
+    "award_once": true
+  }
+},
+{
+  "model": "game.sceneitem",
+  "pk": 18,
+  "fields": {
+    "scene": 138,
+    "item": 9,
+    "quantity": 1,
+    "award_once": true
+  }
+},
+{
+  "model": "game.sceneitem",
+  "pk": 19,
+  "fields": {
+    "scene": 139,
+    "item": 9,
+    "quantity": 1,
+    "award_once": true
+  }
 }
 ]

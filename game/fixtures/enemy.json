@@ -54,5 +54,75 @@
     "damage_min": 2,
     "damage_max": 8
   }
+},
+{
+  "model": "game.enemy",
+  "pk": 5,
+  "fields": {
+    "key": "emilios_guys",
+    "name": "Emilio's Guys",
+    "description": "Tough guys",
+    "max_hp": 10,
+    "attack_modifier": 0,
+    "defense": 8,
+    "damage_min": 1,
+    "damage_max": 2
+  }
+},
+{
+  "model": "game.enemy",
+  "pk": 6,
+  "fields": {
+    "key": "patrol_officers",
+    "name": "Patrol Officers",
+    "description": "Patrol Officers",
+    "max_hp": 10,
+    "attack_modifier": 0,
+    "defense": 8,
+    "damage_min": 1,
+    "damage_max": 4
+  }
+},
+{
+  "model": "game.enemy",
+  "pk": 7,
+  "fields": {
+    "key": "precinct_officer",
+    "name": "precinct_officer",
+    "description": "precinct_officer",
+    "max_hp": 10,
+    "attack_modifier": 0,
+    "defense": 8,
+    "damage_min": 1,
+    "damage_max": 4
+  }
+},
+{
+  "model": "game.enemy",
+  "pk": 8,
+  "fields": {
+    "key": "mareks_men",
+    "name": "mareks_men",
+    "description": "mareks_men",
+    "max_hp": 10,
+    "attack_modifier": 0,
+    "defense": 8,
+    "damage_min": 1,
+    "damage_max": 4
+  }
+},
+{
+  "model": "game.enemy",
+  "pk": 9,
+  "fields": {
+    "key": "garrett",
+    "name": "garrett",
+    "description": "garrett",
+    "max_hp": 10,
+    "attack_modifier": 0,
+    "defense": 8,
+    "damage_min": 1,
+    "damage_max": 4
+  }
 }
 ]

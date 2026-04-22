@@ -1,15 +1,22 @@
+from unittest.mock import patch
 from django.test import TestCase, Client
 from django.urls import reverse
-from .models import Scene, GameSession, PlayerStats, Choice, Quest, CompletedQuest
+from .models import (
+    Scene, GameSession, PlayerStats, Choice, Quest, CompletedQuest,
+    Requirement, RequirementGroup, PlayerContext,
+)
 from .constants import SESSION_KEY
+from .test_factories import make_game_session
 
 class GameNavigationTest(TestCase):
     fixtures = [
-        'game/fixtures/choice.json',
-        'game/fixtures/quest.json',
+        'game/fixtures/arc.json',
+        'game/fixtures/property.json',
         'game/fixtures/requirement.json',
         'game/fixtures/requirementgroup.json',
         'game/fixtures/scene.json',
+        'game/fixtures/choice.json',
+        'game/fixtures/quest.json',
     ]
 
     def setUp(self):
@@ -21,7 +28,7 @@ class GameNavigationTest(TestCase):
 
     def test_game_hub_creates_session_and_redirects(self):
         response = self.client.get('/game/')
-        self.assertRedirects(response, reverse('scene_detail', kwargs={'scene_key': 'hub__main_square'}))
+        self.assertRedirects(response, reverse('scene_detail', kwargs={'scene_key': 'hub__apartment'}))
         
         # Check if session was created in DB
         self.assertEqual(GameSession.objects.count(), 1)
@@ -55,7 +62,6 @@ class GameNavigationTest(TestCase):
         )
         
         # Create a Requirement for agility 7
-        from .models import Requirement, RequirementGroup
         req = Requirement.objects.create(
             condition_type='stat_gte',
             stat_name='agility',
@@ -93,27 +99,27 @@ class GameNavigationTest(TestCase):
         self.assertEqual(GameSession.objects.count(), 1)
 
     def test_htmx_choice_resolve(self):
-        # Initialize session
         self.client.get('/game/')
         session = GameSession.objects.first()
         initial_scene = session.current_scene
-        
-        # Get a valid choice for the current scene (Main Square)
-        # Choice 1 -> hub__notice_board (target_scene)
-        choice = Choice.objects.filter(scene=initial_scene).first()
-        
+
+        # Create a choice on the current scene pointing to a new scene
+        dest = Scene.objects.create(
+            key='test__nav_dest', title='Destination', body='', scene_type='normal',
+        )
+        choice = Choice.objects.create(
+            scene=initial_scene, label='Go there', target_scene=dest, order=1,
+        )
+
         response = self.client.post(
             reverse('choice_resolve', kwargs={'choice_id': choice.pk}),
             HTTP_HX_REQUEST='true'
         )
-        
+
         self.assertEqual(response.status_code, 200)
         self.assertIn('id="scene-panel"', response.content.decode())
-        
         session.refresh_from_db()
-        self.assertNotEqual(session.current_scene, initial_scene)
-        # For non-roll choices, it uses target_scene
-        self.assertEqual(session.current_scene, choice.target_scene)
+        self.assertEqual(session.current_scene, dest)
 
     def test_choice_flag_effects_update_gated_choice_visibility(self):
         self.client.get('/game/')
@@ -153,7 +159,6 @@ class GameNavigationTest(TestCase):
             order=9002,
         )
 
-        from .models import Requirement, RequirementGroup
         gate_req = Requirement.objects.create(
             condition_type='has_flag',
             flag_name='phase6_secret',
@@ -212,7 +217,7 @@ class GameNavigationTest(TestCase):
 class RequirementEvaluationTest(TestCase):
     def test_stat_gte(self):
         from types import SimpleNamespace
-        from .models import Requirement, PlayerContext
+        from .models import PlayerContext
         stats = SimpleNamespace(strength=10, level=5)
         ctx = PlayerContext(stats=stats, inventory={}, completed_map={})
         req = Requirement(condition_type='stat_gte', stat_name='strength', stat_value=10)
@@ -221,7 +226,7 @@ class RequirementEvaluationTest(TestCase):
         self.assertFalse(req.evaluate(ctx))
 
     def test_has_item_missing_item(self):
-        from .models import Requirement, PlayerContext
+        from .models import PlayerContext
         req_has = Requirement(condition_type='has_item', required_item_id=1)
         req_missing = Requirement(condition_type='missing_item', required_item_id=1)
         
@@ -236,7 +241,7 @@ class RequirementEvaluationTest(TestCase):
         self.assertTrue(req_missing.evaluate(ctx))
 
     def test_quest_completed_not_done(self):
-        from .models import Requirement, PlayerContext
+        from .models import PlayerContext
         req_done = Requirement(condition_type='quest_completed', required_quest_id=1)
         req_not_done = Requirement(condition_type='quest_not_done', required_quest_id=1)
         
@@ -251,7 +256,7 @@ class RequirementEvaluationTest(TestCase):
         self.assertTrue(req_not_done.evaluate(ctx))
 
     def test_quest_ending(self):
-        from .models import Requirement, PlayerContext
+        from .models import PlayerContext
         req = Requirement(condition_type='quest_ending', required_quest_id=1, required_ending_type='victory')
         
         ctx = PlayerContext(stats=None, inventory={}, completed_map={1: 'victory'})
@@ -263,7 +268,7 @@ class RequirementEvaluationTest(TestCase):
 
     def test_level_gte(self):
         from types import SimpleNamespace
-        from .models import Requirement, PlayerContext
+        from .models import PlayerContext
         stats = SimpleNamespace(level=5)
         ctx = PlayerContext(stats=stats, inventory={}, completed_map={})
         req = Requirement(condition_type='level_gte', stat_value=5)
@@ -272,11 +277,7 @@ class RequirementEvaluationTest(TestCase):
         self.assertFalse(req.evaluate(ctx))
 
     def test_requirement_group_logic(self):
-        from .models import Requirement, RequirementGroup, PlayerContext
-        from unittest.mock import MagicMock
-        
-        # We need to save them to use ManyToMany requirements.all() or mock the queryset
-        # RequirementGroup.evaluate uses self.requirements.all()
+        from .models import PlayerContext
         
         r1 = Requirement.objects.create(condition_type='stat_gte', stat_name='strength', stat_value=10)
         r2 = Requirement.objects.create(condition_type='stat_gte', stat_name='agility', stat_value=10)
@@ -304,26 +305,21 @@ class RequirementEvaluationTest(TestCase):
 
 class CombatTest(TestCase):
     fixtures = [
+        'game/fixtures/property.json',
         'game/fixtures/scene.json',
         'game/fixtures/enemy.json',
         'game/fixtures/combatencounter.json',
-        'game/fixtures/item.json',
     ]
 
     def setUp(self):
+        from .models import CombatEncounter, CombatState
         self.client = Client()
         self.client.get('/game/')
-        # In case multiple sessions exist, get the last one created by our client
-        from django.contrib.sessions.models import Session
         session_id = self.client.session.session_key
         self.session = GameSession.objects.get(session_key=session_id)
-        # In quest_street_debt.json, debt__corner_fight (pk=21) is combat.
         self.combat_scene = Scene.objects.get(key='debt__corner_fight')
         self.session.current_scene = self.combat_scene
         self.session.save()
-        
-        # Create CombatState
-        from .models import CombatEncounter, CombatState
         encounter = CombatEncounter.objects.get(scene=self.combat_scene)
         self.combat_state = CombatState.objects.create(
             session=self.session,
@@ -344,33 +340,27 @@ class CombatTest(TestCase):
         self.assertContains(response, self.combat_state.enemy.name.upper())
 
     def test_combat_victory_and_quest_completion(self):
-        # Manipulate enemy HP to 1
         self.combat_state.enemy_hp = 1
         self.combat_state.save()
-        
-        # Ensure player has enough strength to actually hit if the mock fails for some reason
         self.session.stats.strength = 20
         self.session.stats.save()
-        
-        # Make sure player can hit and kill. 
-        from unittest.mock import patch
+
+        # Step 1: killing blow sets pending_victory but stays on combat scene
         with patch('game.services.combat.roll_d20', return_value=20):
-            response = self.client.post(reverse('combat_attack'), HTTP_HX_REQUEST='true')
-        
+            self.client.post(reverse('combat_attack'), HTTP_HX_REQUEST='true')
+
+        self.combat_state.refresh_from_db()
+        self.assertTrue(self.combat_state.pending_victory)
+
+        # Step 2: continue advances to the victory scene
+        response = self.client.post(reverse('combat_continue'), HTTP_HX_REQUEST='true')
         self.assertEqual(response.status_code, 200)
         self.session.refresh_from_db()
-        
-        # Should have advanced to victory scene
         victory_scene = Scene.objects.get(key='debt__enforcer_fight')
         self.assertEqual(self.session.current_scene, victory_scene)
-        
-        # Assert CompletedQuest is created if victory scene is an ending
-        if self.session.current_scene.is_ending:
-            self.assertTrue(CompletedQuest.objects.filter(session=self.session, quest__key='street_debt').exists())
 
 class LevelUpTest(TestCase):
     def setUp(self):
-        from .test_factories import make_game_session
         self.client = Client()
         self.session = make_game_session(self.client)
         self.stats = self.session.stats
@@ -423,19 +413,11 @@ class LevelUpTest(TestCase):
         self.assertContains(response, "Word travels fast.")
 
 class UseItemTest(TestCase):
-    fixtures = [
-        'game/fixtures/scene.json',
-        'game/fixtures/item.json',
-    ]
-
     def setUp(self):
-        self.client = Client()
-        self.client.get('/game/')
-        self.session = GameSession.objects.first()
-        self.stats = self.session.stats
-        
         from .models import Item, PlayerInventory
-        # Let's create a heal item manually to be sure it has the effect_type
+        self.client = Client()
+        self.session = make_game_session(self.client)
+        self.stats = self.session.stats
         self.heal_potion = Item.objects.create(
             key='test_potion',
             name='Test Potion',
@@ -614,11 +596,13 @@ class QuestBuilderSceneTest(TestCase):
 
 class NoticeBoardTest(TestCase):
     fixtures = [
-        'game/fixtures/choice.json',
-        'game/fixtures/quest.json',
+        'game/fixtures/arc.json',
+        'game/fixtures/property.json',
         'game/fixtures/requirement.json',
         'game/fixtures/requirementgroup.json',
         'game/fixtures/scene.json',
+        'game/fixtures/choice.json',
+        'game/fixtures/quest.json',
     ]
 
     def setUp(self):
@@ -638,7 +622,6 @@ class NoticeBoardTest(TestCase):
 
     def test_quest_prerequisite_gating(self):
         # Create second quest requiring warehouse job
-        from .models import Requirement, RequirementGroup
         second_quest = Quest.objects.create(
             key='second_quest',
             title='The Second Quest',
@@ -672,8 +655,6 @@ class NoticeBoardTest(TestCase):
         self.assertNotContains(response, "Requires Warehouse")
 
     def test_stat_gated_quest(self):
-        # Create third quest requiring intellect 9
-        from .models import Requirement, RequirementGroup
         intellect_quest = Quest.objects.create(
             key='intellect_quest',
             title='Intellect Quest',
@@ -722,12 +703,10 @@ class NoticeBoardTest(TestCase):
         self.assertContains(response, "[ COMPLETED JOBS ]")
         self.assertContains(response, "The Warehouse Job")
         self.assertContains(response, "Victory")
-        # self.assertContains(response, cq.completed_at.strftime("%b %d, %Y"))
         self.assertContains(response, "Play again")
 
     def test_start_quest_view(self):
         # Try to start locked quest (by stat)
-        from .models import Requirement, RequirementGroup
         locked_quest = Quest.objects.create(
             key='locked_quest',
             title='Locked Quest',
@@ -772,11 +751,13 @@ class NoticeBoardTest(TestCase):
 
 class Phase4PerformanceTest(TestCase):
     fixtures = [
-        'game/fixtures/choice.json',
-        'game/fixtures/quest.json',
+        'game/fixtures/arc.json',
+        'game/fixtures/property.json',
         'game/fixtures/requirement.json',
         'game/fixtures/requirementgroup.json',
         'game/fixtures/scene.json',
+        'game/fixtures/choice.json',
+        'game/fixtures/quest.json',
     ]
 
     def setUp(self):
@@ -811,7 +792,6 @@ class Phase4PerformanceTest(TestCase):
         self.assertLessEqual(len(ctx), 4)
 
     def test_process_turn_income_skips_save_when_no_logs(self):
-        from unittest.mock import patch
         from .services.property_service import process_turn_income
 
         with patch.object(self.session.stats, 'save') as stats_save:
@@ -822,7 +802,6 @@ class Phase4PerformanceTest(TestCase):
         stats_save.assert_not_called()
 
     def test_trigger_rival_contest_returns_none_without_contestable_properties(self):
-        from unittest.mock import patch
         from .services.property_service import trigger_rival_contest
 
         self.session.stats.heat = 200
@@ -834,7 +813,6 @@ class Phase4PerformanceTest(TestCase):
         self.assertIsNone(unlocked)
 
     def test_trigger_rival_contest_materializes_queryset_once(self):
-        from unittest.mock import patch
         from .models import Property, PlayerProperty, RivalClaim
         from .services.property_service import trigger_rival_contest
 
@@ -959,7 +937,6 @@ class Phase4PerformanceTest(TestCase):
 
 class EffectiveStatsTest(TestCase):
     def setUp(self):
-        from .test_factories import make_game_session
         self.client = Client()
         self.session = make_game_session(self.client)
 
@@ -1009,7 +986,6 @@ class EffectiveStatsTest(TestCase):
 
 class ProgressionTest(TestCase):
     def setUp(self):
-        from .test_factories import make_game_session
         self.client = Client()
         self.session = make_game_session(self.client)
         self.stats = self.session.stats

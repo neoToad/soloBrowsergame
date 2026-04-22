@@ -118,5 +118,20 @@
     "passive_stat": "",
     "passive_value": 0
   }
+},
+{
+  "model": "game.item",
+  "pk": 9,
+  "fields": {
+    "key": "forged_plates",
+    "name": "forged_plates",
+    "description": "forged_plates quest item",
+    "is_consumable": false,
+    "effect_type": "",
+    "effect_stat": "",
+    "effect_value": 0,
+    "passive_stat": "",
+    "passive_value": 0
+  }
 }
 ]

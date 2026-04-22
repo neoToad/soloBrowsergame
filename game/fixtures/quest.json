@@ -1,6 +1,156 @@
 [
 {
   "model": "game.quest",
+  "pk": 11,
+  "fields": {
+    "key": "the-box",
+    "title": "The Box",
+    "description": "A jewelry store. A lockbox nobody's supposed to know about. A job you're running alone. Should be simple.\n",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": null,
+    "entrance_scene": 84,
+    "is_repeatable": false,
+    "requirements": [],
+    "hub_scenes": [
+      61
+    ],
+    "scenes": [
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 12,
+  "fields": {
+    "key": "the-fence",
+    "title": "The Fence",
+    "description": "You've been asking around about who moves stolen jewelry in this city. The same name keeps coming up. Marek. Dry cleaner's on Ansel Street. What you're bringing to that meeting is your own business.\n",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": null,
+    "entrance_scene": 93,
+    "is_repeatable": false,
+    "requirements": [
+      11
+    ],
+    "hub_scenes": [
+      61
+    ],
+    "scenes": [
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 13,
+  "fields": {
+    "key": "the-hunt",
+    "title": "The Hunt",
+    "description": "Marek's dry cleaner's has been dark for three days. He's still in the city. You've been asking around. So has he.\n",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": null,
+    "entrance_scene": 111,
+    "is_repeatable": false,
+    "requirements": [
+      12
+    ],
+    "hub_scenes": [
+      61
+    ],
+    "scenes": [
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      122,
+      123,
+      121,
+      124,
+      125,
+      126,
+      127,
+      128
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 14,
+  "fields": {
+    "key": "the-debt",
+    "title": "The Debt",
+    "description": "There was a note under the door. No name, just an address and a time. You know who it's from. You know what it means.\n",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": null,
+    "entrance_scene": 129,
+    "is_repeatable": false,
+    "requirements": [
+      13
+    ],
+    "hub_scenes": [
+      61
+    ],
+    "scenes": [
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      142,
+      138,
+      139,
+      140,
+      141,
+      143,
+      144,
+      145,
+      146,
+      147
+    ]
+  }
+},
+{
+  "model": "game.quest",
   "pk": 1,
   "fields": {
     "key": "the_warehouse_job",
@@ -101,6 +251,38 @@
       71,
       72,
       73
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 10,
+  "fields": {
+    "key": "the-fallout",
+    "title": "The Fallout",
+    "description": "Roughing up Terrell didn't end it. It made it worse. Now your sister is being watched and someone wants a conversation.",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": 0,
+    "entrance_scene": 74,
+    "is_repeatable": false,
+    "requirements": [
+      8
+    ],
+    "hub_scenes": [
+      61
+    ],
+    "scenes": [
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83
     ]
   }
 },

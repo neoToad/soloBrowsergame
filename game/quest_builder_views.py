@@ -10,6 +10,7 @@ from .models import Choice, Contact, Item, Property, Quest, Requirement, Scene
 from .models.combat import Enemy as EnemyModel
 from .services.quest_builder import (
     get_canvas_data,
+    get_scene_hub_exits,
     validate_quest as validate_quest_service,
     create_scene as create_scene_service,
     update_scene as update_scene_service,
@@ -185,6 +186,7 @@ def scene_save(request, quest_id, scene_id):
         )
         return HttpResponse(html, status=400)
 
+    scene.hub_exits = get_scene_hub_exits(scene.id, quest_id)
     html = render_to_string(
         'admin/quest_builder/partials/scene_save_response.html',
         {

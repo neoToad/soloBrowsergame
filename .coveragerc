@@ -1,0 +1,7 @@
+[run]
+omit =
+    manage.py
+    core/*
+    game/migrations/*
+    game/management/*
+    game/test_factories.py

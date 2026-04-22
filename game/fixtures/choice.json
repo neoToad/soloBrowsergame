@@ -919,6 +919,1147 @@
 },
 {
   "model": "game.choice",
+  "pk": 83,
+  "fields": {
+    "scene": 74,
+    "label": "Ask where she is",
+    "order": 1,
+    "target_scene": 75,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "She's inside. Has been since last night.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 85,
+  "fields": {
+    "scene": 75,
+    "label": "Go meet Emilio",
+    "order": 1,
+    "target_scene": 76,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You pocket the card. Your sister doesn't say goodbye.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 86,
+  "fields": {
+    "scene": 76,
+    "label": "Sit down",
+    "order": 1,
+    "target_scene": 77,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You sit. You don't touch the coffee.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 87,
+  "fields": {
+    "scene": 77,
+    "label": "Make him see it your way",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 79,
+    "failure_scene": 78,
+    "arrival_flavor": "Emilio listens. Really listens. Then he nods, once, slowly.",
+    "failure_arrival_flavor": "Something shifts in his expression. He folds the paper away. Two guys appear from the back.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 88,
+  "fields": {
+    "scene": 79,
+    "label": "Shake on it",
+    "order": 1,
+    "target_scene": 81,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "His grip is firm. His eyes are already somewhere else.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 89,
+  "fields": {
+    "scene": 80,
+    "label": "Leave",
+    "order": 1,
+    "target_scene": 82,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "The door closes quietly behind you. No drama. Just business.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 90,
+  "fields": {
+    "scene": 81,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You put the kettle on. Small victories.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 91,
+  "fields": {
+    "scene": 82,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You take the long way home. Old habit. Good one.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 92,
+  "fields": {
+    "scene": 83,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You walk slow. Nothing to rush home to.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 93,
+  "fields": {
+    "scene": 84,
+    "label": "Take the alley door",
+    "order": 1,
+    "target_scene": 85,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "The lock gives on the third pick. You're in.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 95,
+  "fields": {
+    "scene": 85,
+    "label": "Move fast — straight out the way you came",
+    "order": 1,
+    "target_scene": 86,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You move. Box under one arm, back the way you came, into the alley.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 97,
+  "fields": {
+    "scene": 86,
+    "label": "Wait for the gap and go",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 90,
+    "failure_scene": 87,
+    "arrival_flavor": "The light passes. They don't stop. You're three blocks away before you hear the sirens.",
+    "failure_arrival_flavor": "A second car comes around the other end. Nowhere left to go.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 98,
+  "fields": {
+    "scene": 87,
+    "label": "Talk your way out",
+    "order": 1,
+    "target_scene": 88,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You keep your voice level. Wrong street, wrong night, wrong person.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 100,
+  "fields": {
+    "scene": 88,
+    "label": "Hold the story together",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 91,
+    "failure_scene": 92,
+    "arrival_flavor": "Something shifts. They let you go. You don't look back.",
+    "failure_arrival_flavor": "The story falls apart. One of them reaches for the radio.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 101,
+  "fields": {
+    "scene": 90,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You put the box under the floorboard and sleep better than you have in weeks.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "box_clean_exit",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 102,
+  "fields": {
+    "scene": 91,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You take the long way. Keep your head down. The box stays under your jacket.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "box_rough_exit",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 103,
+  "fields": {
+    "scene": 92,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Nothing to show for it. You put the kettle on and don't think about what's next.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "box_busted",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 104,
+  "fields": {
+    "scene": 93,
+    "label": "Head to Marek's",
+    "order": 1,
+    "target_scene": 94,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Ansel Street. The dry cleaner's sign flickers. You push the door open.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": [
+      9
+    ]
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 106,
+  "fields": {
+    "scene": 94,
+    "label": "Agree",
+    "order": 1,
+    "target_scene": 102,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Marek slides a piece of paper across the counter. Address on it. Nothing else.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 108,
+  "fields": {
+    "scene": 95,
+    "label": "Make the case",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 103,
+    "failure_scene": 102,
+    "arrival_flavor": "He says the debt is three hundred. Says you can keep fifty if you collect it clean.",
+    "failure_arrival_flavor": "He goes back to his newspaper. The address is still on the counter.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 109,
+  "fields": {
+    "scene": 96,
+    "label": "Go in during shift change",
+    "order": 1,
+    "target_scene": 97,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Priya holds the door. Doesn't make eye contact. You're in.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 111,
+  "fields": {
+    "scene": 97,
+    "label": "Move fast and get out",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 101,
+    "failure_scene": 98,
+    "arrival_flavor": "Back on the street with the box under your jacket. Priya doesn't know your name. Good.",
+    "failure_arrival_flavor": "A door opens at the wrong moment. A uniform, half-awake, holding a coffee.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 112,
+  "fields": {
+    "scene": 98,
+    "label": "Bluff — wrong room, wrong floor",
+    "order": 1,
+    "target_scene": 99,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You keep it simple. Tired voice. Wrong floor, sorry, heading back up.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 114,
+  "fields": {
+    "scene": 99,
+    "label": "Hold the story",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 101,
+    "failure_scene": 110,
+    "arrival_flavor": "He points you back toward the stairwell. You thank him. Neither of you will remember this.",
+    "failure_arrival_flavor": "He reaches for his radio. That's that.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 115,
+  "fields": {
+    "scene": 101,
+    "label": "Head to Marek's",
+    "order": 1,
+    "target_scene": 94,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Same dry cleaner's. Same smell. Marek looks up this time.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 116,
+  "fields": {
+    "scene": 102,
+    "label": "Leave him with a warning",
+    "order": 1,
+    "target_scene": 104,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "He nods from the floor. Says he'll have it by Friday. You believe him.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 118,
+  "fields": {
+    "scene": 103,
+    "label": "Take the money and go",
+    "order": 1,
+    "target_scene": 104,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Clean. You didn't even have to raise your voice.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 119,
+  "fields": {
+    "scene": 104,
+    "label": "Read the room before it closes",
+    "order": 1,
+    "target_scene": 105,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Something's wrong. You clock it a beat before it becomes a problem.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 121,
+  "fields": {
+    "scene": 105,
+    "label": "Move first",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 107,
+    "failure_scene": 106,
+    "arrival_flavor": "You're already moving before they expect it. The room tips in your favor.",
+    "failure_arrival_flavor": "Too slow. One of them gets a hand on you.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 122,
+  "fields": {
+    "scene": 107,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "The cashbox goes under the floorboard next to the jewels. Not bad for a week's work.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "fence_victory",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 123,
+  "fields": {
+    "scene": 108,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You walk fast and don't look back. Marek's still out there. So are you.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "fence_neutral",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 124,
+  "fields": {
+    "scene": 109,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Nothing to show for it. Marek has everything. You have a walk home.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "fence_defeat",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 125,
+  "fields": {
+    "scene": 110,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Released at six in the morning. The city is already going without you.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "fence_defeat",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 126,
+  "fields": {
+    "scene": 111,
+    "label": "Go to the storage facility",
+    "order": 1,
+    "target_scene": 112,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You go at night. The place is quieter than it should be.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 127,
+  "fields": {
+    "scene": 112,
+    "label": "Fight your way out",
+    "order": 1,
+    "target_scene": 114,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Three men, tight quarters, low light. You've had worse.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 129,
+  "fields": {
+    "scene": 113,
+    "label": "Hold the performance together",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 116,
+    "failure_scene": 114,
+    "arrival_flavor": "One of them glances at the other. Just for a second. That's enough.",
+    "failure_arrival_flavor": "They stop listening. The closest one moves first.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 130,
+  "fields": {
+    "scene": 115,
+    "label": "Cut her loose and hear her out",
+    "order": 1,
+    "target_scene": 117,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "She works the zip tie off her wrists and doesn't say thank you. You appreciate that.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 132,
+  "fields": {
+    "scene": 116,
+    "label": "Take out the men and free the woman",
+    "order": 1,
+    "target_scene": 117,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Fast and clean. The woman is already pulling at her zip ties when you reach her.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 133,
+  "fields": {
+    "scene": 117,
+    "label": "Take her in",
+    "order": 1,
+    "target_scene": 119,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "She nods. Doesn't smile. You head out.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 135,
+  "fields": {
+    "scene": 118,
+    "label": "Hold your ground",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 122,
+    "failure_scene": 119,
+    "arrival_flavor": "She gives it up. Says she hopes you're better at finishing things than starting them.",
+    "failure_arrival_flavor": "The information and her come as a package. You can take it or leave it.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 136,
+  "fields": {
+    "scene": 119,
+    "label": "Hit it now before he's gone",
+    "order": 1,
+    "target_scene": 121,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "No time for a plan. You move.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 138,
+  "fields": {
+    "scene": 120,
+    "label": "Move into position",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 121,
+    "failure_scene": 121,
+    "arrival_flavor": "Marek's cornered before he knows it.",
+    "failure_arrival_flavor": "He clocks you. By the time you reach the warehouse he's ready.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 139,
+  "fields": {
+    "scene": 122,
+    "label": "Go in anyway",
+    "order": 1,
+    "target_scene": 121,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Three on one. You've had worse. You tell yourself that.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 141,
+  "fields": {
+    "scene": 123,
+    "label": "Move when the moment comes",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 124,
+    "failure_scene": 121,
+    "arrival_flavor": "You're behind Marek before his men see you. Clean entry.",
+    "failure_arrival_flavor": "The moment doesn't come. You go in anyway.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 142,
+  "fields": {
+    "scene": 124,
+    "label": "Take the name and let him go",
+    "order": 1,
+    "target_scene": 125,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "He says the name. Callum Voss. Import business, clean on paper.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 145,
+  "fields": {
+    "scene": 125,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Sable says she'll be in touch. You believe her.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "hunt_victory",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 146,
+  "fields": {
+    "scene": 126,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Marek's phone has seventeen contacts you don't recognize yet. That's tomorrow's problem.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "hunt_victory",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 147,
+  "fields": {
+    "scene": 127,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Sable walks with you as far as the corner. Doesn't say anything. Doesn't need to.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "hunt_victory",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 148,
+  "fields": {
+    "scene": 128,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You walk it off. The city doesn't care either way.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "hunt_defeat",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 149,
+  "fields": {
+    "scene": 129,
+    "label": "Hear him out",
+    "order": 1,
+    "target_scene": 131,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You sit down. You don't have a choice and both of you know it.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 151,
+  "fields": {
+    "scene": 130,
+    "label": "Make the case",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 131,
+    "failure_scene": 131,
+    "arrival_flavor": "He shaves the number. Not much. Enough to feel like a win that isn't.",
+    "failure_arrival_flavor": "He adds interest for the inconvenience.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 152,
+  "fields": {
+    "scene": 131,
+    "label": "Case the print shop first",
+    "order": 1,
+    "target_scene": 132,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You spend an afternoon across the street with a coffee.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 154,
+  "fields": {
+    "scene": 132,
+    "label": "Go in after hours",
+    "order": 1,
+    "target_scene": 133,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Seven-fifteen. Garrett's light is still on in the back.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "debt_cased",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 155,
+  "fields": {
+    "scene": 133,
+    "label": "Crack the keypad",
+    "order": 1,
+    "target_scene": 134,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Four digits. You try the year on the business license first.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 157,
+  "fields": {
+    "scene": 134,
+    "label": "Try it",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 138,
+    "failure_scene": 135,
+    "arrival_flavor": "It works. The door swings open.",
+    "failure_arrival_flavor": "Three wrong attempts and a new sound from upstairs. Garrett heard something.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 158,
+  "fields": {
+    "scene": 135,
+    "label": "Tell him it's Marek",
+    "order": 1,
+    "target_scene": 136,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Something shifts in his face. Not fear. Recognition.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 160,
+  "fields": {
+    "scene": 136,
+    "label": "Take both folders and the plates — decide later",
+    "order": 1,
+    "target_scene": 137,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Garrett watches you weigh it up. He's been here before.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 163,
+  "fields": {
+    "scene": 137,
+    "label": "Walk out with everything",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 138,
+    "failure_scene": 142,
+    "arrival_flavor": "He lets it go. You've got both folders and the plates and a head start.",
+    "failure_arrival_flavor": "Garrett calls your bluff. He wants a commitment, not a maybe.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 164,
+  "fields": {
+    "scene": 138,
+    "label": "Take the filing cabinet contents too",
+    "order": 1,
+    "target_scene": 143,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Garrett's private life, documented in receipts and photographs. Ugly stuff.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 166,
+  "fields": {
+    "scene": 139,
+    "label": "Deliver to Marek",
+    "order": 1,
+    "target_scene": 143,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Garrett watches you go. He doesn't try to stop you.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 167,
+  "fields": {
+    "scene": 140,
+    "label": "Find Sable",
+    "order": 1,
+    "target_scene": 141,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "She's not hard to find if you know what name to ask for.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 168,
+  "fields": {
+    "scene": 141,
+    "label": "Agree",
+    "order": 1,
+    "target_scene": 144,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "She nods. Doesn't shake your hand. You're already past that.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 170,
+  "fields": {
+    "scene": 143,
+    "label": "Walk away",
+    "order": 1,
+    "target_scene": 146,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Marek watches you go. He doesn't say goodbye.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 171,
+  "fields": {
+    "scene": 144,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Sable will be in touch. For the first time in a while, you believe that's a good thing.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "debt_victory",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 172,
+  "fields": {
+    "scene": 145,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "The folder goes somewhere safe. Marek doesn't know it exists. That's the whole advantage.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "debt_neutral",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 173,
+  "fields": {
+    "scene": 146,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You breathe easier on the walk home. Not much. But some.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "debt_neutral",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 174,
+  "fields": {
+    "scene": 147,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Nothing went right. You go home and figure out what's left.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "debt_defeat",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
   "pk": 2,
   "fields": {
     "scene": 1,
@@ -1038,6 +2179,399 @@
 },
 {
   "model": "game.choice",
+  "pk": 84,
+  "fields": {
+    "scene": 74,
+    "label": "Tell her not to move",
+    "order": 2,
+    "target_scene": 75,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "She says she knows. She wasn't planning on it.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 94,
+  "fields": {
+    "scene": 84,
+    "label": "Go through the front window",
+    "order": 2,
+    "target_scene": 85,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Glass on the mat. Thirty seconds of exposure. Nobody sees.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 96,
+  "fields": {
+    "scene": 85,
+    "label": "Kill the lights and wait it out",
+    "order": 2,
+    "target_scene": 87,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Bad call. A patrol car rolls up in two minutes flat.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 99,
+  "fields": {
+    "scene": 87,
+    "label": "Run for it",
+    "order": 2,
+    "target_scene": 89,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You don't wait for them to decide.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 105,
+  "fields": {
+    "scene": 93,
+    "label": "Hit the evidence lockup first",
+    "order": 2,
+    "target_scene": 96,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "The 9th precinct evidence lockup. Basement level. You know someone on intake.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": [
+      10
+    ]
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 107,
+  "fields": {
+    "scene": 94,
+    "label": "Push back on the terms",
+    "order": 2,
+    "target_scene": 95,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Marek looks up from his newspaper for the first time.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 110,
+  "fields": {
+    "scene": 96,
+    "label": "Wait and watch the building first",
+    "order": 2,
+    "target_scene": 97,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "An hour on a bench across the street. You count the rotations. There's a gap.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "fence_lockup_scouted",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 113,
+  "fields": {
+    "scene": 98,
+    "label": "Run",
+    "order": 2,
+    "target_scene": 100,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You don't give him time to make up his mind.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 117,
+  "fields": {
+    "scene": 102,
+    "label": "Make sure he remembers",
+    "order": 2,
+    "target_scene": 104,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "He'll remember. So will his neighbors.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 120,
+  "fields": {
+    "scene": 104,
+    "label": "Wait and see what they want",
+    "order": 2,
+    "target_scene": 109,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Too slow. By the time you move it's already done.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 128,
+  "fields": {
+    "scene": 112,
+    "label": "Stall — find out what they know",
+    "order": 2,
+    "target_scene": 113,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You keep your hands loose and your voice calm. Like you expected this.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 131,
+  "fields": {
+    "scene": 115,
+    "label": "Cut her loose and take the map",
+    "order": 2,
+    "target_scene": 117,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "She picks up the phone before you can. Says she's coming whether you like it or not.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 134,
+  "fields": {
+    "scene": 117,
+    "label": "Take the information and go alone",
+    "order": 2,
+    "target_scene": 118,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "She reads you immediately. Folds her arms.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 137,
+  "fields": {
+    "scene": 119,
+    "label": "Cut off his exit first",
+    "order": 2,
+    "target_scene": 120,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You split up. Sable keeps eyes on Marek while you move to block the van.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 140,
+  "fields": {
+    "scene": 122,
+    "label": "Wait and find a smarter angle",
+    "order": 2,
+    "target_scene": 123,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You settle in. Watch the pattern. There's something here.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 143,
+  "fields": {
+    "scene": 124,
+    "label": "Take the name and don't honor the deal",
+    "order": 2,
+    "target_scene": 126,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "He gives up the name. Then you take the rest anyway.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 150,
+  "fields": {
+    "scene": 129,
+    "label": "Push back on the number",
+    "order": 2,
+    "target_scene": 130,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Marek listens with the patience of a man who finds this mildly entertaining.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 153,
+  "fields": {
+    "scene": 131,
+    "label": "Go straight in",
+    "order": 2,
+    "target_scene": 133,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "No preparation. Sometimes that's cleaner.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 156,
+  "fields": {
+    "scene": 133,
+    "label": "Find Garrett and make him open it",
+    "order": 2,
+    "target_scene": 135,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "A sound from the back. Garrett's still here.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 159,
+  "fields": {
+    "scene": 135,
+    "label": "Say nothing",
+    "order": 2,
+    "target_scene": 142,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "He reaches for something under the counter.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 161,
+  "fields": {
+    "scene": 136,
+    "label": "Take Marek's folder and the plates — stay on task",
+    "order": 2,
+    "target_scene": 139,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Clean. You take what Marek asked for and leave the rest on the table.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 165,
+  "fields": {
+    "scene": 138,
+    "label": "Just take the plates",
+    "order": 2,
+    "target_scene": 143,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You've got what Marek asked for. The rest isn't your business.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 169,
+  "fields": {
+    "scene": 141,
+    "label": "Take her information and stay independent",
+    "order": 2,
+    "target_scene": 145,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "She says to remember her name when it mattered. You will.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
   "pk": 7,
   "fields": {
     "scene": 4,
@@ -1047,6 +2581,40 @@
     "success_scene": null,
     "failure_scene": null,
     "arrival_flavor": "You peel off a few bills. They pocket the cash and find somewhere else to be.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 144,
+  "fields": {
+    "scene": 124,
+    "label": "Ignore the offer — this was never about information",
+    "order": 3,
+    "target_scene": 127,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You didn't come here for names. Marek knows that now.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 162,
+  "fields": {
+    "scene": 136,
+    "label": "Take Garrett's folder only — flip on Marek",
+    "order": 3,
+    "target_scene": 140,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You leave the plates. Garrett nods. Says he'll consider the debt between you settled.",
     "failure_arrival_flavor": "",
     "set_flag_name": "",
     "clear_flag_name": "",
