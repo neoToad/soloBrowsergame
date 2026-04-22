@@ -2,10 +2,10 @@
 Shared factory helpers for test setup. Use these instead of loading fixture files
 when tests only need a bootstrapped session or simple model instances.
 """
-from .models import Scene, GameSession, PlayerStats, Quest, Choice, Enemy
-from .models.items import Item
-from .models.combat import CombatEncounter
-from .constants import HUB_START_SCENE_KEY
+from game.models import Scene, GameSession, PlayerStats, Quest, Choice, Enemy
+from game.models.items import Item
+from game.models.combat import CombatEncounter
+from game.constants import HUB_START_SCENE_KEY
 
 
 def make_hub_scene(**kwargs):

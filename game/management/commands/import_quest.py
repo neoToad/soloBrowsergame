@@ -1,5 +1,6 @@
 import yaml
 
+from django.core.management import CommandError
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
@@ -44,6 +45,16 @@ class Command(BaseCommand):
             scene_map: dict[str, Scene] = {}
             for sdata in data["scenes"]:
                 roll = sdata.get("roll", {}) or {}
+                ending = sdata.get("ending", {}) or {}
+                arrival = sdata.get("arrival", {}) or {}
+                ending_type = ending.get("ending_type")
+                if ending_type is None:
+                    ending_type = sdata.get("ending_type")
+                ending_type = ending_type or ""
+                if sdata.get("scene_type") == "ending" and not ending_type:
+                    raise CommandError(
+                        f"Scene '{sdata['key']}' is scene_type='ending' but has no ending.ending_type value."
+                    )
                 scene, created = Scene.objects.update_or_create(
                     key=sdata["key"],
                     defaults={
@@ -54,11 +65,11 @@ class Command(BaseCommand):
                         "requires_roll": roll.get("requires_roll", False),
                         "roll_stat": roll.get("roll_stat") or "",
                         "roll_difficulty": roll.get("roll_difficulty") or 10,
-                        "ending_type": sdata.get("ending_type") or "",
-                        "cash_change": sdata.get("cash_change", 0),
-                        "rep_change": sdata.get("rep_change", 0),
-                        "heat_change": sdata.get("heat_change", 0),
-                        "consume_item": None,
+                        "ending_type": ending_type,
+                        "cash_change": arrival.get("cash_change", sdata.get("cash_change", 0)),
+                        "rep_change": arrival.get("rep_change", sdata.get("rep_change", 0)),
+                        "heat_change": arrival.get("heat_change", sdata.get("heat_change", 0)),
+                        "consume_item": self._get_or_warn(Item, arrival.get("consume_item")),
                         "receive_property": None,
                         "lose_property": None,
                     },

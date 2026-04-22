@@ -4,4 +4,4 @@ omit =
     core/*
     game/migrations/*
     game/management/*
-    game/test_factories.py
+    game/tests/*

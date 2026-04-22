@@ -1,11 +1,11 @@
 from unittest.mock import patch
 from django.test import TestCase, Client
 from django.urls import reverse
-from .models import (
+from game.models import (
     Scene, GameSession, PlayerStats, Choice, Quest, CompletedQuest,
     Requirement, RequirementGroup, PlayerContext,
 )
-from .constants import SESSION_KEY
+from game.constants import SESSION_KEY
 from .test_factories import make_game_session
 
 class GameNavigationTest(TestCase):
@@ -217,7 +217,7 @@ class GameNavigationTest(TestCase):
 class RequirementEvaluationTest(TestCase):
     def test_stat_gte(self):
         from types import SimpleNamespace
-        from .models import PlayerContext
+        from ..models import PlayerContext
         stats = SimpleNamespace(strength=10, level=5)
         ctx = PlayerContext(stats=stats, inventory={}, completed_map={})
         req = Requirement(condition_type='stat_gte', stat_name='strength', stat_value=10)
@@ -226,7 +226,7 @@ class RequirementEvaluationTest(TestCase):
         self.assertFalse(req.evaluate(ctx))
 
     def test_has_item_missing_item(self):
-        from .models import PlayerContext
+        from ..models import PlayerContext
         req_has = Requirement(condition_type='has_item', required_item_id=1)
         req_missing = Requirement(condition_type='missing_item', required_item_id=1)
         
@@ -241,7 +241,7 @@ class RequirementEvaluationTest(TestCase):
         self.assertTrue(req_missing.evaluate(ctx))
 
     def test_quest_completed_not_done(self):
-        from .models import PlayerContext
+        from ..models import PlayerContext
         req_done = Requirement(condition_type='quest_completed', required_quest_id=1)
         req_not_done = Requirement(condition_type='quest_not_done', required_quest_id=1)
         
@@ -256,7 +256,7 @@ class RequirementEvaluationTest(TestCase):
         self.assertTrue(req_not_done.evaluate(ctx))
 
     def test_quest_ending(self):
-        from .models import PlayerContext
+        from ..models import PlayerContext
         req = Requirement(condition_type='quest_ending', required_quest_id=1, required_ending_type='victory')
         
         ctx = PlayerContext(stats=None, inventory={}, completed_map={1: 'victory'})
@@ -268,7 +268,7 @@ class RequirementEvaluationTest(TestCase):
 
     def test_level_gte(self):
         from types import SimpleNamespace
-        from .models import PlayerContext
+        from ..models import PlayerContext
         stats = SimpleNamespace(level=5)
         ctx = PlayerContext(stats=stats, inventory={}, completed_map={})
         req = Requirement(condition_type='level_gte', stat_value=5)
@@ -277,7 +277,7 @@ class RequirementEvaluationTest(TestCase):
         self.assertFalse(req.evaluate(ctx))
 
     def test_requirement_group_logic(self):
-        from .models import PlayerContext
+        from ..models import PlayerContext
         
         r1 = Requirement.objects.create(condition_type='stat_gte', stat_name='strength', stat_value=10)
         r2 = Requirement.objects.create(condition_type='stat_gte', stat_name='agility', stat_value=10)
@@ -312,7 +312,7 @@ class CombatTest(TestCase):
     ]
 
     def setUp(self):
-        from .models import CombatEncounter, CombatState
+        from ..models import CombatEncounter, CombatState
         self.client = Client()
         self.client.get('/game/')
         session_id = self.client.session.session_key
@@ -394,7 +394,7 @@ class LevelUpTest(TestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_levelup_flavor_filter_uses_level_keyed_lookup(self):
-        from .templatetags.game_filters import levelup_flavor
+        from ..templatetags.game_filters import levelup_flavor
 
         self.assertEqual(levelup_flavor(2), "Word travels fast. You're moving up.")
         self.assertEqual(levelup_flavor(1), "")
@@ -414,7 +414,7 @@ class LevelUpTest(TestCase):
 
 class UseItemTest(TestCase):
     def setUp(self):
-        from .models import Item, PlayerInventory
+        from ..models import Item, PlayerInventory
         self.client = Client()
         self.session = make_game_session(self.client)
         self.stats = self.session.stats
@@ -448,7 +448,7 @@ class UseItemTest(TestCase):
         self.assertLessEqual(self.stats.hp, self.stats.max_hp)
         
         # Consumable should be removed
-        from .models import PlayerInventory
+        from ..models import PlayerInventory
         self.assertFalse(PlayerInventory.objects.filter(session=self.session, item=self.heal_potion).exists())
 
     def test_use_item_not_in_inventory(self):
@@ -768,7 +768,7 @@ class Phase4PerformanceTest(TestCase):
     def test_get_available_choices_uses_prefetch_budget(self):
         from django.db import connection
         from django.test.utils import CaptureQueriesContext
-        from .services.scene import get_available_choices
+        from ..services.scene import get_available_choices
 
         scene = Scene.objects.get(key='warehouse__loading_dock')
         with CaptureQueriesContext(connection) as ctx:
@@ -780,7 +780,7 @@ class Phase4PerformanceTest(TestCase):
     def test_get_notice_board_uses_prefetch_budget(self):
         from django.db import connection
         from django.test.utils import CaptureQueriesContext
-        from .services.scene import get_notice_board
+        from ..services.scene import get_notice_board
 
         scene = Scene.objects.get(key='hub__notice_board')
         with CaptureQueriesContext(connection) as ctx:
@@ -792,7 +792,7 @@ class Phase4PerformanceTest(TestCase):
         self.assertLessEqual(len(ctx), 4)
 
     def test_process_turn_income_skips_save_when_no_logs(self):
-        from .services.property_service import process_turn_income
+        from ..services.property_service import process_turn_income
 
         with patch.object(self.session.stats, 'save') as stats_save:
             logs, totals = process_turn_income(self.session)
@@ -802,7 +802,7 @@ class Phase4PerformanceTest(TestCase):
         stats_save.assert_not_called()
 
     def test_trigger_rival_contest_returns_none_without_contestable_properties(self):
-        from .services.property_service import trigger_rival_contest
+        from ..services.property_service import trigger_rival_contest
 
         self.session.stats.heat = 200
         self.session.stats.save()
@@ -813,8 +813,8 @@ class Phase4PerformanceTest(TestCase):
         self.assertIsNone(unlocked)
 
     def test_trigger_rival_contest_materializes_queryset_once(self):
-        from .models import Property, PlayerProperty, RivalClaim
-        from .services.property_service import trigger_rival_contest
+        from ..models import Property, PlayerProperty, RivalClaim
+        from ..services.property_service import trigger_rival_contest
 
         start_scene = Scene.objects.create(
             key='phase4__contest_start',
@@ -866,8 +866,8 @@ class Phase4PerformanceTest(TestCase):
         self.assertIsInstance(mock_choice.call_args.args[0], list)
 
     def test_resolve_contest_victory_clears_claim_and_contested_flag(self):
-        from .models import Property, PlayerProperty, RivalClaim
-        from .services.property_service import resolve_contest
+        from ..models import Property, PlayerProperty, RivalClaim
+        from ..services.property_service import resolve_contest
 
         resolution_scene = Scene.objects.create(
             key='phase6__contest_victory_resolution',
@@ -901,8 +901,8 @@ class Phase4PerformanceTest(TestCase):
         self.assertIn('is yours again', log)
 
     def test_resolve_contest_non_victory_removes_property_and_claim(self):
-        from .models import Property, PlayerProperty, RivalClaim
-        from .services.property_service import resolve_contest
+        from ..models import Property, PlayerProperty, RivalClaim
+        from ..services.property_service import resolve_contest
 
         resolution_scene = Scene.objects.create(
             key='phase6__contest_defeat_resolution',
@@ -941,8 +941,8 @@ class EffectiveStatsTest(TestCase):
         self.session = make_game_session(self.client)
 
     def test_get_effective_stats_applies_passive_item_bonuses(self):
-        from .models import Item, PlayerInventory
-        from .utils import get_effective_stats
+        from ..models import Item, PlayerInventory
+        from ..utils import get_effective_stats
 
         stats = self.session.stats
         stats.strength = 8
@@ -974,7 +974,7 @@ class EffectiveStatsTest(TestCase):
         PlayerInventory.objects.create(session=self.session, item=agi_item, quantity=1)
         PlayerInventory.objects.create(session=self.session, item=second_str_item, quantity=1)
 
-        from .services.inventory import get_player_inventory
+        from ..services.inventory import get_player_inventory
         inventory = get_player_inventory(self.session)
         effective = get_effective_stats(stats, inventory)
 
@@ -991,7 +991,7 @@ class ProgressionTest(TestCase):
         self.stats = self.session.stats
 
     def test_award_xp_crosses_multiple_levels(self):
-        from .services.progression import award_xp
+        from ..services.progression import award_xp
 
         self.stats.level = 1
         self.stats.experience = 150
@@ -1022,7 +1022,7 @@ class QuestBuilderValidationTest(TestCase):
         return Choice.objects.create(scene=scene, label=label, order=1, **kwargs)
 
     def _warning_types(self, quest):
-        from .services.quest_builder import validate_quest
+        from ..services.quest_builder import validate_quest
         return [w['type'] for w in validate_quest(quest.pk)]
 
     # ── Task 9.1: orphan scene ──────────────────────────────────────────────────
@@ -1175,7 +1175,7 @@ class QuestBuilderValidationTest(TestCase):
     def test_duplicate_key_detected(self):
         from unittest.mock import patch, MagicMock
         from types import SimpleNamespace
-        from .services.quest_builder import validate_quest
+        from ..services.quest_builder import validate_quest
 
         quest = self._make_quest(key='qbv__quest3')
         entry = self._make_scene(quest, 'qbv__dupkey_a')
