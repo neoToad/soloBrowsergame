@@ -3,7 +3,7 @@ from ..models import GameSession, PlayerStats, Scene, CompletedQuest
 from ..models.property import PlayerProperty, Property
 from ..constants import HUB_START_SCENE_KEY, SESSION_KEY
 from .inventory import get_player_inventory
-from ..utils import get_effective_stats
+from ..utils import get_effective_stats, compute_max_hp
 
 def load_session_context(session_pk):
     session = get_object_or_404(GameSession, pk=session_pk)
@@ -29,13 +29,15 @@ def create_session(request):
         session_key=request.session.session_key,
         current_scene=Scene.objects.get(key=HUB_START_SCENE_KEY),
     )
-    PlayerStats.objects.create(session=game_session)
+    initial_max_hp = compute_max_hp(5)  # default strength is 5
+    PlayerStats.objects.create(session=game_session, max_hp=initial_max_hp, hp=initial_max_hp)
     request.session[SESSION_KEY] = game_session.pk
     return game_session
 
 
 def build_render_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state, turn_summary=None, roll_result=None, damage_result=None):
     from .scene import get_available_choices, get_notice_board
+    from ..models import PlayerContact, PlayerGangStanding
     notice_board = None
     if scene.is_hub:
         notice_board = get_notice_board(scene, inventory, completed_map, effective_stats, flags=session.flags)
@@ -44,20 +46,24 @@ def build_render_context(session, scene, stats, effective_stats, inventory, comp
     owned_territory_ids = {
         pp.property_id for pp in player_properties if pp.property.property_type == 'territory'
     }
+    player_contacts       = PlayerContact.objects.filter(session=session).select_related('contact')
+    player_gang_standings = PlayerGangStanding.objects.filter(session=session).select_related('gang')
     return {
-        'scene':                scene,
-        'choices':              get_available_choices(scene, effective_stats, inventory, completed_map, flags=session.flags),
-        'stats':                stats,
-        'stat_bonuses':         effective_stats.bonuses,
-        'inventory':            inventory,
-        'logs':                 session.log.all()[:10],
-        'oob':                  True,
-        'combat_state':         combat_state,
-        'notice_board':         notice_board,
-        'turn_summary':         turn_summary,
-        'roll_result':          roll_result,
-        'damage_result':        damage_result,
-        'player_properties':    player_properties,
-        'all_territories':      all_territories,
-        'owned_territory_ids':  owned_territory_ids,
+        'scene':                  scene,
+        'choices':                get_available_choices(scene, effective_stats, inventory, completed_map, flags=session.flags),
+        'stats':                  stats,
+        'stat_bonuses':           effective_stats.bonuses,
+        'inventory':              inventory,
+        'logs':                   session.log.all()[:10],
+        'oob':                    True,
+        'combat_state':           combat_state,
+        'notice_board':           notice_board,
+        'turn_summary':           turn_summary,
+        'roll_result':            roll_result,
+        'damage_result':          damage_result,
+        'player_properties':      player_properties,
+        'all_territories':        all_territories,
+        'owned_territory_ids':    owned_territory_ids,
+        'player_contacts':        player_contacts,
+        'player_gang_standings':  player_gang_standings,
     }

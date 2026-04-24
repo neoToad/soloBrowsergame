@@ -50,6 +50,10 @@ def spend_stat_point(stats, stat_name, stat_field_map):
     current_val = getattr(stats, field)
     setattr(stats, field, current_val + 1)
     stats.stat_points -= 1
+    if field == 'strength':
+        from ..utils import compute_max_hp
+        stats.max_hp = compute_max_hp(stats.strength)
+        stats.hp = min(stats.hp, stats.max_hp)
     stats.save()
     return public_name, field, current_val + 1
 

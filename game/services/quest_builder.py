@@ -755,8 +755,12 @@ def build_requirement_groups_from_post(obj, post_data):
     with transaction.atomic():
         old_groups = list(obj.requirements.all())
         obj.requirements.clear()
-        Requirement.objects.filter(groups__in=old_groups).delete()
-        RequirementGroup.objects.filter(pk__in=[g.pk for g in old_groups]).delete()
+        for group in old_groups:
+            if not group.gated_choices.exists() and not group.gated_quests.exists():
+                for req in group.requirements.all():
+                    if not req.groups.exists():
+                        req.delete()
+                group.delete()
 
         raw_count = str(post_data.get('group_count') or '').strip()
         try:
@@ -841,7 +845,7 @@ def build_requirement_groups_from_post(obj, post_data):
                         except ValueError:
                             pass
 
-                req = Requirement.objects.create(**req_kwargs)
+                req, _ = Requirement.objects.get_or_create(**req_kwargs)
                 group.requirements.add(req)
 
             obj.requirements.add(group)

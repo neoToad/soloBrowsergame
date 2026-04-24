@@ -2,7 +2,7 @@ import random
 
 from .services.types import RollResult, DamageResult, EffectiveStats
 
-__all__ = ['RollResult', 'DamageResult', 'EffectiveStats', 'roll_d20', 'stat_modifier', 'get_effective_stats']
+__all__ = ['RollResult', 'DamageResult', 'EffectiveStats', 'roll_d20', 'stat_modifier', 'compute_max_hp', 'get_effective_stats']
 
 
 def roll_d20():
@@ -10,6 +10,9 @@ def roll_d20():
 
 def stat_modifier(stat_value):
     return (stat_value - 10) // 2
+
+def compute_max_hp(strength: int) -> int:
+    return 14 + int((strength - 10) / 2) * 2
 
 
 def get_effective_stats(stats, inventory) -> EffectiveStats:
@@ -31,13 +34,14 @@ def get_effective_stats(stats, inventory) -> EffectiveStats:
                 bonuses.get(item.passive_stat, 0) + item.passive_value
             )
 
+    effective_strength = stats.strength + bonuses.get('strength', 0)
     return EffectiveStats(
-        strength    = stats.strength  + bonuses.get('strength',  0),
+        strength    = effective_strength,
         agility     = stats.agility   + bonuses.get('agility',   0),
         intellect   = stats.intellect + bonuses.get('intellect', 0),
         charisma    = stats.charisma  + bonuses.get('charisma',  0),
         hp          = stats.hp,
-        max_hp      = stats.max_hp,
+        max_hp      = compute_max_hp(effective_strength),
         level       = stats.level,
         experience  = stats.experience,
         stat_points = stats.stat_points,

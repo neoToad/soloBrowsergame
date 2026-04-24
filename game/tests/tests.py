@@ -1249,3 +1249,72 @@ class QuestBuilderValidationTest(TestCase):
             types = [w['type'] for w in validate_quest(quest.pk)]
 
         self.assertIn('duplicate_key', types)
+
+
+class MaxHpTest(TestCase):
+    def test_compute_max_hp_formula(self):
+        from ..utils import compute_max_hp
+        self.assertEqual(compute_max_hp(5),  10)
+        self.assertEqual(compute_max_hp(8),  12)
+        self.assertEqual(compute_max_hp(10), 14)
+        self.assertEqual(compute_max_hp(12), 16)
+        self.assertEqual(compute_max_hp(14), 18)
+
+    def test_create_session_sets_hp_and_max_hp_from_formula(self):
+        from ..utils import compute_max_hp
+        client = Client()
+        session = make_game_session(client)
+        stats = session.stats
+        expected = compute_max_hp(5)
+        self.assertEqual(stats.max_hp, expected)
+        self.assertEqual(stats.hp, expected)
+
+    def test_effective_stats_max_hp_reflects_strength_item_bonus(self):
+        from ..models.items import Item
+        from ..models import PlayerInventory
+        from ..utils import get_effective_stats, compute_max_hp
+        from ..services.inventory import get_player_inventory
+
+        client = Client()
+        session = make_game_session(client)
+        stats = session.stats
+        stats.strength = 10
+        stats.max_hp = compute_max_hp(10)
+        stats.save()
+
+        str_item = Item.objects.create(
+            key='maxhp__str_charm',
+            name='STR Charm',
+            description='',
+            passive_stat='strength',
+            passive_value=2,
+        )
+        PlayerInventory.objects.create(session=session, item=str_item, quantity=1)
+
+        inventory = get_player_inventory(session)
+        effective = get_effective_stats(stats, inventory)
+
+        self.assertEqual(effective.strength, 12)
+        self.assertEqual(effective.max_hp, compute_max_hp(12))
+        self.assertEqual(stats.max_hp, compute_max_hp(10))
+
+    def test_spend_strength_updates_max_hp_and_caps_hp(self):
+        from ..utils import compute_max_hp
+        from ..services.progression import spend_stat_point
+        from ..constants import STAT_FIELD_MAP
+
+        client = Client()
+        session = make_game_session(client)
+        stats = session.stats
+        stats.strength = 10
+        stats.max_hp = compute_max_hp(10)
+        stats.hp = compute_max_hp(10)
+        stats.stat_points = 1
+        stats.save()
+
+        spend_stat_point(stats, 'muscle', STAT_FIELD_MAP)
+        stats.refresh_from_db()
+
+        self.assertEqual(stats.strength, 11)
+        self.assertEqual(stats.max_hp, compute_max_hp(11))
+        self.assertLessEqual(stats.hp, stats.max_hp)
