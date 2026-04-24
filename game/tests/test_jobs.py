@@ -243,3 +243,95 @@ class JobsServiceTest(TestCase):
         jobs.increment_turn(self.session)
         self.session.refresh_from_db()
         self.assertEqual(self.session.turn_counter, 1)
+
+
+class RewardBucketTests(TestCase):
+    """Deterministic coverage of the three run-count reward buckets.
+
+    RECON_TIER_MID is used throughout so recon modifiers are neutral
+    (cash ×1.0, heat +0, rep +0) and the bucket math is isolated.
+    base_cash fixed at 100, base_heat=10, base_rep=5.
+    """
+
+    def setUp(self):
+        self.hub = Scene.objects.create(
+            key="reward_test__hub",
+            title="Test Hub",
+            body="",
+            scene_type="hub",
+        )
+        self.session = GameSession.objects.create(
+            session_key="reward-test-session",
+            current_scene=self.hub,
+        )
+        PlayerStats.objects.create(
+            session=self.session,
+            strength=8,
+            agility=8,
+            intellect=8,
+            charisma=8,
+            hp=10,
+            max_hp=10,
+        )
+        self.job = Job.objects.create(
+            key="reward_test__job",
+            title="Test Job",
+            description="",
+            base_cooldown_turns=3,
+            base_cash_min=100,
+            base_cash_max=100,
+            base_heat=10,
+            base_rep=5,
+            recon_text_low="low",
+            recon_text_mid="mid",
+            recon_text_high="high",
+        )
+        self.job.district_hubs.add(self.hub)
+
+    def _make_run(self, run_count):
+        run = JobRun.objects.create(
+            session=self.session,
+            job=self.job,
+            source=JobRun.SOURCE_RECON,
+            recon_tier=RECON_TIER_MID,
+            current_beat=3,
+        )
+        PlayerJobState.objects.create(
+            session=self.session,
+            job=self.job,
+            run_count=run_count,
+        )
+        return run
+
+    @patch("game.services.jobs.random.uniform", return_value=1.0)
+    @patch("game.services.jobs.random.randint", return_value=100)
+    def test_bucket_run_0_base_rates(self, _mock_randint, _mock_uniform):
+        # Runs 0-2: cash ×1.0, heat ×1.0, rep ×1.0
+        run = self._make_run(run_count=0)
+        reward = jobs.apply_job_rewards(self.session, run)
+
+        self.assertEqual(reward["cash"], 100)   # 100 * 1.0 * 1.0
+        self.assertEqual(reward["heat"], 10)    # 10 * 1.0 + 0
+        self.assertEqual(reward["rep"], 5)      # 5 * 1.0 + 0
+
+    @patch("game.services.jobs.random.uniform", return_value=1.15)
+    @patch("game.services.jobs.random.randint", return_value=100)
+    def test_bucket_run_3_familiarity_bonus(self, _mock_randint, _mock_uniform):
+        # Runs 3-6: cash ×1.15-1.25, heat ×0.9, rep ×1.2
+        run = self._make_run(run_count=3)
+        reward = jobs.apply_job_rewards(self.session, run)
+
+        self.assertEqual(reward["cash"], 115)   # 100 * 1.15 * 1.0
+        self.assertEqual(reward["heat"], 9)     # 10 * 0.9 + 0
+        self.assertEqual(reward["rep"], 6)      # 5 * 1.2 + 0
+
+    @patch("game.services.jobs.random.uniform", return_value=1.30)
+    @patch("game.services.jobs.random.randint", return_value=100)
+    def test_bucket_run_7_veteran_rates(self, _mock_randint, _mock_uniform):
+        # Runs 7+: cash ×1.30-1.45, heat ×0.80, rep ×1.0 (back to base)
+        run = self._make_run(run_count=7)
+        reward = jobs.apply_job_rewards(self.session, run)
+
+        self.assertEqual(reward["cash"], 130)   # 100 * 1.30 * 1.0
+        self.assertEqual(reward["heat"], 8)     # 10 * 0.80 + 0
+        self.assertEqual(reward["rep"], 5)      # 5 * 1.0 + 0

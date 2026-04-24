@@ -53,7 +53,11 @@ BEAT2_PENALTY_FLAG = "beat2_penalty"
 BEAT2_PENALTY_DC = 2
 
 
-# Slice 5 will tune these values if balancing changes.
+# Run-bucket reward policy:
+#   0-2 runs  → base rates (learning the job)
+#   3-6 runs  → cash +15-25%, heat -10%, rep +20% (familiar, efficient)
+#   7+  runs  → cash +30-45%, heat -20%, rep back to base (routine, unremarkable)
+# Final cash = base_cash * run_bucket_cash_multiplier * recon_tier_cash_multiplier
 REWARD_BUCKETS = (
     {
         "min_runs": 0,
@@ -74,9 +78,9 @@ REWARD_BUCKETS = (
     {
         "min_runs": 7,
         "max_runs": None,
-        "cash_multiplier_min": 1.3,
+        "cash_multiplier_min": 1.30,
         "cash_multiplier_max": 1.45,
-        "heat_multiplier": 0.8,
+        "heat_multiplier": 0.80,
         "rep_multiplier": 1.0,
     },
 )
