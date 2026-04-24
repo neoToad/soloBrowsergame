@@ -165,7 +165,7 @@ Acceptance checks:
 ## Implementation Prompts
 Use these prompts sequentially in separate coding passes.
 
-### Prompt 1: Data Model Pass
+### Prompt 1: Data Model Pass DONE
 "Implement Slice 1 from `.docs/JOBS_SYSTEM_IMPLEMENTATION_PLAN.md`.
 Create first-class job models and migrations, including session turn counter support.
 Keep all business logic out of views. Register admin screens for authoring jobs, approaches, beat variants, and contact offers.
@@ -174,7 +174,7 @@ Return:
 2. migration names,
 3. any schema tradeoffs made."
 
-### Prompt 2: Jobs Service Engine Pass
+### Prompt 2: Jobs Service Engine Pass Done
 "Implement Slice 2.
 Create `game/services/jobs.py` containing all rules for recon tiering, beat progression, flags, reward scaling, and cooldown handling.
 Use existing flag service (`game/services/flags.py`) and effective stat conventions.
