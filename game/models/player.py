@@ -4,6 +4,7 @@ from .items import Item
 
 class GameSession(models.Model):
     session_key   = models.CharField(max_length=100, unique=True)
+    turn_counter  = models.PositiveIntegerField(default=0)
     current_scene = models.ForeignKey(
                         Scene,
                         on_delete=models.SET_NULL,

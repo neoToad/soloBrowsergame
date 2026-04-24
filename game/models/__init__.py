@@ -5,3 +5,12 @@ from .player import GameSession, PlayerStats, PlayerInventory, CompletedQuest, P
 from .combat import Enemy, CombatEncounter, CombatState
 from .events import EventLog
 from .property import Property, PlayerProperty, RivalClaim
+from .jobs import (
+    Job,
+    JobApproach,
+    JobBeatVariant,
+    PlayerJobState,
+    ContactJobOffer,
+    PlayerContactOfferState,
+    JobRun,
+)
