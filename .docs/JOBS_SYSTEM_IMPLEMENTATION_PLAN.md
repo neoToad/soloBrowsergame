@@ -195,7 +195,7 @@ Return:
 2. endpoint contract summary,
 3. test results."
 
-### Prompt 4: Template/UI Pass
+### Prompt 4: Template/UI Pass DONE
 "Implement Slice 4.
 Add jobs partial templates and integrate them into scene panel rendering for hub scenes.
 Show recon, commit/walk-away, contact offers, and cooldown visibility.

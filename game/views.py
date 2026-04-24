@@ -96,6 +96,13 @@ def scene_detail(request, scene_key):
     }
     player_contacts       = PlayerContact.objects.filter(session=game_session).select_related('contact')
     player_gang_standings = PlayerGangStanding.objects.filter(session=game_session).select_related('gang')
+    jobs_hub_context = jobs_service.build_jobs_hub_context(
+        game_session,
+        scene,
+        effective_stats,
+        inventory,
+        completed_map,
+    )
     context = {
         'session':                game_session,
         'scene':                  scene,
@@ -111,6 +118,7 @@ def scene_detail(request, scene_key):
         'owned_territory_ids':    owned_territory_ids,
         'player_contacts':        player_contacts,
         'player_gang_standings':  player_gang_standings,
+        **jobs_hub_context,
     }
     return render(request, 'game/scene.html', context)
 

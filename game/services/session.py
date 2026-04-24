@@ -3,6 +3,7 @@ from ..models import GameSession, PlayerStats, Scene, CompletedQuest
 from ..models.property import PlayerProperty, Property
 from ..constants import HUB_START_SCENE_KEY, SESSION_KEY
 from .inventory import get_player_inventory
+from . import jobs as jobs_service
 from ..utils import get_effective_stats, compute_max_hp
 
 def load_session_context(session_pk):
@@ -48,6 +49,13 @@ def build_render_context(session, scene, stats, effective_stats, inventory, comp
     }
     player_contacts       = PlayerContact.objects.filter(session=session).select_related('contact')
     player_gang_standings = PlayerGangStanding.objects.filter(session=session).select_related('gang')
+    jobs_hub_context = jobs_service.build_jobs_hub_context(
+        session,
+        scene,
+        effective_stats,
+        inventory,
+        completed_map,
+    )
     return {
         'scene':                  scene,
         'choices':                get_available_choices(scene, effective_stats, inventory, completed_map, flags=session.flags),
@@ -66,4 +74,5 @@ def build_render_context(session, scene, stats, effective_stats, inventory, comp
         'owned_territory_ids':    owned_territory_ids,
         'player_contacts':        player_contacts,
         'player_gang_standings':  player_gang_standings,
+        **jobs_hub_context,
     }

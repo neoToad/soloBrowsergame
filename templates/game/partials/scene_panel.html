@@ -73,6 +73,12 @@
         {% if notice_board %}
             {% include "game/partials/notice_board.html" %}
         {% endif %}
+        {% if scene.is_hub %}
+            {% include "game/partials/jobs_board.html" %}
+            {% include "game/partials/job_recon_modal.html" %}
+            {% include "game/partials/job_run_panel.html" %}
+            {% include "game/partials/contact_offers.html" %}
+        {% endif %}
 
         <div class="choices">
             {% for choice in choices %}

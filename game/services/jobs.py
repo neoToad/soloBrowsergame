@@ -212,6 +212,66 @@ def list_contact_offers(session, scene, ctx) -> list[dict[str, Any]]:
     return rows
 
 
+def build_jobs_hub_context(
+    session,
+    scene,
+    effective_stats,
+    inventory,
+    completed_map,
+) -> dict[str, Any]:
+    if not scene.is_hub:
+        return {
+            "district_job_targets": [],
+            "contact_job_offers": [],
+            "active_job_run": None,
+            "active_job_approaches": [],
+            "active_job_beat_2_actions": [],
+        }
+
+    ctx = PlayerContext(
+        stats=effective_stats,
+        inventory=inventory,
+        completed_map=completed_map,
+        flags=session.flags,
+    )
+    district_targets = list_district_targets(session, scene, ctx)
+    contact_offers = list_contact_offers(session, scene, ctx)
+
+    active_run = (
+        JobRun.objects.filter(
+            session=session,
+            status=JobRun.STATUS_ACTIVE,
+        )
+        .select_related("job", "selected_approach", "contact_offer", "contact_offer__contact")
+        .order_by("-started_at")
+        .first()
+    )
+
+    approaches = []
+    beat_2_actions = []
+    if active_run is not None:
+        if active_run.current_beat == 1:
+            approaches = list(_available_approaches_for_tier(active_run.job, active_run.recon_tier))
+        elif active_run.current_beat == 2:
+            selected_approach = _get_selected_approach_from_flags_or_run(session, active_run)
+            if selected_approach is not None:
+                beat_2_actions = list(
+                    JobBeatVariant.objects.filter(
+                        job=active_run.job,
+                        beat_number=2,
+                        approach=selected_approach,
+                    ).order_by("order", "id")
+                )
+
+    return {
+        "district_job_targets": district_targets,
+        "contact_job_offers": contact_offers,
+        "active_job_run": active_run,
+        "active_job_approaches": approaches,
+        "active_job_beat_2_actions": beat_2_actions,
+    }
+
+
 @transaction.atomic
 def start_recon(session, job: Job) -> dict[str, Any]:
     effective_stats = _get_effective_stats_for_session(session)

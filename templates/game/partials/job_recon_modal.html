@@ -1,0 +1,34 @@
+{% if job_recon_preview %}
+<div class="notice-board job-recon-preview">
+    <p class="panel-label">[ RECON PREVIEW ]</p>
+    <div class="quest-entry quest-entry--available">
+        <p class="quest-title">{{ job_recon_preview.job.title }}</p>
+        <p class="quest-desc">{{ job_recon_preview.recon_text }}</p>
+        <p class="quest-desc">
+            Tier {{ job_recon_preview.recon_tier|upper }}:
+            cash x{{ job_recon_preview.recon_modifiers.cash_multiplier }},
+            heat {{ job_recon_preview.recon_modifiers.heat_flat|add:"0" }},
+            rep {{ job_recon_preview.recon_modifiers.rep_flat|add:"0" }}
+        </p>
+        <p class="quest-desc">Available approaches: {{ job_recon_preview.approaches|length }}</p>
+        <div class="choices">
+            <button
+                hx-post="{% url 'job_recon_commit' job_recon_preview.job.key %}"
+                hx-target="#scene-panel"
+                hx-swap="outerHTML"
+                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                hx-indicator="#loading-indicator">
+                Commit
+            </button>
+            <button
+                hx-post="{% url 'job_recon_walk_away' job_recon_preview.job.key %}"
+                hx-target="#scene-panel"
+                hx-swap="outerHTML"
+                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                hx-indicator="#loading-indicator">
+                Walk away
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}

@@ -55,6 +55,9 @@ class JobEndpointsTest(TestCase):
         run = JobRun.objects.get(session=self.session, job=job)
         self.assertEqual(run.status, JobRun.STATUS_ACTIVE)
         self.assertEqual(run.current_beat, 1)
+        body = response.content.decode()
+        self.assertIn("[ DISTRICT TARGETS ]", body)
+        self.assertIn("[ ACTIVE RUN ]", body)
 
     def test_job_recon_commit_gated_by_cooldown_returns_403(self):
         job = self._make_job()
@@ -150,6 +153,24 @@ class JobEndpointsTest(TestCase):
         run = JobRun.objects.get(session=self.session, contact_offer=offer)
         self.assertEqual(run.source, JobRun.SOURCE_CONTACT)
         self.assertEqual(run.recon_tier, RECON_TIER_HIGH)
+
+    def test_scene_detail_hub_renders_jobs_and_contacts_panels(self):
+        job = self._make_job(key="jobs__scene-detail")
+        contact = Contact.objects.create(key="scene-contact", name="Scene Contact", description="")
+        ContactJobOffer.objects.create(
+            key="scene-contact-offer",
+            contact=contact,
+            job=job,
+            scene=self.scene,
+            cooldown_turns=0,
+        )
+
+        response = self.client.get(reverse("scene_detail", kwargs={"scene_key": self.scene.key}))
+
+        self.assertEqual(response.status_code, 200)
+        body = response.content.decode()
+        self.assertIn("[ DISTRICT TARGETS ]", body)
+        self.assertIn("[ CONTACTS ]", body)
 
     @patch("game.services.jobs.random.uniform", return_value=1.0)
     @patch("game.services.jobs.random.randint", return_value=100)

@@ -261,6 +261,18 @@ html, body {
     margin: 0;
 }
 
+.jobs-board,
+.job-recon-preview,
+.job-run-panel,
+.contact-offers {
+    margin-top: 4px;
+}
+
+.job-recon-preview .choices,
+.job-run-panel .choices {
+    margin-top: 0;
+}
+
 #loading-indicator {
     color: var(--warning);
     font-size: 13px;

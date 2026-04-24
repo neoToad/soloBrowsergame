@@ -1,0 +1,35 @@
+{% if contact_job_offers %}
+<div class="notice-board contact-offers">
+    <p class="panel-label">[ CONTACTS ]</p>
+    {% for row in contact_job_offers %}
+        <div class="quest-entry {% if row.available %}quest-entry--available{% else %}quest-entry--locked{% endif %}">
+            <p class="quest-title">{{ row.offer.contact.name }}</p>
+            {% if row.available %}
+                {% if row.is_first_meeting and row.offer.first_meeting_text %}
+                    <p class="quest-desc">{{ row.offer.first_meeting_text }}</p>
+                {% elif row.offer.standard_offer_text %}
+                    <p class="quest-desc">{{ row.offer.standard_offer_text }}</p>
+                {% else %}
+                    <p class="quest-desc">They can line up: {{ row.offer.job.title }}</p>
+                {% endif %}
+                <button
+                    hx-post="{% url 'job_contact_start' row.offer.id %}"
+                    hx-target="#scene-panel"
+                    hx-swap="outerHTML"
+                    hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                    hx-indicator="#loading-indicator">
+                    Start {{ row.offer.job.title }}
+                </button>
+            {% else %}
+                {% if row.cooldown_turns_remaining > 0 %}
+                    <p class="quest-lock-reason">Available again in {{ row.cooldown_turns_remaining }} turns.</p>
+                {% elif row.offer.nothing_available_text %}
+                    <p class="quest-desc">{{ row.offer.nothing_available_text }}</p>
+                {% else %}
+                    <p class="quest-desc">Nothing available right now.</p>
+                {% endif %}
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
