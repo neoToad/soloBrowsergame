@@ -377,6 +377,21 @@ def resolve_beat_3(session, run: JobRun) -> dict[str, Any]:
 
 
 @transaction.atomic
+def abort_job_run(session, run: JobRun) -> JobRun:
+    if run.session_id != session.id:
+        raise JobRulesError("Run does not belong to this session.")
+    if run.status != JobRun.STATUS_ACTIVE:
+        raise JobRulesError("Run is not active.")
+
+    run.status = JobRun.STATUS_ABORTED
+    run.completed_turn = session.turn_counter
+    run.completed_at = timezone.now()
+    run.save(update_fields=["status", "completed_turn", "completed_at"])
+    increment_turn(session)
+    return run
+
+
+@transaction.atomic
 def apply_job_rewards(session, run: JobRun) -> dict[str, int]:
     if run.session_id != session.id:
         raise JobRulesError("Run does not belong to this session.")
