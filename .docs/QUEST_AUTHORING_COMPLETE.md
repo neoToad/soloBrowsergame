@@ -1,6 +1,6 @@
 # Quest Authoring Guide
 
-This document describes how to create quests in this Django text-adventure game. It is intended for LLMs generating quest content or assisting quest authors.
+This document describes how to create quests in this Django text-adventure game. It is intended for LLMs generating quest content or assisting quest authors. It consolidates `QUEST_AUTHORING.md`, `QUEST_AUTHORING_AMENDMENTS.md`, and `QUEST_AUTHORING_AMENDMENTS_NEW.md` into a single source of truth.
 
 ---
 
@@ -42,7 +42,7 @@ Scene
 │
 ├── ROLL MECHANICS (only when requires_roll=True)
 │   ├── requires_roll   bool
-│   ├── roll_stat       "muscle" | "reflexes" | "cunning" | "nerve"
+│   ├── roll_stat       "strength" | "agility" | "intellect" | "charisma"  ← DB field names
 │   └── roll_difficulty int — DC to beat (e.g. 12)
 │
 ├── ENDING CONFIG (only when scene_type="ending")
@@ -116,6 +116,8 @@ SceneContact
 | Cunning      | intellect  | Thinking and planning   |
 | Nerve        | charisma   | Charm and persuasion    |
 
+Always use the **DB field name** in code, YAML, and requirements — never the in-game alias. So `roll_stat: charisma` (not `nerve`), `stat_name: strength` (not `muscle`), etc.
+
 Player also has: `hp`, `max_hp`, `level` (1–7), `experience`, `cash`, `heat`, `rep`.
 
 ---
@@ -171,6 +173,8 @@ Flags are free-form string keys stored per session as a JSON dict (`{flag_name: 
 
 Flags are used for stateful branching within a quest, e.g. tracking whether the player scouted a location before attacking.
 
+When a quest's ending needs to gate a later quest in an arc, set the flag on the hub return choice inside the ending scene using `set_flag_name` — not on the scene's arrival block. Arrival effects are reserved for stat and item changes. Every ending scene in a multi-quest arc should have exactly one flag set on its hub return choice corresponding to its outcome.
+
 ---
 
 ## Scene Types and Their Rules
@@ -182,6 +186,24 @@ Standard scene. Requires at least one Choice with a `target_scene`.
 ### `hub`
 
 Central location (e.g., Back Home). Has a notice board listing available quests. Do **not** add hub scenes to individual quests — they are standalone.
+
+Hub scenes are returned to repeatedly. Their `body` text must hold up on the first visit and the fiftieth. Do not put story-specific or time-sensitive narration in a hub body. Opening narration and story context belong in a one-time entrance scene inside the first quest, not in the hub itself.
+
+**Wrong:**
+```
+body:
+  You've been out four days. Your parole officer wants you in a job
+  by the end of the month. Your old crew hasn't called. Then your
+  phone buzzes.
+```
+
+**Right:**
+```
+body:
+  Home. Relative term. The radiator clanks. The window looks out on
+  a brick wall. There's a corkboard on the back of the door where
+  you've started pinning job leads. Old habits die. New ones move in.
+```
 
 ### `combat`
 
@@ -199,7 +221,7 @@ CombatEncounter
 
 ### `ending`
 
-Terminal scene. Must set `ending_type` to `"victory"`, `"defeat"`, or `"neutral"`. XP is awarded automatically based on ending type (victory=150, neutral=75, defeat=25). Should have a Choice routing back to a hub.
+Terminal scene. Must set `ending_type` to `"victory"`, `"defeat"`, or `"neutral"`. XP is awarded automatically based on ending type (victory=150, neutral=75, defeat=25). Must have a Choice routing back to a hub.
 
 ---
 
@@ -211,6 +233,44 @@ When `scene.requires_roll=True`, the player's chosen action triggers a dice roll
 - Beat `roll_difficulty` to succeed
 
 Choices in roll scenes use `success_scene`/`failure_scene` instead of `target_scene`. Both must be set.
+
+Every roll scene must be preceded by a normal scene that establishes the situation — what the player is attempting, what's at stake, and why it's uncertain. The roll scene's body text then narrows focus to the moment of the check itself. The setup scene can be brief (two or three sentences), but the player must understand what they're attempting before the dice roll.
+
+**Wrong:**
+```
+# Player goes straight from a choice into a roll with no setup
+- key: smuggler-run__the-drop
+  scene_type: normal
+  requires_roll: true
+  body: |
+    You attempt to play it cool.
+```
+
+**Right:**
+```
+# A normal scene sets the situation first
+- key: smuggler-run__the-drop
+  scene_type: normal
+  requires_roll: false
+  body: |
+    The contact hands you the package. The lobby is busier than
+    you expected. Two men near the door haven't looked away since
+    you came in. You have to walk past them to get out.
+
+  choices:
+    - label: Play it cool
+      target_scene: smuggler-run__the-walk-out
+
+# The roll scene focuses on the moment of the check
+- key: smuggler-run__the-walk-out
+  scene_type: normal
+  requires_roll: true
+  roll_stat: intellect
+  roll_difficulty: 13
+  body: |
+    You keep your pace even. Don't look at them. The door is
+    twenty feet away.
+```
 
 ---
 
@@ -240,6 +300,133 @@ Example: `the-warehouse-job__scouting-the-roof`
 
 The quest key itself is kebab-case. Hub scene keys use `hub__` as a prefix (e.g. `hub__back_home`).
 
+The `title` field of a scene should be the human-readable equivalent of the scene's slug. Capitalise each word, strip hyphens.
+
+| Key | Title |
+|-----|-------|
+| `the-call__why-you` | `Why You` |
+| `smuggler-run__clean-exit` | `Clean Exit` |
+
+---
+
+## Writing Conventions
+
+### Hub return choices must have arrival flavor
+
+Any choice that routes the player back to a hub scene must have `arrival_flavor` set. This acts as the closing beat of the quest. Leaving it blank makes the quest feel like it cuts out rather than ends. This applies to both victory and defeat ending scenes.
+
+**Wrong:**
+```
+Choices:
+  1. label:        "Back to the apartment"
+     target_scene: hub__apartment
+     order: 1
+```
+
+**Right:**
+```
+Choices:
+  1. label:        "Back to the apartment"
+     target_scene: hub__apartment
+     arrival_flavor: "The walk back is quiet. That's fine."
+     order: 1
+```
+
+### Dialogue and quotation marks
+
+In scene `body` text, use quotation marks freely for direct character speech when the line is specific enough to earn it. A character's voice is part of who they are and direct dialogue is often the fastest way to put that on the page.
+
+Quotation marks on **choice labels** are reserved for when the player is saying something directly. Do not use them for action labels or stage directions.
+
+**Correct (player speaking):**
+```
+label: "Tell him you're not here to negotiate"
+```
+
+**Wrong (not player speech):**
+```
+label: "Walk over and make it clear you're serious"
+```
+
+### Branching on prior quest outcomes
+
+When two paths through a quest diverge based on a prior quest's outcome, use a single entrance scene with `quest_ending` requirements on the choices rather than creating two separate quests. The entrance body text must be written neutrally — true for both players regardless of which path they're on.
+
+**Wrong:**
+```
+# Two separate quests for the same story beat
+quest: the-fence-with-jewels
+quest: the-fence-without-jewels
+```
+
+**Right:**
+```
+# One quest, one entrance scene, requirements on the choices
+- key: the-fence__intro
+  choices:
+    - label: Head to Marek's
+      requirements:
+        - label: Clean or rough exit
+          logic: any
+          conditions:
+            - condition_type: quest_ending
+              required_quest: the-box
+              required_ending_type: victory
+            - condition_type: quest_ending
+              required_quest: the-box
+              required_ending_type: neutral
+
+    - label: Hit the evidence lockup first
+      requirements:
+        - label: Got busted
+          logic: all
+          conditions:
+            - condition_type: quest_ending
+              required_quest: the-box
+              required_ending_type: defeat
+```
+
+### Multi-quest arc gating
+
+Use `quest_ending` rather than `quest_completed` when the downstream quest cares about *how* the prior quest ended. Use `quest_completed` only when any ending is an acceptable prerequisite.
+
+When a quest accepts multiple valid prior endings, use a single `RequirementGroup` with `logic: any` and one condition per accepted ending type. Do not create separate requirement groups for this — multiple groups are AND'd together, which will never pass for mutually exclusive endings.
+
+**Accepts any ending:**
+```
+requirements:
+  - label: Must have completed the box
+    logic: all
+    conditions:
+      - condition_type: quest_completed
+        required_quest: the-box
+```
+
+**Accepts specific endings only:**
+```
+requirements:
+  - label: Must have gotten out of the fence
+    logic: any
+    conditions:
+      - condition_type: quest_ending
+        required_quest: the-fence
+        required_ending_type: victory
+      - condition_type: quest_ending
+        required_quest: the-fence
+        required_ending_type: neutral
+```
+
+**Accepts only one specific ending:**
+```
+requirements:
+  - label: Must have been defeated by the fence
+    logic: all
+    conditions:
+      - condition_type: quest_ending
+        required_quest: the-fence
+        required_ending_type: defeat
+```
+
 ---
 
 ## Minimal Quest Example
@@ -262,6 +449,7 @@ petty-theft__success         (ending, victory)
     body: "You're two hundred richer."
     cash_change: 200
     → Choice "Head home" → hub__back_home
+       arrival_flavor: "You count it twice. Still two hundred."
 ```
 
 ---
@@ -273,11 +461,17 @@ A quest with a skill check and two outcomes.
 **Scenes**:
 
 ```
-smuggler-run__the-drop       (entrance_scene, normal, requires_roll=True)
-    roll_stat: cunning
+smuggler-run__the-drop       (entrance_scene, normal)
+    body: "The contact hands you the package. The lobby is busier
+           than expected. Two men near the door haven't looked away."
+    → Choice "Play it cool" → smuggler-run__the-walk-out
+
+smuggler-run__the-walk-out   (normal, requires_roll=True)
+    roll_stat: intellect
     roll_difficulty: 13
-    body: "The contact hands you the package. Eyes everywhere."
-    → Choice "Play it cool" 
+    body: "You keep your pace even. Don't look at them. The door
+           is twenty feet away."
+    → Choice "Keep moving"
         success_scene → smuggler-run__clean-exit
         failure_scene → smuggler-run__busted
         arrival_flavor: "You walk out like you own the place."
@@ -288,12 +482,14 @@ smuggler-run__clean-exit     (ending, victory)
     cash_change: 400
     rep_change: 10
     → Choice "Head home" → hub__back_home
+       arrival_flavor: "Morris says acceptable. You take it."
 
 smuggler-run__busted         (ending, defeat)
     body: "Cuffs on your wrists. You'll be paying this off for weeks."
     cash_change: -200
     heat_change: 20
     → Choice "Post bail and limp home" → hub__back_home
+       arrival_flavor: "The walk home is longer than it should be."
 ```
 
 ---
@@ -329,7 +525,7 @@ Choice.requirements → RequirementGroup
 ambush__warehouse            (entrance_scene, normal)
     body: "Three of them. You count the exits."
     → Choice "Fight your way through" → ambush__brawl
-    → Choice "Look for another way" → ambush__sneak  [gated by reflexes]
+    → Choice "Look for another way" → ambush__sneak  [gated by agility]
 
 ambush__brawl                (combat)
     CombatEncounter:
@@ -339,10 +535,14 @@ ambush__brawl                (combat)
 
 ambush__cleared              (ending, victory)
     body: "Bodies on the floor. The package is yours."
+    → Choice "Get out" → hub__back_home
+       arrival_flavor: "You don't run. Running draws attention."
 
 ambush__knocked_out          (ending, defeat)
     body: "You wake up in an alley. Wallet gone."
     cash_change: -150
+    → Choice "Walk it off" → hub__back_home
+       arrival_flavor: "Three cracked ribs. You've had worse. Barely."
 ```
 
 ---
@@ -352,7 +552,14 @@ ambush__knocked_out          (ending, defeat)
 - **Scene key not in quest.scenes** — the scene exists but is orphaned; the player can never reach it
 - **Roll scene with `target_scene`** — use `success_scene`/`failure_scene` instead
 - **Non-roll scene with `success_scene`** — only `target_scene` is used on non-roll scenes
+- **Roll scene with no preceding setup scene** — always establish the situation in a normal scene first
 - **Ending scene with no exit choice** — player gets stuck; always add a route back to a hub
+- **Ending scene hub return choice with no `arrival_flavor`** — quest cuts out rather than ends; always set it
 - **Hub scene inside a quest** — hub scenes are global, not quest-owned; never add them to `quest.scenes`
-- **Requirement on `stat_name` using alias** — use the DB field (`strength`, not `muscle`)
+- **Hub scene body with story-specific narration** — hub bodies must be reusable across all visits
+- **Requirement on `stat_name` using alias** — use the DB field (`strength`, not `muscle`; `charisma`, not `nerve`)
+- **`roll_stat` using in-game alias** — use the DB field (`charisma`, not `nerve`)
 - **`award_once=False` on a SceneItem in a repeatable quest** — player farms it on every run; set `award_once=True`
+- **Arc flag set on scene arrival** — set arc flags on the hub return choice using `set_flag_name`, not in the arrival block
+- **Multiple RequirementGroups for mutually exclusive endings** — groups are AND'd; use one group with `logic: any` instead
+- **Non-speech choice labels in quotation marks** — quotes on labels are for player dialogue only

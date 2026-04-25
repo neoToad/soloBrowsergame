@@ -3,7 +3,8 @@
 ## Dev Setup
 
 ### Prerequisites
-- Python 3.10+, Django 6.0+
+- Python 3.10+
+- Django 6.0+
 
 ### Local Setup
 ```bash
@@ -17,139 +18,138 @@ python manage.py collectstatic --noinput
 python manage.py test
 ```
 
-Most tests require both fixtures. HTMX views need `HTTP_HX_REQUEST='true'`.
-Always initialize a session by visiting `/game/` before testing gameplay.
+Notes:
+- Most tests assume fixture data is loaded.
+- HTMX endpoints should be tested with `HTTP_HX_REQUEST='true'`.
+- Initialize gameplay session state by visiting `/game/` before scene/choice flows.
 
 ---
 
 ## System Layers
 
-```
-URLs → Views → Services → Models
-                ↑
-           utils / constants
+```text
+URLs -> Views -> Services -> Models
+               ^
+          utils/constants
 ```
 
-**Rule: business logic lives in services, never views.**
-Views are responsible for: reading the request, calling services, building context,
-returning a response. Services are responsible for: all game logic, all DB writes
-beyond simple session saves.
+Rule: business logic lives in services, never views.
+
+Views:
+- Parse request input
+- Perform auth/session guards
+- Call service functions
+- Build/render response
+
+Services:
+- Own gameplay rules and orchestration
+- Own write-side domain mutations
+- Return log strings; caller flushes logs
 
 ---
 
-## Package Structure
+## Current Package Layout
 
-```
+```text
 game/
   models/
-    player.py       — GameSession (+ flags JSONField), PlayerStats (cash, heat, rep),
-                      PlayerInventory, CompletedQuest, PlayerSceneState
-    world.py        — Arc, Quest (+ hub_scenes M2M), Scene, Choice, SceneItem, SceneUnlock
-    items.py        — Item
-    combat.py       — Enemy, CombatEncounter, CombatState (+ pending_e_* fields for two-phase rounds)
-    requirements.py — Requirement, RequirementGroup, PlayerContext (dataclass)
-    events.py       — EventLog
-    property.py     — Property, PlayerProperty, RivalClaim
-    __init__.py     — re-exports all public models
+    world.py          Arc, Quest, Scene, Choice, SceneItem, Contact/Gang/SceneContact
+    player.py         GameSession, PlayerStats, PlayerInventory, PlayerContact,
+                      PlayerGangStanding, CompletedQuest
+    jobs.py           Job, JobApproach, JobBeatVariant, ContactJobOffer,
+                      PlayerJobState, PlayerContactOfferState, JobRun
+    combat.py         Enemy, CombatEncounter, CombatState
+    property.py       Property, PlayerProperty, RivalClaim
+    requirements.py   Requirement, RequirementGroup, PlayerContext
+    events.py         EventLog + log helpers
 
   services/
-    session.py      — load_session_context, create_session, build_render_context
-    scene.py        — resolve_roll, get_available_choices, complete_scene,
-                      unlock_scene, get_available_scenes, get_notice_board
-    inventory.py    — get_player_inventory, award_scene_items, consume_item
-    combat.py       — get_or_create_combat_state, resolve_player_attack,
-                      resolve_enemy_attack, resolve_combat_end, get_active_combat_state
-    progression.py  — award_xp, maybe_complete_quest; XP_THRESHOLDS, XP_AWARDS, RANK_TITLES
-    property_service.py — turn income, rival contests, contest resolution, turn summaries
-    flags.py        — has_flag, set_flag, clear_flag
-    quest_builder.py — canvas data, scene/choice CRUD, position saving,
-                       validate_quest, update_scene_items, update_combat_encounter,
-                       build_requirement_groups_from_post
+    session.py        load_session_context, create_session, build_render_context
+    scene.py          resolve_roll, get_available_choices, get_notice_board
+    arrival.py        process_arrival
+    progression.py    XP awards/thresholds, quest completion, stat spending
+    inventory.py      inventory/contact awards + consumption
+    property_service.py turn-income, rival contests, contest resolution
+    combat.py         combat resolution helpers + combat state init/end
+    jobs.py           recon/contact job lifecycle and rewards
+    flags.py          has_flag, set_flag, clear_flag
+    quest_builder.py  admin quest-builder domain logic
 
-  management/commands/
-    scaffold_quest.py — creates a stub quest with entrance + victory/defeat ending scenes
-    export_quest.py   — dumps a quest and all related objects to a loadable fixture JSON
-
-  views.py          — HTTP handlers; delegates to services; Quest Builder AJAX views
-                      are registered via QuestAdmin.get_urls()
-  utils.py          — roll_d20, stat_modifier, get_effective_stats
-  constants.py      — HUB_START_SCENE_KEY, NOTICE_BOARD_SCENE_KEY, STAT_FIELD_MAP,
-                      USE_ITEM_FLAVOR
+  views.py            gameplay HTTP endpoints
+  quest_builder_views.py admin HTMX endpoints for quest builder
+  constants.py        session/stat mapping/display constants
+  utils.py            dice/stat math + effective stats
 ```
 
 ---
 
-## Data Model Relationships
+## Core Flow
 
-```
-Arc ──< Quest ──< Scene ──< Choice
-         │          │          └── target_scene / success_scene / failure_scene → Scene
-         │          └──< SceneItem ──> Item
-         │          └── CombatEncounter ──> Enemy
-         │          └──< SceneUnlock ──> Scene
-         └──< hub_scenes (M2M) ──> Scene(hub)
+1. `GET /game/` loads or creates `GameSession`, then redirects to current scene.
+2. `GET /game/scene/<scene_key>/` renders scene + derived UI state.
+3. `POST /game/choose/<choice_id>/` resolves routing/rolls/flags.
+4. Arrival processing (`process_arrival`) applies scene effects, quest completion, item/contact effects.
+5. On quest completion, turn systems run (property income, rival contest checks, turn summary).
+6. HTMX requests return concatenated partial updates via `_htmx_response`.
 
-GameSession ──── PlayerStats (1:1)
-            ──── flags (JSONField)
-            ──< PlayerInventory ──> Item
-            ──< CompletedQuest ──> Quest
-            ──── CombatState (1:1, optional)
-            ──< EventLog
-            ──< PlayerSceneState ──> Scene
-            ──< PlayerProperty ──> Property ──< RivalClaim
+Combat sub-loop:
+- `POST /game/combat/attack/`
+- `POST /game/combat/enemy-resolve/`
+- `POST /game/combat/continue/`
 
-Quest, Scene, Choice each hold a M2M to RequirementGroup.
-RequirementGroup holds a M2M to Requirement.
-All groups on an object must pass (AND between groups, AND/OR within each group).
-```
+Jobs sub-loop:
+- Recon start/commit/walk-away
+- Contact offer start
+- Beat 1/2/3 resolve and abort
 
 ---
 
-## The Game Loop
+## Architectural Invariants
 
-1. Player visits `/game/` → session is created → redirected to `hub__main_square`
-2. `scene_detail` loads the scene, filters available choices via `RequirementGroup` evaluation
-3. Player POSTs to `choice_resolve` with a choice ID
-4. If the scene has `requires_roll=True`, a d20 is rolled and compared to `roll_difficulty`
-5. The session's `current_scene` advances to the resolved target
-6. Quest completion is checked; XP and level-ups are awarded if applicable
-8. Flag effects (`set_flag_name` / `clear_flag_name`) on the taken choice are applied
-9. Scene items are awarded; `EventLog` entries are created
-10. On quest completion, property turn logic runs (income, contests, summary)
-11. HTMX response re-renders the five partials in place
-
-### Combat sub-loop (two-phase)
-
-- `POST /game/combat/attack/` — phase 1: player attack resolves; enemy counter pre-rolled and stored on `CombatState`; returns panel with "Brace yourself" button and player's roll widget
-- `POST /game/combat/enemy-resolve/` — phase 2: stored enemy attack applied; `turn_number` incremented; returns panel with enemy roll widget and "Move on him" button for next round
+1. Services should not write `EventLog` directly; they return log text and caller flushes.
+2. Views should not execute gameplay mutations beyond minimal session routing.
+3. Arrival effects happen on transitions, not on read-only page views.
+4. Guard all authoring-dependent pointers (`target_scene`, `entrance_scene`, combat encounter scenes) before use.
+5. Keep atomic boundaries around multi-step state transitions.
 
 ---
 
-## Quest Builder (Admin Tool)
+## Known Refactor Priorities
 
-Mounted under `QuestAdmin.get_urls()`. Primary authoring tool for quest narrative flows.
+Tracked in:
+- `.docs/codebase_audit.txt`
+- `.docs/codebase_audit_addendum.txt`
 
-- **Canvas view**: draggable scene cards with SVG arrows for choices and combat routing
-- **Scene panel**: title, key, type, roll settings, body, items, combat encounter, requirement groups
-- **Choice panel**: label, routing type (direct / roll), targets, flag effects
-- **Validation**: `validate_quest()` returns warnings for orphan scenes, missing routing, hub
-  assignment, combat misconfigs, etc.
-- **Hub assignment**: `Quest.hub_scenes` M2M determines which notice boards list the quest
+Highest-priority active items:
+- Move remaining combat and item business logic from views into services.
+- Remove write-side effects from `scene_detail` GET path.
+- Validate quest-builder choice ownership by `quest_id`.
+- Guard missing combat encounter/scene routing data to avoid 500s.
 
 ---
 
-## Key Conventions
+## Conventions
 
-- **Scene keys**: `{quest_slug}__{scene_slug}`, e.g. `haunted_mine__entrance`. Hub scenes use `hub__*`.
-- **Stat fields**: DB names are `strength`, `agility`, `intellect`, `charisma`. Display names are
-  `muscle`, `reflexes`, `cunning`, `nerve` — mapped via `STAT_FIELD_MAP`.
-- **effective_stats**: always use `get_effective_stats(stats, inventory)` for rolls and display.
-  Write mutations to raw `PlayerStats`, then recompute.
-- **EventLog**: services return log message strings; the view creates the DB objects. Services
-  must not create `EventLog` entries directly.
-- **HTMX**: all POST views return `_htmx_response()` when `HX-Request: true`. Five partials
-  rendered and concatenated: `scene_panel`, `stats_bar`, `event_log`, `inventory`,
-  `mobile_stats_bar`. `turn_summary` is included in context and rendered inside `scene_panel`.
-- **scene_panel layout order**: loading indicator → turn summary → scene title → latest event log entry (always) → roll widget (if present) → scene body → level-up / combat panel / choices.
-- **Flags**: use `flags.py` service only — never read/write `GameSession.flags` directly in
-  views or other services.
+- Scene keys: `{quest_key}__{scene_slug}`; hub scenes `hub__*`.
+- Session anchor scene key constant: `HUB_START_SCENE_KEY = 'hub__apartment'`.
+- Stats:
+  - DB fields: `strength`, `agility`, `intellect`, `charisma`
+  - Display names: `muscle`, `reflexes`, `cunning`, `nerve`
+  - Mapping: `STAT_FIELD_MAP`
+- Always compute roll/display values from `get_effective_stats(stats, inventory)`.
+- Use `flags.py` helper functions for flag mutation checks.
+
+---
+
+## HTMX Rendering Contract
+
+`_htmx_response` currently concatenates these partials:
+- `scene_panel`
+- `stats_bar`
+- `top_stats_bar`
+- `event_log`
+- `inventory`
+- `mobile_stats_bar`
+- `territories`
+
+`HX-Push-Url` should mirror the active scene URL.

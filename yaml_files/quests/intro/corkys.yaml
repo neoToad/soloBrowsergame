@@ -1,0 +1,792 @@
+quest:
+  key: corkys
+  title: Corky's
+  description: >
+    Dutch wants his dealers back in a bar called Corky's. The owner
+    pushed back. You're the push.
+  arc: intro
+  arc_order: 3
+  is_repeatable: false
+  hub_scenes:
+    - hub__apartment
+  entrance_scene: corkys__the-brief
+  requirements:
+    - label: Must have completed first word
+      logic: all
+      conditions:
+        - condition_type: quest_completed
+          required_quest: first-word
+          flag_name: null
+          stat_name: null
+          stat_value: null
+          required_item: null
+          required_ending_type: null
+          required_contact: null
+
+scenes:
+
+  # -------------------------
+  # ENTRANCE SCENE
+  # -------------------------
+
+  - key: corkys__the-brief
+    scene_type: normal
+    title: The Brief
+    order: 10
+    body: |
+      Morris has another job. He lays it out over the phone this time —
+      you've apparently graduated past needing to meet in person.
+
+      There's a bar in the Flats called Corky's. Dutch's people have
+      been using it as a sales floor for years — high foot traffic,
+      regular clientele, nobody asking questions. The owner, a guy
+      named Sal, inherited the place from a friend who left town. Sal
+      has decided he wants it clean. He told Dutch's dealers to stop
+      coming in. One of them got mouthy about it and Sal threw him out.
+
+      Dutch is not angry. Dutch is never angry. Dutch just wants the
+      situation resolved. The bar stays open, the dealers go back in,
+      Sal understands how things work in the Flats. Simple.
+
+      Morris doesn't say what happens if Sal keeps pushing. He doesn't
+      need to.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Head to Corky's
+        order: 1
+        target_scene: corkys__the-bar
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: The bar is two blocks from Reyes Boxing. You know the street.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # THE BAR
+  # -------------------------
+
+  - key: corkys__the-bar
+    scene_type: normal
+    title: The Bar
+    order: 20
+    body: |
+      Corky's is the kind of bar that has been exactly the same for
+      thirty years and will be exactly the same for thirty more, or
+      until the building gets sold out from under it. Dark wood. A
+      jukebox that still takes quarters. Two old men at the far end
+      nursing pints like it's a job.
+
+      Sal is behind the bar. Fifties, heavyset, the kind of tired that
+      comes from running a place alone. He clocks you the moment you
+      walk in — not with fear, just attention. He's been expecting
+      someone. Maybe not you specifically. Someone.
+
+      He doesn't stop wiping down the bar.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Talk to Sal directly
+        order: 1
+        target_scene: corkys__sal-face-to-face
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You take a stool at the bar. He sets a glass of water in front of you without being asked.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Look around first
+        order: 2
+        target_scene: corkys__read-the-room
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You take a table near the window. Order nothing. Watch.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # READ THE ROOM
+  # -------------------------
+
+  - key: corkys__read-the-room
+    scene_type: normal
+    title: Read The Room
+    order: 30
+    body: |
+      You sit with it for twenty minutes. The bar tells you things.
+
+      There's a photo behind the register — Sal with an older man,
+      both of them grinning, the bar in the background looking exactly
+      the same as it does now. The friend who left it to him, probably.
+      On the shelf below it, a stack of envelopes. The kind with
+      cellophane windows. Bills. More than a few.
+
+      One of the regulars at the end of the bar calls Sal by name when
+      he needs a refill. Sal knows his drink without being told. Knows
+      the other one's too. This is a man who has built something small
+      and is holding onto it.
+
+      He's also behind on something. The envelopes are the kind you
+      don't leave on the shelf unless you're hoping they'll sort
+      themselves out.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Approach Sal
+        order: 1
+        target_scene: corkys__sal-face-to-face
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You move to the bar. He's already looking at you.
+        failure_arrival_flavor: null
+        set_flag_name: corkys_read_room
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # SAL FACE TO FACE
+  # -------------------------
+
+  - key: corkys__sal-face-to-face
+    scene_type: normal
+    title: Sal Face To Face
+    order: 40
+    body: |
+      Sal puts the cloth down. Folds his arms on the bar. He's not
+      aggressive — just done pretending he doesn't know why you're here.
+
+      He says he knows who sent you. Says Dutch's people have been
+      using his bar for three years and he should have said something
+      sooner. Says he doesn't want trouble. He just wants to run his
+      bar. He says that last part quietly, like he knows how it sounds.
+
+      Behind him, the photo. The envelopes. The jukebox cycles to
+      something slow and nobody changes it.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Tell him wanting things doesn't change how they are
+        order: 1
+        target_scene: corkys__lean-on-sal
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You keep your voice level. This isn't personal. That's almost worse.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Ask him about the envelopes on the shelf
+        order: 2
+        target_scene: corkys__leverage
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Something shifts in his expression. He wasn't expecting that angle.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements:
+          - label: Must have read the room
+            logic: all
+            conditions:
+              - condition_type: has_flag
+                flag_name: corkys_read_room
+                stat_name: null
+                stat_value: null
+                required_item: null
+                required_quest: null
+                required_ending_type: null
+                required_contact: null
+
+      - label: Ask him what he actually needs to make this work
+        order: 3
+        target_scene: corkys__sal-talks
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: He looks at you for a long moment. Deciding whether you mean it.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # LEAN ON SAL (NERVE ROLL)
+  # -------------------------
+
+  - key: corkys__lean-on-sal
+    scene_type: normal
+    title: Lean On Sal
+    order: 50
+    body: |
+      You don't threaten him. You don't need to. You just lay out the
+      geography — Dutch has been in the Flats longer than Sal has owned
+      this bar. The dealers coming back in is not a negotiation. The
+      only question is whether Sal makes it difficult or whether he
+      makes it easy.
+
+      You watch him process it. He's not a stupid man. He knows what
+      you're saying. He knows what it means if he keeps pushing.
+
+      He's deciding whether the bar is worth it.
+
+    roll:
+      requires_roll: true
+      roll_stat: charisma
+      roll_difficulty: 12
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Let it land
+        order: 1
+        target_scene: null
+        success_scene: corkys__sal-folds-intimidated
+        failure_scene: corkys__sal-holds-firm
+        arrival_flavor: His shoulders drop. He nods, once, at the bar top. The dealers can come back.
+        failure_arrival_flavor: He meets your eyes. Says he's not going to do it. Says it like a man who has already accepted the consequences.
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # LEVERAGE (CUNNING ROLL)
+  # -------------------------
+
+  - key: corkys__leverage
+    scene_type: normal
+    title: Leverage
+    order: 55
+    body: |
+      You ask him about the envelopes. He goes still.
+
+      You tell him you're not here to make it worse — you're here to
+      find an arrangement that works. Dutch's operation running through
+      the bar is quiet income on top of what the bar makes. It's not
+      nothing, especially when the cellophane-window envelopes are
+      stacking up. You're not telling him anything he doesn't know.
+      You're just saying it out loud so you're both looking at the
+      same picture.
+
+      He doesn't like it. That's fine. Liking it isn't the ask.
+
+    roll:
+      requires_roll: true
+      roll_stat: intellect
+      roll_difficulty: 11
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Give him a moment to do the math
+        order: 1
+        target_scene: null
+        success_scene: corkys__sal-folds-leveraged
+        failure_scene: corkys__sal-holds-firm
+        arrival_flavor: He looks at the shelf. Then at you. Then he tells you the dealers can come back. He doesn't say anything else.
+        failure_arrival_flavor: He tells you his finances are none of your business. Tells you to get out. His voice is steady. He means it.
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # SAL TALKS
+  # -------------------------
+
+  - key: corkys__sal-talks
+    scene_type: normal
+    title: Sal Talks
+    order: 60
+    body: |
+      He talks. Once he starts he doesn't stop for a while.
+
+      He inherited Corky's four years ago from a man named Dennis who
+      was his closest friend for twenty years and who left town in a
+      hurry for reasons Sal has never pressed on. The bar wasn't making
+      money then and it's barely making money now. He's kept it going
+      because it was Dennis's and because the regulars have nowhere else
+      to go and because some part of him still thinks it might turn
+      around.
+
+      The dealers bother him less than the principle. It's his bar. If
+      he can't decide who comes in and who doesn't then it's not really
+      his bar. It's just a bar he works at.
+
+      He stops. Looks embarrassed. Says he doesn't know why he's telling
+      you this.
+
+      You do. He's telling you because nobody has asked in a long time
+      and because he's tired of holding it by himself.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Help him build a counter-offer Dutch might actually accept
+        order: 1
+        target_scene: corkys__counter-offer
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You think out loud. He listens. It takes twenty minutes and a second glass of water.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Tell him it doesn't matter. The dealers are coming back.
+        order: 2
+        target_scene: corkys__sal-holds-firm
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: The warmth goes out of the room. He picks up the cloth and goes back to the bar.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # COUNTER-OFFER
+  # -------------------------
+
+  - key: corkys__counter-offer
+    scene_type: normal
+    title: Counter Offer
+    order: 65
+    body: |
+      The offer you help him build is simple. Sal keeps Corky's clean
+      on weeknights — his regulars, his rules. Weekend afternoons,
+      Dutch's people can work the room. It's not what Dutch asked for
+      but it's not nothing. More importantly, it's sustainable. Sal
+      won't keep folding on an arrangement he resents. Dutch knows
+      that. Operations that run on resentment leak.
+
+      Sal writes it down on a bar napkin like that makes it official.
+      You don't tell him it doesn't. It costs nothing to let him have
+      the napkin.
+
+      You take a photo of it on your phone. Tell him you'll pass it up
+      the chain. Tell him Dutch is a reasonable man. You've never met
+      Dutch. You have no idea if that's true.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Report back to Morris
+        order: 1
+        target_scene: corkys__done-sal-holds
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Morris is quiet for longer than you'd like. Then he says he'll pass it on. He doesn't say Dutch will accept it.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # SAL FOLDS — INTIMIDATED
+  # -------------------------
+
+  - key: corkys__sal-folds-intimidated
+    scene_type: normal
+    title: Sal Folds Intimidated
+    order: 70
+    body: |
+      He nods at the bar top. Says fine. One word. Then he goes to the
+      other end of the bar and starts restocking glasses and doesn't
+      look at you again.
+
+      You sit there for a moment longer than you need to. The two old
+      men at the end haven't moved. The jukebox is between songs.
+
+      You did the job. That's what this was.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 5
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Report back to Morris
+        order: 1
+        target_scene: corkys__done-dealers-in
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Morris sounds pleased. That's the word — pleased. Like something being checked off a list.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # SAL FOLDS — LEVERAGED
+  # -------------------------
+
+  - key: corkys__sal-folds-leveraged
+    scene_type: normal
+    title: Sal Folds Leveraged
+    order: 72
+    body: |
+      He looks at the shelf for a long time. Then back at you. Then
+      he gives a small nod — not agreement exactly, more like a man
+      accepting a diagnosis he already suspected.
+
+      He says the dealers can come back. He says it like it's a
+      business decision, which is what you gave him. A way to frame
+      it that wasn't pure capitulation. You're not sure whether that's
+      a kindness or not.
+
+      He goes back to the bar. You leave him to it.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 3
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Report back to Morris
+        order: 1
+        target_scene: corkys__done-dealers-in
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Morris sounds satisfied. He doesn't ask how you got there.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # SAL HOLDS FIRM
+  # -------------------------
+
+  - key: corkys__sal-holds-firm
+    scene_type: normal
+    title: Sal Holds Firm
+    order: 75
+    body: |
+      He's not moving. You can see it — the decision is already made
+      and whatever you say next is just noise. Some people get to a
+      point where the fear stops working and all that's left is the
+      thing they're protecting. Sal's at that point.
+
+      You don't push it further. There's a version of this where you
+      break him and it doesn't feel like anything you want to be today.
+
+      You tell him Dutch will be in touch. He says he knows. You leave.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Report back to Morris
+        order: 1
+        target_scene: corkys__done-sal-caved
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Morris listens. Then he says Dutch will handle it himself. You're not sure if that's better or worse for Sal.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # VICTORY ENDING — DEALERS IN
+  # -------------------------
+
+  - key: corkys__done-dealers-in
+    scene_type: ending
+    title: Done Dealers In
+    order: 80
+    body: |
+      Morris calls that evening with the payout. Two hundred for the
+      job. Dutch is satisfied. The dealers go back into Corky's starting
+      Thursday and the situation is resolved.
+
+      You don't go back to the bar. You don't have a reason to.
+
+      The money goes in the drawer with the rest. The corkboard has
+      another slip on it — Morris works fast. You're useful now. That's
+      a thing you are.
+
+      You think about Sal restocking his glasses. The two old men at
+      the end of the bar. Whether they'll notice the dealers coming
+      back in on Thursday, and if they do, whether they'll say anything
+      about it. Probably not. That's the thing about places like
+      Corky's. People get very good at not noticing.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: victory
+    arrival:
+      cash_change: 200
+      rep_change: 10
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Dutch knows you get results. That's the job. That's what you told yourself.
+        failure_arrival_flavor: null
+        set_flag_name: corkys_dealers_in
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # DEFEAT ENDING — SAL HOLDS
+  # -------------------------
+
+  - key: corkys__done-sal-holds
+    scene_type: ending
+    title: Done Sal Holds
+    order: 85
+    body: |
+      Morris calls back two hours later. Dutch looked at the
+      counter-offer. The answer is no. The dealers go back in on
+      Dutch's terms or the conversation becomes a different one.
+
+      Morris pauses. Then he says Dutch appreciated the creative
+      approach. That you showed initiative. He says it like a man
+      reading from a card.
+
+      No payout on this one. You didn't deliver what was asked. Morris
+      says there'll be more work. He says it carefully, which means he's
+      not sure.
+
+      You sit with the bar napkin photo on your phone for a while.
+      Sal built himself a counter-offer on a napkin and it lasted
+      two hours. You're not sure what that says about either of you.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: defeat
+    arrival:
+      cash_change: 0
+      rep_change: -5
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: Sal's holding out. For now. You hope he knows what that costs.
+        failure_arrival_flavor: null
+        set_flag_name: corkys_sal_holds
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # NEUTRAL ENDING — SAL CAVED
+  # -------------------------
+
+  - key: corkys__done-sal-caved
+    scene_type: ending
+    title: Done Sal Caved
+    order: 90
+    body: |
+      Dutch handled it himself. You don't know what that means exactly
+      and Morris doesn't elaborate. What you know is that two days later
+      the dealers are back in Corky's and Sal is still behind the bar
+      and nothing visible has changed.
+
+      Morris sends a hundred your way. Half rate. You showed up and
+      made the ask, even if you didn't close it. That's worth something,
+      apparently. Fifty less than something.
+
+      You think about Sal. Whether he's okay. Whether okay is even the
+      right question for a man in his position. He's still got the bar.
+      That's probably what he'd say if you asked him.
+
+      You don't ask him.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: neutral
+    arrival:
+      cash_change: 100
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: The city keeps score differently than you do. You're still learning its system.
+        failure_arrival_flavor: null
+        set_flag_name: corkys_sal_caved
+        clear_flag_name: null
+        requirements: []

@@ -1,7 +1,7 @@
 # Solo Browser Game - Project Context
 
-A Django text RPG set in a noir crime world. The player starts as a nobody and
-climbs from Errand Boy to Boss.
+A Django + HTMX noir text RPG. The player progresses through scenes, completes jobs/quests,
+and develops stats, contacts, territory, and reputation over a persistent session.
 
 ---
 
@@ -10,135 +10,92 @@ climbs from Errand Boy to Boss.
 - Python 3.10+
 - Django 6.0+
 - HTMX (no JS framework)
-- SQLite via Django ORM
+- SQLite in dev (via Django ORM)
 
 ---
 
-## Core Loop
+## Runtime Summary
 
-1. Player hits `/game/`; a `GameSession` is created if needed.
-2. Session redirects to `hub__main_square`.
-3. Scene page loads with requirement-filtered choices.
-4. Player takes a choice.
-5. If the scene requires a roll, `resolve_roll` decides success/failure routing.
-6. Session advances to the resolved scene.
-7. Updates, flag effects, and scene item awards are applied.
-8. On quest completion, property turn logic runs (income, contests, summary).
-9. HTMX response re-renders core partials.
+- Entry: `GET /game/`
+- Session pointer: `request.session[SESSION_KEY] -> GameSession.pk`
+- Start scene constant: `HUB_START_SCENE_KEY = 'hub__apartment'`
+- Main render endpoint: `GET /game/scene/<scene_key>/`
+- Main action endpoint: `POST /game/choose/<choice_id>/`
+
+Player-facing systems currently active:
+- Scene/choice routing with optional roll gating
+- Requirement groups (items, stats, quests, flags, contacts)
+- Inventory items (active + passive effects)
+- Combat encounters (two-phase rounds)
+- Jobs pipeline (recon, approaches, beats, rewards/cooldowns)
+- Property income/contest loop tied to quest completion events
 
 ---
 
-## Scene and Choice Rules
+## Domain Concepts
 
+### Session and Stats
+- `GameSession` tracks current scene, turn counter, and flags JSON.
+- `PlayerStats` tracks combat stats, XP/level, and economy (`cash`, `heat`, `rep`).
+- `CompletedQuest` records first-time quest completion per session/quest.
+
+### Scenes and Choices
 - Scene types: `normal`, `hub`, `combat`, `ending`.
-- Roll scenes use `Scene.requires_roll`, `roll_stat`, and `roll_difficulty`.
-- Choice routing fields:
-  - `target_scene` for non-roll scenes
-  - `success_scene` / `failure_scene` for roll scenes
-- Flag effects: `set_flag_name` / `clear_flag_name` are applied when a choice is taken.
-- Entry choices can link to a `Quest` and are hidden after completion unless
-  `Quest.is_repeatable=True`.
+- Choice routing:
+  - direct route: `target_scene`
+  - roll route: `success_scene` / `failure_scene`
+- Roll checks use effective stats and `roll_difficulty`.
+
+### Requirements
+- Objects can have many `RequirementGroup`s.
+- Between groups: AND logic (all groups must pass).
+- Within group: `all` (AND) or `any` (OR).
+
+### Combat
+- `CombatEncounter` binds combat scene -> enemy + victory/defeat routes.
+- `CombatState` is 1:1 with `GameSession`.
+- Enemy attack is pre-rolled and stored for two-step UX.
+
+### Jobs
+- District jobs and contact offers are hub-driven.
+- Runs advance through beats 1/2/3 with tiered recon and rewards.
+- Cooldowns and run-count milestones are stored in player job state models.
+
+### Property Turn Loop
+- Triggered after quest completion arrivals.
+- Applies passive property income/effects.
+- Rolls rival contest chance from heat (`heat / 200`).
+- Creates/clears `RivalClaim` through contest resolution scenes.
 
 ---
 
-## Combat Rules
+## Important Rules
 
-- `CombatEncounter` ties one `Enemy` to one combat `Scene`.
-- `CombatState` is one-to-one with `GameSession` (single active fight per session).
-- Rounds are two-phase:
-  1. `POST /game/combat/attack/` — resolves player attack; pre-rolls and stores enemy counter on `CombatState` (`pending_e_roll/total/hit/dmg`). Returns "Brace yourself" state.
-  2. `POST /game/combat/enemy-resolve/` — applies stored enemy attack, clears pending fields, advances `turn_number`.
-- Player attack: `d20 + strength modifier` vs `enemy.defense`.
-- Enemy attack: `d20 + enemy.attack_modifier` vs `10 + agility modifier`.
-- Enemy death is checked after phase 1 (no retaliation if already dead).
-- Win routes to `victory_scene`; loss routes to `defeat_scene`.
+1. Business logic belongs in `game/services/*`, not views.
+2. Services should return log strings; callers flush via event log helpers.
+3. Use effective stats for checks; mutate persistent values on `PlayerStats`.
+4. Use `flags.py` helpers (`has_flag`, `set_flag`, `clear_flag`) for flag mutation.
+5. Keep GET endpoints read-only for domain state when possible.
 
 ---
 
-## XP and Leveling
+## Current Risks / Active Refactor Tracks
 
-- Core progression lives in `game/services/progression.py`.
-- XP is cumulative (`stats.experience` is never spent).
-- XP sources:
-  - Quest ending completion (first completion per quest/session only):
-    - `victory`: `+150 XP`
-    - `neutral`: `+75 XP`
-    - `defeat`: `+25 XP`
-  - Combat victory: `+50 XP` (`combat_victory` award).
-- Level thresholds:
-  - Level 1: `0`
-  - Level 2: `200`
-  - Level 3: `600`
-  - Level 4: `1300`
-  - Level 5: `2400`
-  - Level 6: `4000`
-  - Level 7: `6200` (max level)
-- Level-up behavior (`award_xp`):
-  - Adds XP, then iterates thresholds to allow multi-level gains from one award.
-  - Grants `+1 stat_point` per level gained.
-  - At `MAX_LEVEL=7`, XP can still increase but no further levels/stat points are awarded.
-- UI behavior:
-  - Stats bar shows raw total XP (`{{ stats.experience }} XP`).
-  - XP bar shows progress within the current level band.
-  - At max level, XP bar is forced to `100%`.
-- Requirements can gate on total XP via `xp_gte` (`stats.experience >= stat_value`).
+Canonical backlog files:
+- `.docs/codebase_audit.txt`
+- `.docs/codebase_audit_addendum.txt`
+
+Key active concerns:
+- Remaining gameplay logic still embedded in some views (combat/use-item paths).
+- GET scene rendering currently contains at least one write-side side effect path.
+- Some authoring integrity guards are missing (null/missing route targets/encounters).
+- Quest-builder endpoints need stronger ownership validation for `quest_id` + `choice_id`.
 
 ---
 
-## Items and Stats
+## Test Notes
 
-- Active item effects: `heal_hp`, `add_stat`.
-- Passive bonuses use `passive_stat` + `passive_value`, applied via `get_effective_stats()`.
-- Always use effective stats for checks/display; write persistent changes to raw `PlayerStats`.
-
-Stat mapping:
-- DB fields: `strength`, `agility`, `intellect`, `charisma`
-- UI labels: `muscle`, `reflexes`, `cunning`, `nerve`
-- Mapping source: `STAT_FIELD_MAP`
-
----
-
-## Property Turn System
-
-- `PlayerProperty` entries provide per-turn cash income, heat reduction, and rep bonus.
-- Turn processing runs on quest completion.
-- Rival contest chance scales with heat (`heat / 200`).
-- Contest creates a `RivalClaim`, marks the property contested, and unlocks a resolution scene.
-- Resolution outcomes: `victory` (keep property, clear contest), `defeat`/`neutral` (lose property).
-
----
-
-## Requirement System
-
-Requirement types: `stat_gte`, `stat_lte`, `has_item`, `missing_item`, `quest_completed`,
-`quest_not_done`, `quest_ending`, `level_gte`, `xp_gte`, `has_flag`, `missing_flag`.
-
-Evaluation logic:
-- All requirement groups on a gated object must pass (AND between groups).
-- Each group applies internal logic `all` (AND) or `any` (OR).
-
----
-
-## Flag System
-
-- `GameSession.flags` is a JSONField storing session-level boolean flags (key → True).
-- Use the `flags.py` service (`has_flag`, `set_flag`, `clear_flag`) — never read/write the
-  dict directly.
-- Flags are gated with `has_flag` / `missing_flag` requirement types.
-
----
-
-## Notice Board / Hub Scenes
-
-- `Quest.hub_scenes` is a M2M to hub-type `Scene` records.
-- `get_notice_board(scene, ...)` filters quests by the current hub scene.
-- An unlocked quest with no hub scenes assigned will not appear to the player anywhere.
-- The quest builder validator warns about this (`no_hub_scenes` warning type).
-
----
-
-## Narrative Conventions
-
-- Tone: noir, terse, second person, present tense.
-- Scene keys follow `{quest_key}__{scene_slug}`; hub scenes use `hub__*`.
-
+- Use `python manage.py test`.
+- HTMX responses require `HTTP_HX_REQUEST='true'` in tests.
+- Many tests assume initial session creation via `GET /game/` before actions.
+- Existing tests cover jobs, combat, and scene routing; add coverage with each refactor migration from view -> service.

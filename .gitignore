@@ -151,3 +151,5 @@ cython_debug/
 # PyCharm / JetBrains
 .idea/
 /backup.json
+
+.qwen/

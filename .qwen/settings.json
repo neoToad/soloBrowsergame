@@ -1,0 +1,25 @@
+{
+  "modelProviders": {
+    "openai": [
+      {
+        "id": "qwen3.6",
+        "name": "Qwen 3.6 Local",
+        "baseUrl": "http://127.0.0.1:1234/v1",
+        "description": "Qwen3.6 via LM Studio",
+        "envKey": "LM_STUDIO_API_KEY"
+      }
+    ]
+  },
+  "env": {
+    "LM_STUDIO_API_KEY": "lm-studio"
+  },
+  "security": {
+    "auth": {
+      "selectedType": "openai"
+    }
+  },
+  "model": {
+    "name": "qwen3.6"
+  },
+  "$version": 3
+}
