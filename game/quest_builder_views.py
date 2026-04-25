@@ -453,7 +453,10 @@ def choice_save(request, quest_id, choice_id):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    get_object_or_404(Choice, pk=choice_id)
+    quest = get_object_or_404(Quest, pk=quest_id)
+    choice_check = get_object_or_404(Choice, pk=choice_id)
+    if not quest.scenes.filter(pk=choice_check.scene_id).exists():
+        return HttpResponse("Choice does not belong to this quest.", status=403)
     choice = update_choice_service(choice_id, request.POST)
     build_requirement_groups_from_post_service(choice, request.POST)
     routing_type = 'roll' if (choice.success_scene_id or choice.failure_scene_id) else 'direct'
@@ -477,7 +480,10 @@ def choice_delete(request, quest_id, choice_id):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    get_object_or_404(Choice, pk=choice_id)
+    quest = get_object_or_404(Quest, pk=quest_id)
+    choice = get_object_or_404(Choice, pk=choice_id)
+    if not quest.scenes.filter(pk=choice.scene_id).exists():
+        return HttpResponse("Choice does not belong to this quest.", status=403)
     source_scene_id = delete_choice_service(choice_id)
 
     response = HttpResponse('')
@@ -494,7 +500,10 @@ def choice_requirements_save(request, quest_id, choice_id):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
+    quest = get_object_or_404(Quest, pk=quest_id)
     choice = get_object_or_404(Choice, pk=choice_id)
+    if not quest.scenes.filter(pk=choice.scene_id).exists():
+        return HttpResponse("Choice does not belong to this quest.", status=403)
     build_requirement_groups_from_post_service(choice, request.POST)
 
     html = render_to_string(

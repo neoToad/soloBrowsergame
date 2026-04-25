@@ -75,6 +75,166 @@ def initialize_combat_state(session, scene):
     return cs, f"You square up against {encounter.enemy.name}."
 
 
+def execute_player_attack(session, stats, inventory, completed_map, combat_state, effective_stats):
+    """
+    Resolve a full player attack turn: roll, update HP, queue enemy turn or flag victory.
+    Returns (logs, context). Caller flushes logs and sets context['choices'] = [].
+    """
+    from ..utils import get_effective_stats, stat_modifier, RollResult, DamageResult
+    from .session import build_render_context
+
+    enemy = combat_state.enemy
+    p = resolve_player_attack(effective_stats, enemy)
+    str_mod = stat_modifier(effective_stats.strength)
+    mod_str = f"+{str_mod}" if str_mod >= 0 else str(str_mod)
+
+    if p.hit:
+        combat_state.enemy_hp = max(0, combat_state.enemy_hp - p.damage)
+        combat_state.save()
+
+    logs = []
+
+    if combat_state.enemy_hp <= 0:
+        if p.hit:
+            logs.append(
+                f"You move on him — roll {p.roll} ({mod_str}) = {p.total} "
+                f"vs {enemy.defense} — Hit! {p.damage} damage."
+            )
+        logs.append(f"{enemy.name} goes down.")
+        combat_state.pending_victory = True
+        combat_state.save()
+        roll_result = RollResult(
+            roll=p.roll, modifier=str_mod, mod_display=mod_str,
+            total=p.total, dc=enemy.defense, stat='strength', success=p.hit,
+        )
+        dmg_mod = max(0, str_mod)
+        damage_result = DamageResult(
+            die_roll=p.damage_die, die_label='d6',
+            modifier=dmg_mod,
+            mod_display=f"+{dmg_mod}" if dmg_mod >= 0 else str(dmg_mod),
+            total=p.damage,
+        )
+        context = build_render_context(
+            session, session.current_scene, stats, effective_stats, inventory, completed_map,
+            combat_state=combat_state,
+            roll_result=roll_result,
+            damage_result=damage_result,
+        )
+        return logs, context
+
+    e = resolve_enemy_attack(enemy, effective_stats)
+
+    if p.hit:
+        logs.append(
+            f"You move on him — roll {p.roll} ({mod_str}) = {p.total} "
+            f"vs {enemy.defense} — Hit! {p.damage} damage."
+        )
+    else:
+        logs.append(
+            f"You move on him — roll {p.roll} ({mod_str}) = {p.total} "
+            f"vs {enemy.defense} — Missed."
+        )
+
+    combat_state.pending_enemy_attack = {
+        'roll': e.roll, 'total': e.total, 'hit': e.hit, 'damage': e.damage,
+    }
+    combat_state.save()
+
+    effective_stats = get_effective_stats(stats, inventory)
+    roll_result = RollResult(
+        roll=p.roll, modifier=str_mod, mod_display=mod_str,
+        total=p.total, dc=enemy.defense, stat='strength', success=p.hit,
+    )
+    damage_result = None
+    if p.hit:
+        dmg_mod = max(0, str_mod)
+        dmg_mod_str = f"+{dmg_mod}" if dmg_mod >= 0 else str(dmg_mod)
+        damage_result = DamageResult(
+            die_roll=p.damage_die, die_label='d6',
+            modifier=dmg_mod, mod_display=dmg_mod_str,
+            total=p.damage,
+        )
+    context = build_render_context(
+        session, session.current_scene, stats, effective_stats, inventory, completed_map,
+        combat_state=combat_state,
+        roll_result=roll_result,
+        damage_result=damage_result,
+    )
+    return logs, context
+
+
+def execute_enemy_attack(session, stats, inventory, completed_map, combat_state, effective_stats):
+    """
+    Apply the queued enemy attack and advance combat. Mutates stats and combat_state.
+    Returns (logs, context). On defeat, pre-defeat logs are flushed internally so they
+    precede resolve_combat_end's arrival logs; caller receives ([], defeat_context).
+    Raises CombatEncounter.DoesNotExist if the encounter row is missing.
+    """
+    from ..models import CombatEncounter
+    from ..models.events import flush_event_log
+    from ..utils import get_effective_stats, stat_modifier, RollResult, DamageResult
+    from .session import build_render_context
+
+    encounter = CombatEncounter.objects.get(scene=session.current_scene)
+
+    enemy = combat_state.enemy
+    player_defense = 10 + stat_modifier(effective_stats.agility)
+    e_mod_str = f"+{enemy.attack_modifier}" if enemy.attack_modifier >= 0 else str(enemy.attack_modifier)
+
+    attack_payload = combat_state.pending_enemy_attack or {}
+    e_roll  = attack_payload.get('roll')
+    e_total = attack_payload.get('total')
+    e_hit   = attack_payload.get('hit')
+    e_dmg   = attack_payload.get('damage')
+
+    logs = []
+    if e_hit:
+        stats.hp = max(0, stats.hp - e_dmg)
+        logs.append(
+            f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
+            f"vs {player_defense} — Hit! {e_dmg} damage."
+        )
+    else:
+        logs.append(
+            f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
+            f"vs {player_defense} — Missed."
+        )
+
+    combat_state.pending_enemy_attack = None
+    combat_state.turn_number += 1
+    combat_state.save()
+    stats.save()
+
+    if stats.hp <= 0:
+        logs.append("You're down. You lose consciousness.")
+        flush_event_log(session, logs)
+        context = resolve_combat_end(
+            session, stats, inventory, completed_map,
+            encounter.defeat_scene, combat_state,
+            ending_type='defeat',
+        )
+        return [], context
+
+    effective_stats = get_effective_stats(stats, inventory)
+    roll_result = RollResult(
+        roll=e_roll, modifier=enemy.attack_modifier, mod_display=e_mod_str,
+        total=e_total, dc=player_defense, stat=enemy.name, success=e_hit,
+    )
+    damage_result = None
+    if e_hit:
+        dmg_label = f'd({enemy.damage_min}–{enemy.damage_max})'
+        damage_result = DamageResult(
+            die_roll=e_dmg, die_label=dmg_label, modifier=0, mod_display='+0', total=e_dmg,
+        )
+    context = build_render_context(
+        session, session.current_scene, stats, effective_stats, inventory, completed_map,
+        combat_state=combat_state,
+        roll_result=roll_result,
+        damage_result=damage_result,
+    )
+    return logs, context
+
+
 def resolve_combat_end(session, stats, inventory, completed_map, next_scene, combat_state, *, xp_award=0, ending_type='neutral'):
     """Finalize combat, transition to next scene, apply arrival/XP effects, and return render context."""
     from ..models import EventLog, CombatEncounter

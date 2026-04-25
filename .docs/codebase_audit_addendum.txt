@@ -1,18 +1,5 @@
 Codebase Audit Addendum: Additional Prioritized Refactor Plan
 
-Phase 1 - Critical (Fix Before Production)
-
-1. Remove state mutation from GET scene_detail (views.py)
-scene_detail calls apply_property_rewards() on every page load, which can duplicate grants/losses without a transition. Move all arrival mutations to process_arrival() only.
-
-2. Move combat flow out of views into service layer (views.py)
-combat_attack and combat_resolve_enemy perform combat state mutation, stats updates, and logging directly in view functions. Refactor to service orchestration methods returning context/log payloads.
-
-3. Validate quest_id ownership in quest-builder choice endpoints (quest_builder_views.py)
-choice_save, choice_delete, and choice_requirements_save trust choice_id without proving it belongs to the quest_id URL. Add guard: choice.scene must be in quest scenes.
-
-4. Guard missing combat encounter in combat views (views.py)
-Three endpoints call CombatEncounter.objects.get(...) without handling missing rows, causing 500s for malformed content. Return controlled 400/404 with authoring-friendly error text.
 
 ---
 Phase 2 - High Priority

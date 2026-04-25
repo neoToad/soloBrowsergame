@@ -13,16 +13,14 @@ from .services.session     import load_session_context, create_session, build_re
 from .services.scene       import resolve_roll
 from .services.combat      import (
     initialize_combat_state, get_active_combat_state, resolve_combat_end,
-    resolve_player_attack as resolve_player_attack_util,
-    resolve_enemy_attack as resolve_enemy_attack_util,
+    execute_player_attack, execute_enemy_attack,
 )
 from .services.inventory   import get_player_inventory, consume_item as consume_item_util
 from .services.flags       import set_flag, clear_flag
 from .services.arrival     import process_arrival
-from .services.property_service import apply_property_rewards
 from .services.progression import XP_AWARDS, LEVEL_UP_FLAVOR, spend_stat_point
 from .services import jobs as jobs_service
-from .utils import stat_modifier, get_effective_stats, RollResult, DamageResult
+from .utils import get_effective_stats
 from .constants import SESSION_KEY, STAT_DB_NAMES, USE_ITEM_FLAVOR
 
 
@@ -86,7 +84,6 @@ def scene_detail(request, scene_key, *, session_context):
     if combat_init_log:
         log_event(game_session, combat_init_log)
 
-    apply_property_rewards(game_session, scene)
     context = build_render_context(
         game_session, scene, stats, effective_stats, inventory, completed_map,
         combat_state=combat_state,
@@ -353,94 +350,10 @@ def combat_attack(request, *, session_context):
     if not combat_state.is_active:
         return HttpResponse("Combat is not active.", status=400)
 
-    enemy     = combat_state.enemy
-    encounter = CombatEncounter.objects.get(scene=session.current_scene)
-
-    p = resolve_player_attack_util(effective_stats, enemy)
-    str_mod = stat_modifier(effective_stats.strength)
-    mod_str = f"+{str_mod}" if str_mod >= 0 else str(str_mod)
-
-    if p.hit:
-        combat_state.enemy_hp = max(0, combat_state.enemy_hp - p.damage)
-        combat_state.save()
-
-    if combat_state.enemy_hp <= 0:
-        if p.hit:
-            log_event(session,
-                f"You move on him — roll {p.roll} ({mod_str}) = {p.total} "
-                f"vs {enemy.defense} — Hit! {p.damage} damage."
-            )
-        log_event(session, f"{enemy.name} goes down.")
-        combat_state.pending_victory = True
-        combat_state.save()
-        str_mod = stat_modifier(effective_stats.strength)
-        roll_result = RollResult(
-            roll=p.roll, modifier=str_mod, mod_display=mod_str,
-            total=p.total, dc=enemy.defense, stat='strength', success=p.hit,
-        )
-        dmg_mod = max(0, str_mod)
-        damage_result = DamageResult(
-            die_roll=p.damage_die, die_label='d6',
-            modifier=dmg_mod, mod_display=f"+{dmg_mod}" if dmg_mod >= 0 else str(dmg_mod),
-            total=p.damage,
-        )
-        context = build_render_context(
-            session, session.current_scene, stats, effective_stats, inventory, completed_map,
-            combat_state=combat_state,
-            roll_result=roll_result,
-            damage_result=damage_result,
-        )
-        context['choices'] = []
-        return _htmx_response(request, context)
-
-    e = resolve_enemy_attack_util(enemy, effective_stats)
-
-    if p.hit:
-        log_event(session,
-            f"You move on him — roll {p.roll} ({mod_str}) = {p.total} "
-            f"vs {enemy.defense} — Hit! {p.damage} damage."
-        )
-    else:
-        log_event(session,
-            f"You move on him — roll {p.roll} ({mod_str}) = {p.total} "
-            f"vs {enemy.defense} — Missed."
-        )
-
-    combat_state.pending_enemy_attack = {
-        'roll': e.roll,
-        'total': e.total,
-        'hit': e.hit,
-        'damage': e.damage,
-    }
-    combat_state.save()
-
-    effective_stats = get_effective_stats(stats, inventory)
-    roll_result = RollResult(
-        roll        = p.roll,
-        modifier    = str_mod,
-        mod_display = mod_str,
-        total       = p.total,
-        dc          = enemy.defense,
-        stat        = 'strength',
-        success     = p.hit,
+    logs, context = execute_player_attack(
+        session, stats, inventory, completed_map, combat_state, effective_stats
     )
-    damage_result = None
-    if p.hit:
-        dmg_mod     = max(0, str_mod)
-        dmg_mod_str = f"+{dmg_mod}" if dmg_mod >= 0 else str(dmg_mod)
-        damage_result = DamageResult(
-            die_roll    = p.damage_die,
-            die_label   = 'd6',
-            modifier    = dmg_mod,
-            mod_display = dmg_mod_str,
-            total       = p.damage,
-        )
-    context = build_render_context(
-        session, session.current_scene, stats, effective_stats, inventory, completed_map,
-        combat_state=combat_state,
-        roll_result=roll_result,
-        damage_result=damage_result,
-    )
+    flush_event_log(session, logs)
     context['choices'] = []
     return _htmx_response(request, context)
 
@@ -460,69 +373,16 @@ def combat_resolve_enemy(request, *, session_context):
     if not combat_state.is_active or not combat_state.enemy_attack_pending:
         return HttpResponse("No pending enemy attack.", status=400)
 
-    enemy          = combat_state.enemy
-    encounter      = CombatEncounter.objects.get(scene=session.current_scene)
-    player_defense = 10 + stat_modifier(effective_stats.agility)
-    e_mod_str      = f"+{enemy.attack_modifier}" if enemy.attack_modifier >= 0 else str(enemy.attack_modifier)
-
-    attack_payload = combat_state.pending_enemy_attack or {}
-    e_roll = attack_payload.get('roll')
-    e_total = attack_payload.get('total')
-    e_hit = attack_payload.get('hit')
-    e_dmg = attack_payload.get('damage')
-
-    if e_hit:
-        stats.hp = max(0, stats.hp - e_dmg)
-        log_event(session,
-            f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
-            f"vs {player_defense} — Hit! {e_dmg} damage."
+    try:
+        logs, context = execute_enemy_attack(
+            session, stats, inventory, completed_map, combat_state, effective_stats
         )
-    else:
-        log_event(session,
-            f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
-            f"vs {player_defense} — Missed."
+    except CombatEncounter.DoesNotExist:
+        return HttpResponse(
+            "No combat encounter configured for this scene. Check quest content.", status=400
         )
 
-    combat_state.pending_enemy_attack = None
-    combat_state.turn_number    += 1
-    combat_state.save()
-    stats.save()
-
-    if stats.hp <= 0:
-        log_event(session, "You're down. You lose consciousness.")
-        context = resolve_combat_end(
-            session, stats, inventory, completed_map,
-            encounter.defeat_scene, combat_state,
-            ending_type='defeat',
-        )
-        return _htmx_response(request, context)
-
-    effective_stats = get_effective_stats(stats, inventory)
-    roll_result = RollResult(
-        roll        = e_roll,
-        modifier    = enemy.attack_modifier,
-        mod_display = e_mod_str,
-        total       = e_total,
-        dc          = player_defense,
-        stat        = enemy.name,
-        success     = e_hit,
-    )
-    damage_result = None
-    if e_hit:
-        dmg_label = f'd({enemy.damage_min}–{enemy.damage_max})'
-        damage_result = DamageResult(
-            die_roll    = e_dmg,
-            die_label   = dmg_label,
-            modifier    = 0,
-            mod_display = '+0',
-            total       = e_dmg,
-        )
-    context = build_render_context(
-        session, session.current_scene, stats, effective_stats, inventory, completed_map,
-        combat_state=combat_state,
-        roll_result=roll_result,
-        damage_result=damage_result,
-    )
+    flush_event_log(session, logs)
     context['choices'] = []
     return _htmx_response(request, context)
 
@@ -542,7 +402,13 @@ def combat_continue(request, *, session_context):
     if not combat_state.pending_victory:
         return HttpResponse("No pending victory.", status=400)
 
-    encounter = CombatEncounter.objects.get(scene=session.current_scene)
+    try:
+        encounter = CombatEncounter.objects.get(scene=session.current_scene)
+    except CombatEncounter.DoesNotExist:
+        return HttpResponse(
+            "No combat encounter configured for this scene. Check quest content.", status=400
+        )
+
     context = resolve_combat_end(
         session, stats, inventory, completed_map,
         encounter.victory_scene, combat_state,
