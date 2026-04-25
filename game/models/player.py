@@ -58,8 +58,10 @@ class PlayerInventory(models.Model):
     acquired_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('session', 'item')
-        ordering        = ['acquired_at']
+        ordering = ['acquired_at']
+        constraints = [
+            models.UniqueConstraint(fields=['session', 'item'], name='uq_playerinventory_session_item'),
+        ]
 
     def __str__(self):
         return f"{self.session} — {self.item.name} x{self.quantity}"
@@ -79,8 +81,10 @@ class PlayerContact(models.Model):
     acquired_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('session', 'contact')
-        ordering        = ['acquired_at']
+        ordering = ['acquired_at']
+        constraints = [
+            models.UniqueConstraint(fields=['session', 'contact'], name='uq_playercontact_session_contact'),
+        ]
 
     def __str__(self):
         return f"{self.session} — {self.contact.name}"
@@ -100,7 +104,9 @@ class PlayerGangStanding(models.Model):
     standing = models.IntegerField(default=0)
 
     class Meta:
-        unique_together = ('session', 'gang')
+        constraints = [
+            models.UniqueConstraint(fields=['session', 'gang'], name='uq_playergangstanding_session_gang'),
+        ]
 
     def __str__(self):
         return f"{self.session} — {self.gang.name}: {self.standing}"
@@ -120,7 +126,9 @@ class CompletedQuest(models.Model):
     completed_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('session', 'quest')
+        constraints = [
+            models.UniqueConstraint(fields=['session', 'quest'], name='uq_completedquest_session_quest'),
+        ]
 
     def __str__(self):
         return f"{self.session} — {self.quest.title} ({self.ending_type})"

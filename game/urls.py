@@ -1,9 +1,8 @@
-from django.shortcuts import redirect
 from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', lambda r: redirect('/game/')),
+    path('', views.root_redirect, name='root_redirect'),
     path('game/', views.game_hub, name='game_hub'),
     path('game/scene/<slug:scene_key>/', views.scene_detail, name='scene_detail'),
     path('game/choose/<int:choice_id>/', views.choice_resolve, name='choice_resolve'),

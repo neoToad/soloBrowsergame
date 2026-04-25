@@ -62,6 +62,10 @@ def _render_current_scene(request, session, *, extra_context=None):
     return redirect('scene_detail', scene_key=scene.key)
 
 
+def root_redirect(request):
+    return redirect('game_hub')
+
+
 def game_hub(request):
     session_pk = request.session.get(SESSION_KEY)
 
