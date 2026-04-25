@@ -72,6 +72,7 @@ def build_render_context(session, scene, stats, effective_stats, inventory, comp
         completed_map,
     )
     return {
+        'session':                session,
         'scene':                  scene,
         'choices':                get_available_choices(scene, effective_stats, inventory, completed_map, flags=session.flags),
         'stats':                  stats,

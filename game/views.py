@@ -88,7 +88,6 @@ def scene_detail(request, scene_key, *, session_context):
         game_session, scene, stats, effective_stats, inventory, completed_map,
         combat_state=combat_state,
     )
-    context['session'] = game_session
     return render(request, 'game/scene.html', context)
 
 
@@ -166,6 +165,8 @@ def start_quest(request, quest_key, *, session_context):
             return HttpResponse("Quest requirements not met.", status=403)
 
     next_scene = quest.entrance_scene
+    if next_scene is None:
+        return HttpResponse("Quest has no entrance scene configured.", status=400)
     session.current_scene = next_scene
     session.save()
 

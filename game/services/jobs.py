@@ -308,6 +308,7 @@ def commit_recon(session, job: Job) -> JobRun:
     ctx = _build_player_context(session, effective_stats)
     _assert_job_startable(session, job, ctx)
 
+    _clear_approach_flags(session, job)
     tier = get_recon_tier(effective_stats)
     run = JobRun.objects.create(
         session=session,
@@ -333,6 +334,7 @@ def start_contact_job(session, contact_offer: ContactJobOffer) -> JobRun:
 
     _assert_contact_offer_startable(session, contact_offer, ctx)
 
+    _clear_approach_flags(session, contact_offer.job)
     offer_state = _get_or_create_contact_offer_state(session, contact_offer)
     if not offer_state.met_contact:
         offer_state.met_contact = True
@@ -539,6 +541,15 @@ def apply_job_cooldowns(session, run: JobRun) -> dict[str, Any]:
         "job_state": job_state,
         "milestone_flag": milestone_flag,
     }
+
+
+def _clear_approach_flags(session, job: Job) -> None:
+    """Clear all approach and penalty flags for a job so prior runs don't bleed into new ones."""
+    for key in job.approaches.values_list('key', flat=True):
+        session.flags.pop(f"approach_{key}", None)
+        session.flags.pop(f"approach_{key}_failed", None)
+    session.flags.pop(BEAT2_PENALTY_FLAG, None)
+    session.save(update_fields=['flags'])
 
 
 def _available_approaches_for_tier(job: Job, tier: str):

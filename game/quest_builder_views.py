@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from .models import Choice, Contact, Item, Property, Quest, Requirement, Scene
+from .models import Choice, Contact, CombatEncounter, Item, Property, Quest, Requirement, Scene
 from .models.combat import Enemy as EnemyModel
 from .services.quest_builder import (
     get_canvas_data,
@@ -130,7 +130,7 @@ def scene_panel(request, quest_id, scene_id=None):
         )
         try:
             combat_encounter = scene.combat_encounter
-        except Exception:
+        except CombatEncounter.DoesNotExist:
             combat_encounter = None
 
     scene_contacts = list(scene.scene_contacts.select_related('contact').order_by('id')) if scene else []
