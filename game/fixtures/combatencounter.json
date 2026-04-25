@@ -130,5 +130,17 @@
     "victory_arrival_flavor": "Garrett's on the floor. You step over him.",
     "defeat_arrival_flavor": "He knows this room better than you do. That's what does it."
   }
+},
+{
+  "model": "game.combatencounter",
+  "pk": 13,
+  "fields": {
+    "scene": 153,
+    "enemy": 10,
+    "victory_scene": 155,
+    "defeat_scene": 158,
+    "victory_arrival_flavor": "Terrell's on the ground. He's breathing. That's generous of you.",
+    "defeat_arrival_flavor": "The pavement comes up fast. Last thing you hear is footsteps leaving."
+  }
 }
 ]

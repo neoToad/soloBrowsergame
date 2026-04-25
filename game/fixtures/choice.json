@@ -477,6 +477,23 @@
 },
 {
   "model": "game.choice",
+  "pk": 207,
+  "fields": {
+    "scene": 61,
+    "label": "Go to corner",
+    "order": 0,
+    "target_scene": 1,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
   "pk": 1,
   "fields": {
     "scene": 1,
@@ -2060,6 +2077,416 @@
 },
 {
   "model": "game.choice",
+  "pk": 175,
+  "fields": {
+    "scene": 148,
+    "label": "Answer it",
+    "order": 1,
+    "target_scene": 149,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You pick up. Neither of you says anything for a moment.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 177,
+  "fields": {
+    "scene": 149,
+    "label": "Tell her you'll handle it",
+    "order": 1,
+    "target_scene": 151,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "She hangs up before you can say anything else.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 179,
+  "fields": {
+    "scene": 150,
+    "label": "Tell her you'll handle it",
+    "order": 1,
+    "target_scene": 151,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "She hangs up. You sit with it for a minute before you move.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 180,
+  "fields": {
+    "scene": 151,
+    "label": "Talk him down",
+    "order": 1,
+    "target_scene": 152,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You keep your voice low. Make sure he has to lean in to hear you.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 182,
+  "fields": {
+    "scene": 152,
+    "label": "Let him think about it",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 154,
+    "failure_scene": 153,
+    "arrival_flavor": "Something shifts behind his eyes. He nods, once, and steps back.",
+    "failure_arrival_flavor": "He laughs. Calls something over his shoulder. Two guys emerge from the alley.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 183,
+  "fields": {
+    "scene": 154,
+    "label": "Go home",
+    "order": 1,
+    "target_scene": 156,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "The walk back is quiet. That's fine.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 184,
+  "fields": {
+    "scene": 155,
+    "label": "Go home",
+    "order": 1,
+    "target_scene": 157,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You take the long way. Let the adrenaline settle before you walk through the door.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 185,
+  "fields": {
+    "scene": 156,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You hang your jacket up. First time in three years that felt normal.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "the_call_talked_out",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 186,
+  "fields": {
+    "scene": 157,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You ice your ribs over the sink. The city keeps going. So do you.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "the_call_fought_out",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 187,
+  "fields": {
+    "scene": 158,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You take the long way. Nobody should see you like this.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "the_call_lost",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 188,
+  "fields": {
+    "scene": 159,
+    "label": "Go to the meeting",
+    "order": 1,
+    "target_scene": 160,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Word travels. Apparently talking someone down is more impressive than it sounds in this city.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": [
+      14
+    ]
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 191,
+  "fields": {
+    "scene": 160,
+    "label": "Take the job",
+    "order": 1,
+    "target_scene": 161,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Morris leaves first. You finish his water.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 192,
+  "fields": {
+    "scene": 161,
+    "label": "Knock",
+    "order": 1,
+    "target_scene": 162,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Three knocks. The television goes quiet.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 194,
+  "fields": {
+    "scene": 162,
+    "label": "Make clear this isn't a conversation",
+    "order": 1,
+    "target_scene": 163,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You step inside without being invited. Close the door behind you.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 196,
+  "fields": {
+    "scene": 163,
+    "label": "Wait him out",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 167,
+    "failure_scene": 166,
+    "arrival_flavor": "Something breaks behind his eyes. He goes to the bedroom. Comes back with an envelope.",
+    "failure_arrival_flavor": "He straightens up. His voice cracks but he holds the line. He doesn't have it and you can do what you want.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 197,
+  "fields": {
+    "scene": 164,
+    "label": "Offer him a deal — three hundred now, three hundred by end of month",
+    "order": 1,
+    "target_scene": 165,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You lay it out like it's a negotiation, not a favour. It's better for him if he believes that.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 198,
+  "fields": {
+    "scene": 165,
+    "label": "Let him decide",
+    "order": 1,
+    "target_scene": null,
+    "success_scene": 168,
+    "failure_scene": 166,
+    "arrival_flavor": "He nods. Goes to the bedroom. Comes back with three hundred in a ziplock bag like he's been keeping it ready.",
+    "failure_arrival_flavor": "He shakes his head. Says he's heard this before. Says the last guy who offered him a deal took the three hundred and sent someone else the next week anyway.",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 199,
+  "fields": {
+    "scene": 166,
+    "label": "Give him one more chance",
+    "order": 1,
+    "target_scene": 163,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You step closer. Make sure he's looking at you.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 201,
+  "fields": {
+    "scene": 167,
+    "label": "Head home",
+    "order": 1,
+    "target_scene": 170,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "The envelope sits in your jacket like it weighs more than it does.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 202,
+  "fields": {
+    "scene": 168,
+    "label": "Head home",
+    "order": 1,
+    "target_scene": 171,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You hope Pruitt actually sends the rest. You won't follow up. That part's not your problem.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 203,
+  "fields": {
+    "scene": 169,
+    "label": "Head home",
+    "order": 1,
+    "target_scene": 172,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "The walk back is longer than it should be. You're thinking the whole way.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 204,
+  "fields": {
+    "scene": 170,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Dutch knows your name now. Whether that's good news depends on what you do next.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "first_word_paid_in_full",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 205,
+  "fields": {
+    "scene": 171,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Half a job. You'll do better next time. Probably.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "first_word_partial",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 206,
+  "fields": {
+    "scene": 172,
+    "label": "Back to the apartment",
+    "order": 1,
+    "target_scene": 61,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You owe Dutch a good job. Get one.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "first_word_burned",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
   "pk": 2,
   "fields": {
     "scene": 1,
@@ -2572,6 +2999,127 @@
 },
 {
   "model": "game.choice",
+  "pk": 176,
+  "fields": {
+    "scene": 148,
+    "label": "Let it ring out",
+    "order": 2,
+    "target_scene": 149,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "It goes to voicemail. Twenty seconds later, a text. I need help. Please.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 178,
+  "fields": {
+    "scene": 149,
+    "label": "Ask her why she called you specifically",
+    "order": 2,
+    "target_scene": 150,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Silence. Then she says you owe her one. You owe her about a thousand.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 181,
+  "fields": {
+    "scene": 151,
+    "label": "Don't waste words",
+    "order": 2,
+    "target_scene": 153,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You close the distance before he finishes the sentence.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 189,
+  "fields": {
+    "scene": 159,
+    "label": "Go to the meeting",
+    "order": 2,
+    "target_scene": 160,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Word travels. Apparently putting someone on the ground outside a Decker Avenue walkup is the kind of CV entry that gets noticed.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": [
+      15
+    ]
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 193,
+  "fields": {
+    "scene": 161,
+    "label": "Slip a note under the door and walk",
+    "order": 2,
+    "target_scene": 162,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You write — Dutch knows where you live. You have two days. Fold it small. Slide it under. Then you go. But the door opens before you reach the stairs.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 195,
+  "fields": {
+    "scene": 162,
+    "label": "Ask him what happened",
+    "order": 2,
+    "target_scene": 164,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "He looks like he wasn't expecting that. Neither were you, if you're honest.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 200,
+  "fields": {
+    "scene": 166,
+    "label": "Walk away",
+    "order": 2,
+    "target_scene": 169,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "You leave him standing in the doorway. Don't look back.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": []
+  }
+},
+{
+  "model": "game.choice",
   "pk": 7,
   "fields": {
     "scene": 4,
@@ -2619,6 +3167,25 @@
     "set_flag_name": "",
     "clear_flag_name": "",
     "requirements": []
+  }
+},
+{
+  "model": "game.choice",
+  "pk": 190,
+  "fields": {
+    "scene": 159,
+    "label": "Go to the meeting",
+    "order": 3,
+    "target_scene": 160,
+    "success_scene": null,
+    "failure_scene": null,
+    "arrival_flavor": "Word travels. Apparently even losing a fight outside a Decker Avenue walkup is enough to get you on someone's radar. Make of that what you will.",
+    "failure_arrival_flavor": "",
+    "set_flag_name": "",
+    "clear_flag_name": "",
+    "requirements": [
+      16
+    ]
   }
 }
 ]

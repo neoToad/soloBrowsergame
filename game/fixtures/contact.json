@@ -1,0 +1,74 @@
+[
+{
+  "model": "game.contact",
+  "pk": 1,
+  "fields": {
+    "key": "marty",
+    "name": "Marty",
+    "description": "Hey, Its marty."
+  }
+},
+{
+  "model": "game.contact",
+  "pk": 2,
+  "fields": {
+    "key": "sable",
+    "name": "Sable",
+    "description": "Sable"
+  }
+},
+{
+  "model": "game.contact",
+  "pk": 3,
+  "fields": {
+    "key": "sister",
+    "name": "Vickie",
+    "description": "Your sister"
+  }
+},
+{
+  "model": "game.contact",
+  "pk": 1001,
+  "fields": {
+    "key": "pawn_shop_owner",
+    "name": "Pawn Shop Owner",
+    "description": "Runs cash through a legal front and only talks business when asked."
+  }
+},
+{
+  "model": "game.contact",
+  "pk": 1002,
+  "fields": {
+    "key": "carla_the_fence",
+    "name": "Carla the Fence",
+    "description": "Moves hot goods fast and prefers quiet side conversations."
+  }
+},
+{
+  "model": "game.contact",
+  "pk": 1003,
+  "fields": {
+    "key": "mickey_two_fingers",
+    "name": "Mickey Two-Fingers",
+    "description": "Card-room regular who notices who can handle pressure."
+  }
+},
+{
+  "model": "game.contact",
+  "pk": 1004,
+  "fields": {
+    "key": "court_clerk",
+    "name": "Court Clerk",
+    "description": "Keeps one foot in public records and one in the rumor mill."
+  }
+},
+{
+  "model": "game.contact",
+  "pk": 1005,
+  "fields": {
+    "key": "dock_foreman",
+    "name": "Dock Foreman",
+    "description": "Knows what comes off-manifest and who can be trusted with it."
+  }
+}
+]

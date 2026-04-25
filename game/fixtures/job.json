@@ -1,0 +1,90 @@
+[
+{
+  "model": "game.job",
+  "pk": 1103,
+  "fields": {
+    "key": "courier_run",
+    "title": "Courier Run",
+    "description": "Move a package across district lines without getting burned.",
+    "is_active": true,
+    "base_cooldown_turns": 3,
+    "base_cash_min": 100,
+    "base_cash_max": 200,
+    "base_heat": 4,
+    "base_rep": 2,
+    "recon_text_low": "Two routes, both exposed. You'll need to improvise under pressure.",
+    "recon_text_mid": "You spot patrol rhythm and choke points, enough to avoid the worst timing.",
+    "recon_text_high": "You lock in dead drops, route switches, and backup exits before the pickup.",
+    "district_hubs": [
+      3
+    ],
+    "unlock_requirements": []
+  }
+},
+{
+  "model": "game.job",
+  "pk": 1104,
+  "fields": {
+    "key": "debt_collection",
+    "title": "Debt Collection",
+    "description": "Collect from a debtor with options to escalate or keep it discreet.",
+    "is_active": true,
+    "base_cooldown_turns": 5,
+    "base_cash_min": 160,
+    "base_cash_max": 320,
+    "base_heat": 7,
+    "base_rep": 4,
+    "recon_text_low": "Target is jumpy and likely to bolt if pushed too hard too soon.",
+    "recon_text_mid": "You identify where the debtor hides and who might cover for them.",
+    "recon_text_high": "You know leverage points, backup muscle patterns, and the best pressure window.",
+    "district_hubs": [
+      3
+    ],
+    "unlock_requirements": []
+  }
+},
+{
+  "model": "game.job",
+  "pk": 1102,
+  "fields": {
+    "key": "protection_racket",
+    "title": "Protection Racket",
+    "description": "Collect from a business behind on weekly protection and keep it controlled.",
+    "is_active": true,
+    "base_cooldown_turns": 4,
+    "base_cash_min": 140,
+    "base_cash_max": 260,
+    "base_heat": 6,
+    "base_rep": 3,
+    "recon_text_low": "Owner is nervous and neighbors are watching. Any mistake brings witnesses.",
+    "recon_text_mid": "You identify which employees can be pressured and which one can smooth things over.",
+    "recon_text_high": "You know who actually controls the books and how to force compliance without lingering.",
+    "district_hubs": [
+      2
+    ],
+    "unlock_requirements": []
+  }
+},
+{
+  "model": "game.job",
+  "pk": 1101,
+  "fields": {
+    "key": "store_robbery",
+    "title": "Store Robbery",
+    "description": "Small storefront with predictable cash movement and uneven security.",
+    "is_active": true,
+    "base_cooldown_turns": 3,
+    "base_cash_min": 120,
+    "base_cash_max": 220,
+    "base_heat": 5,
+    "base_rep": 2,
+    "recon_text_low": "Foot traffic is heavy and the register swaps are irregular. You'll need speed more than finesse.",
+    "recon_text_mid": "You spot the shift change and a side entrance that gives you a cleaner angle on the floor.",
+    "recon_text_high": "You map camera blind spots, safe timing, and a clean exit lane before anyone notices you're there.",
+    "district_hubs": [
+      1
+    ],
+    "unlock_requirements": []
+  }
+}
+]

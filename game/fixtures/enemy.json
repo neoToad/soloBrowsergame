@@ -124,5 +124,19 @@
     "damage_min": 1,
     "damage_max": 4
   }
+},
+{
+  "model": "game.enemy",
+  "pk": 10,
+  "fields": {
+    "key": "terrell",
+    "name": "Terrell",
+    "description": "Terrell",
+    "max_hp": 5,
+    "attack_modifier": 0,
+    "defense": 8,
+    "damage_min": 1,
+    "damage_max": 4
+  }
 }
 ]

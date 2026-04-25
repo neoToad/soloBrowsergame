@@ -205,7 +205,7 @@ Return:
 2. context keys required,
 3. screenshots or textual render checks."
 
-### Prompt 5: Rewards/Balancing Pass
+### Prompt 5: Rewards/Balancing Pass Done
 "Implement Slice 5.
 Centralize reward scaling constants in jobs service.
 Apply run-bucket and recon-modifier payout math exactly as documented.

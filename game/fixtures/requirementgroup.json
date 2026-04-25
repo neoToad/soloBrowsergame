@@ -99,5 +99,49 @@
       24
     ]
   }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 14,
+  "fields": {
+    "label": "Talked out",
+    "logic": "all",
+    "requirements": [
+      28
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 15,
+  "fields": {
+    "label": "Fought out",
+    "logic": "all",
+    "requirements": [
+      29
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 16,
+  "fields": {
+    "label": "Lost",
+    "logic": "all",
+    "requirements": [
+      30
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 17,
+  "fields": {
+    "label": "Must have completed the call",
+    "logic": "all",
+    "requirements": [
+      31
+    ]
+  }
 }
 ]

@@ -128,5 +128,15 @@
     "quantity": 1,
     "award_once": true
   }
+},
+{
+  "model": "game.sceneitem",
+  "pk": 24,
+  "fields": {
+    "scene": 155,
+    "item": 4,
+    "quantity": 1,
+    "award_once": true
+  }
 }
 ]

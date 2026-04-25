@@ -314,6 +314,37 @@
 },
 {
   "model": "game.quest",
+  "pk": 15,
+  "fields": {
+    "key": "the-call",
+    "title": "The Call",
+    "description": "Your sister reached out. First time in three years. She needs something taken care of. Family's family.\n",
+    "is_unlocked": true,
+    "arc": 2,
+    "arc_order": 1,
+    "entrance_scene": 148,
+    "is_repeatable": false,
+    "requirements": [],
+    "hub_scenes": [
+      61
+    ],
+    "scenes": [
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158
+    ]
+  }
+},
+{
+  "model": "game.quest",
   "pk": 3,
   "fields": {
     "key": "the_middleman",
@@ -337,6 +368,42 @@
       33,
       34,
       35
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 16,
+  "fields": {
+    "key": "first-word",
+    "title": "First Word",
+    "description": "Someone heard about your sister's situation. They want to know if you're looking for work. First job's simple — a debt collection. Guy named Pruitt. Six hundred dollars.\n",
+    "is_unlocked": true,
+    "arc": 2,
+    "arc_order": 2,
+    "entrance_scene": 159,
+    "is_repeatable": false,
+    "requirements": [
+      17
+    ],
+    "hub_scenes": [
+      61
+    ],
+    "scenes": [
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172
     ]
   }
 },

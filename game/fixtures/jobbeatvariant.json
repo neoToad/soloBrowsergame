@@ -1,0 +1,206 @@
+[
+{
+  "model": "game.jobbeatvariant",
+  "pk": 1307,
+  "fields": {
+    "job": 1103,
+    "beat_number": 2,
+    "key": "route_a_complication",
+    "title": "Route A Checkpoint",
+    "body": "A street sweep pins your path and forces a quick reroute through open ground.",
+    "order": 1,
+    "approach": 1207,
+    "requires_roll": true,
+    "roll_stat": "agility",
+    "base_difficulty": 12,
+    "allow_abort": false
+  }
+},
+{
+  "model": "game.jobbeatvariant",
+  "pk": 1308,
+  "fields": {
+    "job": 1103,
+    "beat_number": 2,
+    "key": "route_b_complication",
+    "title": "Route B Complication",
+    "body": "Your backup lane is hot and timing is suddenly tight.",
+    "order": 2,
+    "approach": 1208,
+    "requires_roll": true,
+    "roll_stat": "intellect",
+    "base_difficulty": 11,
+    "allow_abort": false
+  }
+},
+{
+  "model": "game.jobbeatvariant",
+  "pk": 1309,
+  "fields": {
+    "job": 1103,
+    "beat_number": 2,
+    "key": "double_drop_complication",
+    "title": "Drop Site Mismatch",
+    "body": "The receiver changes signal phrases mid-handoff.",
+    "order": 3,
+    "approach": 1209,
+    "requires_roll": true,
+    "roll_stat": "charisma",
+    "base_difficulty": 11,
+    "allow_abort": false
+  }
+},
+{
+  "model": "game.jobbeatvariant",
+  "pk": 1310,
+  "fields": {
+    "job": 1104,
+    "beat_number": 2,
+    "key": "solo_knock_complication",
+    "title": "Solo Blowback",
+    "body": "The debtor's cousin appears in the hallway and tries to box you in.",
+    "order": 1,
+    "approach": 1210,
+    "requires_roll": true,
+    "roll_stat": "strength",
+    "base_difficulty": 13,
+    "allow_abort": false
+  }
+},
+{
+  "model": "game.jobbeatvariant",
+  "pk": 1311,
+  "fields": {
+    "job": 1104,
+    "beat_number": 2,
+    "key": "bring_backup_complication",
+    "title": "Backup Wants Extra",
+    "body": "Your help starts renegotiating terms at the worst possible moment.",
+    "order": 2,
+    "approach": 1211,
+    "requires_roll": true,
+    "roll_stat": "charisma",
+    "base_difficulty": 12,
+    "allow_abort": false
+  }
+},
+{
+  "model": "game.jobbeatvariant",
+  "pk": 1312,
+  "fields": {
+    "job": 1104,
+    "beat_number": 2,
+    "key": "ledger_pressure_complication",
+    "title": "Paper Trail Panic",
+    "body": "The debtor burns part of the ledger and forces a fast salvage call.",
+    "order": 3,
+    "approach": 1212,
+    "requires_roll": true,
+    "roll_stat": "intellect",
+    "base_difficulty": 11,
+    "allow_abort": false
+  }
+},
+{
+  "model": "game.jobbeatvariant",
+  "pk": 1304,
+  "fields": {
+    "job": 1102,
+    "beat_number": 2,
+    "key": "direct_visit_complication",
+    "title": "Crowd Gathers",
+    "body": "Neighbors drift into earshot and the owner starts performing for them.",
+    "order": 1,
+    "approach": 1204,
+    "requires_roll": true,
+    "roll_stat": "charisma",
+    "base_difficulty": 12,
+    "allow_abort": false
+  }
+},
+{
+  "model": "game.jobbeatvariant",
+  "pk": 1305,
+  "fields": {
+    "job": 1102,
+    "beat_number": 2,
+    "key": "friendly_walk_in_complication",
+    "title": "Good Cop, Bad Room",
+    "body": "The owner nods along but signals someone in the back room to call for help.",
+    "order": 2,
+    "approach": 1205,
+    "requires_roll": true,
+    "roll_stat": "charisma",
+    "base_difficulty": 11,
+    "allow_abort": false
+  }
+},
+{
+  "model": "game.jobbeatvariant",
+  "pk": 1306,
+  "fields": {
+    "job": 1102,
+    "beat_number": 2,
+    "key": "bookkeeper_angle_complication",
+    "title": "Books Don't Match",
+    "body": "The numbers reveal a second collector working the same block.",
+    "order": 3,
+    "approach": 1206,
+    "requires_roll": true,
+    "roll_stat": "intellect",
+    "base_difficulty": 11,
+    "allow_abort": false
+  }
+},
+{
+  "model": "game.jobbeatvariant",
+  "pk": 1301,
+  "fields": {
+    "job": 1101,
+    "beat_number": 2,
+    "key": "alley_complication",
+    "title": "Alley Complication",
+    "body": "A delivery van blocks half your exit. You can duck through before anyone asks questions.",
+    "order": 1,
+    "approach": 1201,
+    "requires_roll": true,
+    "roll_stat": "agility",
+    "base_difficulty": 12,
+    "allow_abort": false
+  }
+},
+{
+  "model": "game.jobbeatvariant",
+  "pk": 1302,
+  "fields": {
+    "job": 1101,
+    "beat_number": 2,
+    "key": "front_door_complication",
+    "title": "Front Door Complication",
+    "body": "A clerk stalls while someone in back reaches for the phone.",
+    "order": 2,
+    "approach": 1202,
+    "requires_roll": true,
+    "roll_stat": "intellect",
+    "base_difficulty": 12,
+    "allow_abort": false
+  }
+},
+{
+  "model": "game.jobbeatvariant",
+  "pk": 1303,
+  "fields": {
+    "job": 1101,
+    "beat_number": 2,
+    "key": "delivery_disguise_complication",
+    "title": "Disguise Slips",
+    "body": "A regular recognizes your face from another block and starts asking the wrong questions.",
+    "order": 3,
+    "approach": 1203,
+    "requires_roll": true,
+    "roll_stat": "charisma",
+    "base_difficulty": 11,
+    "allow_abort": false
+  }
+}
+]
