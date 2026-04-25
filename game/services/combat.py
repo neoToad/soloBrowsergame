@@ -38,11 +38,12 @@ def get_active_combat_state(session):
 
 def initialize_combat_state(session, scene):
     """
-    For a combat scene: returns an active CombatState, creating one if needed.
+    For a combat scene: returns (CombatState, init_log | None), creating the state if needed.
     If an inactive state exists for a combat scene, deletes and recreates it.
-    For a non-combat scene: deactivates any lingering active CombatState and returns None.
+    For a non-combat scene: deactivates any lingering active CombatState and returns (None, None).
+    Callers are responsible for writing the init_log to EventLog.
     """
-    from ..models import CombatEncounter, CombatState, EventLog
+    from ..models import CombatEncounter, CombatState
     if not scene.is_combat:
         try:
             cs = session.combat_state
@@ -51,12 +52,12 @@ def initialize_combat_state(session, scene):
                 cs.save()
         except CombatState.DoesNotExist:
             pass
-        return None
+        return None, None
 
     try:
         cs = session.combat_state
         if cs.is_active:
-            return cs
+            return cs, None
         cs.delete()
     except CombatState.DoesNotExist:
         pass
@@ -69,11 +70,7 @@ def initialize_combat_state(session, scene):
         turn_number=1,
         is_active=True,
     )
-    EventLog.objects.create(
-        session=session,
-        text=f"You square up against {encounter.enemy.name}."
-    )
-    return cs
+    return cs, f"You square up against {encounter.enemy.name}."
 
 
 def resolve_combat_end(session, stats, inventory, completed_map, next_scene, combat_state, *, xp_award=0, ending_type='neutral'):
@@ -111,11 +108,14 @@ def resolve_combat_end(session, stats, inventory, completed_map, next_scene, com
         for new_level in combat_levels:
             log_queue.append(LEVEL_UP_FLAVOR.get(new_level, "You feel stronger."))
 
+    next_combat_state, combat_init_log = initialize_combat_state(session, next_scene)
+    if combat_init_log:
+        log_queue.append(combat_init_log)
+
     for text in log_queue:
         EventLog.objects.create(session=session, text=text)
 
     effective_stats = get_effective_stats(stats, inventory)
-    next_combat_state = initialize_combat_state(session, next_scene)
     return build_render_context(
         session, next_scene, stats, effective_stats, inventory, completed_map,
         combat_state=next_combat_state,

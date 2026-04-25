@@ -1,20 +1,5 @@
-Codebase Audit: Prioritized Refactor Plan
+eCodebase Audit: Prioritized Refactor Plan
 
-  Phase 1 — Critical (Fix Before Production)
-
-  1. Wrap process_arrival() in transaction.atomic() (services/arrival.py)
-  The arrival sequence makes 6 sequential DB-writing service calls with no transaction boundary. A mid-sequence failure (e.g. DB error in process_turn_income()) will leave the player in a corrupted state — some mutations applied, some not. Wrap the entire function body in transaction.atomic().
-
-  2. Validate choice targets before use (views.py:~102)
-  choice.target_scene is used without checking if it's None. A broken quest (author forgot to set a target) raises an unhandled NoneType error. Add a guard or a service-level validate_choice_routing(choice) check.
-
-  3. Services must not write EventLog directly (services/combat.py:71-74, property_service.py:97-114)
-  Your own ARCHITECTURE.md states services return log strings and views create EventLog entries — but combat.py and property_service.py both violate this. This makes services untestable without a DB. Return strings; let the view flush them.
-
-  4. Enforce ending scene invariant (models/world.py:clean())
-  clean() doesn't enforce that ending_type implies scene_type == 'ending'. A scene can have ending_type='victory' while being scene_type='normal', silently breaking quest completion in progression.py.
-
-  ---
   Phase 2 — High Priority
 
   5. Split quest_builder.py (776 LOC) (services/quest_builder.py)

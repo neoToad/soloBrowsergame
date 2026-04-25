@@ -156,6 +156,8 @@ class Scene(models.Model):
             raise ValidationError({'roll_stat': 'Must be a valid stat when requires_roll is True.'})
         if self.scene_type == 'ending' and not self.ending_type:
             raise ValidationError({'ending_type': 'Ending scenes must have a non-blank ending_type.'})
+        if self.ending_type and self.scene_type != 'ending':
+            raise ValidationError({'scene_type': 'Scenes with an ending_type must have scene_type "ending".'})
 
     class Meta:
         ordering = ['order']

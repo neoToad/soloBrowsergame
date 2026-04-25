@@ -45,7 +45,9 @@ def _htmx_response(request, context):
 def _render_current_scene(request, session, *, extra_context=None):
     session, stats, inventory, effective_stats, completed_map = load_session_context(session.pk)
     scene = session.current_scene
-    combat_state = initialize_combat_state(session, scene)
+    combat_state, combat_init_log = initialize_combat_state(session, scene)
+    if combat_init_log:
+        log_event(session, combat_init_log)
     context = build_render_context(
         session, scene, stats, effective_stats, inventory, completed_map,
         combat_state=combat_state,
@@ -78,7 +80,9 @@ def scene_detail(request, scene_key):
 
     game_session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
     scene        = get_object_or_404(Scene, key=scene_key)
-    combat_state = initialize_combat_state(game_session, scene)
+    combat_state, combat_init_log = initialize_combat_state(game_session, scene)
+    if combat_init_log:
+        log_event(game_session, combat_init_log)
 
     choices = get_available_choices(scene, effective_stats, inventory, completed_map, flags=game_session.flags)
     logs    = game_session.log.all()[:10]
@@ -145,7 +149,10 @@ def choice_resolve(request, choice_id):
         next_scene, roll_log, roll_result = resolve_roll(scene, choice, effective_stats)
         log_queue.append(roll_log)
     else:
-        next_scene, roll_result = choice.target_scene, None
+        next_scene = choice.target_scene
+        if next_scene is None:
+            return HttpResponse("This choice has no destination configured.", status=500)
+        roll_result = None
 
     # ARRIVAL FLAVOR
     if roll_result and not roll_result.success and choice.failure_arrival_flavor:
@@ -166,7 +173,9 @@ def choice_resolve(request, choice_id):
     log_queue.extend(arrival_logs)
     flush_event_log(session, log_queue)
 
-    combat_state    = initialize_combat_state(session, next_scene)
+    combat_state, combat_init_log = initialize_combat_state(session, next_scene)
+    if combat_init_log:
+        log_event(session, combat_init_log)
     effective_stats = get_effective_stats(stats, inventory)
 
     is_htmx = request.headers.get('HX-Request') == 'true'
@@ -207,7 +216,9 @@ def start_quest(request, quest_key):
     arrival_logs, _ = process_arrival(session, stats, inventory, completed_map, next_scene)
     flush_event_log(session, [f"You took the job: {quest.title}.", *arrival_logs])
 
-    combat_state    = initialize_combat_state(session, next_scene)
+    combat_state, combat_init_log = initialize_combat_state(session, next_scene)
+    if combat_init_log:
+        log_event(session, combat_init_log)
     effective_stats = get_effective_stats(stats, inventory)
 
     is_htmx = request.headers.get('HX-Request') == 'true'
