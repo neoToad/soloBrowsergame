@@ -1,0 +1,2334 @@
+meta:
+  version: 1
+  exported_at: '2026-04-25T21:35:27.343272+00:00'
+  include_scene_body: false
+counts:
+  items: 9
+  enemies: 10
+  contacts: 8
+  properties: 0
+  arcs: 1
+  quests: 4
+  scenes: 55
+  jobs: 0
+  requirement_groups: 7
+  requirements: 8
+items:
+- key: brass_knuckles
+  name: Brass Knuckles
+  description: Cold, heavy, and to the point.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: burner_phone
+  name: Burner Phone
+  description: Pre-paid, untraceable. One-use comms.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: cash_envelope
+  name: Cash Envelope
+  description: Unmarked bills. Someone's cut.
+  is_consumable: true
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: city_map
+  name: City Map
+  description: Dog-eared street map with safe houses marked.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: fake_id
+  name: Fake ID
+  description: Good enough to pass a cursory check.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: flask
+  name: Hip Flask
+  description: Steel flask, three fingers of rye inside.
+  is_consumable: true
+  effect_type: heal_hp
+  effect_stat: HP
+  effect_value: 20
+  passive_stat: null
+  passive_value: 0
+- key: forged_plates
+  name: forged_plates
+  description: forged_plates quest item
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: kevlar_vest
+  name: Kevlar Vest
+  description: Secondhand. Stops a round, barely.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: lockpick_set
+  name: Lockpick Set
+  description: Slim jim and tension bar. No questions asked.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+enemies:
+- key: corner_boy
+  name: Corner Boy
+  description: Young, jumpy, more bark than bite. Stands his ground out of pride.
+  max_hp: 8
+  attack_modifier: 0
+  defense: 10
+  damage_min: 1
+  damage_max: 1
+- key: crew_enforcer
+  name: Crew Enforcer
+  description: Thick-necked, deliberate. He's hurt people for a living and it shows.
+  max_hp: 2
+  attack_modifier: 0
+  defense: 0
+  damage_min: 0
+  damage_max: 0
+- key: dirty_cop
+  name: Dirty Cop
+  description: Badge on his belt, brass knuckles in his pocket. Knows how to make
+    it look clean.
+  max_hp: 12
+  attack_modifier: 3
+  defense: 13
+  damage_min: 2
+  damage_max: 8
+- key: emilios_guys
+  name: Emilio's Guys
+  description: Tough guys
+  max_hp: 10
+  attack_modifier: 0
+  defense: 8
+  damage_min: 1
+  damage_max: 2
+- key: garrett
+  name: garrett
+  description: garrett
+  max_hp: 10
+  attack_modifier: 0
+  defense: 8
+  damage_min: 1
+  damage_max: 4
+- key: mareks_men
+  name: mareks_men
+  description: mareks_men
+  max_hp: 10
+  attack_modifier: 0
+  defense: 8
+  damage_min: 1
+  damage_max: 4
+- key: patrol_officers
+  name: Patrol Officers
+  description: Patrol Officers
+  max_hp: 10
+  attack_modifier: 0
+  defense: 8
+  damage_min: 1
+  damage_max: 4
+- key: precinct_officer
+  name: precinct_officer
+  description: precinct_officer
+  max_hp: 10
+  attack_modifier: 0
+  defense: 8
+  damage_min: 1
+  damage_max: 4
+- key: street_captain
+  name: Street Captain
+  description: Runs a mid-tier crew. Methodical and hard to rattle. He's been in more
+    fights than you've eaten hot meals.
+  max_hp: 18
+  attack_modifier: 3
+  defense: 13
+  damage_min: 2
+  damage_max: 8
+- key: terrell
+  name: Terrell
+  description: Terrell
+  max_hp: 5
+  attack_modifier: 0
+  defense: 8
+  damage_min: 1
+  damage_max: 4
+contacts:
+- key: carla_the_fence
+  name: Carla the Fence
+  description: Moves hot goods fast and prefers quiet side conversations.
+- key: court_clerk
+  name: Court Clerk
+  description: Keeps one foot in public records and one in the rumor mill.
+- key: dock_foreman
+  name: Dock Foreman
+  description: Knows what comes off-manifest and who can be trusted with it.
+- key: marty
+  name: Marty
+  description: Hey, Its marty.
+- key: mickey_two_fingers
+  name: Mickey Two-Fingers
+  description: Card-room regular who notices who can handle pressure.
+- key: pawn_shop_owner
+  name: Pawn Shop Owner
+  description: Runs cash through a legal front and only talks business when asked.
+- key: sable
+  name: Sable
+  description: Sable
+- key: sister
+  name: Vickie
+  description: Your sister
+properties: []
+arcs:
+- key: intro
+  title: Intro
+  order: 0
+  quests:
+  - the-call
+  - first-word
+  - corkys
+  - the-ride
+quests:
+- key: the-call
+  title: The Call
+  arc: intro
+  arc_order: 1
+  is_unlocked: true
+  is_repeatable: false
+  entrance_scene: the-call__four-days-out
+  hub_scenes:
+  - hub__apartment
+  requirement_group_ids: []
+  scenes:
+  - key: the-call__four-days-out
+    scene_type: normal
+    title: Four Days Out
+    order: 10
+  - key: the-call__her-voice
+    scene_type: normal
+    title: Her Voice
+    order: 20
+  - key: the-call__why-you
+    scene_type: normal
+    title: Why You
+    order: 30
+  - key: the-call__terrell
+    scene_type: normal
+    title: Terrell
+    order: 40
+  - key: the-call__squeeze
+    scene_type: normal
+    title: Squeeze
+    order: 50
+  - key: the-call__the-fight
+    scene_type: combat
+    title: The Fight
+    order: 60
+  - key: the-call__backed-off
+    scene_type: normal
+    title: Backed Off
+    order: 70
+  - key: the-call__roughed-up-win
+    scene_type: normal
+    title: Roughed Up Win
+    order: 75
+  - key: the-call__done-clean
+    scene_type: ending
+    title: Done Clean
+    order: 80
+  - key: the-call__done-rough
+    scene_type: ending
+    title: Done Rough
+    order: 85
+  - key: the-call__beaten
+    scene_type: ending
+    title: Beaten
+    order: 90
+- key: first-word
+  title: First Word
+  arc: intro
+  arc_order: 2
+  is_unlocked: true
+  is_repeatable: false
+  entrance_scene: first-word__the-message
+  hub_scenes:
+  - hub__apartment
+  requirement_group_ids:
+  - 4
+  scenes:
+  - key: first-word__the-message
+    scene_type: normal
+    title: The Message
+    order: 10
+  - key: first-word__daves-bar
+    scene_type: normal
+    title: Dave's Bar
+    order: 20
+  - key: first-word__pruitt-address
+    scene_type: normal
+    title: Pruitt's Address
+    order: 30
+  - key: first-word__pruitt-door
+    scene_type: normal
+    title: Pruitt's Door
+    order: 40
+  - key: first-word__lean-on-pruitt
+    scene_type: normal
+    title: Lean On Pruitt
+    order: 50
+  - key: first-word__setup-deal
+    scene_type: normal
+    title: Setup Deal
+    order: 55
+  - key: first-word__deal-roll
+    scene_type: normal
+    title: Deal Roll
+    order: 60
+  - key: first-word__standoff
+    scene_type: normal
+    title: Standoff
+    order: 65
+  - key: first-word__full-collection
+    scene_type: normal
+    title: Full Collection
+    order: 70
+  - key: first-word__partial-collection
+    scene_type: normal
+    title: Partial Collection
+    order: 75
+  - key: first-word__walked-away
+    scene_type: normal
+    title: Walked Away
+    order: 78
+  - key: first-word__done-paid
+    scene_type: ending
+    title: Done Paid
+    order: 80
+  - key: first-word__done-partial
+    scene_type: ending
+    title: Done Partial
+    order: 85
+  - key: first-word__done-burned
+    scene_type: ending
+    title: Done Burned
+    order: 90
+- key: corkys
+  title: Corky's
+  arc: intro
+  arc_order: 3
+  is_unlocked: true
+  is_repeatable: false
+  entrance_scene: corkys__the-brief
+  hub_scenes:
+  - hub__apartment
+  requirement_group_ids:
+  - 7
+  scenes:
+  - key: corkys__the-brief
+    scene_type: normal
+    title: The Brief
+    order: 10
+  - key: corkys__the-bar
+    scene_type: normal
+    title: The Bar
+    order: 20
+  - key: corkys__read-the-room
+    scene_type: normal
+    title: Read The Room
+    order: 30
+  - key: corkys__sal-face-to-face
+    scene_type: normal
+    title: Sal Face To Face
+    order: 40
+  - key: corkys__lean-on-sal
+    scene_type: normal
+    title: Lean On Sal
+    order: 50
+  - key: corkys__leverage
+    scene_type: normal
+    title: Leverage
+    order: 55
+  - key: corkys__sal-talks
+    scene_type: normal
+    title: Sal Talks
+    order: 60
+  - key: corkys__counter-offer
+    scene_type: normal
+    title: Counter Offer
+    order: 65
+  - key: corkys__sal-folds-intimidated
+    scene_type: normal
+    title: Sal Folds Intimidated
+    order: 70
+  - key: corkys__sal-folds-leveraged
+    scene_type: normal
+    title: Sal Folds Leveraged
+    order: 72
+  - key: corkys__sal-holds-firm
+    scene_type: normal
+    title: Sal Holds Firm
+    order: 75
+  - key: corkys__done-dealers-in
+    scene_type: ending
+    title: Done Dealers In
+    order: 80
+  - key: corkys__done-sal-holds
+    scene_type: ending
+    title: Done Sal Holds
+    order: 85
+  - key: corkys__done-sal-caved
+    scene_type: ending
+    title: Done Sal Caved
+    order: 90
+- key: the-ride
+  title: The Ride
+  arc: intro
+  arc_order: 4
+  is_unlocked: true
+  is_repeatable: false
+  entrance_scene: the-ride__the-job
+  hub_scenes:
+  - hub__apartment
+  requirement_group_ids:
+  - 5
+  scenes:
+  - key: the-ride__the-job
+    scene_type: normal
+    title: The Job
+    order: 10
+  - key: the-ride__crane-street
+    scene_type: normal
+    title: Crane Street
+    order: 20
+  - key: the-ride__aldwick-approach
+    scene_type: normal
+    title: Aldwick Approach
+    order: 30
+  - key: the-ride__the-ambush
+    scene_type: combat
+    title: The Ambush
+    order: 40
+  - key: the-ride__darius
+    scene_type: normal
+    title: Darius
+    order: 50
+  - key: the-ride__the-delivery
+    scene_type: normal
+    title: The Delivery
+    order: 60
+  - key: the-ride__taken
+    scene_type: normal
+    title: Taken
+    order: 65
+  - key: the-ride__done-straight
+    scene_type: ending
+    title: Done Straight
+    order: 70
+  - key: the-ride__done-covered
+    scene_type: ending
+    title: Done Covered
+    order: 75
+  - key: the-ride__done-lost
+    scene_type: ending
+    title: Done Lost
+    order: 80
+scenes:
+- key: hub__apartment
+  scene_type: hub
+  title: The Apartment
+  order: 0
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 1
+    label: Head to Corky's
+    order: 1
+    target_scene: hub__corkys
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 2
+    label: Stop by Reyes Boxing
+    order: 2
+    target_scene: hub__reyes_boxing
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 3
+    label: Cross into the Westside
+    order: 3
+    target_scene: hub__westside_corner
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 4
+    label: Head down to the Strip
+    order: 4
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: hub__corkys
+  scene_type: hub
+  title: Corky's
+  order: 0
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 5
+    label: Head home
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 6
+    label: Stop by Reyes Boxing
+    order: 2
+    target_scene: hub__reyes_boxing
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 7
+    label: Head down to the Strip
+    order: 3
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: hub__docks
+  scene_type: hub
+  title: The Docks
+  order: 0
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 16
+    label: Head back up to the Strip
+    order: 1
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 17
+    label: Head back to the Flats
+    order: 2
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: hub__reyes_boxing
+  scene_type: hub
+  title: Reyes Boxing
+  order: 0
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 8
+    label: Head home
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 9
+    label: Stop by Corky's
+    order: 2
+    target_scene: hub__corkys
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 10
+    label: Cross into the Westside
+    order: 3
+    target_scene: hub__westside_corner
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: hub__the_strip
+  scene_type: hub
+  title: The Strip
+  order: 0
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 13
+    label: Head back to the Flats
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 14
+    label: Cross into the Westside
+    order: 2
+    target_scene: hub__westside_corner
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 15
+    label: Head down to the Docks
+    order: 3
+    target_scene: hub__docks
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: hub__westside_corner
+  scene_type: hub
+  title: The Westside
+  order: 0
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 11
+    label: Head back to the Flats
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 12
+    label: Head down to the Strip
+    order: 2
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__the-brief
+  scene_type: normal
+  title: The Brief
+  order: 10
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 61
+    label: Head to Corky's
+    order: 1
+    target_scene: corkys__the-bar
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__the-message
+  scene_type: normal
+  title: The Message
+  order: 10
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 31
+    label: Go to the meeting
+    order: 1
+    target_scene: first-word__daves-bar
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids:
+    - 1
+  - id: 32
+    label: Go to the meeting
+    order: 2
+    target_scene: first-word__daves-bar
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids:
+    - 2
+  - id: 33
+    label: Go to the meeting
+    order: 3
+    target_scene: first-word__daves-bar
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids:
+    - 3
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-call__four-days-out
+  scene_type: normal
+  title: Four Days Out
+  order: 10
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 18
+    label: Answer it
+    order: 1
+    target_scene: the-call__her-voice
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 19
+    label: Let it ring out
+    order: 2
+    target_scene: the-call__her-voice
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-ride__the-job
+  scene_type: normal
+  title: The Job
+  order: 10
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 50
+    label: Head to Crane Street
+    order: 1
+    target_scene: the-ride__crane-street
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__the-bar
+  scene_type: normal
+  title: The Bar
+  order: 20
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 62
+    label: Talk to Sal directly
+    order: 1
+    target_scene: corkys__sal-face-to-face
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 63
+    label: Look around first
+    order: 2
+    target_scene: corkys__read-the-room
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__daves-bar
+  scene_type: normal
+  title: Dave's Bar
+  order: 20
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 34
+    label: Take the job
+    order: 1
+    target_scene: first-word__pruitt-address
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-call__her-voice
+  scene_type: normal
+  title: Her Voice
+  order: 20
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 20
+    label: Tell her you'll handle it
+    order: 1
+    target_scene: the-call__terrell
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 21
+    label: Ask her why she called you specifically
+    order: 2
+    target_scene: the-call__why-you
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-ride__crane-street
+  scene_type: normal
+  title: Crane Street
+  order: 20
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 51
+    label: Move
+    order: 1
+    target_scene: the-ride__aldwick-approach
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__read-the-room
+  scene_type: normal
+  title: Read The Room
+  order: 30
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 64
+    label: Approach Sal
+    order: 1
+    target_scene: corkys__sal-face-to-face
+    success_scene: null
+    failure_scene: null
+    set_flag_name: corkys_read_room
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__pruitt-address
+  scene_type: normal
+  title: Pruitt's Address
+  order: 30
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 35
+    label: Knock
+    order: 1
+    target_scene: first-word__pruitt-door
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 36
+    label: Slip a note under the door and walk
+    order: 2
+    target_scene: first-word__pruitt-door
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-call__why-you
+  scene_type: normal
+  title: Why You
+  order: 30
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 22
+    label: Tell her you'll handle it
+    order: 1
+    target_scene: the-call__terrell
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-ride__aldwick-approach
+  scene_type: normal
+  title: Aldwick Approach
+  order: 30
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 52
+    label: Keep walking
+    order: 1
+    target_scene: the-ride__the-ambush
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 53
+    label: Stop and let them come to you
+    order: 2
+    target_scene: the-ride__the-ambush
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__sal-face-to-face
+  scene_type: normal
+  title: Sal Face To Face
+  order: 40
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 65
+    label: Tell him wanting things doesn't change how they are
+    order: 1
+    target_scene: corkys__lean-on-sal
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 66
+    label: Ask him about the envelopes on the shelf
+    order: 2
+    target_scene: corkys__leverage
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids:
+    - 6
+  - id: 67
+    label: Ask him what he actually needs to make this work
+    order: 3
+    target_scene: corkys__sal-talks
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__pruitt-door
+  scene_type: normal
+  title: Pruitt's Door
+  order: 40
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 37
+    label: Make clear this isn't a conversation
+    order: 1
+    target_scene: first-word__lean-on-pruitt
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 38
+    label: Ask him what happened
+    order: 2
+    target_scene: first-word__setup-deal
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-call__terrell
+  scene_type: normal
+  title: Terrell
+  order: 40
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 23
+    label: Talk him down
+    order: 1
+    target_scene: the-call__squeeze
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 24
+    label: Don't waste words
+    order: 2
+    target_scene: the-call__the-fight
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-ride__the-ambush
+  scene_type: combat
+  title: The Ambush
+  order: 40
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__lean-on-sal
+  scene_type: normal
+  title: Lean On Sal
+  order: 50
+  requires_roll: true
+  roll_stat: charisma
+  roll_difficulty: 12
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 68
+    label: Let it land
+    order: 1
+    target_scene: null
+    success_scene: corkys__sal-folds-intimidated
+    failure_scene: corkys__sal-holds-firm
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__lean-on-pruitt
+  scene_type: normal
+  title: Lean On Pruitt
+  order: 50
+  requires_roll: true
+  roll_stat: strength
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 39
+    label: Wait him out
+    order: 1
+    target_scene: null
+    success_scene: first-word__full-collection
+    failure_scene: first-word__standoff
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-call__squeeze
+  scene_type: normal
+  title: Squeeze
+  order: 50
+  requires_roll: true
+  roll_stat: charisma
+  roll_difficulty: 11
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 25
+    label: Let him think about it
+    order: 1
+    target_scene: null
+    success_scene: the-call__backed-off
+    failure_scene: the-call__the-fight
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-ride__darius
+  scene_type: normal
+  title: Darius
+  order: 50
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 54
+    label: Deliver the package
+    order: 1
+    target_scene: the-ride__the-delivery
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__leverage
+  scene_type: normal
+  title: Leverage
+  order: 55
+  requires_roll: true
+  roll_stat: intellect
+  roll_difficulty: 11
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 69
+    label: Give him a moment to do the math
+    order: 1
+    target_scene: null
+    success_scene: corkys__sal-folds-leveraged
+    failure_scene: corkys__sal-holds-firm
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__setup-deal
+  scene_type: normal
+  title: Setup Deal
+  order: 55
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 40
+    label: "Offer him a deal \u2014 three hundred now, three hundred by end of month"
+    order: 1
+    target_scene: first-word__deal-roll
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__sal-talks
+  scene_type: normal
+  title: Sal Talks
+  order: 60
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 70
+    label: Help him build a counter-offer Dutch might actually accept
+    order: 1
+    target_scene: corkys__counter-offer
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 71
+    label: Tell him it doesn't matter. The dealers are coming back.
+    order: 2
+    target_scene: corkys__sal-holds-firm
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__deal-roll
+  scene_type: normal
+  title: Deal Roll
+  order: 60
+  requires_roll: true
+  roll_stat: intellect
+  roll_difficulty: 11
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 41
+    label: Let him decide
+    order: 1
+    target_scene: null
+    success_scene: first-word__partial-collection
+    failure_scene: first-word__standoff
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-call__the-fight
+  scene_type: combat
+  title: The Fight
+  order: 60
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter:
+    enemy: terrell
+    victory_scene: the-call__roughed-up-win
+    defeat_scene: the-call__beaten
+- key: the-ride__the-delivery
+  scene_type: normal
+  title: The Delivery
+  order: 60
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 55
+    label: "Tell Morris everything \u2014 Darius, the Kings, all of it"
+    order: 1
+    target_scene: the-ride__done-straight
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 56
+    label: Keep it simple. Package delivered, ran into some trouble, handled it.
+    order: 2
+    target_scene: the-ride__done-covered
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__counter-offer
+  scene_type: normal
+  title: Counter Offer
+  order: 65
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 72
+    label: Report back to Morris
+    order: 1
+    target_scene: corkys__done-sal-holds
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__standoff
+  scene_type: normal
+  title: Standoff
+  order: 65
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 42
+    label: Give him one more chance
+    order: 1
+    target_scene: first-word__lean-on-pruitt
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 43
+    label: Walk away
+    order: 2
+    target_scene: first-word__walked-away
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-ride__taken
+  scene_type: normal
+  title: Taken
+  order: 65
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: -10
+  heat_change: 10
+  choices:
+  - id: 57
+    label: Go home
+    order: 1
+    target_scene: the-ride__done-lost
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__sal-folds-intimidated
+  scene_type: normal
+  title: Sal Folds Intimidated
+  order: 70
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 5
+  choices:
+  - id: 73
+    label: Report back to Morris
+    order: 1
+    target_scene: corkys__done-dealers-in
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__full-collection
+  scene_type: normal
+  title: Full Collection
+  order: 70
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 700
+  rep_change: 10
+  heat_change: 0
+  choices:
+  - id: 44
+    label: Head home
+    order: 1
+    target_scene: first-word__done-paid
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-call__backed-off
+  scene_type: normal
+  title: Backed Off
+  order: 70
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 5
+  heat_change: 0
+  choices:
+  - id: 26
+    label: Go home
+    order: 1
+    target_scene: the-call__done-clean
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts:
+  - contact: sister
+    action: gain
+    award_once: true
+  combat_encounter: null
+- key: the-ride__done-straight
+  scene_type: ending
+  title: Done Straight
+  order: 70
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: victory
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 350
+  rep_change: 15
+  heat_change: 0
+  choices:
+  - id: 58
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: the_ride_straight
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__sal-folds-leveraged
+  scene_type: normal
+  title: Sal Folds Leveraged
+  order: 72
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 3
+  choices:
+  - id: 74
+    label: Report back to Morris
+    order: 1
+    target_scene: corkys__done-dealers-in
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__sal-holds-firm
+  scene_type: normal
+  title: Sal Holds Firm
+  order: 75
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 75
+    label: Report back to Morris
+    order: 1
+    target_scene: corkys__done-sal-caved
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__partial-collection
+  scene_type: normal
+  title: Partial Collection
+  order: 75
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 350
+  rep_change: 5
+  heat_change: 0
+  choices:
+  - id: 45
+    label: Head home
+    order: 1
+    target_scene: first-word__done-partial
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-call__roughed-up-win
+  scene_type: normal
+  title: Roughed Up Win
+  order: 75
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 150
+  rep_change: 5
+  heat_change: 10
+  choices:
+  - id: 27
+    label: Go home
+    order: 1
+    target_scene: the-call__done-rough
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items:
+  - item: brass_knuckles
+    quantity: 1
+    award_once: true
+  scene_contacts:
+  - contact: sister
+    action: gain
+    award_once: true
+  combat_encounter: null
+- key: the-ride__done-covered
+  scene_type: ending
+  title: Done Covered
+  order: 75
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: victory
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 300
+  rep_change: 10
+  heat_change: 5
+  choices:
+  - id: 59
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: the_ride_covered
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__walked-away
+  scene_type: normal
+  title: Walked Away
+  order: 78
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: -5
+  heat_change: 5
+  choices:
+  - id: 46
+    label: Head home
+    order: 1
+    target_scene: first-word__done-burned
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__done-dealers-in
+  scene_type: ending
+  title: Done Dealers In
+  order: 80
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: victory
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 200
+  rep_change: 10
+  heat_change: 0
+  choices:
+  - id: 76
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: corkys_dealers_in
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__done-paid
+  scene_type: ending
+  title: Done Paid
+  order: 80
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: victory
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 5
+  heat_change: 0
+  choices:
+  - id: 47
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: first_word_paid_in_full
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-call__done-clean
+  scene_type: ending
+  title: Done Clean
+  order: 80
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: victory
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 10
+  heat_change: 0
+  choices:
+  - id: 28
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: the_call_talked_out
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-ride__done-lost
+  scene_type: ending
+  title: Done Lost
+  order: 80
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: defeat
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: -10
+  heat_change: 0
+  choices:
+  - id: 60
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: the_ride_lost
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__done-sal-holds
+  scene_type: ending
+  title: Done Sal Holds
+  order: 85
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: defeat
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: -5
+  heat_change: 0
+  choices:
+  - id: 77
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: corkys_sal_holds
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__done-partial
+  scene_type: ending
+  title: Done Partial
+  order: 85
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: neutral
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 48
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: first_word_partial
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-call__done-rough
+  scene_type: ending
+  title: Done Rough
+  order: 85
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: victory
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 5
+  heat_change: 0
+  choices:
+  - id: 29
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: the_call_fought_out
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: corkys__done-sal-caved
+  scene_type: ending
+  title: Done Sal Caved
+  order: 90
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: neutral
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 100
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 78
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: corkys_sal_caved
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: first-word__done-burned
+  scene_type: ending
+  title: Done Burned
+  order: 90
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: defeat
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: -5
+  heat_change: 0
+  choices:
+  - id: 49
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: first_word_burned
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-call__beaten
+  scene_type: ending
+  title: Beaten
+  order: 90
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: defeat
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: -25
+  rep_change: -5
+  heat_change: 10
+  choices:
+  - id: 30
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: the_call_lost
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+jobs: []
+requirement_groups:
+- id: 1
+  label: Talked out
+  logic: all
+  conditions:
+  - id: 1
+    condition_type: has_flag
+    flag_name: the_call_talked_out
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: null
+    required_contact: null
+    required_ending_type: null
+- id: 2
+  label: Fought out
+  logic: all
+  conditions:
+  - id: 2
+    condition_type: has_flag
+    flag_name: the_call_fought_out
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: null
+    required_contact: null
+    required_ending_type: null
+- id: 3
+  label: Lost
+  logic: all
+  conditions:
+  - id: 3
+    condition_type: has_flag
+    flag_name: the_call_lost
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: null
+    required_contact: null
+    required_ending_type: null
+- id: 4
+  label: Must have completed the call
+  logic: all
+  conditions:
+  - id: 4
+    condition_type: quest_completed
+    flag_name: null
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: the-call
+    required_contact: null
+    required_ending_type: null
+- id: 5
+  label: Must have completed Corky's
+  logic: all
+  conditions:
+  - id: 8
+    condition_type: quest_completed
+    flag_name: null
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: corkys
+    required_contact: null
+    required_ending_type: null
+- id: 6
+  label: Must have read the room
+  logic: all
+  conditions:
+  - id: 6
+    condition_type: has_flag
+    flag_name: corkys_read_room
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: null
+    required_contact: null
+    required_ending_type: null
+- id: 7
+  label: Must have completed first word
+  logic: all
+  conditions:
+  - id: 7
+    condition_type: quest_completed
+    flag_name: null
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: first-word
+    required_contact: null
+    required_ending_type: null
+requirements:
+- id: 1
+  condition_type: has_flag
+  flag_name: the_call_talked_out
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 2
+  condition_type: has_flag
+  flag_name: the_call_fought_out
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 3
+  condition_type: has_flag
+  flag_name: the_call_lost
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 4
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-call
+  required_contact: null
+  required_ending_type: null
+- id: 5
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 6
+  condition_type: has_flag
+  flag_name: corkys_read_room
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 7
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: first-word
+  required_contact: null
+  required_ending_type: null
+- id: 8
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: corkys
+  required_contact: null
+  required_ending_type: null
