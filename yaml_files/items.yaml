@@ -1,0 +1,239 @@
+items:
+
+  # -------------------------
+  # CONSUMABLES — heal_hp
+  # -------------------------
+
+  - key: field_dressing
+    name: Field Dressing
+    description: >
+      A military surplus compression bandage, still in the foil wrap. Half the
+      people in the Flats carry one and nobody asks why. Stops the bleeding.
+      Doesn't fix anything underneath.
+    is_consumable: true
+    effect_type: heal_hp
+    effect_stat: ""
+    effect_value: 25
+    passive_stat: ""
+    passive_value: 0
+
+  - key: bodega_painkillers
+    name: Bodega Painkillers
+    description: >
+      Generic ibuprofen from the rack by the register at the corner store. Four
+      hundred milligrams. The cashier doesn't look up when you buy them. Takes
+      the edge off enough to keep moving.
+    is_consumable: true
+    effect_type: heal_hp
+    effect_stat: ""
+    effect_value: 15
+    passive_stat: ""
+    passive_value: 0
+
+  - key: suture_kit
+    name: Suture Kit
+    description: >
+      Stolen from a first aid supply van. Needle, thread, antiseptic wipes, and
+      a pair of forceps that have clearly been used before. Closing a wound
+      yourself is a particular kind of evening.
+    is_consumable: true
+    effect_type: heal_hp
+    effect_stat: ""
+    effect_value: 40
+    passive_stat: ""
+    passive_value: 0
+
+  - key: half_bottle
+    name: Half a Bottle of Something
+    description: >
+      No label. Amber. Burns on the way down in a way that suggests it started
+      life as something else before someone redistilled it in a bathtub. Takes
+      the edge off. Probably.
+    is_consumable: true
+    effect_type: heal_hp
+    effect_stat: ""
+    effect_value: 10
+    passive_stat: ""
+    passive_value: 0
+
+  # -------------------------
+  # CONSUMABLES — add_stat
+  # -------------------------
+
+  - key: reyes_corner_time
+    name: Eddie's Corner Notes
+    description: >
+      A folded index card in Eddie Reyes' handwriting. Three observations about
+      your footwork and one about your left hook. Specific. Accurate.
+      Uncomfortable to read. You work on it until it stops being true.
+    is_consumable: true
+    effect_type: add_stat
+    effect_stat: strength
+    effect_value: 1
+    passive_stat: ""
+    passive_value: 0
+
+  - key: zonk_bump
+    name: "Zonk \u2014 Snorted"
+    description: >
+      A folded paper square, pre-measured. Faster onset than smoking. Upper
+      effect — sharper, more present, easier to talk to people and mean it.
+      The come-down is its own conversation.
+    is_consumable: true
+    effect_type: add_stat
+    effect_stat: charisma
+    effect_value: 1
+    passive_stat: ""
+    passive_value: 0
+
+  - key: dutch_sit_down
+    name: Dutch's Advice
+    description: >
+      Twenty minutes in Dutch's back room while he doesn't look at you directly
+      and says things that sound like observations. You piece it together on the
+      walk home. By the time you're at your door you understand something you
+      didn't before.
+    is_consumable: true
+    effect_type: add_stat
+    effect_stat: intellect
+    effect_value: 1
+    passive_stat: ""
+    passive_value: 0
+
+  - key: track_work
+    name: Track Work
+    description: >
+      Three weeks of running the old rail loop before sunrise. Nobody sees you.
+      Nobody cares. Your lungs start to forgive you for everything you've done
+      to them.
+    is_consumable: true
+    effect_type: add_stat
+    effect_stat: agility
+    effect_value: 1
+    passive_stat: ""
+    passive_value: 0
+
+  # -------------------------
+  # PASSIVE STAT ITEMS
+  # -------------------------
+
+  - key: brass_knuckles
+    name: Brass Knuckles
+    description: >
+      Someone else's initials scratched into the base. The previous owner either
+      sold them, lost them, or is no longer in a position to want them back.
+      Heavier than they look.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: strength
+    passive_value: 1
+
+  - key: good_shoes
+    name: Good Shoes
+    description: >
+      Not new — broken in, specifically. The kind of shoe that fits like it was
+      made for your foot because it's spent two years becoming that. Nobody
+      notices good shoes. That's how you know they're good.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: agility
+    passive_value: 1
+
+  - key: burner_phone
+    name: Burner Phone
+    description: >
+      Pre-paid. The number has been used once before — you don't know for what.
+      Having it means you can receive calls you shouldn't be receiving and make
+      calls that don't trace back. A tool for people who think two steps ahead.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: intellect
+    passive_value: 1
+
+  - key: tailored_jacket
+    name: Tailored Jacket
+    description: >
+      Not expensive — just fitted. Found at an estate sale in The Hill, altered
+      once by a woman on Crane Street who didn't ask what for. Wearing something
+      that fits correctly changes how a room reads you before you've opened your
+      mouth.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: charisma
+    passive_value: 1
+
+  - key: dutch_coin
+    name: Dutch's Coin
+    description: >
+      A foreign coin — nobody can place the country. Dutch's people have been
+      leaving these as acknowledgment for twenty years. Not currency. Not a
+      threat. Just a signal that Dutch knows something happened and is noting
+      it. The weight of it in your pocket is entirely psychological.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: charisma
+    passive_value: 2
+
+  # -------------------------
+  # INERT / FLAVOUR ITEMS
+  # -------------------------
+
+  - key: burner_envelope
+    name: Envelope of Cash
+    description: >
+      Rubber-banded. Mixed bills, nothing sequential. The universal language.
+      Whatever it was for, it's yours now.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: ""
+    passive_value: 0
+
+  - key: lockpick_set
+    name: Lockpick Set
+    description: >
+      A leather roll, seven picks, two tension wrenches. Old. The leather is
+      soft in a way that takes decades. Whoever owned this used them regularly
+      and knew what they were doing.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: ""
+    passive_value: 0
+
+  - key: disposable_camera
+    name: Disposable Camera
+    description: >
+      Ten exposures left. The kind of thing that only matters once — whatever's
+      already on the roll is as important as what gets added to it. Maybe more.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: ""
+    passive_value: 0
+
+  - key: bucco_olive_oil
+    name: "Bucco & Sons Extra Virgin"
+    description: >
+      A half-litre bottle, the good label. Cold pressed, Sicilian, not a blend.
+      Richie Bucco sends these occasionally instead of words. The olive oil is
+      legitimately excellent and that's somehow the most unsettling part.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: ""
+    passive_value: 0

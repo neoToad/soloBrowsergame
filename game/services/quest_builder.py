@@ -231,6 +231,7 @@ class QuestCanvasRenderer:
 
 
 def get_canvas_data(quest_id):
+    """Return quest canvas graph payload for editor rendering."""
     return QuestCanvasRenderer.build(quest_id)
 
 
@@ -268,6 +269,7 @@ class QuestHubExitResolver:
 
 
 def get_scene_hub_exits(scene_id, quest_id):
+    """Return hub exits reachable from an ending scene that point outside the quest."""
     return QuestHubExitResolver.resolve(scene_id, quest_id)
 
 
@@ -452,6 +454,7 @@ class QuestValidator:
 
 
 def validate_quest(quest_id):
+    """Run quest validation checks and return warning dictionaries for editor display."""
     return QuestValidator(quest_id).validate()
 
 
@@ -533,6 +536,7 @@ def _parse_combat_form(data):
 
 
 def create_scene(quest_id, data):
+    """Create a scene in a quest from form payload, including default canvas placement."""
     quest = Quest.objects.get(pk=quest_id)
     parsed = _parse_scene_form(data)
 
@@ -576,6 +580,7 @@ def create_scene(quest_id, data):
     return scene
 
 def update_scene(scene_id, data):
+    """Update scene fields from form payload with in-quest key uniqueness validation."""
     scene = Scene.objects.get(pk=scene_id)
     parsed = _parse_scene_form(data)
 
@@ -630,6 +635,7 @@ def get_delete_scene_consequences(scene_id):
 
 
 def delete_scene(scene_id):
+    """Delete a scene after clearing all routing/combat references that point to it."""
     scene = Scene.objects.get(pk=scene_id)
 
     target_qs = Choice.objects.filter(target_scene_id=scene_id)
@@ -653,6 +659,7 @@ def delete_scene(scene_id):
     return affected_choice_ids
 
 def create_choice(source_scene_id, data):
+    """Create a choice on the given source scene from parsed form payload."""
     scene = Scene.objects.get(pk=source_scene_id)
     parsed = _parse_choice_form(data)
     return Choice.objects.create(
@@ -668,6 +675,7 @@ def create_choice(source_scene_id, data):
     )
 
 def update_choice(choice_id, data):
+    """Update an existing choice from parsed form payload."""
     choice = Choice.objects.get(pk=choice_id)
     parsed = _parse_choice_form(data)
 
@@ -684,6 +692,7 @@ def update_choice(choice_id, data):
     return choice
 
 def delete_choice(choice_id):
+    """Delete a choice and return its former source scene id."""
     choice = Choice.objects.get(pk=choice_id)
     source_scene_id = choice.scene_id
     choice.delete()
@@ -895,4 +904,5 @@ class RequirementGroupBuilder:
 
 
 def build_requirement_groups_from_post(obj, post_data):
+    """Rebuild requirement groups for a scene/choice from quest-builder POST payload."""
     return RequirementGroupBuilder.build_from_post(obj, post_data)

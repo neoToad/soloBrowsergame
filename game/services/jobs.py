@@ -102,12 +102,14 @@ class RollOutcome:
 
 @transaction.atomic
 def increment_turn(session) -> int:
+    """Increment and persist the session turn counter, returning the new value."""
     session.turn_counter += 1
     session.save(update_fields=["turn_counter"])
     return session.turn_counter
 
 
 def get_recon_tier(effective_stats) -> str:
+    """Map effective intellect to the configured recon tier."""
     cunning_value = getattr(effective_stats, "intellect", 0)
     if cunning_value >= RECON_TIER_MIN_CUNNING[RECON_TIER_HIGH]:
         return RECON_TIER_HIGH
@@ -117,12 +119,14 @@ def get_recon_tier(effective_stats) -> str:
 
 
 def get_recon_modifiers(tier: str) -> dict[str, float | int]:
+    """Return recon reward modifiers for a tier or raise JobRulesError for invalid input."""
     if tier not in RECON_MODIFIERS:
         raise JobRulesError(f"Unknown recon tier: {tier}")
     return dict(RECON_MODIFIERS[tier])
 
 
 def list_district_targets(session, scene, ctx) -> list[dict[str, Any]]:
+    """Build district job cards with availability and recon metadata for a hub scene."""
     rows: list[dict[str, Any]] = []
     active_job_ids = set(
         JobRun.objects.filter(
@@ -165,6 +169,7 @@ def list_district_targets(session, scene, ctx) -> list[dict[str, Any]]:
 
 
 def list_contact_offers(session, scene, ctx) -> list[dict[str, Any]]:
+    """Build contact-offer cards with lock reasons and cooldown metadata."""
     rows: list[dict[str, Any]] = []
     active_job_ids = set(
         JobRun.objects.filter(
@@ -225,6 +230,7 @@ def build_jobs_hub_context(
     inventory,
     completed_map,
 ) -> dict[str, Any]:
+    """Build jobs-related context payload used by the hub scene templates."""
     if not scene.is_hub:
         return {
             "district_job_targets": [],
@@ -280,6 +286,7 @@ def build_jobs_hub_context(
 
 @transaction.atomic
 def start_recon(session, job: Job) -> dict[str, Any]:
+    """Validate a job can start and return recon preview payload without creating a run."""
     effective_stats = _get_effective_stats_for_session(session)
     ctx = _build_player_context(session, effective_stats)
     _assert_job_startable(session, job, ctx)
@@ -296,6 +303,7 @@ def start_recon(session, job: Job) -> dict[str, Any]:
 
 @transaction.atomic
 def commit_recon(session, job: Job) -> JobRun:
+    """Create an active job run from recon flow and advance the turn counter."""
     effective_stats = _get_effective_stats_for_session(session)
     ctx = _build_player_context(session, effective_stats)
     _assert_job_startable(session, job, ctx)
@@ -316,6 +324,7 @@ def commit_recon(session, job: Job) -> JobRun:
 
 @transaction.atomic
 def start_contact_job(session, contact_offer: ContactJobOffer) -> JobRun:
+    """Create an active job run started from a contact offer and advance the turn counter."""
     if not contact_offer.is_active:
         raise JobRulesError("Contact offer is not active.")
 
@@ -345,6 +354,7 @@ def start_contact_job(session, contact_offer: ContactJobOffer) -> JobRun:
 
 @transaction.atomic
 def resolve_beat_1(session, run: JobRun, approach: JobApproach) -> dict[str, Any]:
+    """Resolve beat 1 approach roll, persist run progression, and set approach flags."""
     _assert_active_run(session, run, expected_beat=1)
     if approach.job_id != run.job_id:
         raise JobRulesError("Approach does not belong to this run's job.")
@@ -381,6 +391,7 @@ def resolve_beat_1(session, run: JobRun, approach: JobApproach) -> dict[str, Any
 
 @transaction.atomic
 def resolve_beat_2(session, run: JobRun, action: str) -> dict[str, Any]:
+    """Resolve beat 2 action (and optional roll), then advance run to beat 3."""
     _assert_active_run(session, run, expected_beat=2)
 
     selected_approach = _get_selected_approach_from_flags_or_run(session, run)
@@ -424,6 +435,7 @@ def resolve_beat_2(session, run: JobRun, action: str) -> dict[str, Any]:
 
 @transaction.atomic
 def resolve_beat_3(session, run: JobRun) -> dict[str, Any]:
+    """Finalize beat 3 by applying rewards/cooldowns, completing the run, and advancing turn."""
     _assert_active_run(session, run, expected_beat=3)
 
     rewards = apply_job_rewards(session, run)
@@ -444,6 +456,7 @@ def resolve_beat_3(session, run: JobRun) -> dict[str, Any]:
 
 @transaction.atomic
 def abort_job_run(session, run: JobRun) -> JobRun:
+    """Abort an active run for the session and advance the turn counter."""
     if run.session_id != session.id:
         raise JobRulesError("Run does not belong to this session.")
     if run.status != JobRun.STATUS_ACTIVE:
@@ -459,6 +472,7 @@ def abort_job_run(session, run: JobRun) -> JobRun:
 
 @transaction.atomic
 def apply_job_rewards(session, run: JobRun) -> dict[str, int]:
+    """Compute and persist cash/heat/rep outcomes for a completed run."""
     if run.session_id != session.id:
         raise JobRulesError("Run does not belong to this session.")
 
@@ -499,6 +513,7 @@ def apply_job_rewards(session, run: JobRun) -> dict[str, int]:
 
 @transaction.atomic
 def apply_job_cooldowns(session, run: JobRun) -> dict[str, Any]:
+    """Update per-job/contact cooldown state and milestone flags after run completion."""
     if run.session_id != session.id:
         raise JobRulesError("Run does not belong to this session.")
 

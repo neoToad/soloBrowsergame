@@ -1,8 +1,16 @@
 from ..utils import roll_d20, stat_modifier
 from .types import RollResult
 
+
 def prefetch_choices_with_requirements(qs):
+    """Prefetch nested choice requirement rows to avoid N+1 evaluation queries."""
     return qs.prefetch_related('requirements__requirements')
+
+
+def get_quests_with_requirements(qs):
+    """Prefetch nested quest requirement rows to avoid N+1 evaluation queries."""
+    return qs.prefetch_related('requirements__requirements')
+
 
 def resolve_roll(scene, choice, effective_stats) -> tuple[object, str, RollResult]:
     """
@@ -35,6 +43,7 @@ def resolve_roll(scene, choice, effective_stats) -> tuple[object, str, RollResul
 
 
 def get_available_choices(scene, effective_stats, inventory, completed_map, flags=None):
+    """Return only choices whose requirement groups pass for the current player context."""
     from .session import build_player_context
     ctx = build_player_context(effective_stats, inventory, completed_map, flags=flags)
     choices = []
@@ -71,8 +80,8 @@ def get_notice_board(scene, inventory, completed_map, effective_stats, flags=Non
     from .session import build_player_context
     ctx = build_player_context(effective_stats, inventory, completed_map, flags=flags)
     available, locked, completed = [], [], []
-    for quest in Quest.objects.filter(is_unlocked=True, hub_scenes=scene).prefetch_related(
-        'requirements__requirements'
+    for quest in get_quests_with_requirements(
+        Quest.objects.filter(is_unlocked=True, hub_scenes=scene)
     ):
         if quest.id in completed_map:
             completed.append({

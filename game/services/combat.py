@@ -3,6 +3,7 @@ from ..utils import roll_d20, stat_modifier
 from .types import CombatRollResult
 
 def resolve_player_attack(stats, enemy) -> CombatRollResult:
+    """Resolve one player attack roll against an enemy and return hit/damage details."""
     modifier = stat_modifier(stats.strength)
     roll  = roll_d20()
     total = roll + modifier
@@ -13,6 +14,7 @@ def resolve_player_attack(stats, enemy) -> CombatRollResult:
 
 
 def resolve_enemy_attack(enemy, stats) -> CombatRollResult:
+    """Resolve one enemy attack roll against player stats and return hit/damage details."""
     player_defense = 10 + stat_modifier(stats.agility)
     roll  = roll_d20()
     total = roll + enemy.attack_modifier
@@ -74,6 +76,7 @@ def initialize_combat_state(session, scene):
 
 
 def resolve_combat_end(session, stats, inventory, completed_map, next_scene, combat_state, *, xp_award=0, ending_type='neutral'):
+    """Finalize combat, transition to next scene, apply arrival/XP effects, and return render context."""
     from ..models import EventLog, CombatEncounter
     from .progression import award_xp, LEVEL_UP_FLAVOR
     from .arrival import process_arrival

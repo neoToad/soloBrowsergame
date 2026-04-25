@@ -1,0 +1,307 @@
+enemies:
+
+  # -------------------------
+  # STREET LEVEL
+  # -------------------------
+
+  - key: street_tough
+    name: Street Tough
+    description: >
+      Nobody's soldier. Works alone or in loose pairs, opportunistic. Not
+      trained, not disciplined, but willing enough that it amounts to the same
+      thing in a dark stairwell.
+    max_hp: 18
+    attack_modifier: 1
+    defense: 9
+    damage_min: 2
+    damage_max: 6
+
+  - key: westside_runner
+    name: Westside Runner
+    description: >
+      Young, fast, not yet sure how much he's willing to lose. Kings material
+      but not there yet. The danger is that he's trying to prove something,
+      which makes him harder to read than someone who knows what they're doing.
+    max_hp: 20
+    attack_modifier: 2
+    defense: 10
+    damage_min: 2
+    damage_max: 7
+
+  - key: backstreet_boy
+    name: Backstreet Boy
+    description: >
+      Craig's crew. More flash than discipline — chain visible, shoes clean,
+      genuinely believes the outfit carries weight. It doesn't. Still hits hard
+      enough that it doesn't matter.
+    max_hp: 22
+    attack_modifier: 2
+    defense: 10
+    damage_min: 3
+    damage_max: 7
+
+  - key: terrell
+    name: Terrell
+    description: >
+      Young, maybe twenty-five. Gold chain, clean sneakers, eyes that clock
+      you the second you round the corner. Got reach but no discipline. The
+      stoop light flickers. Somewhere above you a window slides shut.
+    max_hp: 24
+    attack_modifier: 2
+    defense: 11
+    damage_min: 3
+    damage_max: 8
+
+  # -------------------------
+  # HARLAN STREET CREW
+  # -------------------------
+
+  - key: harlan_muscle
+    name: Harlan Street Muscle
+    description: >
+      Dutch sends muscle, not lawyers. This is the muscle. Older than the
+      Kings' guys, quieter about it, less interested in the theatre of
+      the thing. Has done this enough times that it's just work.
+    max_hp: 30
+    attack_modifier: 3
+    defense: 12
+    damage_min: 3
+    damage_max: 8
+
+  - key: dutch_enforcer
+    name: Dutch's Enforcer
+    description: >
+      Not the guy Dutch sends when he wants to make a point. The guy Dutch
+      sends when the point has already been made and ignored. Doesn't talk
+      much. Doesn't need to.
+    max_hp: 40
+    attack_modifier: 4
+    defense: 13
+    damage_min: 4
+    damage_max: 10
+
+  # -------------------------
+  # WESTSIDE KINGS
+  # -------------------------
+
+  - key: kings_soldier
+    name: Kings Soldier
+    description: >
+      Generational Westside. Knows every block, every exit, every face that
+      doesn't belong. The loose council structure means he's not always sure
+      who he's answering to, which makes him edgy in a way that's hard to
+      predict.
+    max_hp: 28
+    attack_modifier: 3
+    defense: 11
+    damage_min: 3
+    damage_max: 8
+
+  - key: kings_lieutenant
+    name: Kings Lieutenant
+    description: >
+      One of several. The internal politics mean he's always half-managing
+      someone else's problem as well as his own. Experienced, genuinely
+      dangerous, and irritable about it.
+    max_hp: 38
+    attack_modifier: 4
+    defense: 13
+    damage_min: 4
+    damage_max: 10
+
+  # -------------------------
+  # BUCCO FAMILY
+  # -------------------------
+
+  - key: bucco_associate
+    name: Bucco Associate
+    description: >
+      Old world structure means old world patience. He will wait for the right
+      moment in a way that street crews genuinely can't. Suit jacket. Doesn't
+      raise his voice. The calm is the threat.
+    max_hp: 32
+    attack_modifier: 3
+    defense: 13
+    damage_min: 4
+    damage_max: 9
+
+  - key: bucco_capo
+    name: Bucco Capo
+    description: >
+      Been with the family long enough that Richie Bucco knows his children's
+      names. That's not warmth — that's depth of investment. Removing him
+      is a family matter now, not just a business one.
+    max_hp: 50
+    attack_modifier: 5
+    defense: 14
+    damage_min: 5
+    damage_max: 12
+
+  # -------------------------
+  # THE BLUES
+  # -------------------------
+
+  - key: blues_officer
+    name: Blues Officer
+    description: >
+      Cahill's people. Doesn't say anything incriminating. Doesn't need to —
+      the badge does the threatening. Trained, structured, and operating with
+      the full weight of the system behind him. The worst kind of opponent.
+    max_hp: 35
+    attack_modifier: 4
+    defense: 14
+    damage_min: 4
+    damage_max: 10
+
+  # -------------------------
+  # GROUPED ENCOUNTERS
+  # -------------------------
+
+  - key: street_tough_x2
+    name: Two Street Toughs
+    description: >
+      Separately, a problem. Together, a system — one pushes, one flanks.
+      They've done it before. Not coordinated exactly, but practiced.
+    max_hp: 32
+    attack_modifier: 3
+    defense: 10
+    damage_min: 3
+    damage_max: 8
+
+  - key: street_tough_x3
+    name: Three Street Toughs
+    description: >
+      Numbers are the whole strategy. They know it. You know it. The only
+      question is whether you can make that strategy expensive enough that
+      someone reconsiders.
+    max_hp: 40
+    attack_modifier: 4
+    defense: 10
+    damage_min: 4
+    damage_max: 10
+
+  - key: westside_pair
+    name: Two Westside Runners
+    description: >
+      Both young, both fast, both with something to prove. The problem with
+      fighting people who haven't learned their limits yet is that they
+      don't know when to stop.
+    max_hp: 36
+    attack_modifier: 3
+    defense: 11
+    damage_min: 3
+    damage_max: 9
+
+
+contacts:
+
+  # -------------------------
+  # FACTION — HARLAN STREET CREW
+  # -------------------------
+
+  - key: morris
+    name: Morris
+    description: >
+      Dutch's intermediary. Transactional, precise, slightly disappointing to
+      talk to in the way that efficient people are. Calls when he has
+      information and hangs up when he's done. Says things like "acceptable"
+      and "noted." Has no evident inner life but occasionally says something
+      that suggests he might.
+
+  - key: dutch
+    name: Dutch
+    description: >
+      Runs the Harlan Street Crew out of The Flats. Old school, disciplined,
+      fingers in everything quietly. Never wastes words. The fact that he's
+      dealing with you directly means something — you're not sure yet whether
+      it's good.
+
+  # -------------------------
+  # FACTION — BUCCO FAMILY
+  # -------------------------
+
+  - key: richie_bucco
+    name: Richie Bucco
+    description: >
+      Runs the Bucco Family. Will talk to you for forty minutes about cold
+      pressing olive oil. Genuinely knowledgeable about it. Something terrible
+      may happen before dinner regardless. The oldest outfit in the city and
+      he carries that history like it's earned, because it is.
+
+  # -------------------------
+  # FACTION — WESTSIDE KINGS
+  # -------------------------
+
+  - key: kings_contact
+    name: Kings Contact
+    description: >
+      No one name, no one throat to grab. The council structure means your
+      contact today might not be your contact tomorrow. Useful for exactly as
+      long as the internal politics allow it.
+
+  # -------------------------
+  # FACTION — BACKSTREET BOYS
+  # -------------------------
+
+  - key: craig_richards
+    name: Craig Richards
+    description: >
+      Insists on being called King. Everyone calls him Craig. He hates it.
+      Runs the Backstreet Boys out of The New Build and The Strip. Believes
+      every word of his own hype. Making decent money. Nobody respects him
+      for it, which he is aware of and has completely failed to address.
+
+  # -------------------------
+  # FACTION — THE BLUES
+  # -------------------------
+
+  - key: frank_cahill
+    name: Lt. Frank Cahill
+    description: >
+      Major Crimes Unit. Taxes every crew in the city except Dutch, with whom
+      he has a relationship built entirely on implication. Bureaucratically
+      polite at all times. Never says anything incriminating. Built his
+      operation from inside the system over decades. The scariest person in
+      the city.
+
+  # -------------------------
+  # CIVILIANS
+  # -------------------------
+
+  - key: sister
+    name: Vickie
+    description: >
+      Your sister. Calls only when she needs something. Genuinely loves you
+      in her way, which is real but will immediately generate the next problem
+      the moment the current one is solved. A chaos agent who does not
+      consider herself a chaos agent. Heavy Zonk user. Always completely
+      confident.
+
+  - key: sal
+    name: Sal
+    description: >
+      Owns Corky's in The Flats. Inherited it from a friend who left town and
+      just wants to run a quiet bar. Tired, not defeated. Dutch's people have
+      been using his floor for years and he wants them out. The longer you
+      talk to him the more uncomfortable the moral math gets.
+
+  - key: eddie_reyes
+    name: Eddie Reyes
+    description: >
+      Runs Reyes Boxing in The Flats, two blocks from Corky's. Been there
+      thirty years. Listens more than he talks. The only person in the city
+      who has told Dutch, Cahill, and Richie Bucco something they didn't want
+      to hear and had all three thank him. Nobody brings their business through
+      his door. Doesn't broker deals. Occasionally points someone in a
+      direction. Once. Doesn't follow up.
+
+  - key: linda_marsh
+    name: Councilor Linda Marsh
+    description: >
+      City councilor for The Flats and the border of The New Build. Publicly
+      the voice of community preservation. Quietly taking money from the
+      developers eating her district alive. Frank Cahill uses her for planning
+      permissions and the occasional burial of an investigation. Has a
+      newsletter with a recipe section. Owns a rescue dog named Biscuit.
+      Has been making one small reasonable decision at a time for eleven years
+      and can't see the shape of what she's built anymore.

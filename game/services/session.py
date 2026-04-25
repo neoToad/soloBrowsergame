@@ -7,6 +7,7 @@ from . import jobs as jobs_service
 from ..utils import get_effective_stats, compute_max_hp
 
 def load_session_context(session_pk):
+    """Load session and derived gameplay context used by game views."""
     session = get_object_or_404(GameSession, pk=session_pk)
     stats   = session.stats
     inventory     = get_player_inventory(session)
@@ -16,6 +17,7 @@ def load_session_context(session_pk):
 
 
 def get_completed_map(session):
+    """Return `{quest_id: ending_type}` for quests completed in this session."""
     return {
         cq.quest_id: cq.ending_type
         for cq in CompletedQuest.objects.filter(session=session)
@@ -23,6 +25,7 @@ def get_completed_map(session):
 
 
 def build_player_context(effective_stats, inventory, completed_map, flags=None, contacts=None):
+    """Construct a PlayerContext value object for requirement evaluation."""
     from ..models import PlayerContext
     return PlayerContext(
         stats=effective_stats,
@@ -48,6 +51,7 @@ def create_session(request):
 
 
 def build_render_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state, turn_summary=None, roll_result=None, damage_result=None):
+    """Assemble canonical template context for scene rendering and HTMX partial updates."""
     from .scene import get_available_choices, get_notice_board
     from ..models import PlayerContact, PlayerGangStanding
     notice_board = None

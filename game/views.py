@@ -2,7 +2,6 @@ from functools import wraps
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotAllowed
-from django.template.loader import render_to_string
 
 from .models import (
     Choice, CombatEncounter, CombatState, GameSession, Item,
@@ -40,14 +39,7 @@ def require_game_session(view_func):
 
 
 def _htmx_response(request, context):
-    scene_html       = render_to_string('game/partials/scene_panel.html',      context, request)
-    stats_html       = render_to_string('game/partials/stats_bar.html',        context, request)
-    top_stats_html   = render_to_string('game/partials/top_stats_bar.html',    context, request)
-    log_html         = render_to_string('game/partials/event_log.html',        context, request)
-    inventory_html   = render_to_string('game/partials/inventory.html',        context, request)
-    mobile_html      = render_to_string('game/partials/mobile_stats_bar.html', context, request)
-    territories_html = render_to_string('game/partials/territories.html',      context, request)
-    response = HttpResponse(scene_html + stats_html + top_stats_html + log_html + inventory_html + mobile_html + territories_html)
+    response = render(request, 'game/partials/htmx_response.html', context)
     scene = context.get('scene')
     if scene:
         from django.urls import reverse
