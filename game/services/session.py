@@ -16,6 +16,12 @@ def load_session_context(session_pk):
     return session, stats, inventory, effective_stats, completed_map
 
 
+def advance_to_scene(session, scene):
+    """Move the session to scene and persist."""
+    session.current_scene = scene
+    session.save()
+
+
 def get_completed_map(session):
     """Return `{quest_id: ending_type}` for quests completed in this session."""
     return {

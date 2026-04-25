@@ -9,19 +9,19 @@ from .models import (
     ContactJobOffer, Job, JobApproach, JobRun,
 )
 from .models.events import log_event, flush_event_log
-from .services.session     import load_session_context, create_session, build_render_context, build_player_context
+from .services.session     import load_session_context, create_session, build_render_context, build_player_context, advance_to_scene
 from .services.scene       import resolve_roll
 from .services.combat      import (
     initialize_combat_state, get_active_combat_state, resolve_combat_end,
     execute_player_attack, execute_enemy_attack,
 )
-from .services.inventory   import get_player_inventory, consume_item as consume_item_util
+from .services.inventory   import apply_item_effect
 from .services.flags       import set_flag, clear_flag
 from .services.arrival     import process_arrival
 from .services.progression import XP_AWARDS, LEVEL_UP_FLAVOR, spend_stat_point
 from .services import jobs as jobs_service
 from .utils import get_effective_stats
-from .constants import SESSION_KEY, STAT_DB_NAMES, USE_ITEM_FLAVOR
+from .constants import SESSION_KEY, STAT_DB_NAMES
 
 
 def require_game_session(view_func):
@@ -127,8 +127,7 @@ def choice_resolve(request, choice_id, *, session_context):
     if choice.clear_flag_name:
         clear_flag(session, choice.clear_flag_name)
 
-    session.current_scene = next_scene
-    session.save()
+    advance_to_scene(session, next_scene)
 
     arrival_logs, turn_summary = process_arrival(session, stats, inventory, completed_map, next_scene)
     log_queue.extend(arrival_logs)
@@ -167,8 +166,7 @@ def start_quest(request, quest_key, *, session_context):
     next_scene = quest.entrance_scene
     if next_scene is None:
         return HttpResponse("Quest has no entrance scene configured.", status=400)
-    session.current_scene = next_scene
-    session.save()
+    advance_to_scene(session, next_scene)
 
     arrival_logs, _ = process_arrival(session, stats, inventory, completed_map, next_scene)
     flush_event_log(session, [f"You took the job: {quest.title}.", *arrival_logs])
@@ -458,21 +456,8 @@ def use_item(request, item_id, *, session_context):
     if not item.effect_type:
         return HttpResponse("Item has no usable effect.", status=400)
 
-    if item.effect_type == 'heal_hp':
-        healed = min(item.effect_value, stats.max_hp - stats.hp)
-        stats.hp = min(stats.max_hp, stats.hp + item.effect_value)
-        stats.save()
-        log_event(session, f"{USE_ITEM_FLAVOR['heal_hp']} (+{healed} HP)")
-
-    elif item.effect_type == 'add_stat':
-        if item.effect_stat:
-            current = getattr(stats, item.effect_stat, 0)
-            setattr(stats, item.effect_stat, current + item.effect_value)
-            stats.save()
-        log_event(session, USE_ITEM_FLAVOR['add_stat'])
-
-    if item.is_consumable:
-        consume_item_util(session, item, inventory)
+    logs = apply_item_effect(session, stats, inventory, item)
+    flush_event_log(session, logs)
 
     scene           = session.current_scene
     effective_stats = get_effective_stats(stats, inventory)

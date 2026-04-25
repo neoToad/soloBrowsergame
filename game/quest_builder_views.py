@@ -417,8 +417,12 @@ def choice_create(request, quest_id):
     raw_source = (request.POST.get('source_scene_id') or '').strip()
     if not raw_source:
         return HttpResponse("source_scene_id required", status=400)
+    try:
+        source_scene_id = int(raw_source)
+    except ValueError:
+        return HttpResponse("source_scene_id must be a valid integer", status=400)
 
-    choice = create_choice_service(int(raw_source), request.POST)
+    choice = create_choice_service(source_scene_id, request.POST)
     routing_type = 'roll' if (choice.success_scene_id or choice.failure_scene_id) else 'direct'
 
     context = _choice_context(

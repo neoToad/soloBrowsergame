@@ -67,6 +67,30 @@ def award_scene_items(session, scene, inventory):
     return awarded
 
 
+def apply_item_effect(session, stats, inventory, item):
+    """
+    Applies item.effect_type to stats, consumes the item if consumable.
+    Returns a list of log strings. Caller is responsible for persisting them.
+    Preconditions (item in inventory, effect_type set) must be validated by the caller.
+    """
+    from ..constants import USE_ITEM_FLAVOR
+    logs = []
+    if item.effect_type == 'heal_hp':
+        healed = min(item.effect_value, stats.max_hp - stats.hp)
+        stats.hp = min(stats.max_hp, stats.hp + item.effect_value)
+        stats.save()
+        logs.append(f"{USE_ITEM_FLAVOR['heal_hp']} (+{healed} HP)")
+    elif item.effect_type == 'add_stat':
+        if item.effect_stat:
+            current = getattr(stats, item.effect_stat, 0)
+            setattr(stats, item.effect_stat, current + item.effect_value)
+            stats.save()
+        logs.append(USE_ITEM_FLAVOR['add_stat'])
+    if item.is_consumable:
+        consume_item(session, item, inventory)
+    return logs
+
+
 def consume_item(session, item, inventory):
     """
     Removes one of `item` from the session's inventory.
