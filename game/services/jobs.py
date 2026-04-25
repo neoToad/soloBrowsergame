@@ -556,7 +556,7 @@ def _requirements_pass(groups, ctx: PlayerContext) -> bool:
 
 
 def _build_player_context(session, effective_stats) -> PlayerContext:
-    from ..services.session import get_completed_map
+    from ..services.session import build_player_context, get_completed_map
 
     inventory = get_player_inventory(session)
     completed_map = get_completed_map(session)
@@ -564,10 +564,10 @@ def _build_player_context(session, effective_stats) -> PlayerContext:
         pc.contact_id: pc
         for pc in PlayerContact.objects.filter(session=session).only("id", "contact_id")
     }
-    return PlayerContext(
-        stats=effective_stats,
-        inventory=inventory,
-        completed_map=completed_map,
+    return build_player_context(
+        effective_stats,
+        inventory,
+        completed_map,
         flags=session.flags,
         contacts=contacts,
     )

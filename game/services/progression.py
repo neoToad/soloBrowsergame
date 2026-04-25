@@ -1,7 +1,3 @@
-
-from django.db import IntegrityError
-
-
 def award_xp(session, stats, amount):
     """
     Adds `amount` XP to stats.experience.
@@ -105,22 +101,19 @@ def maybe_complete_quest(session, stats, next_scene, completed_map):
 
     quest = next_scene.quests.first() if next_scene.is_ending else None
     if quest:
-        if not CompletedQuest.objects.filter(session=session, quest=quest).exists():
-            try:
-                CompletedQuest.objects.create(
-                    session=session,
-                    quest=quest,
-                    ending_type=next_scene.ending_type
-                )
-            except IntegrityError:
-                return log_messages
+        completed_quest, created = CompletedQuest.objects.get_or_create(
+            session=session,
+            quest=quest,
+            defaults={'ending_type': next_scene.ending_type},
+        )
+        if created:
             log_messages.append(
                 f"You have completed: {quest.title} ({next_scene.get_ending_type_display()})"
             )
-            completed_map[quest.id] = next_scene.ending_type
+            completed_map[quest.id] = completed_quest.ending_type
 
             # AWARD XP
-            xp_amount = XP_AWARDS.get(next_scene.ending_type, 0)
+            xp_amount = XP_AWARDS.get(completed_quest.ending_type, 0)
             if xp_amount:
                 levels = award_xp(session, stats, xp_amount)
                 log_messages.append(f"+{xp_amount} XP.")

@@ -35,13 +35,8 @@ def resolve_roll(scene, choice, effective_stats) -> tuple[object, str, RollResul
 
 
 def get_available_choices(scene, effective_stats, inventory, completed_map, flags=None):
-    from ..models import PlayerContext
-    ctx = PlayerContext(
-        stats=effective_stats,
-        inventory=inventory,
-        completed_map=completed_map,
-        flags=flags or {},
-    )
+    from .session import build_player_context
+    ctx = build_player_context(effective_stats, inventory, completed_map, flags=flags)
     choices = []
     for choice in prefetch_choices_with_requirements(scene.choices.all()):
         # Gate 1: RequirementGroup check
@@ -72,13 +67,9 @@ def get_notice_board(scene, inventory, completed_map, effective_stats, flags=Non
     Returns a dict of three lists — available, locked, completed — for quests
     assigned to the given hub scene.
     """
-    from ..models import Quest, PlayerContext
-    ctx = PlayerContext(
-        stats=effective_stats,
-        inventory=inventory,
-        completed_map=completed_map,
-        flags=flags or {},
-    )
+    from ..models import Quest
+    from .session import build_player_context
+    ctx = build_player_context(effective_stats, inventory, completed_map, flags=flags)
     available, locked, completed = [], [], []
     for quest in Quest.objects.filter(is_unlocked=True, hub_scenes=scene).prefetch_related(
         'requirements__requirements'

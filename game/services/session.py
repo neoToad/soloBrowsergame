@@ -22,6 +22,17 @@ def get_completed_map(session):
     }
 
 
+def build_player_context(effective_stats, inventory, completed_map, flags=None, contacts=None):
+    from ..models import PlayerContext
+    return PlayerContext(
+        stats=effective_stats,
+        inventory=inventory,
+        completed_map=completed_map,
+        flags=flags or {},
+        contacts=contacts or {},
+    )
+
+
 def create_session(request):
     """Creates a new GameSession + PlayerStats, stores the pk in the Django session."""
     if not request.session.session_key:

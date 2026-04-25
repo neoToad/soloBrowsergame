@@ -1,16 +1,17 @@
+from functools import wraps
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
 
 from .models import (
     Choice, CombatEncounter, CombatState, GameSession, Item,
-    PlayerContact, PlayerContext, PlayerGangStanding, PlayerProperty, Quest, Scene,
+    Quest, Scene,
     ContactJobOffer, Job, JobApproach, JobRun,
 )
-from .models.property import Property
 from .models.events import log_event, flush_event_log
-from .services.session     import load_session_context, create_session, build_render_context
-from .services.scene       import get_available_choices, get_notice_board, resolve_roll
+from .services.session     import load_session_context, create_session, build_render_context, build_player_context
+from .services.scene       import resolve_roll
 from .services.combat      import (
     initialize_combat_state, get_active_combat_state, resolve_combat_end,
     resolve_player_attack as resolve_player_attack_util,
@@ -22,8 +23,20 @@ from .services.arrival     import process_arrival
 from .services.property_service import apply_property_rewards
 from .services.progression import XP_AWARDS, LEVEL_UP_FLAVOR, spend_stat_point
 from .services import jobs as jobs_service
-from .utils import roll_d20, stat_modifier, get_effective_stats, RollResult, DamageResult
-from .constants import HUB_START_SCENE_KEY, SESSION_KEY, STAT_FIELD_MAP, USE_ITEM_FLAVOR
+from .utils import stat_modifier, get_effective_stats, RollResult, DamageResult
+from .constants import SESSION_KEY, STAT_FIELD_MAP, USE_ITEM_FLAVOR
+
+
+def require_game_session(view_func):
+    @wraps(view_func)
+    def _wrapped(request, *args, **kwargs):
+        session_pk = request.session.get(SESSION_KEY)
+        if not session_pk:
+            return redirect('game_hub')
+        kwargs['session_context'] = load_session_context(session_pk)
+        return view_func(request, *args, **kwargs)
+
+    return _wrapped
 
 
 def _htmx_response(request, context):
@@ -73,69 +86,29 @@ def game_hub(request):
     return redirect('scene_detail', scene_key=game_session.current_scene.key)
 
 
-def scene_detail(request, scene_key):
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('/game/')
-
-    game_session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
+@require_game_session
+def scene_detail(request, scene_key, *, session_context):
+    game_session, stats, inventory, effective_stats, completed_map = session_context
     scene        = get_object_or_404(Scene, key=scene_key)
     combat_state, combat_init_log = initialize_combat_state(game_session, scene)
     if combat_init_log:
         log_event(game_session, combat_init_log)
 
-    choices = get_available_choices(scene, effective_stats, inventory, completed_map, flags=game_session.flags)
-    logs    = game_session.log.all()[:10]
-
-    notice_board = None
-    if scene.is_hub:
-        notice_board = get_notice_board(scene, inventory, completed_map, effective_stats, flags=game_session.flags)
-
     apply_property_rewards(game_session, scene)
-
-    player_properties = PlayerProperty.objects.filter(session=game_session).select_related('property')
-    all_territories   = Property.objects.filter(property_type='territory')
-    owned_territory_ids = {
-        pp.property_id for pp in player_properties if pp.property.property_type == 'territory'
-    }
-    player_contacts       = PlayerContact.objects.filter(session=game_session).select_related('contact')
-    player_gang_standings = PlayerGangStanding.objects.filter(session=game_session).select_related('gang')
-    jobs_hub_context = jobs_service.build_jobs_hub_context(
-        game_session,
-        scene,
-        effective_stats,
-        inventory,
-        completed_map,
+    context = build_render_context(
+        game_session, scene, stats, effective_stats, inventory, completed_map,
+        combat_state=combat_state,
     )
-    context = {
-        'session':                game_session,
-        'scene':                  scene,
-        'stats':                  stats,
-        'stat_bonuses':           effective_stats.bonuses,
-        'inventory':              inventory,
-        'choices':                choices,
-        'logs':                   logs,
-        'combat_state':           combat_state,
-        'notice_board':           notice_board,
-        'player_properties':      player_properties,
-        'all_territories':        all_territories,
-        'owned_territory_ids':    owned_territory_ids,
-        'player_contacts':        player_contacts,
-        'player_gang_standings':  player_gang_standings,
-        **jobs_hub_context,
-    }
+    context['session'] = game_session
     return render(request, 'game/scene.html', context)
 
 
-def choice_resolve(request, choice_id):
+@require_game_session
+def choice_resolve(request, choice_id, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
+    session, stats, inventory, effective_stats, completed_map = session_context
     choice = get_object_or_404(Choice, pk=choice_id)
     if choice.scene_id != session.current_scene_id:
         return HttpResponse("Choice is not available from your current scene.", status=403)
@@ -190,21 +163,15 @@ def choice_resolve(request, choice_id):
     return redirect('scene_detail', scene_key=next_scene.key)
 
 
-def start_quest(request, quest_key):
+@require_game_session
+def start_quest(request, quest_key, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
+    session, stats, inventory, effective_stats, completed_map = session_context
     quest = get_object_or_404(Quest, key=quest_key, is_unlocked=True)
 
-    ctx = PlayerContext(
-        stats=effective_stats, inventory=inventory,
-        completed_map=completed_map, flags=session.flags,
-    )
+    ctx = build_player_context(effective_stats, inventory, completed_map, flags=session.flags)
     if quest.requirements.exists():
         if not all(rg.evaluate(ctx) for rg in quest.requirements.all()):
             return HttpResponse("Quest requirements not met.", status=403)
@@ -231,15 +198,12 @@ def start_quest(request, quest_key):
     return redirect('scene_detail', scene_key=next_scene.key)
 
 
-def job_recon_start(request, job_key):
+@require_game_session
+def job_recon_start(request, job_key, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, *_ = load_session_context(session_pk)
+    session, *_ = session_context
     job = get_object_or_404(Job, key=job_key, is_active=True)
 
     try:
@@ -250,15 +214,12 @@ def job_recon_start(request, job_key):
     return _render_current_scene(request, session, extra_context={'job_recon_preview': recon_preview})
 
 
-def job_recon_commit(request, job_key):
+@require_game_session
+def job_recon_commit(request, job_key, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, *_ = load_session_context(session_pk)
+    session, *_ = session_context
     job = get_object_or_404(Job, key=job_key, is_active=True)
 
     try:
@@ -270,30 +231,24 @@ def job_recon_commit(request, job_key):
     return _render_current_scene(request, session, extra_context={'job_run': run})
 
 
-def job_recon_walk_away(request, job_key):
+@require_game_session
+def job_recon_walk_away(request, job_key, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, *_ = load_session_context(session_pk)
+    session, *_ = session_context
     job = get_object_or_404(Job, key=job_key, is_active=True)
     jobs_service.increment_turn(session)
     flush_event_log(session, [f"You walk away from {job.title} for now."])
     return _render_current_scene(request, session)
 
 
-def job_contact_start(request, offer_id):
+@require_game_session
+def job_contact_start(request, offer_id, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, *_ = load_session_context(session_pk)
+    session, *_ = session_context
     offer = get_object_or_404(ContactJobOffer, pk=offer_id, is_active=True)
 
     try:
@@ -305,19 +260,16 @@ def job_contact_start(request, offer_id):
     return _render_current_scene(request, session, extra_context={'job_run': run})
 
 
-def job_run_beat_1(request, run_id):
+@require_game_session
+def job_run_beat_1(request, run_id, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
 
     approach_key = (request.POST.get('approach') or '').strip()
     if not approach_key:
         return HttpResponse("Missing approach key.", status=400)
 
-    session, *_ = load_session_context(session_pk)
+    session, *_ = session_context
     run = get_object_or_404(JobRun, pk=run_id)
     approach = JobApproach.objects.filter(job_id=run.job_id, key=approach_key).first()
     if approach is None:
@@ -333,19 +285,16 @@ def job_run_beat_1(request, run_id):
     return _render_current_scene(request, session, extra_context={'job_beat_1': result})
 
 
-def job_run_beat_2(request, run_id):
+@require_game_session
+def job_run_beat_2(request, run_id, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
 
     action_key = (request.POST.get('action') or '').strip()
     if not action_key:
         return HttpResponse("Missing beat 2 action key.", status=400)
 
-    session, *_ = load_session_context(session_pk)
+    session, *_ = session_context
     run = get_object_or_404(JobRun, pk=run_id)
 
     try:
@@ -357,15 +306,12 @@ def job_run_beat_2(request, run_id):
     return _render_current_scene(request, session, extra_context={'job_beat_2': result})
 
 
-def job_run_abort(request, run_id):
+@require_game_session
+def job_run_abort(request, run_id, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, *_ = load_session_context(session_pk)
+    session, *_ = session_context
     run = get_object_or_404(JobRun, pk=run_id)
 
     try:
@@ -377,15 +323,12 @@ def job_run_abort(request, run_id):
     return _render_current_scene(request, session)
 
 
-def job_run_resolve(request, run_id):
+@require_game_session
+def job_run_resolve(request, run_id, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, *_ = load_session_context(session_pk)
+    session, *_ = session_context
     run = get_object_or_404(JobRun, pk=run_id)
 
     try:
@@ -403,15 +346,12 @@ def job_run_resolve(request, run_id):
     return _render_current_scene(request, session, extra_context={'job_result': result})
 
 
-def combat_attack(request):
+@require_game_session
+def combat_attack(request, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
+    session, stats, inventory, effective_stats, completed_map = session_context
 
     try:
         combat_state = session.combat_state
@@ -511,15 +451,12 @@ def combat_attack(request):
     return _htmx_response(request, context)
 
 
-def combat_resolve_enemy(request):
+@require_game_session
+def combat_resolve_enemy(request, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
+    session, stats, inventory, effective_stats, completed_map = session_context
 
     try:
         combat_state = session.combat_state
@@ -598,15 +535,12 @@ def combat_resolve_enemy(request):
     return _htmx_response(request, context)
 
 
-def combat_continue(request):
+@require_game_session
+def combat_continue(request, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
+    session, stats, inventory, effective_stats, completed_map = session_context
 
     try:
         combat_state = session.combat_state
@@ -626,15 +560,12 @@ def combat_continue(request):
     return _htmx_response(request, context)
 
 
-def level_up(request):
+@require_game_session
+def level_up(request, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
+    session, stats, inventory, effective_stats, completed_map = session_context
 
     stat_name = request.POST.get('stat', '')
     try:
@@ -655,15 +586,12 @@ def level_up(request):
     return _htmx_response(request, context)
 
 
-def use_item(request, item_id):
+@require_game_session
+def use_item(request, item_id, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session_pk = request.session.get(SESSION_KEY)
-    if not session_pk:
-        return redirect('game_hub')
-
-    session, stats, inventory, effective_stats, completed_map = load_session_context(session_pk)
+    session, stats, inventory, effective_stats, completed_map = session_context
     item = get_object_or_404(Item, pk=item_id)
 
     if item.id not in inventory:
