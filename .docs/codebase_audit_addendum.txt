@@ -1,0 +1,48 @@
+Codebase Audit Addendum: Additional Prioritized Refactor Plan
+
+Phase 1 - Critical (Fix Before Production)
+
+1. Remove state mutation from GET scene_detail (views.py)
+scene_detail calls apply_property_rewards() on every page load, which can duplicate grants/losses without a transition. Move all arrival mutations to process_arrival() only.
+
+2. Move combat flow out of views into service layer (views.py)
+combat_attack and combat_resolve_enemy perform combat state mutation, stats updates, and logging directly in view functions. Refactor to service orchestration methods returning context/log payloads.
+
+3. Validate quest_id ownership in quest-builder choice endpoints (quest_builder_views.py)
+choice_save, choice_delete, and choice_requirements_save trust choice_id without proving it belongs to the quest_id URL. Add guard: choice.scene must be in quest scenes.
+
+4. Guard missing combat encounter in combat views (views.py)
+Three endpoints call CombatEncounter.objects.get(...) without handling missing rows, causing 500s for malformed content. Return controlled 400/404 with authoring-friendly error text.
+
+---
+Phase 2 - High Priority
+
+5. Consolidate duplicated render-context assembly (views.py + services/session.py)
+scene_detail duplicates the same property/contact/jobs context assembly done in build_render_context. Make one canonical context builder path.
+
+6. Add null entrance-scene validation for quest start (views.py or service)
+start_quest assumes quest.entrance_scene exists; broken content can crash. Enforce invariant at model/service boundary with explicit 400/validation error.
+
+7. Fix stale job-approach flag coupling (services/jobs.py)
+Approach selection reads global flags (approach_*) across runs; old flags can influence new runs. Scope approach state to JobRun only, or clear prior flags at run start/end.
+
+8. Replace broad except Exception with explicit exception handling (quest_builder_views.py)
+Generic catch around scene.combat_encounter can hide unrelated regressions. Catch CombatEncounter.DoesNotExist only.
+
+---
+Phase 3 - Refactor
+
+9. Add robust input parsing for choice_create source scene (quest_builder_views.py)
+int(raw_source) can raise ValueError and 500 on invalid payload. Validate and return 400 consistently.
+
+10. Move remaining gameplay mutations from views to services (use_item, partial choice_resolve)
+use_item handles effect logic and persistence directly in view. Introduce inventory/use-item service command returning logs + updated state.
+
+---
+Phase 4 - Cleanup
+
+11. Standardize legacy unique_together to UniqueConstraint
+Project already uses explicit constraints in newer models; unify style for clarity and migrations consistency.
+
+12. Convert lambda URL redirect to named view
+Root URL uses inline lambda; harder to test, trace, and lint. Replace with small root_redirect view.
