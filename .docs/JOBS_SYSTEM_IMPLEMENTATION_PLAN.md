@@ -215,7 +215,7 @@ Return:
 2. test cases,
 3. balancing assumptions."
 
-### Prompt 6: Seed Content Pass
+### Prompt 6: Seed Content Pass Done
 "Implement Slice 6.
 Seed initial jobs and contacts from the Jobs spec (store robbery, protection racket, courier run, debt collection + contact roster).
 Prefer fixtures consistent with existing project patterns.

@@ -193,7 +193,9 @@ def list_contact_offers(session, scene, ctx) -> list[dict[str, Any]]:
         if job_state.run_count < offer.min_run_count:
             locked_reasons.append("min_run_count")
 
-        turns_remaining = max(0, offer_state.cooldown_until_turn - session.turn_counter)
+        offer_turns_remaining = max(0, offer_state.cooldown_until_turn - session.turn_counter)
+        job_turns_remaining = max(0, job_state.cooldown_until_turn - session.turn_counter)
+        turns_remaining = max(offer_turns_remaining, job_turns_remaining)
         if turns_remaining > 0:
             locked_reasons.append("cooldown")
 

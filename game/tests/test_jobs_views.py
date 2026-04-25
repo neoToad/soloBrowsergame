@@ -42,6 +42,24 @@ class JobEndpointsTest(TestCase):
         job.district_hubs.add(self.scene)
         return job
 
+    def _wire_single_path_job(self, job):
+        approach = JobApproach.objects.create(
+            job=job,
+            key="alley",
+            label="Alley",
+            roll_stat="agility",
+            base_difficulty=10,
+        )
+        JobBeatVariant.objects.create(
+            job=job,
+            beat_number=2,
+            key="push",
+            title="Push Through",
+            approach=approach,
+            requires_roll=False,
+        )
+        return approach
+
     def test_job_recon_commit_happy_path_htmx(self):
         job = self._make_job()
 
@@ -225,3 +243,214 @@ class JobEndpointsTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 400)
+
+    @patch("game.services.jobs.random.uniform", return_value=1.0)
+    @patch("game.services.jobs.random.randint", return_value=100)
+    @patch("game.services.jobs.roll_d20", return_value=20)
+    def test_full_replay_loop_allows_replay_after_cooldown(
+        self, _mock_roll, _mock_randint, _mock_uniform
+    ):
+        job = self._make_job(key="jobs__replay", base_cooldown_turns=2)
+        approach = self._wire_single_path_job(job)
+
+        response = self.client.post(
+            reverse("job_recon_commit", kwargs={"job_key": job.key}),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 200)
+        run = JobRun.objects.get(session=self.session, job=job, status=JobRun.STATUS_ACTIVE)
+
+        response = self.client.post(
+            reverse("job_run_beat_1", kwargs={"run_id": run.id}),
+            {"approach": approach.key},
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            reverse("job_run_beat_2", kwargs={"run_id": run.id}),
+            {"action": "push"},
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            reverse("job_run_resolve", kwargs={"run_id": run.id}),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 200)
+        run.refresh_from_db()
+        self.assertEqual(run.status, JobRun.STATUS_COMPLETED)
+
+        state = PlayerJobState.objects.get(session=self.session, job=job)
+        self.assertEqual(state.run_count, 1)
+
+        response = self.client.post(
+            reverse("job_recon_commit", kwargs={"job_key": job.key}),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("cooldown", response.content.decode().lower())
+
+        response = self.client.post(
+            reverse("job_recon_walk_away", kwargs={"job_key": job.key}),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.post(
+            reverse("job_recon_commit", kwargs={"job_key": job.key}),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            JobRun.objects.filter(
+                session=self.session,
+                job=job,
+                status=JobRun.STATUS_ACTIVE,
+            ).count(),
+            1,
+        )
+
+    @patch("game.services.jobs.random.uniform", return_value=1.0)
+    @patch("game.services.jobs.random.randint", return_value=100)
+    @patch("game.services.jobs.roll_d20", return_value=20)
+    def test_contact_offer_unlock_and_offer_cooldown_are_enforced_independently(
+        self, _mock_roll, _mock_randint, _mock_uniform
+    ):
+        job = self._make_job(
+            key="jobs__contact_unlock",
+            base_cooldown_turns=2,
+        )
+        approach = self._wire_single_path_job(job)
+        contact = Contact.objects.create(key="dock-foreman", name="Dock Foreman", description="")
+        offer = ContactJobOffer.objects.create(
+            key="dock-foreman-offer",
+            contact=contact,
+            job=job,
+            scene=self.scene,
+            min_run_count=1,
+            cooldown_turns=4,
+        )
+
+        response = self.client.post(
+            reverse("job_contact_start", kwargs={"offer_id": offer.id}),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("min run count", response.content.decode().lower())
+
+        response = self.client.post(
+            reverse("job_recon_commit", kwargs={"job_key": job.key}),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 200)
+        recon_run = JobRun.objects.get(session=self.session, job=job, status=JobRun.STATUS_ACTIVE)
+
+        self.assertEqual(
+            self.client.post(
+                reverse("job_run_beat_1", kwargs={"run_id": recon_run.id}),
+                {"approach": approach.key},
+                HTTP_HX_REQUEST="true",
+            ).status_code,
+            200,
+        )
+        self.assertEqual(
+            self.client.post(
+                reverse("job_run_beat_2", kwargs={"run_id": recon_run.id}),
+                {"action": "push"},
+                HTTP_HX_REQUEST="true",
+            ).status_code,
+            200,
+        )
+        self.assertEqual(
+            self.client.post(
+                reverse("job_run_resolve", kwargs={"run_id": recon_run.id}),
+                HTTP_HX_REQUEST="true",
+            ).status_code,
+            200,
+        )
+
+        response = self.client.post(
+            reverse("job_contact_start", kwargs={"offer_id": offer.id}),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("cooldown", response.content.decode().lower())
+
+        self.assertEqual(
+            self.client.post(
+                reverse("job_recon_walk_away", kwargs={"job_key": job.key}),
+                HTTP_HX_REQUEST="true",
+            ).status_code,
+            200,
+        )
+        response = self.client.post(
+            reverse("job_contact_start", kwargs={"offer_id": offer.id}),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 200)
+        contact_run = JobRun.objects.get(
+            session=self.session,
+            contact_offer=offer,
+            status=JobRun.STATUS_ACTIVE,
+        )
+        self.assertEqual(contact_run.source, JobRun.SOURCE_CONTACT)
+
+        self.assertEqual(
+            self.client.post(
+                reverse("job_run_beat_1", kwargs={"run_id": contact_run.id}),
+                {"approach": approach.key},
+                HTTP_HX_REQUEST="true",
+            ).status_code,
+            200,
+        )
+        self.assertEqual(
+            self.client.post(
+                reverse("job_run_beat_2", kwargs={"run_id": contact_run.id}),
+                {"action": "push"},
+                HTTP_HX_REQUEST="true",
+            ).status_code,
+            200,
+        )
+        self.assertEqual(
+            self.client.post(
+                reverse("job_run_resolve", kwargs={"run_id": contact_run.id}),
+                HTTP_HX_REQUEST="true",
+            ).status_code,
+            200,
+        )
+
+        self.assertEqual(
+            self.client.post(
+                reverse("job_recon_walk_away", kwargs={"job_key": job.key}),
+                HTTP_HX_REQUEST="true",
+            ).status_code,
+            200,
+        )
+        response = self.client.post(
+            reverse("job_contact_start", kwargs={"offer_id": offer.id}),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("cooldown", response.content.decode().lower())
+
+        self.assertEqual(
+            self.client.post(
+                reverse("job_recon_walk_away", kwargs={"job_key": job.key}),
+                HTTP_HX_REQUEST="true",
+            ).status_code,
+            200,
+        )
+        self.assertEqual(
+            self.client.post(
+                reverse("job_recon_walk_away", kwargs={"job_key": job.key}),
+                HTTP_HX_REQUEST="true",
+            ).status_code,
+            200,
+        )
+        response = self.client.post(
+            reverse("job_contact_start", kwargs={"offer_id": offer.id}),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 200)
