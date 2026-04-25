@@ -1,18 +1,5 @@
 eCodebase Audit: Prioritized Refactor Plan
 
-  Phase 2 — High Priority
-
-  5. Split quest_builder.py (776 LOC) (services/quest_builder.py)
-  One file does 7 unrelated things: canvas rendering, 11-rule validation, form parsing, scene/choice CRUD, combat encounter management, requirements building. Split into: QuestCanvasRenderer, QuestValidator, QuestFormParser, CRUD functions. Each will be individually testable.
-
-  6. Extract PlayerContext construction (services/scene.py:37-44, 70-81, and elsewhere)
-  The same 4-line PlayerContext(stats, inventory, completed_map, flags) block appears 3+ times. A signature change requires hunting all call sites. Extract to build_player_context() in session.py.
-
-  7. Create a session-loading decorator (views.py)
-  Every view calls load_session_context(session_pk) and then repeats the if not session_pk: redirect('game_hub') guard. Extract to a @require_game_session decorator so the pattern lives in one place.
-
-  8. Fix quest completion race condition (services/progression.py:77-85)
-  The exists-then-create pattern has a TOCTOU window. Replace with CompletedQuest.objects.get_or_create(...) — the created flag tells you whether to award XP and append logs.
 
   ---
   Phase 3 — Refactor

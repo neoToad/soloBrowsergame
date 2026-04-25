@@ -25,7 +25,7 @@ from .services.quest_builder import (
     build_requirement_groups_from_post as build_requirement_groups_from_post_service,
     update_scene_contacts as update_scene_contacts_service,
 )
-from .constants import STAT_FIELD_MAP
+from .constants import STAT_DISPLAY_NAMES
 
 
 def _choice_context(*, quest, quest_id, choice=None, source_scene_id=None, routing_type='direct'):
@@ -65,7 +65,7 @@ def _choice_context(*, quest, quest_id, choice=None, source_scene_id=None, routi
         'req_save_url':        req_save_url,
         'all_quests':          list(Quest.objects.order_by('title')),
         'all_items':           list(Item.objects.order_by('name')),
-        'stat_choices':        [(v, k) for k, v in STAT_FIELD_MAP.items()],
+        'stat_choices':        [(field, label) for field, label in STAT_DISPLAY_NAMES.items()],
         'requirement_types':   Requirement.CONDITION_TYPES,
     }
 
@@ -148,12 +148,7 @@ def scene_panel(request, quest_id, scene_id=None):
         'scene':                 scene,
         'scene_choices':         scene_choices,
         'scene_types':           Scene.SCENE_TYPES,
-        'roll_stat_options': [
-            ('strength', 'muscle'),
-            ('agility',  'reflexes'),
-            ('intellect', 'cunning'),
-            ('charisma',  'nerve'),
-        ],
+        'roll_stat_options': list(STAT_DISPLAY_NAMES.items()),
         'default_roll_difficulty': 12,
         'scene_items':           scene_items,
         'all_items':             all_items,
@@ -164,7 +159,7 @@ def scene_panel(request, quest_id, scene_id=None):
         'quest_scenes':          quest_scenes,
         'combat_encounter':      combat_encounter,
         'all_quests':            all_quests,
-        'stat_choices':          [(v, k) for k, v in STAT_FIELD_MAP.items()],
+        'stat_choices':          [(field, label) for field, label in STAT_DISPLAY_NAMES.items()],
         'requirement_types':     Requirement.CONDITION_TYPES,
     }
     return render(request, 'admin/quest_builder/partials/scene_panel.html', context)
@@ -511,7 +506,7 @@ def choice_requirements_save(request, quest_id, choice_id):
             'all_quests':         list(Quest.objects.order_by('title')),
             'all_items':          list(Item.objects.order_by('name')),
             'all_contacts':       list(Contact.objects.order_by('name')),
-            'stat_choices':       [(v, k) for k, v in STAT_FIELD_MAP.items()],
+            'stat_choices':       [(field, label) for field, label in STAT_DISPLAY_NAMES.items()],
             'requirement_types':  Requirement.CONDITION_TYPES,
             'toast_message':      'Requirements saved.',
         },

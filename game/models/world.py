@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from .requirements import RequirementGroup
 from .items import Item
-from ..constants import STAT_FIELD_MAP
+from ..constants import STAT_DISPLAY_NAMES
 
 class Arc(models.Model):
     key   = models.SlugField(unique=True)
@@ -92,7 +92,7 @@ class Scene(models.Model):
     requires_roll    = models.BooleanField(default=False)
     roll_stat        = models.CharField(
                            max_length=50, blank=True,
-                           choices=[('', '---')] + [(v, v) for v in STAT_FIELD_MAP.values()]
+                           choices=[('', '---')] + [(v, v) for v in STAT_DISPLAY_NAMES.keys()]
                        )
     roll_difficulty  = models.IntegerField(default=10)
 
@@ -152,7 +152,7 @@ class Scene(models.Model):
         return self.scene_type == 'ending'
 
     def clean(self):
-        if self.requires_roll and self.roll_stat not in STAT_FIELD_MAP.values():
+        if self.requires_roll and self.roll_stat not in STAT_DISPLAY_NAMES:
             raise ValidationError({'roll_stat': 'Must be a valid stat when requires_roll is True.'})
         if self.scene_type == 'ending' and not self.ending_type:
             raise ValidationError({'ending_type': 'Ending scenes must have a non-blank ending_type.'})

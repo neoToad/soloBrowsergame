@@ -1,6 +1,6 @@
 from django.db import models
 
-from ..constants import STAT_FIELD_MAP
+from ..constants import STAT_DISPLAY_NAMES
 from .requirements import RequirementGroup
 
 
@@ -71,7 +71,7 @@ class JobApproach(models.Model):
     )
     roll_stat = models.CharField(
         max_length=50,
-        choices=[(v, v) for v in STAT_FIELD_MAP.values()],
+        choices=[(v, v) for v in STAT_DISPLAY_NAMES.keys()],
     )
     base_difficulty = models.IntegerField(default=10)
 
@@ -115,7 +115,7 @@ class JobBeatVariant(models.Model):
     roll_stat = models.CharField(
         max_length=50,
         blank=True,
-        choices=[("", "---")] + [(v, v) for v in STAT_FIELD_MAP.values()],
+        choices=[("", "---")] + [(v, v) for v in STAT_DISPLAY_NAMES.keys()],
     )
     base_difficulty = models.IntegerField(default=10)
     allow_abort = models.BooleanField(default=False)

@@ -24,7 +24,7 @@ from .services.property_service import apply_property_rewards
 from .services.progression import XP_AWARDS, LEVEL_UP_FLAVOR, spend_stat_point
 from .services import jobs as jobs_service
 from .utils import stat_modifier, get_effective_stats, RollResult, DamageResult
-from .constants import SESSION_KEY, STAT_FIELD_MAP, USE_ITEM_FLAVOR
+from .constants import SESSION_KEY, STAT_DB_NAMES, USE_ITEM_FLAVOR
 
 
 def require_game_session(view_func):
@@ -414,10 +414,12 @@ def combat_attack(request, *, session_context):
             f"vs {enemy.defense} — Missed."
         )
 
-    combat_state.pending_e_roll  = e.roll
-    combat_state.pending_e_total = e.total
-    combat_state.pending_e_hit   = e.hit
-    combat_state.pending_e_dmg   = e.damage
+    combat_state.pending_enemy_attack = {
+        'roll': e.roll,
+        'total': e.total,
+        'hit': e.hit,
+        'damage': e.damage,
+    }
     combat_state.save()
 
     effective_stats = get_effective_stats(stats, inventory)
@@ -471,10 +473,11 @@ def combat_resolve_enemy(request, *, session_context):
     player_defense = 10 + stat_modifier(effective_stats.agility)
     e_mod_str      = f"+{enemy.attack_modifier}" if enemy.attack_modifier >= 0 else str(enemy.attack_modifier)
 
-    e_roll  = combat_state.pending_e_roll
-    e_total = combat_state.pending_e_total
-    e_hit   = combat_state.pending_e_hit
-    e_dmg   = combat_state.pending_e_dmg
+    attack_payload = combat_state.pending_enemy_attack or {}
+    e_roll = attack_payload.get('roll')
+    e_total = attack_payload.get('total')
+    e_hit = attack_payload.get('hit')
+    e_dmg = attack_payload.get('damage')
 
     if e_hit:
         stats.hp = max(0, stats.hp - e_dmg)
@@ -488,10 +491,7 @@ def combat_resolve_enemy(request, *, session_context):
             f"vs {player_defense} — Missed."
         )
 
-    combat_state.pending_e_roll  = None
-    combat_state.pending_e_total = None
-    combat_state.pending_e_hit   = None
-    combat_state.pending_e_dmg   = None
+    combat_state.pending_enemy_attack = None
     combat_state.turn_number    += 1
     combat_state.save()
     stats.save()
@@ -569,7 +569,7 @@ def level_up(request, *, session_context):
 
     stat_name = request.POST.get('stat', '')
     try:
-        public_name, _field, new_value = spend_stat_point(stats, stat_name, STAT_FIELD_MAP)
+        public_name, _field, new_value = spend_stat_point(stats, stat_name, STAT_DB_NAMES)
     except ValueError as exc:
         return HttpResponse(str(exc), status=400)
 
