@@ -558,10 +558,9 @@ class QuestBuilderSceneTest(TestCase):
 
     def test_scene_save_updates_db(self):
         scene = Scene.objects.create(
-            key='test_quest__old', title='Old Title',
+            quest=self.quest, key='test_quest__old', title='Old Title',
             body='old body', scene_type='normal',
         )
-        self.quest.scenes.add(scene)
         response = self.client.post(self._save_url(scene.pk), {
             'title': 'New Title',
             'key': 'test_quest__new',
@@ -577,10 +576,9 @@ class QuestBuilderSceneTest(TestCase):
 
     def test_scene_save_returns_oob_html(self):
         scene = Scene.objects.create(
-            key='test_quest__s', title='Spot',
+            quest=self.quest, key='test_quest__s', title='Spot',
             body='', scene_type='normal',
         )
-        self.quest.scenes.add(scene)
         response = self.client.post(self._save_url(scene.pk), {
             'title': 'Spot', 'key': 'test_quest__s',
             'scene_type': 'normal', 'description': '',
@@ -594,10 +592,9 @@ class QuestBuilderSceneTest(TestCase):
 
     def test_scene_delete_removes_from_db(self):
         scene = Scene.objects.create(
-            key='test_quest__del', title='Gone',
+            quest=self.quest, key='test_quest__del', title='Gone',
             body='', scene_type='normal',
         )
-        self.quest.scenes.add(scene)
         # First POST shows confirmation; second POST with confirmed=1 executes the delete.
         self.client.post(self._delete_url(scene.pk))
         response = self.client.post(self._delete_url(scene.pk), {'confirmed': '1'})
@@ -1077,9 +1074,7 @@ class QuestBuilderValidationTest(TestCase):
         return Quest.objects.create(key=key, title='QB Quest', description='', **kwargs)
 
     def _make_scene(self, quest, key, scene_type='normal', **kwargs):
-        scene = Scene.objects.create(key=key, title=key, body='', scene_type=scene_type, **kwargs)
-        quest.scenes.add(scene)
-        return scene
+        return Scene.objects.create(quest=quest, key=key, title=key, body='', scene_type=scene_type, **kwargs)
 
     def _make_choice(self, scene, label='Go', **kwargs):
         return Choice.objects.create(scene=scene, label=label, order=1, **kwargs)
@@ -1595,9 +1590,8 @@ class ProgressionServiceTest(TestCase):
 
         quest = Quest.objects.create(key='prog__quest', title='Prog Quest', description='')
         ending_scene = Scene.objects.create(
-            key='prog__ending', title='Ending', body='', scene_type='ending', ending_type='victory',
+            quest=quest, key='prog__ending', title='Ending', body='', scene_type='ending', ending_type='victory',
         )
-        quest.scenes.add(ending_scene)
         CompletedQuest.objects.create(session=self.session, quest=quest, ending_type='victory')
         completed_map = {quest.id: 'victory'}
 
@@ -1621,9 +1615,8 @@ class ArrivalServiceTest(TestCase):
 
         quest = Quest.objects.create(key='arr__quest', title='Arrival Quest', description='')
         ending_scene = Scene.objects.create(
-            key='arr__ending', title='Ending', body='', scene_type='ending', ending_type='victory',
+            quest=quest, key='arr__ending', title='Ending', body='', scene_type='ending', ending_type='victory',
         )
-        quest.scenes.add(ending_scene)
 
         logs, turn_summary = process_arrival(self.session, self.stats, {}, {}, ending_scene)
 
@@ -1639,9 +1632,8 @@ class ArrivalServiceTest(TestCase):
 
         quest = Quest.objects.create(key='arr__quest2', title='Rival Quest', description='')
         ending_scene = Scene.objects.create(
-            key='arr__victory', title='Victory', body='', scene_type='ending', ending_type='victory',
+            quest=quest, key='arr__victory', title='Victory', body='', scene_type='ending', ending_type='victory',
         )
-        quest.scenes.add(ending_scene)
 
         prop = Property.objects.create(name='Contested Bar', property_type='business')
         pp = PlayerProperty.objects.create(session=self.session, property=prop, is_contested=True)

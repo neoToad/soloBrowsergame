@@ -53,13 +53,6 @@ class Quest(models.Model):
         help_text="Hub scenes whose notice board lists this quest.",
     )
 
-    scenes = models.ManyToManyField(
-        'Scene',
-        blank=True,
-        related_name='quests',
-        help_text="Scenes that belong to this quest.",
-    )
-
     is_repeatable = models.BooleanField(
         default=False,
         help_text="If True, this quest's entry choice re-appears after completion."
@@ -116,6 +109,13 @@ class Scene(models.Model):
                        related_name='consumed_by_scenes',
                        help_text="If set, this item is removed from inventory when the player arrives at this scene.",
                    )
+
+    quest = models.ForeignKey(
+        'Quest',
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='scenes',
+    )
 
     canvas_x = models.IntegerField(default=0)
     canvas_y = models.IntegerField(default=0)

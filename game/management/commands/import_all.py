@@ -239,6 +239,7 @@ class Command(BaseCommand):
             scene, created = Scene.objects.update_or_create(
                 key=sdata["key"],
                 defaults={
+                    "quest": quest,
                     "scene_type": sdata["scene_type"],
                     "title": sdata["title"],
                     "body": sdata["body"],
@@ -285,7 +286,7 @@ class Command(BaseCommand):
             self._import_scene_contacts(sdata, scene_obj)
             self._import_combat_encounter(sdata, scene_obj, scene_map)
 
-        quest.scenes.set(scene_map.values())
+        Scene.objects.filter(quest=quest).exclude(key__in=scene_map).update(quest=None)
         hub_keys = qdata.get("hub_scenes") or []
         quest.hub_scenes.set(Scene.objects.filter(key__in=hub_keys))
 

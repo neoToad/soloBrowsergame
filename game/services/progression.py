@@ -99,7 +99,7 @@ def maybe_complete_quest(session, stats, next_scene, completed_map):
     from ..models import CompletedQuest
     log_messages = []
 
-    quest = next_scene.quests.first() if next_scene.is_ending else None
+    quest = next_scene.quest if next_scene.is_ending else None
     if quest:
         completed_quest, created = CompletedQuest.objects.get_or_create(
             session=session,

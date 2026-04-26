@@ -58,6 +58,7 @@ class Command(BaseCommand):
                 scene, created = Scene.objects.update_or_create(
                     key=sdata["key"],
                     defaults={
+                        "quest": quest,
                         "scene_type": sdata["scene_type"],
                         "title": sdata["title"],
                         "body": sdata["body"],
@@ -117,11 +118,12 @@ class Command(BaseCommand):
                 self._import_combat_encounter(sdata, scene_obj, scene_map)
             self.stdout.write("Step 6 — SceneItems, SceneContacts, CombatEncounters processed")
 
-            # Step 7 — M2M finalisation
-            quest.scenes.set(scene_map.values())
+            # Step 7 — Hub scenes + orphan cleanup
+            # Detach any scenes previously owned by this quest that are no longer in the YAML.
+            Scene.objects.filter(quest=quest).exclude(key__in=scene_map).update(quest=None)
             hub_keys = qdata.get("hub_scenes") or []
             quest.hub_scenes.set(Scene.objects.filter(key__in=hub_keys))
-            self.stdout.write("Step 7 — M2M finalised")
+            self.stdout.write("Step 7 — Hub scenes set; orphaned scenes detached")
 
     def _get_or_warn(self, model, key):
         if not key:

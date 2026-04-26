@@ -150,7 +150,7 @@ class QuestAdmin(admin.ModelAdmin):
     search_fields = ('key', 'title')
     list_select_related = True
     autocomplete_fields = ('entrance_scene',)
-    filter_horizontal = ('requirements', 'hub_scenes', 'scenes')
+    filter_horizontal = ('requirements', 'hub_scenes')
     inlines = []
     save_on_top = True
 
@@ -387,7 +387,7 @@ class SceneAdmin(admin.ModelAdmin):
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
     list_display = ('scene', 'label', 'target_scene', 'order')
-    list_filter = ('scene__quests',)
+    list_filter = ('scene__quest',)
     search_fields = ('label', 'scene__key')
     list_select_related = True
     autocomplete_fields = ('target_scene', 'success_scene', 'failure_scene')

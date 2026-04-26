@@ -237,7 +237,7 @@ def get_canvas_data(quest_id):
 
 def _get_scene_hub_exits(scene_id, quest_id):
     quest_scene_ids = set(
-        Scene.objects.filter(quests__id=quest_id).values_list('id', flat=True)
+        Scene.objects.filter(quest_id=quest_id).values_list('id', flat=True)
     )
     choices = list(
         Choice.objects.filter(scene_id=scene_id).only('id', 'label', 'target_scene_id')
@@ -559,6 +559,7 @@ def create_scene(quest_id, data):
         canvas_y = GRID_START_Y + (index // 4) * GRID_Y_GAP
 
     scene = Scene.objects.create(
+        quest=quest,
         title=parsed['title'],
         key=key,
         scene_type=parsed['scene_type'],
@@ -576,7 +577,6 @@ def create_scene(quest_id, data):
         receive_property_id=parsed['receive_property_id'],
         lose_property_id=parsed['lose_property_id'],
     )
-    quest.scenes.add(scene)
     return scene
 
 def update_scene(scene_id, data):
@@ -587,7 +587,7 @@ def update_scene(scene_id, data):
     scene.title = parsed['title'] or scene.title
     incoming_key = parsed['key']
     if incoming_key:
-        scene_quest = scene.quests.first()
+        scene_quest = scene.quest
         if scene_quest and scene_quest.scenes.filter(key=incoming_key).exclude(pk=scene.pk).exists():
             raise ValueError(f'A scene with key "{incoming_key}" already exists in this quest.')
         scene.key = incoming_key

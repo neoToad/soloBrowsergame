@@ -32,11 +32,9 @@ def make_quest(key='test__quest', **kwargs):
 
 
 def make_scene(quest, key, scene_type='normal', **kwargs):
-    defaults = dict(key=key, title=key, body='', scene_type=scene_type)
+    defaults = dict(quest=quest, key=key, title=key, body='', scene_type=scene_type)
     defaults.update(kwargs)
-    scene = Scene.objects.create(**defaults)
-    quest.scenes.add(scene)
-    return scene
+    return Scene.objects.create(**defaults)
 
 
 def make_choice(scene, label='Go', **kwargs):

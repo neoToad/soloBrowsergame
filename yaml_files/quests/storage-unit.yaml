@@ -1,0 +1,446 @@
+quest:
+  key: the-storage-job
+  title: The Storage Job
+  description: >
+    A man at the corner swears he’s not being followed.
+    He needs something moved anyway.
+  arc: null
+  arc_order: null
+  is_repeatable: false
+  hub_scenes:
+    - hub__apartment
+  entrance_scene: the-storage-job__corner
+  requirements: []
+
+scenes:
+
+  - key: the-storage-job__corner
+    scene_type: normal
+    title: The Corner
+    order: 10
+    body: |
+      The corner works the way corners like this always work — nobody making eye contact, everybody aware of everybody anyway. There's a bus stop that hasn't seen a bus in months and a man standing just outside it like he's waiting for one that only he knows about.
+
+      He clocks you before you clock him. That matters to him. You can tell because he nods like he's just confirmed something.
+
+      "You look like someone who can carry something without asking what it is," he says.
+
+      He's holding a key on a plastic fob. Number stamped into it. Worn smooth like it's been handled too much for something that’s supposed to stay quiet.
+
+      "Storage unit. Couple blocks. I don't go there anymore."
+
+      He doesn't explain why. Doesn't seem like he plans to.
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+    choices:
+      - label: "What's in it?"
+        order: 1
+        target_scene: the-storage-job__what-is-it
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: He considers the question like it's optional.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Take the key
+        order: 2
+        target_scene: the-storage-job__walk-over
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: He hands it over fast, like keeping it is the risk.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  - key: the-storage-job__what-is-it
+    scene_type: normal
+    title: What Is It
+    order: 20
+    body: |
+      He exhales through his nose like you’ve asked him to do math.
+
+      "Things," he says. Then, after a second, like that wasn’t satisfying even to him:
+      "Not my things anymore. That’s the whole point."
+
+      He looks past you, not turning his head. Just eyes.
+
+      "You ever get the feeling something’s decided it’s your problem?"
+
+      He presses the key into your hand before you answer.
+
+      "Unit’s paid for the month. After that, it’s yours or it’s nobody’s."
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+    choices:
+      - label: Take the job
+        order: 1
+        target_scene: the-storage-job__walk-over
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: He nods once, like that was the only acceptable outcome.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  - key: the-storage-job__walk-over
+    scene_type: normal
+    title: Walk Over
+    order: 30
+    body: |
+      The storage place is exactly where places like this always are — between a laundromat that still uses coins and a tire shop that looks like it might be closed but isn't.
+
+      The office is empty. Light on, chair pushed back, radio playing something soft enough that it feels like an apology.
+
+      Unit number matches the fob.
+
+      The door's locked.
+
+      From somewhere behind you, a voice:
+
+      "That one’s not available."
+
+      You turn. Guy in a security jacket that fits too well to be issued. He's holding a clipboard he hasn't written on.
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+    choices:
+      - label: Talk your way past him
+        order: 1
+        target_scene: the-storage-job__talking
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You step closer so he has to decide whether to back up.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Open it anyway
+        order: 2
+        target_scene: the-storage-job__forced-open
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You turn back to the lock like he’s not part of the problem.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  - key: the-storage-job__talking
+    scene_type: normal
+    title: Talking
+    order: 40
+    body: |
+      You hold the key up like that settles it. Like keys always mean permission.
+
+      "It’s handled," you say.
+
+      He watches you the way people watch a trick they’ve already seen once.
+
+      The radio in the office hits a chorus and drops back out again.
+
+      He hasn’t moved.
+    roll:
+      requires_roll: true
+      roll_stat: charisma
+      roll_difficulty: 10
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+    choices:
+      - label: "You don’t want this to be a conversation."
+        order: 1
+        target_scene: null
+        success_scene: the-storage-job__inside
+        failure_scene: the-storage-job__fight
+        arrival_flavor: He steps aside like he’s doing you a favor he doesn’t believe in.
+        failure_arrival_flavor: He smiles. Not friendly.
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  - key: the-storage-job__forced-open
+    scene_type: combat
+    title: Forced Open
+    order: 50
+    body: |
+      The lock gives you a second to reconsider. You don’t use it.
+
+      Behind you, the clipboard hits the ground.
+
+      He moves fast for someone pretending this was routine.
+
+      The office radio keeps playing.
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+    choices: []
+    combat_encounter:
+      enemy: street_thug
+      victory_scene: the-storage-job__inside
+      defeat_scene: the-storage-job__beaten
+      victory_arrival_flavor: He stays down. That solves his part of it.
+      defeat_arrival_flavor: The concrete comes up quick. You lose the key somewhere you won’t find it.
+
+  - key: the-storage-job__fight
+    scene_type: combat
+    title: Fight
+    order: 60
+    body: |
+      He was waiting for you to try that.
+
+      The clipboard drops clean this time. He squares up like this is the part he understands.
+
+      You’re closer than you meant to be.
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+    choices: []
+    combat_encounter:
+      enemy: street_thug
+      victory_scene: the-storage-job__inside
+      defeat_scene: the-storage-job__beaten
+      victory_arrival_flavor: He folds faster than he expected to.
+      defeat_arrival_flavor: You hit the ground thinking about the key. Then not thinking.
+
+  - key: the-storage-job__inside
+    scene_type: normal
+    title: Inside
+    order: 70
+    body: |
+      The unit smells like cardboard and something chemical underneath it that doesn't belong in cardboard.
+
+      Boxes, mostly. Labeled in a handwriting that tried to be neat and gave up halfway through.
+
+      One of them is already open.
+
+      Inside: a stack of folded clothes, a pair of shoes still laced, and a plastic bag with a prescription bottle rattling inside.
+
+      You shake it once. Painkillers. Not yours. They are now.
+
+      There’s a small lockbox bolted to the back wall. Cheap job. Whoever set it up assumed privacy, not resistance.
+
+      You try the key.
+
+      It works.
+
+      Inside the lockbox is nothing dramatic. No cash, no weapon, no ledger.
+
+      Just paperwork. Lease agreement. Your name isn’t on it.
+
+      It could be.
+
+      The month’s already paid.
+
+      Your phone buzzes while you’re still looking at the paperwork.
+
+      Unknown number.
+
+      You answer.
+
+      "Hey," she says. "Weird question. Do you have a place I can keep something for like... not forever, but longer than a weekend?"
+
+      You look around the unit.
+
+      Boxes. Space. A lock that works.
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: storage_unit
+      lose_property: null
+    scene_items:
+      - item: painkillers
+        quantity: 1
+        award_once: true
+    scene_contacts:
+      - contact: sister
+        action: gain
+        award_once: true
+    choices:
+      - label: Tell her yes
+        order: 1
+        target_scene: the-storage-job__done
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: She doesn’t ask anything else. She never does.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+      - label: Tell her no
+        order: 2
+        target_scene: the-storage-job__done
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: She says okay, which is how you know it’s not.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  - key: the-storage-job__done
+    scene_type: ending
+    title: Done
+    order: 80
+    body: |
+      You close the unit and test the lock twice. It holds both times. That’s more reassurance than you expected to get today.
+
+      The key sits heavier in your hand now that it means something.
+
+      Inside, whatever that guy was running from is still in boxes, labeled like it could be organized into making sense.
+
+      It won’t be.
+
+      Your phone is quiet again.
+
+      For now.
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: victory
+    arrival:
+      cash_change: 0
+      rep_change: 5
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: The key goes on the corkboard. It earns a spot.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  - key: the-storage-job__beaten
+    scene_type: ending
+    title: Beaten
+    order: 90
+    body: |
+      You come to in the lot with your head ringing and your hands empty.
+
+      No key. No guy. No explanation.
+
+      The office radio is still playing. Same song or a different one pretending to be.
+
+      You sit up slow. Nobody’s watching.
+
+      That doesn’t mean nobody saw.
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: defeat
+    arrival:
+      cash_change: 0
+      rep_change: -5
+      heat_change: 5
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+    choices:
+      - label: Back to the apartment
+        order: 1
+        target_scene: hub__apartment
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: You leave before anyone decides you’re still part of the problem.
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
