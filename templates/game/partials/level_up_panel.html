@@ -10,7 +10,7 @@
             hx-post="{% url 'level_up' %}"
             hx-target="#scene-panel"
             hx-swap="outerHTML"
-            hx-vals='{"stat": "muscle"}'
+            hx-vals='{"stat": "strength"}'
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             hx-indicator="#loading-indicator">
             + MUSCLE ({{ stats.strength }})
@@ -19,7 +19,7 @@
             hx-post="{% url 'level_up' %}"
             hx-target="#scene-panel"
             hx-swap="outerHTML"
-            hx-vals='{"stat": "reflexes"}'
+            hx-vals='{"stat": "agility"}'
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             hx-indicator="#loading-indicator">
             + REFLEXES ({{ stats.agility }})
@@ -28,7 +28,7 @@
             hx-post="{% url 'level_up' %}"
             hx-target="#scene-panel"
             hx-swap="outerHTML"
-            hx-vals='{"stat": "cunning"}'
+            hx-vals='{"stat": "intellect"}'
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             hx-indicator="#loading-indicator">
             + CUNNING ({{ stats.intellect }})
@@ -37,7 +37,7 @@
             hx-post="{% url 'level_up' %}"
             hx-target="#scene-panel"
             hx-swap="outerHTML"
-            hx-vals='{"stat": "nerve"}'
+            hx-vals='{"stat": "charisma"}'
             hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             hx-indicator="#loading-indicator">
             + NERVE ({{ stats.charisma }})

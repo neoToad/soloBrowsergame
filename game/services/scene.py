@@ -26,7 +26,7 @@ def resolve_roll(scene, choice, effective_stats) -> tuple[object, str, RollResul
 
     mod_str = f"+ {modifier}" if modifier >= 0 else f"- {abs(modifier)}"
     res_str = "Success!" if success else "Failure."
-    log_text = f"You rolled a {roll} ({mod_str} modifier) = {total} vs DC {dc} — {res_str}"
+    log_text = f"You rolled a {roll} ({mod_str} modifier) = {total} vs DC {dc} - {res_str}"
 
     roll_result = RollResult(
         roll        = roll,
@@ -73,7 +73,7 @@ def consume_arrival_item(session, inventory, next_scene) -> list[str]:
 
 def get_notice_board(scene, inventory, completed_map, effective_stats, flags=None):
     """
-    Returns a dict of three lists — available, locked, completed — for quests
+    Returns a dict of three lists: available, locked, completed, for quests
     assigned to the given hub scene.
     """
     from ..models import Quest

@@ -17,7 +17,7 @@ from .services.types       import GameplayError
 from .services             import jobs as jobs_service
 from .presentation import responses as response_utils
 from .utils import get_effective_stats
-from .constants import SESSION_KEY, STAT_DB_NAMES
+from .constants import SESSION_KEY, STAT_FIELDS
 
 
 def require_game_session(view_func):
@@ -335,7 +335,7 @@ def level_up(request, *, session_context):
 
     stat_name = request.POST.get('stat', '')
     try:
-        public_name, _field, new_value = spend_stat_point(stats, stat_name, STAT_DB_NAMES)
+        public_name, _field, new_value = spend_stat_point(stats, stat_name, STAT_FIELDS)
     except ValueError as exc:
         return response_utils.error_response(request, message=str(exc), status=400)
 

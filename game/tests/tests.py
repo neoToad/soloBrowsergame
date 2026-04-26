@@ -385,7 +385,7 @@ class LevelUpTest(TestCase):
         
         response = self.client.post(
             reverse('level_up'),
-            {'stat': 'muscle'},
+            {'stat': 'strength'},
             HTTP_HX_REQUEST='true'
         )
         
@@ -401,7 +401,7 @@ class LevelUpTest(TestCase):
         
         response = self.client.post(
             reverse('level_up'),
-            {'stat': 'muscle'},
+            {'stat': 'strength'},
             HTTP_HX_REQUEST='true'
         )
         self.assertEqual(response.status_code, 400)
@@ -1286,7 +1286,7 @@ class MaxHpTest(TestCase):
     def test_spend_strength_updates_max_hp_and_caps_hp(self):
         from ..utils import compute_max_hp
         from ..services.progression import spend_stat_point
-        from ..constants import STAT_FIELD_MAP
+        from ..constants import STAT_FIELDS
 
         client = Client()
         session = make_game_session(client)
@@ -1297,7 +1297,7 @@ class MaxHpTest(TestCase):
         stats.stat_points = 1
         stats.save()
 
-        spend_stat_point(stats, 'muscle', STAT_FIELD_MAP)
+        spend_stat_point(stats, 'strength', STAT_FIELDS)
         stats.refresh_from_db()
 
         self.assertEqual(stats.strength, 11)

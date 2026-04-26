@@ -31,7 +31,7 @@ Some endpoints return full HTML, some empty + HX triggers, some redirects, some 
 Files: [views.py:145](C:\Users\colin\PycharmProjects\soloBrowserGame\game\views.py:145), [quest_builder_views.py:468](C:\Users\colin\PycharmProjects\soloBrowserGame\game\quest_builder_views.py:468), [quest_builder_views.py:493](C:\Users\colin\PycharmProjects\soloBrowserGame\game\quest_builder_views.py:493)
 
 8. **Naming/clarity issues and encoding artifacts (medium risk).**  
-`intellect` vs “cunning” terminology drifts; some strings/comments contain mojibake (`â€”`, `â†’`) which hurts readability and can leak to UI/admin.  
+`intellect` vs “cunning” terminology drifts; some strings/comments contain mojibake (for example broken dash/arrow sequences) which hurts readability and can leak to UI/admin.  
 Files: [jobs.py:111](C:\Users\colin\PycharmProjects\soloBrowserGame\game\services\jobs.py:111), [scene.py:29](C:\Users\colin\PycharmProjects\soloBrowserGame\game\services\scene.py:29), [world.py:221](C:\Users\colin\PycharmProjects\soloBrowserGame\game\models\world.py:221)
 
 9. **Test organization is inconsistent and coverage is weak in critical services (medium risk).**  
@@ -94,7 +94,7 @@ Move combat pending attack from raw dict to explicit fields or a dedicated trans
 7. **Standardize endpoint contracts.**  Done
 Define consistent HTMX response strategy (partial HTML + trigger schema + structured errors).
 
-8. **Clean naming and encoding.**  
+8. **Clean naming and encoding.** DONE  
 Normalize “intellect/cunning” naming policy and remove mojibake artifacts across user/admin text.
 
 9. **Test suite cleanup.**  

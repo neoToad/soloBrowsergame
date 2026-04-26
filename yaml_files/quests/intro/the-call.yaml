@@ -2,8 +2,7 @@ quest:
   key: the-call
   title: The Call
   description: >
-    Your sister reached out. First time in three years.
-    She needs something taken care of. Family's family.
+    Your sister reached out. First time in three years. She needs something taken care of. Family's family.
   arc: intro
   arc_order: 1
   is_repeatable: false
@@ -14,23 +13,20 @@ quest:
 
 scenes:
 
+  # -------------------------
+  # ENTRANCE SCENE
+  # -------------------------
+
   - key: the-call__four-days-out
     scene_type: normal
     title: Four Days Out
     order: 10
     body: |
-      Three years inside and the city didn't wait for you. The apartment
-      is exactly how you left it — which means it's a mess. Water stain
-      on the ceiling shaped like a boot. Radiator that clanks like it's
-      got opinions. The envelope of cash you came home with is already
-      half gone and your parole officer wants you in legitimate work by
-      the end of the month.
+      Four days out and the city has already made its position clear: it didn't miss you. The apartment is exactly how you left it, which means the water stain on the ceiling is still shaped like a boot, the radiator still clanks like it's trying to tell you something, and the stack of mail by the door is three years deep and entirely bills. The envelope of cash you came home with is already half gone. Your parole officer wants you in legitimate work by the end of the month. Your old crew hasn't called.
 
-      Your old crew hasn't called.
+      All things considered, it could be worse. You're working on figuring out how.
 
-      Then your phone buzzes. Your sister's name on the screen. You
-      haven't spoken since the trial. Three years of silence and she's
-      calling at nine on a Tuesday night. You stare at it for two rings.
+      Then your phone buzzes on the counter. Your sister's name on the screen — Vickie — and three years of silence sitting behind it like a held breath. She's calling at nine on a Tuesday night, which means either something has gone wrong or something is about to, and with Vickie the line between those two has always been thin. You stare at it for two rings.
 
     roll:
       requires_roll: false
@@ -65,31 +61,32 @@ scenes:
         target_scene: the-call__her-voice
         success_scene: null
         failure_scene: null
-        arrival_flavor: It goes to voicemail. Twenty seconds later, a text. I need help. Please.
+        arrival_flavor: It goes to voicemail. Twenty seconds later, a text. I need help. Please. Then a second text, four minutes after the first — I know, okay. I know.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
         requirements: []
+
+  # -------------------------
+  # HER VOICE
+  # -------------------------
 
   - key: the-call__her-voice
     scene_type: normal
     title: Her Voice
     order: 20
     body: |
-      She doesn't say hello. Just launches into it like she's been
-      rehearsing. There's a guy — Terrell — been coming around her
-      building. Says she owes him for something her neighbor ran up.
-      Wrong place, wrong association. Doesn't matter how it started.
-      What matters is he's been at her door twice this week and the
-      second time he put his hand on the frame and leaned in.
+      She doesn't say hello. She launches into it like she's been rehearsing, which she probably has — Vickie always rehearses the part where she asks for something and never quite the part that comes before it.
+
+      There's a guy. His name is Terrell. He's been coming around her building saying she owes him for something her neighbour ran up, wrong place, wrong association, it's complicated, she'll explain later. What matters is he came by twice this week and the second time he put his hand on the door frame and leaned in, and Vickie — who is not, she wants you to understand, easily rattled — has been sleeping with the chain on.
 
       You ask if she's okay. Long pause.
 
-      She says she's fine. She just needs it to stop.
+      "I'm fine," she says. "I just need it to stop."
 
       Another pause. Longer.
 
-      She didn't want to call you. She wants you to know that.
+      "I didn't want to call you," she says. "I want you to know that." Which is a very Vickie thing to say to someone she is currently calling.
 
     roll:
       requires_roll: false
@@ -113,7 +110,7 @@ scenes:
         target_scene: the-call__terrell
         success_scene: null
         failure_scene: null
-        arrival_flavor: She hangs up before you can say anything else.
+        arrival_flavor: She hangs up before you can say anything else. Classic.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
@@ -124,25 +121,26 @@ scenes:
         target_scene: the-call__why-you
         success_scene: null
         failure_scene: null
-        arrival_flavor: Silence. Then she says you owe her one. You owe her about a thousand.
+        arrival_flavor: A pause. Then — "Because you owe me about a thousand of them, that's why."
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
         requirements: []
+
+  # -------------------------
+  # WHY YOU
+  # -------------------------
 
   - key: the-call__why-you
     scene_type: normal
     title: Why You
     order: 30
     body: |
-      She lets the silence sit for a moment, like she's deciding how
-      honest to be.
+      She lets the silence run for a moment, like she's deciding how honest to be, which is usually a bad sign with Vickie because her honest and everyone else's honest are not always the same document.
 
-      Because there's nobody else. Because you're already the worst
-      thing that could happen to someone, so what's one more time.
+      "Because there's nobody else," she says. "Because you're already the worst thing that could happen to someone, so what's one more time."
 
-      It lands like she meant it to. You don't argue. There's nothing
-      to argue with.
+      It lands exactly like she means it to. You don't argue. There's nothing useful to argue with.
 
     roll:
       requires_roll: false
@@ -172,18 +170,20 @@ scenes:
         clear_flag_name: null
         requirements: []
 
+  # -------------------------
+  # TERRELL
+  # -------------------------
+
   - key: the-call__terrell
     scene_type: normal
     title: Terrell
     order: 40
     body: |
-      Your sister's building is a six-story walkup off Decker Avenue.
-      Terrell isn't hard to find — he's exactly where she said he'd be,
-      leaning against the stoop railing like he owns the block. Young.
-      Maybe twenty-five. Gold chain, clean sneakers, eyes that clock you
-      the second you round the corner.
+      Vickie's building is a six-storey walkup off Decker Avenue, the kind of street that's been the same for forty years and is starting to notice. Terrell is exactly where she said he'd be — leaning against the stoop railing with the specific posture of someone who has decided that particular railing belongs to him now. Young. Maybe twenty-five. Gold chain, clean sneakers, the kind of eyes that clock you the second you turn the corner and don't look away after.
 
-      He watches you approach without moving. You lost?
+      He watches you come without moving. When you're close enough he tilts his head.
+
+      "You lost?" he says.
 
     roll:
       requires_roll: false
@@ -218,21 +218,24 @@ scenes:
         target_scene: the-call__the-fight
         success_scene: null
         failure_scene: null
-        arrival_flavor: You close the distance before he finishes the sentence.
+        arrival_flavor: You close the distance before he finishes the question.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
         requirements: []
+
+  # -------------------------
+  # SQUEEZE — ROLL SCENE
+  # -------------------------
 
   - key: the-call__squeeze
     scene_type: normal
     title: Squeeze
     order: 50
     body: |
-      You tell him who you're there for. Then you tell him — quietly,
-      without any particular emotion — what happens if he comes back.
-      You don't raise your voice. You don't need to. The trick is
-      making sure he understands that you mean it more than he does.
+      You tell him who you're there for. Then you tell him — quietly, without any particular emotion in it — what happens if he comes back. Not a speech. Just the information, laid out plainly, the way you'd explain a bus route. The trick is meaning it more than he does, and making sure he can tell the difference.
+
+      Terrell is listening. Behind the performance of not being impressed, something is doing the math.
 
     roll:
       requires_roll: true
@@ -251,24 +254,29 @@ scenes:
     scene_contacts: []
 
     choices:
-      - label: Let him think about it
+      - label: Let it land
         order: 1
         target_scene: null
         success_scene: the-call__backed-off
         failure_scene: the-call__the-fight
-        arrival_flavor: Something shifts behind his eyes. He nods, once, and steps back.
-        failure_arrival_flavor: He laughs. Calls something over his shoulder. Two guys emerge from the alley.
+        arrival_flavor: Something shifts behind his eyes. He nods, once, at the pavement. Steps back.
+        failure_arrival_flavor: He laughs — short, sharp, meant to be seen — and calls something over his shoulder. Two guys come off the wall across the street.
         set_flag_name: null
         clear_flag_name: null
         requirements: []
+
+  # -------------------------
+  # COMBAT SCENE
+  # -------------------------
 
   - key: the-call__the-fight
     scene_type: combat
     title: The Fight
     order: 60
     body: |
-      It goes loud and fast. Terrell's got reach but no discipline.
-      The stoop light flickers. Somewhere above you a window slides shut.
+      It goes loud and fast the way these things do, the way you remembered from before — adrenaline first, thinking second, the stoop light flickering overhead like it's nervous too. Terrell has reach and he's done this before but he commits too early and that's the whole fight right there.
+
+      Somewhere above you a window slides shut. The city, taking no position.
 
     roll:
       requires_roll: false
@@ -291,24 +299,23 @@ scenes:
       enemy: terrell
       victory_scene: the-call__roughed-up-win
       defeat_scene: the-call__beaten
-      victory_arrival_flavor: Terrell's on the ground. He's breathing. That's generous of you.
-      defeat_arrival_flavor: The pavement comes up fast. Last thing you hear is footsteps leaving.
+      victory_arrival_flavor: Terrell's on the ground. He's breathing. That's the generous version of tonight.
+      defeat_arrival_flavor: The pavement comes up fast. Last thing you hear is footsteps, unhurried, leaving.
+
+  # -------------------------
+  # BACKED OFF — TALK SUCCESS
+  # -------------------------
 
   - key: the-call__backed-off
     scene_type: normal
     title: Backed Off
     order: 70
     body: |
-      Terrell gets the message.
-
-      He pockets his phone slowly, looks at you one more time, and walks.
-      No scene, no last word. That's how you know he took it seriously —
-      the ones who aren't scared always need the exit line.
+      Terrell thinks about it for a moment — genuinely thinks, which is more than you expected — and then he pockets his phone and goes. No exit line. No last look. The ones who are actually scared never need the exit line.
 
       You text Vickie two words. It's done.
 
-      Three minutes later she replies. A single thumbs up. You stare at
-      it longer than you should.
+      She replies in three minutes with a thumbs up. A single thumbs up, after three years. You stare at it longer than makes sense and then put your phone away.
 
     roll:
       requires_roll: false
@@ -341,20 +348,20 @@ scenes:
         clear_flag_name: null
         requirements: []
 
+  # -------------------------
+  # ROUGHED UP WIN — FIGHT SUCCESS
+  # -------------------------
+
   - key: the-call__roughed-up-win
     scene_type: normal
     title: Roughed Up Win
     order: 75
     body: |
-      Terrell's on the ground. His guys didn't stick around past the
-      first thirty seconds — loyalty has a pain threshold. You go through
-      his pockets before he changes his mind about staying down. A hundred
-      and fifty in crumpled bills. Pocket it.
+      Terrell's on the ground. His friends, who had opinions about this earlier, have revised them and left. You go through his pockets while he's still deciding whether to do something about that — a hundred and fifty in crumpled bills and a pair of brass knuckles with somebody else's initials scratched into the base, which tells a small story you don't have time for right now.
 
-      Your ribs are going to say something about this tomorrow. That's
-      tomorrow's problem.
+      Your ribs are going to have thoughts about this tomorrow. You pocket both and go.
 
-      You text Vickie. It's done. No reply. The message sits on read.
+      You text Vickie. It's done. The message sits on read.
 
     roll:
       requires_roll: false
@@ -384,26 +391,28 @@ scenes:
         target_scene: the-call__done-rough
         success_scene: null
         failure_scene: null
-        arrival_flavor: You take the long way. Let the adrenaline settle before you walk through the door.
+        arrival_flavor: You take the long way. Let the adrenaline settle before you're somewhere with good lighting.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
         requirements: []
+
+  # -------------------------
+  # VICTORY ENDING — CLEAN
+  # -------------------------
 
   - key: the-call__done-clean
     scene_type: ending
     title: Done Clean
     order: 80
     body: |
-      Back in the apartment. Radiator clanking. The city outside doing
-      what it always does.
+      Back in the apartment. Radiator having its opinions. The boot-shaped water stain unchanged, indifferent, exactly where you left it.
 
-      You didn't have to break anything. That's a version of tonight you
-      weren't sure you still had in you. The corkboard on the back of the
-      door has one job pinned to it. Could be worse starts.
+      You didn't have to break anything tonight. That used to be the baseline and somewhere along the way it became an achievement, which is either personal growth or a bad sign and you're not ready to decide which.
 
-      Vickie sends a second message an hour later. Just: thank you. No
-      punctuation. She probably agonised over it for twenty minutes.
+      Vickie sends another message an hour later. Just: thank you. No punctuation, which means she agonised over it. You know her. She probably typed it six different ways.
+
+      The corkboard on the back of the door has one job pinned to it. The city is paying attention. That's something.
 
     roll:
       requires_roll: false
@@ -427,25 +436,26 @@ scenes:
         target_scene: hub__apartment
         success_scene: null
         failure_scene: null
-        arrival_flavor: You hang your jacket up. First time in three years that felt normal.
+        arrival_flavor: You hang your jacket up. First time in three years that felt like something normal.
         failure_arrival_flavor: null
         set_flag_name: the_call_talked_out
         clear_flag_name: null
         requirements: []
+
+  # -------------------------
+  # VICTORY ENDING — ROUGH
+  # -------------------------
 
   - key: the-call__done-rough
     scene_type: ending
     title: Done Rough
     order: 85
     body: |
-      Back in the apartment. Ribs complaining. The cash from Terrell's
-      pocket on the counter — a hundred and fifty. Not bad for a Tuesday,
-      considering.
+      Back in the apartment. Ribs announcing themselves every time you breathe wrong. The hundred and fifty from Terrell's pocket on the counter next to the brass knuckles with the stranger's initials, which you should probably get rid of and probably won't.
 
       Vickie never texted back. That's fine. You didn't do it for the reply.
 
-      The corkboard on the back of the door has one job pinned to it.
-      Could be worse starts.
+      The corkboard on the back of the door has one job pinned to it. Not a bad Tuesday, all things considered. The bar for that is low, but it's a bar.
 
     roll:
       requires_roll: false
@@ -475,17 +485,18 @@ scenes:
         clear_flag_name: null
         requirements: []
 
+  # -------------------------
+  # DEFEAT ENDING
+  # -------------------------
+
   - key: the-call__beaten
     scene_type: ending
     title: Beaten
     order: 90
     body: |
-      You come to on the pavement outside your sister's building. Ribs
-      aching, wallet lighter. Someone took the liberty.
+      You come to on the pavement outside Vickie's building, which is not where you intended to end up tonight. Ribs aching, wallet lighter — someone took the liberty while you were unavailable to object. The stoop light is still flickering. It was flickering before. It'll be flickering tomorrow.
 
-      You don't go up. You can't face that conversation right now. You
-      just walk. The city swallows you up the way it always does —
-      indifferent, unhurried, completely unimpressed.
+      You don't go up. You can't do that conversation right now, can't stand in Vickie's doorway looking like this and tell her it's handled. You just walk. The Flats swallows you up the way it always has — wide streets, low buildings, sky overhead doing nothing in particular — and after a while you stop thinking about it.
 
       Your phone has no new messages.
 

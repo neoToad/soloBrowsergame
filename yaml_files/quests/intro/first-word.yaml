@@ -21,6 +21,7 @@ quest:
           stat_name: null
           stat_value: null
           required_item: null
+          required_quest: null
           required_ending_type: null
           required_contact: null
 
@@ -31,18 +32,18 @@ scenes:
     title: The Message
     order: 10
     body: |
-      The message comes through a number you don't recognise. Three
-      sentences. Someone heard you handled a situation on Decker Avenue.
-      If you're looking for work, there's a collection job — six hundred
-      dollars owed to a mutual party. Meet at Dave's Bar, Flats, tomorrow
-      at noon. Come alone, obviously.
+      The message comes through a number you don't recognise. Three sentences,
+      no name. Someone heard about Decker Avenue — not what happened, just that
+      it ended.
 
-      You don't know who Dave is. You know the bar. It's the kind of
-      place where the beer is cold and nobody remembers what you look
-      like when you leave.
+      If you're looking for work, there's a collection job. Six hundred dollars.
+      Meet at Dave's Bar, Flats, tomorrow at noon. Come alone.
 
-      Six hundred dollars. For a city that didn't wait for you, it's
-      paying attention now.
+      You don't know who sent it. You do know Dave's — long bar, bad lighting,
+      the kind of place where the bartender remembers your drink and not your
+      face.
+
+      Six hundred is enough that someone thought about you before sending it.
 
     roll:
       requires_roll: false
@@ -132,24 +133,23 @@ scenes:
     title: Dave's Bar
     order: 20
     body: |
-      Dave's Bar is half empty at noon, which is still more full than
-      you'd like. The contact is already there — booth in the back,
-      water on the table, hasn't touched it. He introduces himself as
-      Morris. Doesn't offer a hand.
+      Dave's Bar is half full at noon, which is more than you'd like.
+      The man in the back booth has water in front of him. Untouched.
 
-      He lays it out clean. Guy named Pruitt borrowed from Dutch's
-      operation eight months ago. Six hundred, short-term, standard
-      terms. Paid nothing. Dutch's regular guys are busy and Pruitt is
-      small enough that sending them is wasteful. Morris is offering
-      you a finder's rate — a hundred off the top if you bring back
-      the full amount. Fifty if you come back with a partial and a
-      credible story.
+      "Morris," he says when you sit. Not an introduction. Just a label.
 
-      He slides a piece of paper across the table. Address in the Flats.
-      Apartment 4C.
+      He gets to it without checking if you're comfortable.
 
-      He didn't want to call you. Dutch doesn't know your name yet.
-      This is how you get one.
+      Pruitt. Eight months late on a six hundred dollar loan. Standard terms,
+      standard follow-up, except Dutch's regulars are busy and this doesn't
+      justify them. You are, in his words, "appropriate for the scale."
+
+      A hundred if you bring back the full amount. Fifty if you bring back
+      something and a story that doesn't waste his time.
+
+      He slides the address across the table. Flats. Fourth floor.
+
+      "Dutch doesn't know your name," he adds. "This is how he would."
 
     roll:
       requires_roll: false
@@ -184,16 +184,19 @@ scenes:
     title: Pruitt's Address
     order: 30
     body: |
-      The address is twelve minutes on foot. A residential block, older,
-      the kind where the buzzers haven't worked in years and everyone
-      just props the front door. Apartment 4C is on the top floor. The
-      building smells like cooking and old carpet.
+      The address is twelve minutes on foot, edging toward Westside blocks
+      where the Kings care just enough to notice you if you give them a reason.
 
-      You stand outside the door for a moment. Through it you can hear
-      a television. Some afternoon talk show. Pruitt's home.
+      The building leans a little. Front door propped open with something
+      that used to be a shoe. Buzzers dead. Nobody fixes buzzers here.
 
-      Six hundred dollars. You don't know why he stopped paying. Could
-      be a lot of things.
+      Fourth floor. 4C.
+
+      Through the door: television noise. Daytime voices filling space.
+
+      Pruitt's home.
+
+      Six hundred dollars says he hasn't been answering the right calls.
 
     roll:
       requires_roll: false
@@ -228,7 +231,7 @@ scenes:
         target_scene: first-word__pruitt-door
         success_scene: null
         failure_scene: null
-        arrival_flavor: You write — Dutch knows where you live. You have two days. Fold it small. Slide it under. Then you go. But the door opens before you reach the stairs.
+        arrival_flavor: You write — Dutch knows where you live. You have two days. Fold it small. Slide it under. The door opens before you reach the stairs.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
@@ -239,20 +242,16 @@ scenes:
     title: Pruitt's Door
     order: 40
     body: |
-      Pruitt opens the door on the chain first. Forty-something,
-      underdressed for the time of day, the specific look of someone
-      who has been waiting for this knock for eight months. He knows
-      exactly why you're here before you say anything.
+      He opens the door on the chain first. Forty-something, underdressed
+      for the time of day — the look of someone who's been expecting this
+      and hoping it would be someone else.
 
-      He opens it the rest of the way. Doesn't invite you in. Just
-      steps back far enough that you're not in the hall.
+      He opens it the rest of the way. Doesn't invite you in.
 
-      The apartment is small and neat in the way that people who have
-      lost control of most things keep the things they can control very
-      tidy. A kid's drawing on the fridge. Soccer ball in the corner.
+      The apartment is small and controlled. A kid's drawing on the fridge.
+      Soccer ball in the corner.
 
-      He says he doesn't have it. He says it like a man who has
-      rehearsed it and doesn't believe it will work.
+      "I don't have it," he says. Rehearsed. Unconvincing.
 
     roll:
       requires_roll: false
@@ -287,7 +286,7 @@ scenes:
         target_scene: first-word__setup-deal
         success_scene: null
         failure_scene: null
-        arrival_flavor: He looks like he wasn't expecting that. Neither were you, if you're honest.
+        arrival_flavor: He wasn't expecting that.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
@@ -298,14 +297,11 @@ scenes:
     title: Lean On Pruitt
     order: 50
     body: |
-      You don't touch him. You don't need to. You just take up space —
-      move around the apartment slowly, look at things, let the silence
-      do the work. The soccer ball. The drawing on the fridge. You pick
-      up a mug from the counter and turn it over in your hands.
+      You don't touch him. You just move through the apartment without asking.
 
-      Pruitt is sweating. He keeps looking at the door.
+      The soccer ball. The drawing. The quiet.
 
-      You ask him, very calmly, where the money is.
+      You ask him, calmly, where the money is.
 
     roll:
       requires_roll: true
@@ -329,8 +325,8 @@ scenes:
         target_scene: null
         success_scene: first-word__full-collection
         failure_scene: first-word__standoff
-        arrival_flavor: Something breaks behind his eyes. He goes to the bedroom. Comes back with an envelope.
-        failure_arrival_flavor: He straightens up. His voice cracks but he holds the line. He doesn't have it and you can do what you want.
+        arrival_flavor: Something breaks. He goes to the bedroom.
+        failure_arrival_flavor: He holds the line.
         set_flag_name: null
         clear_flag_name: null
         requirements: []
@@ -340,18 +336,12 @@ scenes:
     title: Setup Deal
     order: 55
     body: |
-      He lost his job seven months ago. The loan was meant to bridge a
-      gap that kept getting wider. He's got three hundred put back —
-      been scraping it together for weeks, planning to call and make an
-      offer, kept losing his nerve. The rest he doesn't have. He doesn't
-      say when he'll have it. You don't think he knows.
+      He lost his job seven months ago. The loan was meant to bridge a gap
+      that kept getting wider.
 
-      He's not running. He's not stupid enough to run with a kid in
-      school three blocks away. He's just a man who borrowed money and
-      had the wrong kind of year.
+      Three hundred in a ziplock bag. Been sitting there. Waiting.
 
-      You could work with this. Morris said fifty for a partial and a
-      credible story. This is a credible story.
+      He was going to call. He didn't.
 
     roll:
       requires_roll: false
@@ -370,12 +360,12 @@ scenes:
     scene_contacts: []
 
     choices:
-      - label: Offer him a deal — three hundred now, three hundred by end of month
+      - label: Offer him a deal
         order: 1
         target_scene: first-word__deal-roll
         success_scene: null
         failure_scene: null
-        arrival_flavor: You lay it out like it's a negotiation, not a favour. It's better for him if he believes that.
+        arrival_flavor: You lay it out like it's business.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
@@ -386,13 +376,9 @@ scenes:
     title: Deal Roll
     order: 60
     body: |
-      You tell him the terms. Three now. Three by the end of the month.
-      You'll vouch for the arrangement. He needs to understand that your
-      vouching is the only thing standing between him and Dutch's actual
-      guys — who are less interested in payment plans.
+      Three now. Three later.
 
-      He's listening. Doing the math. Trying to figure out whether
-      you're real or whether this is a different kind of pressure.
+      You tell him what stands behind you if he doesn't agree.
 
     roll:
       requires_roll: true
@@ -416,8 +402,8 @@ scenes:
         target_scene: null
         success_scene: first-word__partial-collection
         failure_scene: first-word__standoff
-        arrival_flavor: He nods. Goes to the bedroom. Comes back with three hundred in a ziplock bag like he's been keeping it ready.
-        failure_arrival_flavor: He shakes his head. Says he's heard this before. Says the last guy who offered him a deal took the three hundred and sent someone else the next week anyway.
+        arrival_flavor: He nods.
+        failure_arrival_flavor: He shakes his head.
         set_flag_name: null
         clear_flag_name: null
         requirements: []
@@ -427,13 +413,11 @@ scenes:
     title: Standoff
     order: 65
     body: |
-      You're at an impasse. Pruitt's scared but he's not moving — either
-      because he genuinely can't or because he's decided he'd rather take
-      the consequence than produce money he doesn't have. Hard to say
-      which. Maybe he doesn't know either.
+      You're not getting anything.
 
-      The kid's drawing on the fridge is of a house with a yellow sun.
-      The kind every kid draws. The sun has a face.
+      He keeps his hands visible. That feels deliberate.
+
+      The kid's drawing watches both of you.
 
     roll:
       requires_roll: false
@@ -452,12 +436,12 @@ scenes:
     scene_contacts: []
 
     choices:
-      - label: Give him one more chance
+      - label: Push again
         order: 1
         target_scene: first-word__lean-on-pruitt
         success_scene: null
         failure_scene: null
-        arrival_flavor: You step closer. Make sure he's looking at you.
+        arrival_flavor: You step closer.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
@@ -468,7 +452,7 @@ scenes:
         target_scene: first-word__walked-away
         success_scene: null
         failure_scene: null
-        arrival_flavor: You leave him standing in the doorway. Don't look back.
+        arrival_flavor: You leave.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
@@ -479,15 +463,13 @@ scenes:
     title: Full Collection
     order: 70
     body: |
-      Six hundred in an envelope. He counted it out in front of you,
-      hands shaking slightly, like he was glad to be rid of it. You
-      don't know if that's true.
+      Six hundred.
 
-      You fold the envelope into your jacket and go. Don't say anything
-      on the way out. There's nothing to say that would make it better.
+      You tell Morris it's done.
 
-      Morris picks up on the second ring. You tell him it's done. He
-      tells you to come by Dave's tomorrow for your end.
+      He says come by tomorrow.
+
+      He hangs up.
 
     roll:
       requires_roll: false
@@ -511,7 +493,7 @@ scenes:
         target_scene: first-word__done-paid
         success_scene: null
         failure_scene: null
-        arrival_flavor: The envelope sits in your jacket like it weighs more than it does.
+        arrival_flavor: The envelope sits heavy.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
@@ -522,17 +504,11 @@ scenes:
     title: Partial Collection
     order: 75
     body: |
-      Three hundred in a ziplock bag, warm from wherever he'd been
-      keeping it. He shakes your hand at the door. You let him.
+      Three hundred. Ziplock bag.
 
-      Morris is less enthusiastic on the phone, but he accepts it. The
-      story is credible enough. You'll get your fifty when the rest
-      comes in — if it comes in. Morris doesn't say if. He doesn't
-      need to.
+      Morris says acceptable.
 
-      Dutch's operation got half its money and a payment plan from a
-      guy in a fourth-floor walkup. You tell yourself the other half
-      is coming. You're probably right.
+      He doesn't say it twice.
 
     roll:
       requires_roll: false
@@ -556,7 +532,7 @@ scenes:
         target_scene: first-word__done-partial
         success_scene: null
         failure_scene: null
-        arrival_flavor: You hope Pruitt actually sends the rest. You won't follow up. That part's not your problem.
+        arrival_flavor: You keep the word.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
@@ -567,16 +543,11 @@ scenes:
     title: Walked Away
     order: 78
     body: |
-      You leave Pruitt's building and stand on the pavement for a
-      moment. Nothing in your pocket. Nothing to show Morris.
+      Nothing collected.
 
-      You call it in anyway. Morris listens without interrupting. When
-      you finish he's quiet for a long time. Then he says Dutch will
-      be disappointed. Says it the way people say it when they mean
-      something worse than disappointed.
+      Morris listens. Then:
 
-      You tell him you'll find another way to make it right. Morris
-      says that would be a good idea.
+      Dutch will be disappointed.
 
     roll:
       requires_roll: false
@@ -600,7 +571,7 @@ scenes:
         target_scene: first-word__done-burned
         success_scene: null
         failure_scene: null
-        arrival_flavor: The walk back is longer than it should be. You're thinking the whole way.
+        arrival_flavor: The walk takes longer.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
@@ -611,16 +582,13 @@ scenes:
     title: Done Paid
     order: 80
     body: |
-      A hundred dollars finder's fee and a name Dutch now knows.
-      That's not nothing.
+      The money sits in the drawer.
 
-      Morris texted after. Two words: Good work. You've worked for worse
-      acknowledgements. The money goes in the drawer and you sit with
-      the quiet for a while.
+      Morris texted. Good work.
 
-      The corkboard has a second job pinned to it now. You didn't put
-      it there. Morris must have slipped it under the door while you
-      were out. You're already on a list. Might as well be a useful one.
+      There's a second job on the corkboard.
+
+      The door was locked when you left.
 
     roll:
       requires_roll: false
@@ -644,7 +612,7 @@ scenes:
         target_scene: hub__apartment
         success_scene: null
         failure_scene: null
-        arrival_flavor: Dutch knows your name now. Whether that's good news depends on what you do next.
+        arrival_flavor: Dutch knows your name now.
         failure_arrival_flavor: null
         set_flag_name: first_word_paid_in_full
         clear_flag_name: null
@@ -655,16 +623,9 @@ scenes:
     title: Done Partial
     order: 85
     body: |
-      Three hundred and fifty in your pocket and a payment plan that
-      may or may not hold. Morris called it acceptable. That's the
-      word he used. Acceptable.
+      Morris says acceptable.
 
-      You've been called worse.
-
-      The work is there if you want it. Dutch doesn't know your name
-      yet — not really. But Morris does, and Morris is the door.
-      That's how it starts with operations like this. Slow and useful
-      until you're just another piece of the thing.
+      You keep the word.
 
     roll:
       requires_roll: false
@@ -688,7 +649,7 @@ scenes:
         target_scene: hub__apartment
         success_scene: null
         failure_scene: null
-        arrival_flavor: Half a job. You'll do better next time. Probably.
+        arrival_flavor: Half a job.
         failure_arrival_flavor: null
         set_flag_name: first_word_partial
         clear_flag_name: null
@@ -699,16 +660,11 @@ scenes:
     title: Done Burned
     order: 90
     body: |
-      Nothing collected. Morris disappointed. Dutch a name attached
-      to a bad first impression.
+      Nothing collected.
 
-      You sit in the apartment and run through it. Pruitt's face.
-      The soccer ball. The drawing on the fridge with the smiling sun.
-      You're not sure you made the right call — you're not sure there
-      was one. That's the problem with jobs like this. The math never
-      works out clean.
+      The corkboard is empty.
 
-      The corkboard is empty. That might be temporary. It might not.
+      You leave it that way.
 
     roll:
       requires_roll: false
@@ -732,7 +688,7 @@ scenes:
         target_scene: hub__apartment
         success_scene: null
         failure_scene: null
-        arrival_flavor: You owe Dutch a good job. Get one.
+        arrival_flavor: You owe Dutch a good job.
         failure_arrival_flavor: null
         set_flag_name: first_word_burned
         clear_flag_name: null

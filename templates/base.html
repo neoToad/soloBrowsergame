@@ -12,7 +12,7 @@
     {% block content %}{% endblock %}
     <script>
     (function () {
-      // ── Scene panel fade ─────────────────────────────────────────────────
+      // Scene panel fade.
       const scenePanel = () => document.getElementById('scene-panel');
 
       document.body.addEventListener('htmx:beforeRequest', function (e) {
@@ -25,7 +25,7 @@
         const sp = scenePanel();
         if (sp) sp.classList.remove('is-loading');
 
-        // ── Dice slot-machine flicker ──────────────────────────────────────
+        // Dice slot-machine flicker.
         document.querySelectorAll('.roll-die[data-final]').forEach(function (el) {
           const final = parseInt(el.dataset.final, 10);
           el.removeAttribute('data-final');
@@ -41,7 +41,7 @@
           }, 50);
         });
 
-        // ── Stat value flash ───────────────────────────────────────────────
+        // Stat value flash.
         document.querySelectorAll('.stat-value').forEach(function (el) {
           el.classList.remove('stat-updated');
           // force reflow so the animation restarts even if already applied
@@ -53,7 +53,7 @@
           });
         });
 
-        // ── Combat damage flash (only when combat panel is present) ────────
+        // Combat damage flash (only when combat panel is present).
         const combatPanel = document.getElementById('combat-panel');
         if (combatPanel) {
           combatPanel.querySelectorAll('.bar-val').forEach(function (el) {

@@ -218,7 +218,7 @@ class Choice(models.Model):
         ordering = ['order']
 
     def __str__(self):
-        return f"{self.scene.key} → {self.label}"
+        return f"{self.scene.key} -> {self.label}"
 
 
 class SceneItem(models.Model):

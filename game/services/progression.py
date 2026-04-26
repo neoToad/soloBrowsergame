@@ -29,18 +29,18 @@ def award_xp(session, stats, amount):
     return levels_gained
 
 
-def spend_stat_point(stats, stat_name, stat_field_map):
+def spend_stat_point(stats, stat_name, stat_fields):
     """
     Spends one unspent stat point on one of the four spendable player stats.
-    Returns a tuple: (public_stat_name, db_field_name, new_value).
+    stat_name must be one of the DB field names (strength/agility/intellect/charisma).
+    Returns a tuple: (stat_name, db_field_name, new_value).
     Raises ValueError on invalid stat name or when no points are available.
     """
     if stats.stat_points <= 0:
         raise ValueError("No stat points available.")
 
-    public_name = (stat_name or "").lower()
-    field = stat_field_map.get(public_name)
-    if not field:
+    field = (stat_name or "").lower()
+    if field not in stat_fields:
         raise ValueError("Invalid stat.")
 
     current_val = getattr(stats, field)
@@ -51,7 +51,7 @@ def spend_stat_point(stats, stat_name, stat_field_map):
         stats.max_hp = compute_max_hp(stats.strength)
         stats.hp = min(stats.hp, stats.max_hp)
     stats.save()
-    return public_name, field, current_val + 1
+    return field, field, current_val + 1
 
 
 def apply_stat_rewards(session, stats, obj):
@@ -93,7 +93,7 @@ def maybe_complete_quest(session, stats, next_scene, completed_map):
     creates CompletedQuest, awards XP, and handles level-ups.
     Updates completed_map in place.
     Returns a list of log message strings (completion, XP, level-up
-    flavor) so the caller can create EventLog entries — this function
+    flavor) so the caller can create EventLog entries; this function
     must not create EventLog entries itself.
     """
     from ..models import CompletedQuest

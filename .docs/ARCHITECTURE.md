@@ -135,7 +135,7 @@ Highest-priority active items:
 - Stats:
   - DB fields: `strength`, `agility`, `intellect`, `charisma`
   - Display names: `muscle`, `reflexes`, `cunning`, `nerve`
-  - Mapping: `STAT_FIELD_MAP`
+  - Constants: `STAT_FIELDS`, `STAT_DISPLAY_NAMES`
 - Always compute roll/display values from `get_effective_stats(stats, inventory)`.
 - Use `flags.py` helper functions for flag mutation checks.
 

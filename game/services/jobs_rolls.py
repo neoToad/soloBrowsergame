@@ -12,10 +12,10 @@ from .jobs_common import JobRulesError, RECON_MODIFIERS, REWARD_BUCKETS, RollOut
 
 def get_recon_tier(effective_stats) -> str:
     """Map effective intellect to the configured recon tier."""
-    cunning_value = getattr(effective_stats, "intellect", 0)
-    if cunning_value >= RECON_TIER_MIN_CUNNING[RECON_TIER_HIGH]:
+    intellect_value = getattr(effective_stats, "intellect", 0)
+    if intellect_value >= RECON_TIER_MIN_CUNNING[RECON_TIER_HIGH]:
         return RECON_TIER_HIGH
-    if cunning_value >= RECON_TIER_MIN_CUNNING[RECON_TIER_MID]:
+    if intellect_value >= RECON_TIER_MIN_CUNNING[RECON_TIER_MID]:
         return RECON_TIER_MID
     return RECON_TIER_LOW
 
