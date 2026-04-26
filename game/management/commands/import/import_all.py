@@ -5,15 +5,17 @@ from django.core.management import CommandError
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from game.models.world import Arc, Quest, Scene, Choice, Contact, SceneItem, SceneContact
+from game.models.world import Arc, Quest, Scene, Choice, Contact, SceneItem, SceneContact, Gang
 from game.models.items import Item
 from game.models.requirements import Requirement, RequirementGroup
 from game.models.combat import CombatEncounter, Enemy
+from game.models.property import Property
 
 
 # Processing order matters: items and enemies/contacts must exist before hubs
-# and quests reference them.
-_TYPE_ORDER = ["items", "enemies_contacts", "hubs", "quest"]
+# and quests reference them. World (gangs/properties) can run independently but
+# properties may reference scenes, so run after hubs/quests when possible.
+_TYPE_ORDER = ["items", "enemies_contacts", "hubs", "quest", "world"]
 
 
 def _detect_type(data):
@@ -26,6 +28,8 @@ def _detect_type(data):
         return "items"
     if keys & {"enemies", "contacts"}:
         return "enemies_contacts"
+    if keys & {"gangs", "properties"}:
+        return "world"
     return None
 
 
@@ -86,6 +90,10 @@ class Command(BaseCommand):
             for fp, data in buckets["quest"]:
                 self.stdout.write(f"\n-- Quest: {fp}")
                 self._import_quest(data)
+
+            for fp, data in buckets["world"]:
+                self.stdout.write(f"\n-- World: {fp}")
+                self._import_world(data)
 
         self.stdout.write(self.style.SUCCESS("\nAll imports complete."))
 
@@ -282,6 +290,39 @@ class Command(BaseCommand):
         quest.hub_scenes.set(Scene.objects.filter(key__in=hub_keys))
 
         self.stdout.write(f"  {len(data['scenes'])} scene(s) processed")
+
+    # ------------------------------------------------------------------
+    # World (Gangs & Properties)
+    # ------------------------------------------------------------------
+
+    def _import_world(self, data):
+        gangs = data.get("gangs") or []
+        for gdata in gangs:
+            obj, created = Gang.objects.update_or_create(
+                key=gdata["key"],
+                defaults={
+                    "name": gdata["name"],
+                    "description": gdata.get("description", ""),
+                },
+            )
+            self.stdout.write(f"  Gang: {'Created' if created else 'Updated'} '{obj.key}'")
+        self.stdout.write(f"  {len(gangs)} gang(s) processed")
+
+        properties = data.get("properties") or []
+        for pdata in properties:
+            obj, created = Property.objects.update_or_create(
+                name=pdata["name"],
+                defaults={
+                    "property_type": pdata["property_type"],
+                    "cash_per_turn": pdata.get("cash_per_turn", 0),
+                    "heat_per_turn": pdata.get("heat_per_turn", 0),
+                    "rep_per_turn": pdata.get("rep_per_turn", 0),
+                    "is_contestable": pdata.get("is_contestable", False),
+                    "resolution_scene": self._get_or_warn(Scene, pdata.get("resolution_scene")),
+                },
+            )
+            self.stdout.write(f"  Property: {'Created' if created else 'Updated'} '{obj.name}'")
+        self.stdout.write(f"  {len(properties)} property/properties processed")
 
     # ------------------------------------------------------------------
     # Shared helpers

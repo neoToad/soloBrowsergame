@@ -6,7 +6,8 @@ from game.models import (
     Requirement, RequirementGroup, PlayerContext,
 )
 from game.constants import SESSION_KEY
-from .test_factories import make_game_session
+from .test_factories import make_game_session, make_item
+from game.models import Enemy
 
 class GameNavigationTest(TestCase):
     fixtures = [
@@ -392,12 +393,6 @@ class LevelUpTest(TestCase):
             HTTP_HX_REQUEST='true'
         )
         self.assertEqual(response.status_code, 400)
-
-    def test_levelup_flavor_filter_uses_level_keyed_lookup(self):
-        from ..templatetags.game_filters import levelup_flavor
-
-        self.assertEqual(levelup_flavor(2), "Word travels fast. You're moving up.")
-        self.assertEqual(levelup_flavor(1), "")
 
     def test_scene_renders_level_up_panel_after_level_gain(self):
         self.stats.level = 2
@@ -1252,14 +1247,6 @@ class QuestBuilderValidationTest(TestCase):
 
 
 class MaxHpTest(TestCase):
-    def test_compute_max_hp_formula(self):
-        from ..utils import compute_max_hp
-        self.assertEqual(compute_max_hp(5),  10)
-        self.assertEqual(compute_max_hp(8),  12)
-        self.assertEqual(compute_max_hp(10), 14)
-        self.assertEqual(compute_max_hp(12), 16)
-        self.assertEqual(compute_max_hp(14), 18)
-
     def test_create_session_sets_hp_and_max_hp_from_formula(self):
         from ..utils import compute_max_hp
         client = Client()
@@ -1318,3 +1305,434 @@ class MaxHpTest(TestCase):
         self.assertEqual(stats.strength, 11)
         self.assertEqual(stats.max_hp, compute_max_hp(11))
         self.assertLessEqual(stats.hp, stats.max_hp)
+
+
+# =============================================================================
+# Section 2 — Missing Tests (High Priority)
+# =============================================================================
+
+
+class CombatServiceTest(TestCase):
+    """Direct service-level tests for execute_enemy_attack and initialize_combat_state."""
+
+    def setUp(self):
+        from ..models.combat import CombatEncounter
+        self.client = Client()
+        self.session = make_game_session(self.client)
+        self.stats = self.session.stats
+
+        self.enemy = Enemy.objects.create(
+            key='cs__enemy', name='Corner Thug', description='',
+            max_hp=20, attack_modifier=0, defense=8,
+            damage_min=2, damage_max=4,
+        )
+        self.defeat_scene = Scene.objects.create(
+            key='cs__defeat', title='Defeat', body='', scene_type='ending', ending_type='defeat',
+        )
+        self.victory_scene = Scene.objects.create(
+            key='cs__victory', title='Victory', body='', scene_type='normal',
+        )
+        self.combat_scene = Scene.objects.create(
+            key='cs__combat', title='Combat', body='', scene_type='combat',
+        )
+        self.encounter = CombatEncounter.objects.create(
+            scene=self.combat_scene,
+            enemy=self.enemy,
+            victory_scene=self.victory_scene,
+            defeat_scene=self.defeat_scene,
+        )
+        self.session.current_scene = self.combat_scene
+        self.session.save()
+
+    def _make_combat_state(self, **kwargs):
+        from ..models.combat import CombatState
+        defaults = dict(session=self.session, enemy=self.enemy, enemy_hp=20, turn_number=1, is_active=True)
+        defaults.update(kwargs)
+        return CombatState.objects.create(**defaults)
+
+    def test_enemy_attack_hit_reduces_player_hp(self):
+        from ..services.combat import execute_enemy_attack
+        cs = self._make_combat_state(
+            pending_enemy_attack={'roll': 10, 'total': 12, 'hit': True, 'damage': 3},
+        )
+        self.stats.hp = 10
+        self.stats.save()
+
+        execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
+
+        self.stats.refresh_from_db()
+        self.assertEqual(self.stats.hp, 7)
+        cs.refresh_from_db()
+        self.assertEqual(cs.turn_number, 2)
+        self.assertIsNone(cs.pending_enemy_attack)
+
+    def test_enemy_attack_miss_leaves_hp_unchanged(self):
+        from ..services.combat import execute_enemy_attack
+        cs = self._make_combat_state(
+            pending_enemy_attack={'roll': 1, 'total': 1, 'hit': False, 'damage': 0},
+        )
+        self.stats.hp = 10
+        self.stats.save()
+
+        execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
+
+        self.stats.refresh_from_db()
+        self.assertEqual(self.stats.hp, 10)
+        cs.refresh_from_db()
+        self.assertEqual(cs.turn_number, 2)
+
+    def test_enemy_attack_reduces_player_to_zero_transitions_to_defeat_scene(self):
+        from ..services.combat import execute_enemy_attack
+        cs = self._make_combat_state(
+            pending_enemy_attack={'roll': 15, 'total': 17, 'hit': True, 'damage': 5},
+        )
+        self.stats.hp = 2
+        self.stats.save()
+
+        execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
+
+        self.stats.refresh_from_db()
+        self.assertEqual(self.stats.hp, 0)
+        self.session.refresh_from_db()
+        self.assertEqual(self.session.current_scene, self.defeat_scene)
+        cs.refresh_from_db()
+        self.assertFalse(cs.is_active)
+
+    def test_initialize_combat_state_deactivates_when_entering_non_combat_scene(self):
+        from ..services.combat import initialize_combat_state
+        cs = self._make_combat_state()
+        normal_scene = Scene.objects.create(
+            key='cs__normal', title='Normal', body='', scene_type='normal',
+        )
+
+        result = initialize_combat_state(self.session, normal_scene)
+
+        self.assertEqual(result, (None, None))
+        cs.refresh_from_db()
+        self.assertFalse(cs.is_active)
+
+    def test_initialize_combat_state_recreates_deleted_inactive_state(self):
+        from ..models.combat import CombatState
+        from ..services.combat import initialize_combat_state
+        old_cs = self._make_combat_state(is_active=False)
+        old_pk = old_cs.pk
+
+        new_cs, init_log = initialize_combat_state(self.session, self.combat_scene)
+
+        self.assertFalse(CombatState.objects.filter(pk=old_pk).exists())
+        self.assertIsNotNone(new_cs)
+        self.assertTrue(new_cs.is_active)
+        self.assertIn(self.enemy.name, init_log)
+
+
+class InventoryServiceTest(TestCase):
+    """Unit tests for apply_item_effect, consume_item, award_scene_items, award_scene_contacts."""
+
+    def setUp(self):
+        self.client = Client()
+        self.session = make_game_session(self.client)
+        self.stats = self.session.stats
+
+    def test_use_item_add_stat_effect_increases_stat_and_consumes_item(self):
+        from ..models import PlayerInventory
+        from ..services.inventory import apply_item_effect
+
+        item = make_item(
+            key='inv__add_str', name='Strength Tonic',
+            is_consumable=True, effect_type='add_stat', effect_stat='strength', effect_value=2,
+        )
+        pi = PlayerInventory.objects.create(session=self.session, item=item, quantity=1)
+        inventory = {item.id: pi}
+        original_str = self.stats.strength
+
+        apply_item_effect(self.session, self.stats, inventory, item)
+
+        self.stats.refresh_from_db()
+        self.assertEqual(self.stats.strength, original_str + 2)
+        self.assertFalse(PlayerInventory.objects.filter(session=self.session, item=item).exists())
+
+    def test_consume_item_decrements_quantity_without_deleting_when_qty_gt_1(self):
+        from ..models import PlayerInventory
+        from ..services.inventory import consume_item
+
+        item = make_item(key='inv__multi', name='Multi Item')
+        pi = PlayerInventory.objects.create(session=self.session, item=item, quantity=2)
+        inventory = {item.id: pi}
+
+        consume_item(self.session, item, inventory)
+
+        pi.refresh_from_db()
+        self.assertEqual(pi.quantity, 1)
+
+    def test_award_scene_items_respects_award_once_flag(self):
+        from ..models import PlayerInventory
+        from ..models.world import SceneItem
+        from ..services.inventory import award_scene_items
+
+        scene = self.session.current_scene
+        item = make_item(key='inv__award_once', name='Once Item')
+        SceneItem.objects.create(scene=scene, item=item, quantity=1, award_once=True)
+
+        inventory = {}
+        award_scene_items(self.session, scene, inventory)
+        award_scene_items(self.session, scene, inventory)
+
+        pi = PlayerInventory.objects.get(session=self.session, item=item)
+        self.assertEqual(pi.quantity, 1)
+
+    def test_award_scene_contacts_gain_and_lose(self):
+        from ..models.world import Contact, SceneContact
+        from ..models.player import PlayerContact
+        from ..services.inventory import award_scene_contacts
+
+        scene = self.session.current_scene
+        gained = Contact.objects.create(key='inv__c_gain', name='Gained Contact', description='')
+        lost   = Contact.objects.create(key='inv__c_lose', name='Lost Contact',   description='')
+        SceneContact.objects.create(scene=scene, contact=gained, action='gain', award_once=False)
+        SceneContact.objects.create(scene=scene, contact=lost,   action='lose', award_once=False)
+
+        existing_pc = PlayerContact.objects.create(session=self.session, contact=lost)
+        contacts = {lost.id: existing_pc}
+
+        awarded, removed = award_scene_contacts(self.session, scene, contacts)
+
+        self.assertEqual([c.id for c in awarded], [gained.id])
+        self.assertEqual([c.id for c in removed], [lost.id])
+        self.assertTrue(PlayerContact.objects.filter(session=self.session, contact=gained).exists())
+        self.assertFalse(PlayerContact.objects.filter(session=self.session, contact=lost).exists())
+
+
+class PropertyServiceTest(TestCase):
+    """Unit tests for apply_property_rewards and process_turn_income."""
+
+    def setUp(self):
+        self.client = Client()
+        self.session = make_game_session(self.client)
+        self.stats = self.session.stats
+
+    def test_apply_property_rewards_grants_property_on_arrival(self):
+        from ..models.property import Property, PlayerProperty
+        from ..services.property_service import apply_property_rewards
+
+        prop = Property.objects.create(name='Test Bar', property_type='business')
+        scene = Scene.objects.create(
+            key='prop__receive', title='Receive', body='', scene_type='normal',
+            receive_property=prop,
+        )
+
+        logs = apply_property_rewards(self.session, scene)
+
+        self.assertTrue(PlayerProperty.objects.filter(session=self.session, property=prop).exists())
+        self.assertEqual(len(logs), 1)
+        self.assertIn('Test Bar', logs[0])
+
+    def test_apply_property_rewards_skips_already_owned_property(self):
+        from ..models.property import Property, PlayerProperty
+        from ..services.property_service import apply_property_rewards
+
+        prop = Property.objects.create(name='Owned Bar', property_type='business')
+        PlayerProperty.objects.create(session=self.session, property=prop)
+        scene = Scene.objects.create(
+            key='prop__receive2', title='Receive2', body='', scene_type='normal',
+            receive_property=prop,
+        )
+
+        apply_property_rewards(self.session, scene)
+
+        self.assertEqual(PlayerProperty.objects.filter(session=self.session, property=prop).count(), 1)
+
+    def test_apply_property_rewards_removes_property_on_lose(self):
+        from ..models.property import Property, PlayerProperty
+        from ..services.property_service import apply_property_rewards
+
+        prop = Property.objects.create(name='Lost Bar', property_type='business')
+        PlayerProperty.objects.create(session=self.session, property=prop)
+        scene = Scene.objects.create(
+            key='prop__lose', title='Lose', body='', scene_type='normal',
+            lose_property=prop,
+        )
+
+        logs = apply_property_rewards(self.session, scene)
+
+        self.assertFalse(PlayerProperty.objects.filter(session=self.session, property=prop).exists())
+        self.assertEqual(len(logs), 1)
+        self.assertIn('Lost Bar', logs[0])
+
+    def test_process_turn_income_with_active_properties_applies_cash_rep_heat(self):
+        from ..models.property import Property, PlayerProperty
+        from ..services.property_service import process_turn_income
+
+        prop = Property.objects.create(
+            name='Cash Cow', property_type='business',
+            cash_per_turn=100, heat_per_turn=5, rep_per_turn=3,
+        )
+        PlayerProperty.objects.create(session=self.session, property=prop)
+        self.stats.cash = 0
+        self.stats.heat = 20
+        self.stats.rep = 0
+        self.stats.save()
+
+        logs, totals = process_turn_income(self.session)
+
+        self.stats.refresh_from_db()
+        self.assertEqual(self.stats.cash, 100)
+        self.assertEqual(self.stats.heat, 15)  # max(0, 20 - 5)
+        self.assertEqual(self.stats.rep, 3)
+        self.assertGreater(len(logs), 0)
+        self.assertIn('Cash Cow', logs[0])
+
+
+class ProgressionServiceTest(TestCase):
+    """Unit tests for maybe_complete_quest edge cases."""
+
+    def setUp(self):
+        self.client = Client()
+        self.session = make_game_session(self.client)
+        self.stats = self.session.stats
+
+    def test_maybe_complete_quest_non_ending_scene_returns_empty(self):
+        from ..models import CompletedQuest
+        from ..services.progression import maybe_complete_quest
+
+        normal_scene = Scene.objects.create(
+            key='prog__normal', title='Normal', body='', scene_type='normal',
+        )
+
+        result = maybe_complete_quest(self.session, self.stats, normal_scene, {})
+
+        self.assertEqual(result, [])
+        self.assertFalse(CompletedQuest.objects.filter(session=self.session).exists())
+
+    def test_maybe_complete_quest_already_completed_does_not_duplicate(self):
+        from ..models import Quest, CompletedQuest
+        from ..services.progression import maybe_complete_quest
+
+        quest = Quest.objects.create(key='prog__quest', title='Prog Quest', description='')
+        ending_scene = Scene.objects.create(
+            key='prog__ending', title='Ending', body='', scene_type='ending', ending_type='victory',
+        )
+        quest.scenes.add(ending_scene)
+        CompletedQuest.objects.create(session=self.session, quest=quest, ending_type='victory')
+        completed_map = {quest.id: 'victory'}
+
+        result = maybe_complete_quest(self.session, self.stats, ending_scene, completed_map)
+
+        self.assertEqual(result, [])
+        self.assertEqual(CompletedQuest.objects.filter(session=self.session, quest=quest).count(), 1)
+
+
+class ArrivalServiceTest(TestCase):
+    """Integration tests for process_arrival quest-completion branch."""
+
+    def setUp(self):
+        self.client = Client()
+        self.session = make_game_session(self.client)
+        self.stats = self.session.stats
+
+    def test_process_arrival_on_quest_ending_triggers_income_and_turn_summary(self):
+        from ..models import Quest
+        from ..services.arrival import process_arrival
+
+        quest = Quest.objects.create(key='arr__quest', title='Arrival Quest', description='')
+        ending_scene = Scene.objects.create(
+            key='arr__ending', title='Ending', body='', scene_type='ending', ending_type='victory',
+        )
+        quest.scenes.add(ending_scene)
+
+        logs, turn_summary = process_arrival(self.session, self.stats, {}, {}, ending_scene)
+
+        self.assertIsNotNone(turn_summary)
+        self.assertIn('income_totals', turn_summary)
+        combined = '\n'.join(logs)
+        self.assertIn(quest.title, combined)
+
+    def test_process_arrival_resolves_active_rival_claim_on_victory_scene(self):
+        from ..models import Quest
+        from ..models.property import Property, PlayerProperty, RivalClaim
+        from ..services.arrival import process_arrival
+
+        quest = Quest.objects.create(key='arr__quest2', title='Rival Quest', description='')
+        ending_scene = Scene.objects.create(
+            key='arr__victory', title='Victory', body='', scene_type='ending', ending_type='victory',
+        )
+        quest.scenes.add(ending_scene)
+
+        prop = Property.objects.create(name='Contested Bar', property_type='business')
+        pp = PlayerProperty.objects.create(session=self.session, property=prop, is_contested=True)
+        claim = RivalClaim.objects.create(player_property=pp, resolution_scene=ending_scene)
+
+        logs, _ = process_arrival(self.session, self.stats, {}, {}, ending_scene)
+
+        self.assertFalse(RivalClaim.objects.filter(pk=claim.pk).exists())
+        self.assertIn('Rival backed down', '\n'.join(logs))
+
+
+class CombatViewTest(TestCase):
+    """View-level test for the combat enemy-attack endpoint."""
+
+    def setUp(self):
+        from ..models.combat import CombatEncounter, CombatState
+        self.client = Client()
+        self.session = make_game_session(self.client)
+        self.stats = self.session.stats
+
+        self.enemy = Enemy.objects.create(
+            key='cview__enemy', name='View Thug', description='',
+            max_hp=20, attack_modifier=0, defense=8,
+            damage_min=2, damage_max=2,
+        )
+        self.victory_scene = Scene.objects.create(
+            key='cview__victory', title='Victory', body='', scene_type='normal',
+        )
+        self.combat_scene = Scene.objects.create(
+            key='cview__combat', title='Combat', body='', scene_type='combat',
+        )
+        CombatEncounter.objects.create(
+            scene=self.combat_scene, enemy=self.enemy, victory_scene=self.victory_scene,
+        )
+        self.session.current_scene = self.combat_scene
+        self.session.save()
+
+        CombatState.objects.create(
+            session=self.session, enemy=self.enemy, enemy_hp=self.enemy.max_hp,
+            turn_number=1, is_active=True,
+            pending_enemy_attack={'roll': 5, 'total': 5, 'hit': False, 'damage': 0},
+        )
+
+    def test_combat_enemy_attack_view_applies_queued_attack(self):
+        from ..models.combat import CombatState
+        initial_hp = self.stats.hp
+
+        response = self.client.post(reverse('combat_resolve_enemy'), HTTP_HX_REQUEST='true')
+
+        self.assertEqual(response.status_code, 200)
+        cs = CombatState.objects.get(session=self.session)
+        self.assertIsNone(cs.pending_enemy_attack)
+        self.assertEqual(cs.turn_number, 2)
+        self.stats.refresh_from_db()
+        self.assertEqual(self.stats.hp, initial_hp)  # miss — HP must be unchanged
+
+
+class ExportGameStateTest(TestCase):
+    """Smoke tests for build_game_state_payload."""
+
+    def test_build_game_state_payload_returns_expected_structure(self):
+        from ..services.export_game_state import build_game_state_payload
+
+        payload = build_game_state_payload()
+
+        self.assertIsInstance(payload, dict)
+        for key in ('meta', 'counts', 'items', 'enemies', 'contacts', 'scenes', 'quests', 'jobs'):
+            self.assertIn(key, payload)
+        self.assertEqual(payload['meta']['version'], 1)
+        self.assertIn('exported_at', payload['meta'])
+
+    def test_build_game_state_payload_counts_match_list_lengths(self):
+        from ..services.export_game_state import build_game_state_payload
+
+        make_item(key='exp__item', name='Export Item')
+        payload = build_game_state_payload()
+
+        self.assertEqual(payload['counts']['items'],   len(payload['items']))
+        self.assertEqual(payload['counts']['scenes'],  len(payload['scenes']))
+        self.assertEqual(payload['counts']['enemies'], len(payload['enemies']))

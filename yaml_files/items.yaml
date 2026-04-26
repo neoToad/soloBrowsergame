@@ -1,54 +1,156 @@
 items:
 
   # -------------------------
-  # CONSUMABLES — heal_hp
+  # WEAPONS
+  # Passive strength bonus while carried.
   # -------------------------
 
-  - key: field_dressing
-    name: Field Dressing
-    description: >
-      A military surplus compression bandage, still in the foil wrap. Half the
-      people in the Flats carry one and nobody asks why. Stops the bleeding.
-      Doesn't fix anything underneath.
-    is_consumable: true
-    effect_type: heal_hp
+  - key: brass_knuckles
+    name: Brass Knuckles
+    description: Someone else's initials scratched into the base.
+    is_consumable: false
+    effect_type: ""
     effect_stat: ""
-    effect_value: 25
+    effect_value: 0
+    passive_stat: strength
+    passive_value: 2
+
+  - key: pipe
+    name: Length of Pipe
+    description: Galvanized. Repurposed from something structural.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: strength
+    passive_value: 2
+
+  - key: crowbar
+    name: Crowbar
+    description: Makes argument in a language everyone understands.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: strength
+    passive_value: 3
+
+  - key: switchblade
+    name: Switchblade
+    description: Spring-loaded, matte handle. Works first time every time.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: strength
+    passive_value: 3
+
+  - key: 9mm
+    name: 9mm
+    description: Clean. Registered to someone who reported it lost.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: strength
+    passive_value: 5
+
+  - key: burner_pistol
+    name: Burner Pistol
+    description: Unregistered. Has history you don't know about and don't want to.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: strength
+    passive_value: 6
+
+  # -------------------------
+  # TOOLS & GEAR
+  # No mechanical effect — presence in inventory gates choices via has_item requirements.
+  # Exception: police_scanner passively reduces heat via passive_stat.
+  # -------------------------
+
+  - key: lockpick_set
+    name: Lockpick Set
+    description: The good kind, not the tourist kind.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
     passive_stat: ""
     passive_value: 0
 
-  - key: bodega_painkillers
-    name: Bodega Painkillers
-    description: >
-      Generic ibuprofen from the rack by the register at the corner store. Four
-      hundred milligrams. The cashier doesn't look up when you buy them. Takes
-      the edge off enough to keep moving.
-    is_consumable: true
-    effect_type: heal_hp
+  - key: bolt_cutters
+    name: Bolt Cutters
+    description: The big ones. For serious locks or light panic.
+    is_consumable: false
+    effect_type: ""
     effect_stat: ""
-    effect_value: 15
+    effect_value: 0
     passive_stat: ""
     passive_value: 0
 
-  - key: suture_kit
-    name: Suture Kit
-    description: >
-      Stolen from a first aid supply van. Needle, thread, antiseptic wipes, and
-      a pair of forceps that have clearly been used before. Closing a wound
-      yourself is a particular kind of evening.
-    is_consumable: true
-    effect_type: heal_hp
+  - key: zip_ties
+    name: Zip Ties
+    description: A handful. Multi-use.
+    is_consumable: false
+    effect_type: ""
     effect_stat: ""
-    effect_value: 40
+    effect_value: 0
     passive_stat: ""
     passive_value: 0
 
-  - key: half_bottle
-    name: Half a Bottle of Something
-    description: >
-      No label. Amber. Burns on the way down in a way that suggests it started
-      life as something else before someone redistilled it in a bathtub. Takes
-      the edge off. Probably.
+  - key: burner_phone
+    name: Burner Phone
+    description: Fresh SIM. Untraceable for now.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: ""
+    passive_value: 0
+
+  - key: duct_tape
+    name: Duct Tape
+    description: No further description needed.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: ""
+    passive_value: 0
+
+  - key: police_scanner
+    name: Police Scanner
+    description: Old model, still works, picks up most of what you need.
+    is_consumable: false
+    effect_type: ""
+    effect_stat: ""
+    effect_value: 0
+    passive_stat: heat
+    passive_value: -3
+
+  # -------------------------
+  # CONSUMABLES
+  # is_consumable: true. Removed from inventory on use.
+  # heal_hp: effect_value is HP restored (negative = HP cost).
+  # add_stat: permanently increases effect_stat by effect_value.
+  # -------------------------
+
+  - key: medkit
+    name: Medkit
+    description: Field dressing, antiseptic, the basics.
+    is_consumable: true
+    effect_type: heal_hp
+    effect_stat: ""
+    effect_value: 30
+    passive_stat: ""
+    passive_value: 0
+
+  - key: painkillers
+    name: Painkillers
+    description: Prescription. Not yours.
     is_consumable: true
     effect_type: heal_hp
     effect_stat: ""
@@ -56,143 +158,54 @@ items:
     passive_stat: ""
     passive_value: 0
 
-  # -------------------------
-  # CONSUMABLES — add_stat
-  # -------------------------
-
-  - key: reyes_corner_time
-    name: Eddie's Corner Notes
-    description: >
-      A folded index card in Eddie Reyes' handwriting. Three observations about
-      your footwork and one about your left hook. Specific. Accurate.
-      Uncomfortable to read. You work on it until it stops being true.
+  - key: zonk_smoked
+    name: Zonk (smoked)
+    description: The standard. Mellow, dissociative.
     is_consumable: true
-    effect_type: add_stat
-    effect_stat: strength
-    effect_value: 1
+    effect_type: heal_hp
+    effect_stat: ""
+    effect_value: 10
     passive_stat: ""
     passive_value: 0
 
-  - key: zonk_bump
-    name: "Zonk \u2014 Snorted"
-    description: >
-      A folded paper square, pre-measured. Faster onset than smoking. Upper
-      effect — sharper, more present, easier to talk to people and mean it.
-      The come-down is its own conversation.
+  - key: zonk_pill
+    name: Zonk (pill)
+    description: Slow release. Hallucinogenic edge. Harder to dose.
     is_consumable: true
-    effect_type: add_stat
-    effect_stat: charisma
-    effect_value: 1
-    passive_stat: ""
-    passive_value: 0
-
-  - key: dutch_sit_down
-    name: Dutch's Advice
-    description: >
-      Twenty minutes in Dutch's back room while he doesn't look at you directly
-      and says things that sound like observations. You piece it together on the
-      walk home. By the time you're at your door you understand something you
-      didn't before.
-    is_consumable: true
-    effect_type: add_stat
-    effect_stat: intellect
-    effect_value: 1
-    passive_stat: ""
-    passive_value: 0
-
-  - key: track_work
-    name: Track Work
-    description: >
-      Three weeks of running the old rail loop before sunrise. Nobody sees you.
-      Nobody cares. Your lungs start to forgive you for everything you've done
-      to them.
-    is_consumable: true
-    effect_type: add_stat
-    effect_stat: agility
-    effect_value: 1
+    effect_type: heal_hp
+    effect_stat: ""
+    effect_value: 15
     passive_stat: ""
     passive_value: 0
 
   # -------------------------
-  # PASSIVE STAT ITEMS
+  # DOCUMENTS & MACGUFFINS
+  # No effects. Exist only to satisfy has_item requirements.
   # -------------------------
 
-  - key: brass_knuckles
-    name: Brass Knuckles
-    description: >
-      Someone else's initials scratched into the base. The previous owner either
-      sold them, lost them, or is no longer in a position to want them back.
-      Heavier than they look.
+  - key: package_sealed
+    name: Sealed Package
+    description: You don't know what's in it. That's the job.
     is_consumable: false
     effect_type: ""
     effect_stat: ""
     effect_value: 0
-    passive_stat: strength
-    passive_value: 1
+    passive_stat: ""
+    passive_value: 0
 
-  - key: good_shoes
-    name: Good Shoes
-    description: >
-      Not new — broken in, specifically. The kind of shoe that fits like it was
-      made for your foot because it's spent two years becoming that. Nobody
-      notices good shoes. That's how you know they're good.
+  - key: ledger
+    name: Ledger
+    description: Handwritten. Names, numbers, dates. Belongs to someone who wants it back.
     is_consumable: false
     effect_type: ""
     effect_stat: ""
     effect_value: 0
-    passive_stat: agility
-    passive_value: 1
+    passive_stat: ""
+    passive_value: 0
 
-  - key: burner_phone
-    name: Burner Phone
-    description: >
-      Pre-paid. The number has been used once before — you don't know for what.
-      Having it means you can receive calls you shouldn't be receiving and make
-      calls that don't trace back. A tool for people who think two steps ahead.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: intellect
-    passive_value: 1
-
-  - key: tailored_jacket
-    name: Tailored Jacket
-    description: >
-      Not expensive — just fitted. Found at an estate sale in The Hill, altered
-      once by a woman on Crane Street who didn't ask what for. Wearing something
-      that fits correctly changes how a room reads you before you've opened your
-      mouth.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: charisma
-    passive_value: 1
-
-  - key: dutch_coin
-    name: Dutch's Coin
-    description: >
-      A foreign coin — nobody can place the country. Dutch's people have been
-      leaving these as acknowledgment for twenty years. Not currency. Not a
-      threat. Just a signal that Dutch knows something happened and is noting
-      it. The weight of it in your pocket is entirely psychological.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: charisma
-    passive_value: 2
-
-  # -------------------------
-  # INERT / FLAVOUR ITEMS
-  # -------------------------
-
-  - key: burner_envelope
+  - key: envelope_cash
     name: Envelope of Cash
-    description: >
-      Rubber-banded. Mixed bills, nothing sequential. The universal language.
-      Whatever it was for, it's yours now.
+    description: Unmarked bills, rubber-banded.
     is_consumable: false
     effect_type: ""
     effect_stat: ""
@@ -200,12 +213,9 @@ items:
     passive_stat: ""
     passive_value: 0
 
-  - key: lockpick_set
-    name: Lockpick Set
-    description: >
-      A leather roll, seven picks, two tension wrenches. Old. The leather is
-      soft in a way that takes decades. Whoever owned this used them regularly
-      and knew what they were doing.
+  - key: flash_drive
+    name: Flash Drive
+    description: Small, cheap, contents unknown.
     is_consumable: false
     effect_type: ""
     effect_stat: ""
@@ -213,11 +223,9 @@ items:
     passive_stat: ""
     passive_value: 0
 
-  - key: disposable_camera
-    name: Disposable Camera
-    description: >
-      Ten exposures left. The kind of thing that only matters once — whatever's
-      already on the roll is as important as what gets added to it. Maybe more.
+  - key: photo
+    name: Photograph
+    description: Someone who would rather not be photographed doing what they're doing.
     is_consumable: false
     effect_type: ""
     effect_stat: ""
@@ -225,12 +233,9 @@ items:
     passive_stat: ""
     passive_value: 0
 
-  - key: bucco_olive_oil
-    name: "Bucco & Sons Extra Virgin"
-    description: >
-      A half-litre bottle, the good label. Cold pressed, Sicilian, not a blend.
-      Richie Bucco sends these occasionally instead of words. The olive oil is
-      legitimately excellent and that's somehow the most unsettling part.
+  - key: key_storage
+    name: Storage Unit Key
+    description: A key. Number stamped on the fob.
     is_consumable: false
     effect_type: ""
     effect_stat: ""
