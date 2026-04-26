@@ -24,16 +24,7 @@ Below the 80% threshold. The riskiest gaps are in the combat loop (`execute_enem
 
 ---
 
-## 3. Unnecessary / Low-Value Tests
 
-| Test | Why | Action |
-|---|---|---|
-| `test_levelup_flavor_filter_uses_level_keyed_lookup` | Tests a static dict lookup; the dict can't have bugs | Remove or fold into `test_scene_renders_level_up_panel_after_level_gain` |
-| `test_compute_max_hp_formula` | Tests arithmetic over hardcoded constants; formula can't be wrong unless the constants change | Merge with `test_create_session_sets_hp_and_max_hp_from_formula` |
-| `test_increment_turn_advances_session_counter` | Tests that adding 1 to a counter adds 1 | Remove; this level of triviality adds no confidence |
-| `test_get_recon_tier_thresholds` | Verifies a dict-range lookup with three boundary values; no branching logic | Keep as parametrized, or remove — the job view tests exercise the same boundary implicitly |
-
----
 
 ## 4. Redundancy Issues
 
