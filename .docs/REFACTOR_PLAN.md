@@ -73,13 +73,10 @@ Files: [tests.py](C:\Users\colin\PycharmProjects\soloBrowserGame\game\tests\test
 **Prioritized Refactor Plan**
 
 
-2. **Enforce application-service boundary.**  
-Introduce `game/services/gameplay/` use-case services (`resolve_choice`, `start_quest`, `run_combat_turn`, `use_item`) and reduce views to request parsing + response mapping.
 
 3. **Fix quest/scene ownership model.**  
 Decide ownership model explicitly:
-- Preferred: `Scene` belongs to exactly one `Quest` (FK), or
-- Keep M2M but introduce deterministic active-quest context and remove `quests.first()` logic.
+- Preferred: `Scene` belongs to exactly one `Quest` (FK), 
 
 4. **Consolidate import system.**  
 Create shared import services (`services/importers/*`) and make management commands thin wrappers.  

@@ -1,6 +1,35 @@
 from dataclasses import dataclass, field
 
 
+class GameplayError(Exception):
+    """Raised by gameplay use-case services for expected rule violations."""
+    def __init__(self, message, status=400):
+        super().__init__(message)
+        self.status = status
+
+
+@dataclass
+class ChoiceResult:
+    next_scene:      object
+    combat_state:    object
+    effective_stats: object
+    roll_result:     object
+    turn_summary:    object
+
+
+@dataclass
+class QuestStartResult:
+    next_scene:      object
+    combat_state:    object
+    effective_stats: object
+
+
+@dataclass
+class UseItemResult:
+    effective_stats: object
+    combat_state:    object
+
+
 @dataclass
 class CombatRollResult:
     hit:        bool

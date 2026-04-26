@@ -4,22 +4,17 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseNotAllowed
 
 from .models import (
-    Choice, CombatEncounter, CombatState, GameSession, Item,
+    Choice, GameSession, Item,
     Quest, Scene,
     ContactJobOffer, Job, JobApproach, JobRun,
 )
 from .models.events import log_event, flush_event_log
-from .services.session     import load_session_context, create_session, build_render_context, build_player_context, advance_to_scene
-from .services.scene       import resolve_roll
-from .services.combat      import (
-    initialize_combat_state, get_active_combat_state, resolve_combat_end,
-    execute_player_attack, execute_enemy_attack,
-)
-from .services.inventory   import apply_item_effect
-from .services.flags       import set_flag, clear_flag
-from .services.arrival     import process_arrival
-from .services.progression import XP_AWARDS, LEVEL_UP_FLAVOR, spend_stat_point
-from .services import jobs as jobs_service
+from .services.session     import load_session_context, create_session, build_render_context
+from .services.combat      import initialize_combat_state, get_active_combat_state
+from .services.progression import spend_stat_point
+from .services             import gameplay
+from .services.types       import GameplayError
+from .services             import jobs as jobs_service
 from .utils import get_effective_stats
 from .constants import SESSION_KEY, STAT_DB_NAMES
 
@@ -100,58 +95,22 @@ def choice_resolve(request, choice_id, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session, stats, inventory, effective_stats, completed_map = session_context
+    session, stats, inventory, _, completed_map = session_context
     choice = get_object_or_404(Choice, pk=choice_id)
-    if choice.scene_id != session.current_scene_id:
-        return HttpResponse("Choice is not available from your current scene.", status=403)
+    try:
+        result = gameplay.resolve_choice(session_context, choice)
+    except GameplayError as exc:
+        return HttpResponse(str(exc), status=exc.status)
 
-    scene = choice.scene
-
-    log_queue = []
-
-    # ROUTING
-    if scene.requires_roll:
-        next_scene, roll_log, roll_result = resolve_roll(scene, choice, effective_stats)
-        log_queue.append(roll_log)
-    else:
-        next_scene = choice.target_scene
-        if next_scene is None:
-            return HttpResponse("This choice has no destination configured.", status=500)
-        roll_result = None
-
-    # ARRIVAL FLAVOR
-    if roll_result and not roll_result.success and choice.failure_arrival_flavor:
-        log_queue.append(choice.failure_arrival_flavor)
-    elif choice.arrival_flavor:
-        log_queue.append(choice.arrival_flavor)
-
-    # FLAGS
-    if choice.set_flag_name:
-        set_flag(session, choice.set_flag_name)
-    if choice.clear_flag_name:
-        clear_flag(session, choice.clear_flag_name)
-
-    advance_to_scene(session, next_scene)
-
-    arrival_logs, turn_summary = process_arrival(session, stats, inventory, completed_map, next_scene)
-    log_queue.extend(arrival_logs)
-    flush_event_log(session, log_queue)
-
-    combat_state, combat_init_log = initialize_combat_state(session, next_scene)
-    if combat_init_log:
-        log_event(session, combat_init_log)
-    effective_stats = get_effective_stats(stats, inventory)
-
-    is_htmx = request.headers.get('HX-Request') == 'true'
-    if is_htmx:
-        context = build_render_context(
-            session, next_scene, stats, effective_stats, inventory, completed_map,
-            combat_state=combat_state,
-            turn_summary=turn_summary,
-            roll_result=roll_result,
-        )
+    context = build_render_context(
+        session, result.next_scene, stats, result.effective_stats, inventory, completed_map,
+        combat_state=result.combat_state,
+        turn_summary=result.turn_summary,
+        roll_result=result.roll_result,
+    )
+    if request.headers.get('HX-Request') == 'true':
         return _htmx_response(request, context)
-    return redirect('scene_detail', scene_key=next_scene.key)
+    return redirect('scene_detail', scene_key=result.next_scene.key)
 
 
 @require_game_session
@@ -159,35 +118,20 @@ def start_quest(request, quest_key, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session, stats, inventory, effective_stats, completed_map = session_context
+    session, stats, inventory, _, completed_map = session_context
     quest = get_object_or_404(Quest, key=quest_key, is_unlocked=True)
+    try:
+        result = gameplay.start_quest(session_context, quest)
+    except GameplayError as exc:
+        return HttpResponse(str(exc), status=exc.status)
 
-    ctx = build_player_context(effective_stats, inventory, completed_map, flags=session.flags)
-    if quest.requirements.exists():
-        if not all(rg.evaluate(ctx) for rg in quest.requirements.all()):
-            return HttpResponse("Quest requirements not met.", status=403)
-
-    next_scene = quest.entrance_scene
-    if next_scene is None:
-        return HttpResponse("Quest has no entrance scene configured.", status=400)
-    advance_to_scene(session, next_scene)
-
-    arrival_logs, _ = process_arrival(session, stats, inventory, completed_map, next_scene)
-    flush_event_log(session, [f"You took the job: {quest.title}.", *arrival_logs])
-
-    combat_state, combat_init_log = initialize_combat_state(session, next_scene)
-    if combat_init_log:
-        log_event(session, combat_init_log)
-    effective_stats = get_effective_stats(stats, inventory)
-
-    is_htmx = request.headers.get('HX-Request') == 'true'
-    if is_htmx:
-        context = build_render_context(
-            session, next_scene, stats, effective_stats, inventory, completed_map,
-            combat_state=combat_state,
-        )
+    context = build_render_context(
+        session, result.next_scene, stats, result.effective_stats, inventory, completed_map,
+        combat_state=result.combat_state,
+    )
+    if request.headers.get('HX-Request') == 'true':
         return _htmx_response(request, context)
-    return redirect('scene_detail', scene_key=next_scene.key)
+    return redirect('scene_detail', scene_key=result.next_scene.key)
 
 
 @require_game_session
@@ -343,21 +287,11 @@ def combat_attack(request, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session, stats, inventory, effective_stats, completed_map = session_context
-
     try:
-        combat_state = session.combat_state
-    except CombatState.DoesNotExist:
-        return HttpResponse("No active combat.", status=400)
+        context = gameplay.run_player_attack(session_context)
+    except GameplayError as exc:
+        return HttpResponse(str(exc), status=exc.status)
 
-    if not combat_state.is_active:
-        return HttpResponse("Combat is not active.", status=400)
-
-    logs, context = execute_player_attack(
-        session, stats, inventory, completed_map, combat_state, effective_stats
-    )
-    flush_event_log(session, logs)
-    context['choices'] = []
     return _htmx_response(request, context)
 
 
@@ -366,27 +300,11 @@ def combat_resolve_enemy(request, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session, stats, inventory, effective_stats, completed_map = session_context
-
     try:
-        combat_state = session.combat_state
-    except CombatState.DoesNotExist:
-        return HttpResponse("No active combat.", status=400)
+        context = gameplay.run_enemy_attack(session_context)
+    except GameplayError as exc:
+        return HttpResponse(str(exc), status=exc.status)
 
-    if not combat_state.is_active or not combat_state.enemy_attack_pending:
-        return HttpResponse("No pending enemy attack.", status=400)
-
-    try:
-        logs, context = execute_enemy_attack(
-            session, stats, inventory, completed_map, combat_state, effective_stats
-        )
-    except CombatEncounter.DoesNotExist:
-        return HttpResponse(
-            "No combat encounter configured for this scene. Check quest content.", status=400
-        )
-
-    flush_event_log(session, logs)
-    context['choices'] = []
     return _htmx_response(request, context)
 
 
@@ -395,29 +313,11 @@ def combat_continue(request, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session, stats, inventory, effective_stats, completed_map = session_context
-
     try:
-        combat_state = session.combat_state
-    except CombatState.DoesNotExist:
-        return HttpResponse("No combat state.", status=400)
+        context = gameplay.run_combat_continue(session_context)
+    except GameplayError as exc:
+        return HttpResponse(str(exc), status=exc.status)
 
-    if not combat_state.pending_victory:
-        return HttpResponse("No pending victory.", status=400)
-
-    try:
-        encounter = CombatEncounter.objects.get(scene=session.current_scene)
-    except CombatEncounter.DoesNotExist:
-        return HttpResponse(
-            "No combat encounter configured for this scene. Check quest content.", status=400
-        )
-
-    context = resolve_combat_end(
-        session, stats, inventory, completed_map,
-        encounter.victory_scene, combat_state,
-        xp_award=XP_AWARDS['combat_victory'],
-        ending_type='victory',
-    )
     return _htmx_response(request, context)
 
 
@@ -452,23 +352,15 @@ def use_item(request, item_id, *, session_context):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
-    session, stats, inventory, effective_stats, completed_map = session_context
+    session, stats, inventory, _, completed_map = session_context
     item = get_object_or_404(Item, pk=item_id)
-
-    if item.id not in inventory:
-        return HttpResponse("Item not in stash.", status=400)
-    if not item.effect_type:
-        return HttpResponse("Item has no usable effect.", status=400)
-
-    logs = apply_item_effect(session, stats, inventory, item)
-    flush_event_log(session, logs)
-
-    scene           = session.current_scene
-    effective_stats = get_effective_stats(stats, inventory)
-    combat_state    = get_active_combat_state(session)
+    try:
+        result = gameplay.use_item(session_context, item)
+    except GameplayError as exc:
+        return HttpResponse(str(exc), status=exc.status)
 
     context = build_render_context(
-        session, scene, stats, effective_stats, inventory, completed_map,
-        combat_state=combat_state,
+        session, session.current_scene, stats, result.effective_stats, inventory, completed_map,
+        combat_state=result.combat_state,
     )
     return _htmx_response(request, context)
