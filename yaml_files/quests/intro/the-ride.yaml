@@ -216,7 +216,7 @@ scenes:
     choices: []
 
     combat_encounter:
-      enemy: westside_runners
+      enemy: westside_runner
       victory_scene: the-ride__darius
       defeat_scene: the-ride__taken
       victory_arrival_flavor: The first one's down. The second one backs off. The third — the older one — hasn't moved.

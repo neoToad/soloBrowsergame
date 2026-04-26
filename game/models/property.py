@@ -6,6 +6,7 @@ class Property(models.Model):
         ('business',  'Business'),
         ('territory', 'Territory'),
     ]
+    key              = models.SlugField(unique=True)
     name             = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True)
     property_type    = models.CharField(max_length=20, choices=PROPERTY_TYPES)

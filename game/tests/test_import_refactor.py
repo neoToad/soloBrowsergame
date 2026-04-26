@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 from django.core.management import call_command
 from django.test import TestCase
 
-from game.models import Quest, RequirementGroup, Scene
+from game.models import Property, Quest, RequirementGroup, Scene
 
 
 class ImportRefactorTests(TestCase):
@@ -171,3 +171,58 @@ hubs:
 
         self.assertTrue(Quest.objects.filter(key="all-import-quest").exists())
         self.assertTrue(Scene.objects.filter(key="all-import-hub").exists())
+
+    def test_import_all_resolves_scene_property_fk_from_world_keys(self):
+        with TemporaryDirectory() as tmp_dir:
+            world_yaml = Path(tmp_dir) / "world.yaml"
+            world_yaml.write_text(
+                """
+properties:
+  - key: storage_unit
+    name: Dockside Warehouse Unit
+    property_type: business
+    cash_per_turn: 200
+    heat_per_turn: 3
+    rep_per_turn: 0
+    is_contestable: true
+    resolution_scene: null
+""",
+                encoding="utf-8",
+            )
+            quest_yaml = Path(tmp_dir) / "quest.yaml"
+            quest_yaml.write_text(
+                """
+quest:
+  key: property-fk-quest
+  title: Property FK Quest
+  description: Test
+  arc: null
+  arc_order: 0
+  is_repeatable: false
+  hub_scenes: []
+  entrance_scene: property-fk-quest__start
+  requirements: []
+
+scenes:
+  - key: property-fk-quest__start
+    scene_type: normal
+    title: Start
+    order: 0
+    body: Start
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: storage_unit
+      lose_property: null
+    choices: []
+""",
+                encoding="utf-8",
+            )
+            call_command("import_all", tmp_dir)
+
+        scene = Scene.objects.get(key="property-fk-quest__start")
+        self.assertIsNotNone(scene.receive_property)
+        self.assertEqual(scene.receive_property.key, "storage_unit")
+        self.assertTrue(Property.objects.filter(key="storage_unit").exists())

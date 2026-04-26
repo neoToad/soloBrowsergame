@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from django.core.management import CommandError
+from django.utils.text import slugify
 
 from game.models.combat import CombatEncounter, Enemy
 from game.models.items import Item
@@ -86,9 +87,13 @@ def import_world_data(data: dict) -> ImportResult:
             result.record_updated("gangs")
 
     for pdata in data.get("properties") or []:
+        property_key = pdata.get("key") or slugify(pdata["name"])
+        if not pdata.get("key"):
+            result.warn(f"Property '{pdata['name']}' missing key; using generated key '{property_key}'")
         _, created = Property.objects.update_or_create(
-            name=pdata["name"],
+            key=property_key,
             defaults={
+                "name": pdata["name"],
                 "property_type": pdata["property_type"],
                 "cash_per_turn": pdata.get("cash_per_turn", 0),
                 "heat_per_turn": pdata.get("heat_per_turn", 0),
@@ -236,9 +241,7 @@ def import_hubs_data(data: dict) -> ImportResult:
 def import_quest_data(data: dict) -> ImportResult:
     result = ImportResult()
     qdata = data["quest"]
-    arc = None
-    if qdata.get("arc"):
-        arc = Arc.objects.get(key=qdata["arc"])
+    arc = get_by_key_or_warn(Arc, qdata.get("arc"), result)
 
     quest, created = Quest.objects.update_or_create(
         key=qdata["key"],

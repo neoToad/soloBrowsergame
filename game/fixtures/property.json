@@ -3,6 +3,7 @@
   "model": "game.property",
   "pk": 1,
   "fields": {
+    "key": "sals_bar",
     "name": "Sals Bar",
     "property_type": "safehouse",
     "cash_per_turn": 50,
@@ -16,6 +17,7 @@
   "model": "game.property",
   "pk": 2,
   "fields": {
+    "key": "financial_district",
     "name": "Financial District",
     "property_type": "territory",
     "cash_per_turn": 0,
@@ -29,6 +31,7 @@
   "model": "game.property",
   "pk": 3,
   "fields": {
+    "key": "your_dingy_apartment",
     "name": "Your dingy apartment",
     "property_type": "safehouse",
     "cash_per_turn": 0,

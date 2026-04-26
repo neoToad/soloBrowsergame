@@ -16,7 +16,7 @@ from .domain import (
 )
 from .types import ImportResult
 
-TYPE_ORDER = ["items", "enemies_contacts", "hubs", "quest", "world"]
+TYPE_ORDER = ["items", "enemies_contacts", "hubs", "world", "quest"]
 
 
 def detect_import_type(data: dict) -> str | None:

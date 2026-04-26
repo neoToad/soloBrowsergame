@@ -860,6 +860,7 @@ class RivalContestTest(TestCase):
         self.session.stats.save()
 
         prop = Property.objects.create(
+            key='phase4_property',
             name='Phase4 Property',
             property_type='business',
             cash_per_turn=5,
@@ -903,6 +904,7 @@ class RivalContestTest(TestCase):
             ending_type='victory',
         )
         prop = Property.objects.create(
+            key='phase6_victory_property',
             name='Phase6 Victory Property',
             property_type='business',
             cash_per_turn=2,
@@ -938,6 +940,7 @@ class RivalContestTest(TestCase):
             ending_type='defeat',
         )
         prop = Property.objects.create(
+            key='phase6_defeat_property',
             name='Phase6 Defeat Property',
             property_type='business',
             cash_per_turn=2,
@@ -1495,7 +1498,7 @@ class PropertyServiceTest(TestCase):
         from ..models.property import Property, PlayerProperty
         from ..services.property_service import apply_property_rewards
 
-        prop = Property.objects.create(name='Test Bar', property_type='business')
+        prop = Property.objects.create(key='test_bar', name='Test Bar', property_type='business')
         scene = Scene.objects.create(
             key='prop__receive', title='Receive', body='', scene_type='normal',
             receive_property=prop,
@@ -1511,7 +1514,7 @@ class PropertyServiceTest(TestCase):
         from ..models.property import Property, PlayerProperty
         from ..services.property_service import apply_property_rewards
 
-        prop = Property.objects.create(name='Owned Bar', property_type='business')
+        prop = Property.objects.create(key='owned_bar', name='Owned Bar', property_type='business')
         PlayerProperty.objects.create(session=self.session, property=prop)
         scene = Scene.objects.create(
             key='prop__receive2', title='Receive2', body='', scene_type='normal',
@@ -1526,7 +1529,7 @@ class PropertyServiceTest(TestCase):
         from ..models.property import Property, PlayerProperty
         from ..services.property_service import apply_property_rewards
 
-        prop = Property.objects.create(name='Lost Bar', property_type='business')
+        prop = Property.objects.create(key='lost_bar', name='Lost Bar', property_type='business')
         PlayerProperty.objects.create(session=self.session, property=prop)
         scene = Scene.objects.create(
             key='prop__lose', title='Lose', body='', scene_type='normal',
@@ -1544,6 +1547,7 @@ class PropertyServiceTest(TestCase):
         from ..services.property_service import process_turn_income
 
         prop = Property.objects.create(
+            key='cash_cow',
             name='Cash Cow', property_type='business',
             cash_per_turn=100, heat_per_turn=5, rep_per_turn=3,
         )
@@ -1635,7 +1639,7 @@ class ArrivalServiceTest(TestCase):
             quest=quest, key='arr__victory', title='Victory', body='', scene_type='ending', ending_type='victory',
         )
 
-        prop = Property.objects.create(name='Contested Bar', property_type='business')
+        prop = Property.objects.create(key='contested_bar', name='Contested Bar', property_type='business')
         pp = PlayerProperty.objects.create(session=self.session, property=prop, is_contested=True)
         claim = RivalClaim.objects.create(player_property=pp, resolution_scene=ending_scene)
 

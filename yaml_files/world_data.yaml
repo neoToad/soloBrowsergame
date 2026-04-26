@@ -76,7 +76,8 @@ properties:
 
   # --- BUSINESSES ---
 
-  - name: Corky's Bar
+  - key: corkys_bar
+    name: Corky's Bar
     property_type: business
     cash_per_turn: 75
     heat_per_turn: 0
@@ -84,7 +85,8 @@ properties:
     is_contestable: true
     resolution_scene: null
 
-  - name: Dockside Warehouse Unit
+  - key: dockside_warehouse_unit
+    name: Dockside Warehouse Unit
     property_type: business
     cash_per_turn: 200
     heat_per_turn: 3
@@ -94,7 +96,8 @@ properties:
 
   # --- SAFEHOUSES ---
 
-  - name: Westside Safehouse
+  - key: westside_safehouse
+    name: Westside Safehouse
     property_type: safehouse
     cash_per_turn: 0
     heat_per_turn: -2
@@ -102,7 +105,8 @@ properties:
     is_contestable: true
     resolution_scene: null
 
-  - name: Flats Lockup
+  - key: flats_lockup
+    name: Flats Lockup
     property_type: safehouse
     cash_per_turn: 0
     heat_per_turn: -1
@@ -112,7 +116,8 @@ properties:
 
   # --- TERRITORIES ---
 
-  - name: The Flats
+  - key: the_flats
+    name: The Flats
     property_type: territory
     cash_per_turn: 100
     heat_per_turn: 1
@@ -120,7 +125,8 @@ properties:
     is_contestable: true
     resolution_scene: null
 
-  - name: The Westside
+  - key: the_westside
+    name: The Westside
     property_type: territory
     cash_per_turn: 125
     heat_per_turn: 2
@@ -128,7 +134,8 @@ properties:
     is_contestable: true
     resolution_scene: null
 
-  - name: The New Build
+  - key: the_new_build
+    name: The New Build
     property_type: territory
     cash_per_turn: 150
     heat_per_turn: 1
@@ -136,7 +143,8 @@ properties:
     is_contestable: true
     resolution_scene: null
 
-  - name: The Strip
+  - key: the_strip
+    name: The Strip
     property_type: territory
     cash_per_turn: 175
     heat_per_turn: 2
@@ -144,7 +152,8 @@ properties:
     is_contestable: true
     resolution_scene: null
 
-  - name: The Hill
+  - key: the_hill
+    name: The Hill
     property_type: territory
     cash_per_turn: 200
     heat_per_turn: 1
@@ -152,7 +161,8 @@ properties:
     is_contestable: true
     resolution_scene: null
 
-  - name: The Docks
+  - key: the_docks
+    name: The Docks
     property_type: territory
     cash_per_turn: 225
     heat_per_turn: 3
