@@ -10,6 +10,7 @@ from ..models.jobs import (
     RECON_TIER_LOW,
     RECON_TIER_MID,
 )
+from .flags import FlagKey
 
 
 RECON_MODIFIERS = {
@@ -31,7 +32,7 @@ RECON_MODIFIERS = {
 }
 
 RUN_MILESTONES = (3, 5, 10)
-BEAT2_PENALTY_FLAG = "beat2_penalty"
+BEAT2_PENALTY_FLAG = FlagKey.BEAT2_PENALTY.value
 BEAT2_PENALTY_DC = 2
 
 

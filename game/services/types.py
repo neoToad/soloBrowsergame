@@ -39,6 +39,14 @@ class CombatRollResult:
     total:      int
 
 
+@dataclass(frozen=True)
+class PendingEnemyAttack:
+    roll: int
+    total: int
+    hit: bool
+    damage: int
+
+
 @dataclass
 class DamageResult:
     die_roll:    int

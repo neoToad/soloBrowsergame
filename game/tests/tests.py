@@ -1337,7 +1337,10 @@ class CombatServiceTest(TestCase):
     def test_enemy_attack_hit_reduces_player_hp(self):
         from ..services.combat import execute_enemy_attack
         cs = self._make_combat_state(
-            pending_enemy_attack={'roll': 10, 'total': 12, 'hit': True, 'damage': 3},
+            pending_enemy_roll=10,
+            pending_enemy_total=12,
+            pending_enemy_hit=True,
+            pending_enemy_damage=3,
         )
         self.stats.hp = 10
         self.stats.save()
@@ -1348,12 +1351,15 @@ class CombatServiceTest(TestCase):
         self.assertEqual(self.stats.hp, 7)
         cs.refresh_from_db()
         self.assertEqual(cs.turn_number, 2)
-        self.assertIsNone(cs.pending_enemy_attack)
+        self.assertFalse(cs.enemy_attack_pending)
 
     def test_enemy_attack_miss_leaves_hp_unchanged(self):
         from ..services.combat import execute_enemy_attack
         cs = self._make_combat_state(
-            pending_enemy_attack={'roll': 1, 'total': 1, 'hit': False, 'damage': 0},
+            pending_enemy_roll=1,
+            pending_enemy_total=1,
+            pending_enemy_hit=False,
+            pending_enemy_damage=0,
         )
         self.stats.hp = 10
         self.stats.save()
@@ -1368,7 +1374,10 @@ class CombatServiceTest(TestCase):
     def test_enemy_attack_reduces_player_to_zero_transitions_to_defeat_scene(self):
         from ..services.combat import execute_enemy_attack
         cs = self._make_combat_state(
-            pending_enemy_attack={'roll': 15, 'total': 17, 'hit': True, 'damage': 5},
+            pending_enemy_roll=15,
+            pending_enemy_total=17,
+            pending_enemy_hit=True,
+            pending_enemy_damage=5,
         )
         self.stats.hp = 2
         self.stats.save()
@@ -1678,7 +1687,10 @@ class CombatViewTest(TestCase):
         CombatState.objects.create(
             session=self.session, enemy=self.enemy, enemy_hp=self.enemy.max_hp,
             turn_number=1, is_active=True,
-            pending_enemy_attack={'roll': 5, 'total': 5, 'hit': False, 'damage': 0},
+            pending_enemy_roll=5,
+            pending_enemy_total=5,
+            pending_enemy_hit=False,
+            pending_enemy_damage=0,
         )
 
     def test_combat_enemy_attack_view_applies_queued_attack(self):
@@ -1689,7 +1701,7 @@ class CombatViewTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         cs = CombatState.objects.get(session=self.session)
-        self.assertIsNone(cs.pending_enemy_attack)
+        self.assertFalse(cs.enemy_attack_pending)
         self.assertEqual(cs.turn_number, 2)
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.hp, initial_hp)  # miss — HP must be unchanged

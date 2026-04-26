@@ -1,6 +1,7 @@
 import random
+from django.core.exceptions import FieldDoesNotExist
 from ..utils import roll_d20, stat_modifier
-from .types import CombatRollResult
+from .types import CombatRollResult, PendingEnemyAttack
 
 def resolve_player_attack(stats, enemy) -> CombatRollResult:
     """Resolve one player attack roll against an enemy and return hit/damage details."""
@@ -135,10 +136,7 @@ def execute_player_attack(session, stats, inventory, completed_map, combat_state
             f"vs {enemy.defense} — Missed."
         )
 
-    combat_state.pending_enemy_attack = {
-        'roll': e.roll, 'total': e.total, 'hit': e.hit, 'damage': e.damage,
-    }
-    combat_state.save()
+    queue_enemy_attack(combat_state, e)
 
     effective_stats = get_effective_stats(stats, inventory)
     roll_result = RollResult(
@@ -181,11 +179,11 @@ def execute_enemy_attack(session, stats, inventory, completed_map, combat_state,
     player_defense = 10 + stat_modifier(effective_stats.agility)
     e_mod_str = f"+{enemy.attack_modifier}" if enemy.attack_modifier >= 0 else str(enemy.attack_modifier)
 
-    attack_payload = combat_state.pending_enemy_attack or {}
-    e_roll  = attack_payload.get('roll')
-    e_total = attack_payload.get('total')
-    e_hit   = attack_payload.get('hit')
-    e_dmg   = attack_payload.get('damage')
+    enemy_attack = consume_enemy_attack(combat_state)
+    e_roll = enemy_attack.roll
+    e_total = enemy_attack.total
+    e_hit = enemy_attack.hit
+    e_dmg = enemy_attack.damage
 
     logs = []
     if e_hit:
@@ -200,9 +198,8 @@ def execute_enemy_attack(session, stats, inventory, completed_map, combat_state,
             f"vs {player_defense} — Missed."
         )
 
-    combat_state.pending_enemy_attack = None
     combat_state.turn_number += 1
-    combat_state.save()
+    combat_state.save(update_fields=["turn_number"])
     stats.save()
 
     if stats.hp <= 0:
@@ -283,3 +280,80 @@ def resolve_combat_end(session, stats, inventory, completed_map, next_scene, com
         session, next_scene, stats, effective_stats, inventory, completed_map,
         combat_state=next_combat_state,
     )
+
+
+def queue_enemy_attack(combat_state, attack: CombatRollResult) -> None:
+    combat_state.pending_enemy_roll = attack.roll
+    combat_state.pending_enemy_total = attack.total
+    combat_state.pending_enemy_hit = attack.hit
+    combat_state.pending_enemy_damage = attack.damage
+    update_fields = [
+        "pending_enemy_roll",
+        "pending_enemy_total",
+        "pending_enemy_hit",
+        "pending_enemy_damage",
+    ]
+    if _has_legacy_pending_enemy_attack_field(combat_state):
+        combat_state.pending_enemy_attack = None
+        update_fields.append("pending_enemy_attack")
+    combat_state.save(
+        update_fields=update_fields
+    )
+
+
+def consume_enemy_attack(combat_state) -> PendingEnemyAttack:
+    attack = _read_pending_enemy_attack(combat_state)
+    clear_enemy_attack(combat_state)
+    return attack
+
+
+def clear_enemy_attack(combat_state) -> None:
+    combat_state.pending_enemy_roll = None
+    combat_state.pending_enemy_total = None
+    combat_state.pending_enemy_hit = None
+    combat_state.pending_enemy_damage = None
+    update_fields = [
+        "pending_enemy_roll",
+        "pending_enemy_total",
+        "pending_enemy_hit",
+        "pending_enemy_damage",
+    ]
+    if _has_legacy_pending_enemy_attack_field(combat_state):
+        combat_state.pending_enemy_attack = None
+        update_fields.append("pending_enemy_attack")
+    combat_state.save(
+        update_fields=update_fields
+    )
+
+
+def _read_pending_enemy_attack(combat_state) -> PendingEnemyAttack:
+    if (
+        combat_state.pending_enemy_roll is not None
+        and combat_state.pending_enemy_total is not None
+        and combat_state.pending_enemy_hit is not None
+        and combat_state.pending_enemy_damage is not None
+    ):
+        return PendingEnemyAttack(
+            roll=combat_state.pending_enemy_roll,
+            total=combat_state.pending_enemy_total,
+            hit=bool(combat_state.pending_enemy_hit),
+            damage=combat_state.pending_enemy_damage,
+        )
+
+    legacy_payload = getattr(combat_state, "pending_enemy_attack", None)
+    if isinstance(legacy_payload, dict):
+        return PendingEnemyAttack(
+            roll=legacy_payload["roll"],
+            total=legacy_payload["total"],
+            hit=legacy_payload["hit"],
+            damage=legacy_payload["damage"],
+        )
+    raise ValueError("No pending enemy attack to consume.")
+
+
+def _has_legacy_pending_enemy_attack_field(combat_state) -> bool:
+    try:
+        combat_state._meta.get_field("pending_enemy_attack")
+    except FieldDoesNotExist:
+        return False
+    return True

@@ -107,16 +107,7 @@ def resolve_beat_1(session, run: JobRun, approach: JobApproach) -> dict:
     run.current_beat = 2
     run.save(update_fields=["selected_approach", "beat_1_success", "current_beat"])
 
-    approach_flag = f"approach_{approach.key}"
-    failed_flag = f"{approach_flag}_failed"
-
-    flags.set_flag(session, approach_flag)
-    if roll.success:
-        flags.clear_flag(session, failed_flag)
-        flags.clear_flag(session, BEAT2_PENALTY_FLAG)
-    else:
-        flags.set_flag(session, failed_flag)
-        flags.set_flag(session, BEAT2_PENALTY_FLAG)
+    flags.set_approach_outcome(session, approach.key, success=roll.success)
 
     increment_turn(session)
     return {

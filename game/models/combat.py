@@ -56,11 +56,23 @@ class CombatState(models.Model):
     turn_number  = models.IntegerField(default=1)
     is_active        = models.BooleanField(default=True)
     pending_victory  = models.BooleanField(default=False)
-    pending_enemy_attack = models.JSONField(null=True, blank=True)
+    pending_enemy_roll = models.IntegerField(null=True, blank=True)
+    pending_enemy_total = models.IntegerField(null=True, blank=True)
+    pending_enemy_hit = models.BooleanField(null=True, blank=True)
+    pending_enemy_damage = models.IntegerField(null=True, blank=True)
 
     @property
     def enemy_attack_pending(self):
-        return self.pending_enemy_attack is not None
+        typed_pending = (
+            self.pending_enemy_roll is not None
+            and self.pending_enemy_total is not None
+            and self.pending_enemy_hit is not None
+            and self.pending_enemy_damage is not None
+        )
+        if typed_pending:
+            return True
+        # Temporary fallback while migrating away from the legacy JSON field.
+        return getattr(self, "pending_enemy_attack", None) is not None
 
     def __str__(self):
         return f"{self.session} vs {self.enemy.name} (turn {self.turn_number})"
