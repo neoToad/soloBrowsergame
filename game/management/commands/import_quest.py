@@ -71,8 +71,8 @@ class Command(BaseCommand):
                         "rep_change": arrival.get("rep_change", sdata.get("rep_change", 0)),
                         "heat_change": arrival.get("heat_change", sdata.get("heat_change", 0)),
                         "consume_item": self._get_or_warn(Item, arrival.get("consume_item")),
-                        "receive_property": None,
-                        "lose_property": None,
+                        "receive_property": self._get_or_warn(Item, arrival.get("receive_property", "")),
+                        "lose_property": self._get_or_warn(Item, arrival.get("lose_property", "")),
                     },
                 )
                 scene_map[scene.key] = scene

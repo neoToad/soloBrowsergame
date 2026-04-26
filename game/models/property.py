@@ -7,6 +7,7 @@ class Property(models.Model):
         ('territory', 'Territory'),
     ]
     name             = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
     property_type    = models.CharField(max_length=20, choices=PROPERTY_TYPES)
     cash_per_turn    = models.IntegerField(default=0)
     heat_per_turn    = models.IntegerField(default=0)
