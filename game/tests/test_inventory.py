@@ -1,0 +1,179 @@
+from django.test import Client, TestCase
+from django.urls import reverse
+
+from .test_factories import make_game_session, make_item
+
+
+class UseItemTest(TestCase):
+    def setUp(self):
+        from game.models import Item, PlayerInventory
+
+        self.client = Client()
+        self.session = make_game_session(self.client)
+        self.stats = self.session.stats
+        self.heal_potion = Item.objects.create(
+            key="test_potion",
+            name="Test Potion",
+            description="Heals you.",
+            is_consumable=True,
+            effect_type="heal_hp",
+            effect_value=10,
+        )
+        self.inventory_item = PlayerInventory.objects.create(
+            session=self.session, item=self.heal_potion, quantity=1
+        )
+
+    def test_use_item_success(self):
+        from game.models import PlayerInventory
+
+        self.stats.hp = self.stats.max_hp - 5
+        self.stats.save()
+
+        response = self.client.post(
+            reverse("use_item", kwargs={"item_id": self.heal_potion.pk}),
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.stats.refresh_from_db()
+        self.assertEqual(self.stats.hp, self.stats.max_hp)
+        self.assertFalse(
+            PlayerInventory.objects.filter(session=self.session, item=self.heal_potion).exists()
+        )
+
+    def test_use_item_not_in_inventory(self):
+        self.inventory_item.delete()
+
+        response = self.client.post(
+            reverse("use_item", kwargs={"item_id": self.heal_potion.pk}),
+            HTTP_HX_REQUEST="true",
+        )
+        self.assertEqual(response.status_code, 400)
+
+
+class InventoryServiceTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.session = make_game_session(self.client)
+        self.stats = self.session.stats
+
+    def test_use_item_add_stat_effect_increases_stat_and_consumes_item(self):
+        from game.models import PlayerInventory
+        from game.services.inventory import apply_item_effect
+
+        item = make_item(
+            key="inv__add_str",
+            name="Strength Tonic",
+            is_consumable=True,
+            effect_type="add_stat",
+            effect_stat="strength",
+            effect_value=2,
+        )
+        pi = PlayerInventory.objects.create(session=self.session, item=item, quantity=1)
+        inventory = {item.id: pi}
+        original_str = self.stats.strength
+
+        apply_item_effect(self.session, self.stats, inventory, item)
+
+        self.stats.refresh_from_db()
+        self.assertEqual(self.stats.strength, original_str + 2)
+        self.assertFalse(PlayerInventory.objects.filter(session=self.session, item=item).exists())
+
+    def test_consume_item_decrements_quantity_without_deleting_when_qty_gt_1(self):
+        from game.models import PlayerInventory
+        from game.services.inventory import consume_item
+
+        item = make_item(key="inv__multi", name="Multi Item")
+        pi = PlayerInventory.objects.create(session=self.session, item=item, quantity=2)
+        inventory = {item.id: pi}
+
+        consume_item(self.session, item, inventory)
+
+        pi.refresh_from_db()
+        self.assertEqual(pi.quantity, 1)
+
+    def test_award_scene_items_respects_award_once_flag(self):
+        from game.models import PlayerInventory
+        from game.models.world import SceneItem
+        from game.services.inventory import award_scene_items
+
+        scene = self.session.current_scene
+        item = make_item(key="inv__award_once", name="Once Item")
+        SceneItem.objects.create(scene=scene, item=item, quantity=1, award_once=True)
+
+        inventory = {}
+        award_scene_items(self.session, scene, inventory)
+        award_scene_items(self.session, scene, inventory)
+
+        pi = PlayerInventory.objects.get(session=self.session, item=item)
+        self.assertEqual(pi.quantity, 1)
+
+    def test_award_scene_contacts_gain_and_lose(self):
+        from game.models.player import PlayerContact
+        from game.models.world import Contact, SceneContact
+        from game.services.inventory import award_scene_contacts
+
+        scene = self.session.current_scene
+        gained = Contact.objects.create(key="inv__c_gain", name="Gained Contact", description="")
+        lost = Contact.objects.create(key="inv__c_lose", name="Lost Contact", description="")
+        SceneContact.objects.create(scene=scene, contact=gained, action="gain", award_once=False)
+        SceneContact.objects.create(scene=scene, contact=lost, action="lose", award_once=False)
+
+        existing_pc = PlayerContact.objects.create(session=self.session, contact=lost)
+        contacts = {lost.id: existing_pc}
+
+        awarded, removed = award_scene_contacts(self.session, scene, contacts)
+
+        self.assertEqual([c.id for c in awarded], [gained.id])
+        self.assertEqual([c.id for c in removed], [lost.id])
+        self.assertTrue(PlayerContact.objects.filter(session=self.session, contact=gained).exists())
+        self.assertFalse(PlayerContact.objects.filter(session=self.session, contact=lost).exists())
+
+
+class EffectiveStatsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.session = make_game_session(self.client)
+
+    def test_get_effective_stats_applies_passive_item_bonuses(self):
+        from game.models import Item, PlayerInventory
+        from game.services.inventory import get_player_inventory
+        from game.utils import get_effective_stats
+
+        stats = self.session.stats
+        stats.strength = 8
+        stats.agility = 7
+        stats.save()
+
+        str_item = Item.objects.create(
+            key="phase6__str_charm",
+            name="STR Charm",
+            description="Passive strength bonus.",
+            passive_stat="strength",
+            passive_value=2,
+        )
+        agi_item = Item.objects.create(
+            key="phase6__agi_charm",
+            name="AGI Charm",
+            description="Passive agility bonus.",
+            passive_stat="agility",
+            passive_value=3,
+        )
+        second_str_item = Item.objects.create(
+            key="phase6__str_charm_2",
+            name="STR Charm 2",
+            description="Another passive strength bonus.",
+            passive_stat="strength",
+            passive_value=1,
+        )
+        PlayerInventory.objects.create(session=self.session, item=str_item, quantity=1)
+        PlayerInventory.objects.create(session=self.session, item=agi_item, quantity=1)
+        PlayerInventory.objects.create(session=self.session, item=second_str_item, quantity=1)
+
+        inventory = get_player_inventory(self.session)
+        effective = get_effective_stats(stats, inventory)
+
+        self.assertEqual(effective.strength, 11)
+        self.assertEqual(effective.agility, 10)
+        self.assertEqual(effective.bonuses["strength"], 3)
+        self.assertEqual(effective.bonuses["agility"], 3)

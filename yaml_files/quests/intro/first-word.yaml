@@ -21,7 +21,6 @@ quest:
           stat_name: null
           stat_value: null
           required_item: null
-          required_quest: null
           required_ending_type: null
           required_contact: null
 
@@ -31,7 +30,7 @@ scenes:
     scene_type: normal
     title: The Message
     order: 10
-    body: |
+    body: >
       The message comes through a number you don't recognise. Three sentences,
       no name. Someone heard about Decker Avenue — not what happened, just that
       it ended.
@@ -132,7 +131,7 @@ scenes:
     scene_type: normal
     title: Dave's Bar
     order: 20
-    body: |
+    body: >
       Dave's Bar is half full at noon, which is more than you'd like.
       The man in the back booth has water in front of him. Untouched.
 
