@@ -94,7 +94,7 @@ class JobEndpointsTest(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertIn("cooldown", response.content.decode().lower())
 
-    @patch("game.services.jobs.roll_d20", return_value=20)
+    @patch("game.services.jobs_rolls.roll_d20", return_value=20)
     def test_job_run_beat_1_happy_path(self, _mock_roll):
         job = self._make_job()
         run = JobRun.objects.create(
@@ -190,8 +190,8 @@ class JobEndpointsTest(TestCase):
         self.assertIn("[ DISTRICT TARGETS ]", body)
         self.assertIn("[ CONTACTS ]", body)
 
-    @patch("game.services.jobs.random.uniform", return_value=1.0)
-    @patch("game.services.jobs.random.randint", return_value=100)
+    @patch("game.services.jobs_rewards.random.uniform", return_value=1.0)
+    @patch("game.services.jobs_rewards.random.randint", return_value=100)
     def test_job_run_resolve_happy_path_completes_run(self, _mock_randint, _mock_uniform):
         job = self._make_job(key="jobs__resolve")
         run = JobRun.objects.create(
@@ -244,9 +244,9 @@ class JobEndpointsTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    @patch("game.services.jobs.random.uniform", return_value=1.0)
-    @patch("game.services.jobs.random.randint", return_value=100)
-    @patch("game.services.jobs.roll_d20", return_value=20)
+    @patch("game.services.jobs_rewards.random.uniform", return_value=1.0)
+    @patch("game.services.jobs_rewards.random.randint", return_value=100)
+    @patch("game.services.jobs_rolls.roll_d20", return_value=20)
     def test_full_replay_loop_allows_replay_after_cooldown(
         self, _mock_roll, _mock_randint, _mock_uniform
     ):
@@ -312,9 +312,9 @@ class JobEndpointsTest(TestCase):
             1,
         )
 
-    @patch("game.services.jobs.random.uniform", return_value=1.0)
-    @patch("game.services.jobs.random.randint", return_value=100)
-    @patch("game.services.jobs.roll_d20", return_value=20)
+    @patch("game.services.jobs_rewards.random.uniform", return_value=1.0)
+    @patch("game.services.jobs_rewards.random.randint", return_value=100)
+    @patch("game.services.jobs_rolls.roll_d20", return_value=20)
     def test_contact_offer_unlock_and_offer_cooldown_are_enforced_independently(
         self, _mock_roll, _mock_randint, _mock_uniform
     ):

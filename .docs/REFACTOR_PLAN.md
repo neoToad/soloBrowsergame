@@ -84,7 +84,7 @@ Decide ownership model explicitly:
 Create shared import services (`services/importers/*`) and make management commands thin wrappers.  
 Replace label-based requirement-group reuse with explicit scoped identifiers.
 
-5. **Split `jobs.py` by concern.**  
+5. **Split `jobs.py` by concern.**  DONE
 Separate modules for: eligibility/listing, lifecycle transitions, rewards/cooldowns, roll engine, flag policy.
 
 6. **Make state transitions explicit and typed.**  

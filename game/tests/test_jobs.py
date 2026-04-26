@@ -87,7 +87,7 @@ class JobsServiceTest(TestCase):
         self.assertEqual(row["cooldown_turns_remaining"], 2)
         self.assertIn("cooldown", row["locked_reasons"])
 
-    @patch("game.services.jobs.roll_d20", return_value=1)
+    @patch("game.services.jobs_rolls.roll_d20", return_value=1)
     def test_resolve_beat_1_failure_sets_required_flags(self, _mock_roll):
         job = self._make_job()
         run = JobRun.objects.create(
@@ -165,8 +165,8 @@ class JobsServiceTest(TestCase):
         self.assertEqual(run.current_beat, 3)
         self.assertTrue(run.beat_2_success)
 
-    @patch("game.services.jobs.random.uniform", return_value=1.2)
-    @patch("game.services.jobs.random.randint", return_value=100)
+    @patch("game.services.jobs_rewards.random.uniform", return_value=1.2)
+    @patch("game.services.jobs_rewards.random.randint", return_value=100)
     def test_apply_job_rewards_uses_run_bucket_and_recon_modifiers(self, _mock_randint, _mock_uniform):
         job = self._make_job(base_heat=10, base_rep=5)
         run = JobRun.objects.create(
@@ -303,8 +303,8 @@ class RewardBucketTests(TestCase):
         )
         return run
 
-    @patch("game.services.jobs.random.uniform", return_value=1.0)
-    @patch("game.services.jobs.random.randint", return_value=100)
+    @patch("game.services.jobs_rewards.random.uniform", return_value=1.0)
+    @patch("game.services.jobs_rewards.random.randint", return_value=100)
     def test_bucket_run_0_base_rates(self, _mock_randint, _mock_uniform):
         # Runs 0-2: cash ×1.0, heat ×1.0, rep ×1.0
         run = self._make_run(run_count=0)
@@ -314,8 +314,8 @@ class RewardBucketTests(TestCase):
         self.assertEqual(reward["heat"], 10)    # 10 * 1.0 + 0
         self.assertEqual(reward["rep"], 5)      # 5 * 1.0 + 0
 
-    @patch("game.services.jobs.random.uniform", return_value=1.15)
-    @patch("game.services.jobs.random.randint", return_value=100)
+    @patch("game.services.jobs_rewards.random.uniform", return_value=1.15)
+    @patch("game.services.jobs_rewards.random.randint", return_value=100)
     def test_bucket_run_3_familiarity_bonus(self, _mock_randint, _mock_uniform):
         # Runs 3-6: cash ×1.15-1.25, heat ×0.9, rep ×1.2
         run = self._make_run(run_count=3)
@@ -325,8 +325,8 @@ class RewardBucketTests(TestCase):
         self.assertEqual(reward["heat"], 9)     # 10 * 0.9 + 0
         self.assertEqual(reward["rep"], 6)      # 5 * 1.2 + 0
 
-    @patch("game.services.jobs.random.uniform", return_value=1.30)
-    @patch("game.services.jobs.random.randint", return_value=100)
+    @patch("game.services.jobs_rewards.random.uniform", return_value=1.30)
+    @patch("game.services.jobs_rewards.random.randint", return_value=100)
     def test_bucket_run_7_veteran_rates(self, _mock_randint, _mock_uniform):
         # Runs 7+: cash ×1.30-1.45, heat ×0.80, rep ×1.0 (back to base)
         run = self._make_run(run_count=7)
