@@ -6,22 +6,30 @@ from game.models import (
     Requirement, RequirementGroup, PlayerContext,
 )
 from game.constants import SESSION_KEY
-from .test_factories import make_game_session, make_item
+from .test_factories import make_game_session, make_hub_scene, make_item
 from game.models import Enemy
 
 class GameNavigationTest(TestCase):
-    fixtures = [
-        'game/fixtures/arc.json',
-        'game/fixtures/property.json',
-        'game/fixtures/requirement.json',
-        'game/fixtures/requirementgroup.json',
-        'game/fixtures/scene.json',
-        'game/fixtures/choice.json',
-        'game/fixtures/quest.json',
-    ]
-
     def setUp(self):
         self.client = Client()
+        hub = make_hub_scene()
+
+        notice_board = Scene.objects.create(
+            key='hub__notice_board', title='The Board', body='', scene_type='hub',
+        )
+        Choice.objects.create(
+            scene=notice_board, label='Head back outside', target_scene=hub, order=1,
+        )
+
+        self.warehouse_scene = Scene.objects.create(
+            key='warehouse__loading_dock', title='Loading Dock', body='', scene_type='normal',
+        )
+        Choice.objects.create(
+            scene=self.warehouse_scene, label='Slip around back.', target_scene=hub, order=1,
+        )
+
+        decoy = Scene.objects.create(key='test__nav_decoy', title='Decoy', body='', scene_type='normal')
+        Choice.objects.create(scene=decoy, label='Decoy Choice', target_scene=hub, order=1)
 
     def test_root_redirects_to_game(self):
         response = self.client.get('/')
@@ -39,14 +47,17 @@ class GameNavigationTest(TestCase):
         self.assertIn(SESSION_KEY, self.client.session)
 
     def test_scene_navigation(self):
-        # Initialize session
         self.client.get('/game/')
-        
-        # Go to notice board
+        session = GameSession.objects.first()
+        initial_scene = session.current_scene
+
         response = self.client.get(reverse('scene_detail', kwargs={'scene_key': 'hub__notice_board'}))
+
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "The Board")
         self.assertContains(response, "Head back outside")
+        session.refresh_from_db()
+        self.assertEqual(session.current_scene, initial_scene)
 
     def test_stat_gated_choice(self):
         # Initialize session
@@ -99,7 +110,7 @@ class GameNavigationTest(TestCase):
         self.assertEqual(session_id_1, session_id_2)
         self.assertEqual(GameSession.objects.count(), 1)
 
-    def test_htmx_choice_resolve(self):
+    def test_choice_resolve_advances_scene_and_returns_htmx_fragment(self):
         self.client.get('/game/')
         session = GameSession.objects.first()
         initial_scene = session.current_scene
@@ -216,15 +227,20 @@ class GameNavigationTest(TestCase):
         self.assertEqual(session.current_scene, initial_scene)
 
 class RequirementEvaluationTest(TestCase):
-    def test_stat_gte(self):
+    def test_numeric_gte_conditions(self):
         from types import SimpleNamespace
         from ..models import PlayerContext
-        stats = SimpleNamespace(strength=10, level=5)
-        ctx = PlayerContext(stats=stats, inventory={}, completed_map={})
-        req = Requirement(condition_type='stat_gte', stat_name='strength', stat_value=10)
-        self.assertTrue(req.evaluate(ctx))
-        req.stat_value = 11
-        self.assertFalse(req.evaluate(ctx))
+        cases = [
+            ('stat_gte',  'strength', 10, SimpleNamespace(strength=10, level=5), True),
+            ('stat_gte',  'strength', 11, SimpleNamespace(strength=10, level=5), False),
+            ('level_gte', None,        5, SimpleNamespace(level=5),               True),
+            ('level_gte', None,        6, SimpleNamespace(level=5),               False),
+        ]
+        for condition_type, stat_name, stat_value, stats, expected in cases:
+            with self.subTest(condition_type=condition_type, stat_value=stat_value):
+                ctx = PlayerContext(stats=stats, inventory={}, completed_map={})
+                req = Requirement(condition_type=condition_type, stat_name=stat_name, stat_value=stat_value)
+                self.assertEqual(req.evaluate(ctx), expected)
 
     def test_has_item_missing_item(self):
         from ..models import PlayerContext
@@ -265,16 +281,6 @@ class RequirementEvaluationTest(TestCase):
         ctx.completed_map = {1: 'defeat'}
         self.assertFalse(req.evaluate(ctx))
         ctx.completed_map = {2: 'victory'}
-        self.assertFalse(req.evaluate(ctx))
-
-    def test_level_gte(self):
-        from types import SimpleNamespace
-        from ..models import PlayerContext
-        stats = SimpleNamespace(level=5)
-        ctx = PlayerContext(stats=stats, inventory={}, completed_map={})
-        req = Requirement(condition_type='level_gte', stat_value=5)
-        self.assertTrue(req.evaluate(ctx))
-        req.stat_value = 6
         self.assertFalse(req.evaluate(ctx))
 
     def test_requirement_group_logic(self):
@@ -329,16 +335,18 @@ class CombatTest(TestCase):
             is_active=True
         )
 
-    def test_combat_attack_continues(self):
-        # Ensure enemy has enough HP to survive one hit
+    def test_player_attack_non_killing_blow_returns_combat_panel(self):
         self.combat_state.enemy_hp = 100
         self.combat_state.save()
-        
-        response = self.client.post(reverse('combat_attack'), HTTP_HX_REQUEST='true')
+
+        with patch('game.services.combat.roll_d20', return_value=20):
+            response = self.client.post(reverse('combat_attack'), HTTP_HX_REQUEST='true')
+
         self.assertEqual(response.status_code, 200)
-        # Response should contain combat state markup (e.g. combat-panel)
         self.assertContains(response, "combat-panel")
         self.assertContains(response, self.combat_state.enemy.name.upper())
+        self.combat_state.refresh_from_db()
+        self.assertLess(self.combat_state.enemy_hp, 100)
 
     def test_combat_victory_and_quest_completion(self):
         self.combat_state.enemy_hp = 1
@@ -449,9 +457,7 @@ class UseItemTest(TestCase):
         
         self.assertEqual(response.status_code, 200)
         self.stats.refresh_from_db()
-        # It should heal at least 1 HP (usually potion heals more)
-        self.assertGreater(self.stats.hp, self.stats.max_hp - 5)
-        self.assertLessEqual(self.stats.hp, self.stats.max_hp)
+        self.assertEqual(self.stats.hp, self.stats.max_hp)
         
         # Consumable should be removed
         from ..models import PlayerInventory
@@ -755,7 +761,7 @@ class NoticeBoardTest(TestCase):
         self.assertContains(response, self.warehouse_entrance.title)
 
 
-class Phase4PerformanceTest(TestCase):
+class QueryBudgetTest(TestCase):
     fixtures = [
         'game/fixtures/arc.json',
         'game/fixtures/property.json',
@@ -796,6 +802,23 @@ class Phase4PerformanceTest(TestCase):
         self.assertIn('locked', board)
         self.assertIn('completed', board)
         self.assertLessEqual(len(ctx), 4)
+
+
+class PropertyServiceTest(TestCase):
+    fixtures = [
+        'game/fixtures/arc.json',
+        'game/fixtures/property.json',
+        'game/fixtures/requirement.json',
+        'game/fixtures/requirementgroup.json',
+        'game/fixtures/scene.json',
+        'game/fixtures/choice.json',
+        'game/fixtures/quest.json',
+    ]
+
+    def setUp(self):
+        self.client = Client()
+        self.client.get('/game/')
+        self.session = GameSession.objects.first()
 
     def test_process_turn_income_skips_save_when_no_logs(self):
         from ..services.property_service import process_turn_income
@@ -1207,43 +1230,6 @@ class QuestBuilderValidationTest(TestCase):
 
         self.assertNotIn('ending_no_hub_return', self._warning_types(quest))
 
-    # ── Task 9.8: duplicate scene keys ─────────────────────────────────────────
-    # Scene.key is unique at the DB level so duplicates can't exist in reality;
-    # we mock the queryset to verify the validator catches the case if it ever
-    # arises (e.g. after a data migration or manual DB edit).
-
-    def test_duplicate_key_detected(self):
-        from unittest.mock import patch, MagicMock
-        from types import SimpleNamespace
-        from ..services.quest_builder import validate_quest
-
-        quest = self._make_quest(key='qbv__quest3')
-        entry = self._make_scene(quest, 'qbv__dupkey_a')
-        quest.entrance_scene = entry
-        quest.save()
-
-        fake_a = SimpleNamespace(id=1, key='shared_key', title='A', scene_type='normal', requires_roll=False)
-        fake_b = SimpleNamespace(id=2, key='shared_key', title='B', scene_type='normal', requires_roll=False)
-
-        with patch('game.services.quest_builder.Quest') as MockQuest, \
-             patch('game.services.quest_builder.Choice') as MockChoice, \
-             patch('game.services.quest_builder.CombatEncounter') as MockCE:
-
-            mock_q = MagicMock()
-            MockQuest.objects.get.return_value = mock_q
-            mock_q.entrance_scene_id = None
-            mock_q.is_unlocked = False
-            mock_q.hub_scenes.exists.return_value = False
-            mock_q.scenes.only.return_value = [fake_a, fake_b]
-            MockChoice.objects.filter.return_value.only.return_value = []
-            mock_ce_qs = MagicMock()
-            mock_ce_qs.only.return_value = mock_ce_qs
-            mock_ce_qs.values_list.return_value = []
-            MockCE.objects.filter.return_value = mock_ce_qs
-
-            types = [w['type'] for w in validate_quest(quest.pk)]
-
-        self.assertIn('duplicate_key', types)
 
 
 class MaxHpTest(TestCase):

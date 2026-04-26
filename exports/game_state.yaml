@@ -1,22 +1,78 @@
 meta:
   version: 1
-  exported_at: '2026-04-25T21:35:27.343272+00:00'
+  exported_at: '2026-04-26T16:24:15.440905+00:00'
   include_scene_body: false
 counts:
-  items: 9
-  enemies: 10
-  contacts: 8
-  properties: 0
+  items: 42
+  enemies: 23
+  contacts: 17
+  properties: 10
   arcs: 1
-  quests: 4
-  scenes: 55
+  quests: 9
+  scenes: 129
   jobs: 0
-  requirement_groups: 7
-  requirements: 8
+  requirement_groups: 12
+  requirements: 38
 items:
+- key: 9mm
+  name: 9mm
+  description: Clean. Registered to someone who reported it lost.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: strength
+  passive_value: 5
+- key: bodega_painkillers
+  name: Bodega Painkillers
+  description: 'Generic ibuprofen from the rack by the register at the corner store.
+    Four hundred milligrams. The cashier doesn''t look up when you buy them. Takes
+    the edge off enough to keep moving.
+
+    '
+  is_consumable: true
+  effect_type: heal_hp
+  effect_stat: null
+  effect_value: 15
+  passive_stat: null
+  passive_value: 0
+- key: bolt_cutters
+  name: Bolt Cutters
+  description: The big ones. For serious locks or light panic.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
 - key: brass_knuckles
   name: Brass Knuckles
-  description: Cold, heavy, and to the point.
+  description: Someone else's initials scratched into the base.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: strength
+  passive_value: 2
+- key: bucco_olive_oil
+  name: Bucco & Sons Extra Virgin
+  description: 'A half-litre bottle, the good label. Cold pressed, Sicilian, not a
+    blend. Richie Bucco sends these occasionally instead of words. The olive oil is
+    legitimately excellent and that''s somehow the most unsettling part.
+
+    '
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: burner_envelope
+  name: Envelope of Cash
+  description: 'Rubber-banded. Mixed bills, nothing sequential. The universal language.
+    Whatever it was for, it''s yours now.
+
+    '
   is_consumable: false
   effect_type: null
   effect_stat: null
@@ -25,13 +81,22 @@ items:
   passive_value: 0
 - key: burner_phone
   name: Burner Phone
-  description: Pre-paid, untraceable. One-use comms.
+  description: Fresh SIM. Untraceable for now.
   is_consumable: false
   effect_type: null
   effect_stat: null
   effect_value: 0
   passive_stat: null
   passive_value: 0
+- key: burner_pistol
+  name: Burner Pistol
+  description: Unregistered. Has history you don't know about and don't want to.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: strength
+  passive_value: 6
 - key: cash_envelope
   name: Cash Envelope
   description: Unmarked bills. Someone's cut.
@@ -50,9 +115,95 @@ items:
   effect_value: 0
   passive_stat: null
   passive_value: 0
+- key: crowbar
+  name: Crowbar
+  description: Makes argument in a language everyone understands.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: strength
+  passive_value: 3
+- key: disposable_camera
+  name: Disposable Camera
+  description: "Ten exposures left. The kind of thing that only matters once \u2014\
+    \ whatever's already on the roll is as important as what gets added to it. Maybe\
+    \ more.\n"
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: duct_tape
+  name: Duct Tape
+  description: No further description needed.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: dutch_coin
+  name: Dutch's Coin
+  description: "A foreign coin \u2014 nobody can place the country. Dutch's people\
+    \ have been leaving these as acknowledgment for twenty years. Not currency. Not\
+    \ a threat. Just a signal that Dutch knows something happened and is noting it.\
+    \ The weight of it in your pocket is entirely psychological.\n"
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: charisma
+  passive_value: 2
+- key: dutch_sit_down
+  name: Dutch's Advice
+  description: 'Twenty minutes in Dutch''s back room while he doesn''t look at you
+    directly and says things that sound like observations. You piece it together on
+    the walk home. By the time you''re at your door you understand something you didn''t
+    before.
+
+    '
+  is_consumable: true
+  effect_type: add_stat
+  effect_stat: intellect
+  effect_value: 1
+  passive_stat: null
+  passive_value: 0
+- key: envelope_cash
+  name: Envelope of Cash
+  description: Unmarked bills, rubber-banded.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
 - key: fake_id
   name: Fake ID
   description: Good enough to pass a cursory check.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: field_dressing
+  name: Field Dressing
+  description: 'A military surplus compression bandage, still in the foil wrap. Half
+    the people in the Flats carry one and nobody asks why. Stops the bleeding. Doesn''t
+    fix anything underneath.
+
+    '
+  is_consumable: true
+  effect_type: heal_hp
+  effect_stat: null
+  effect_value: 25
+  passive_stat: null
+  passive_value: 0
+- key: flash_drive
+  name: Flash Drive
+  description: Small, cheap, contents unknown.
   is_consumable: false
   effect_type: null
   effect_stat: null
@@ -77,6 +228,30 @@ items:
   effect_value: 0
   passive_stat: null
   passive_value: 0
+- key: good_shoes
+  name: Good Shoes
+  description: "Not new \u2014 broken in, specifically. The kind of shoe that fits\
+    \ like it was made for your foot because it's spent two years becoming that. Nobody\
+    \ notices good shoes. That's how you know they're good.\n"
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: agility
+  passive_value: 1
+- key: half_bottle
+  name: Half a Bottle of Something
+  description: 'No label. Amber. Burns on the way down in a way that suggests it started
+    life as something else before someone redistilled it in a bathtub. Takes the edge
+    off. Probably.
+
+    '
+  is_consumable: true
+  effect_type: heal_hp
+  effect_stat: null
+  effect_value: 10
+  passive_stat: null
+  passive_value: 0
 - key: kevlar_vest
   name: Kevlar Vest
   description: Secondhand. Stops a round, barely.
@@ -86,16 +261,228 @@ items:
   effect_value: 0
   passive_stat: null
   passive_value: 0
-- key: lockpick_set
-  name: Lockpick Set
-  description: Slim jim and tension bar. No questions asked.
+- key: key_storage
+  name: Storage Unit Key
+  description: A key. Number stamped on the fob.
   is_consumable: false
   effect_type: null
   effect_stat: null
   effect_value: 0
   passive_stat: null
   passive_value: 0
+- key: ledger
+  name: Ledger
+  description: Handwritten. Names, numbers, dates. Belongs to someone who wants it
+    back.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: lockpick_set
+  name: Lockpick Set
+  description: The good kind, not the tourist kind.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: medkit
+  name: Medkit
+  description: Field dressing, antiseptic, the basics.
+  is_consumable: true
+  effect_type: heal_hp
+  effect_stat: null
+  effect_value: 30
+  passive_stat: null
+  passive_value: 0
+- key: package_sealed
+  name: Sealed Package
+  description: You don't know what's in it. That's the job.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: painkillers
+  name: Painkillers
+  description: Prescription. Not yours.
+  is_consumable: true
+  effect_type: heal_hp
+  effect_stat: null
+  effect_value: 10
+  passive_stat: null
+  passive_value: 0
+- key: photo
+  name: Photograph
+  description: Someone who would rather not be photographed doing what they're doing.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: pipe
+  name: Length of Pipe
+  description: Galvanized. Repurposed from something structural.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: strength
+  passive_value: 2
+- key: police_scanner
+  name: Police Scanner
+  description: Old model, still works, picks up most of what you need.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: heat
+  passive_value: -3
+- key: reyes_corner_time
+  name: Eddie's Corner Notes
+  description: 'A folded index card in Eddie Reyes'' handwriting. Three observations
+    about your footwork and one about your left hook. Specific. Accurate. Uncomfortable
+    to read. You work on it until it stops being true.
+
+    '
+  is_consumable: true
+  effect_type: add_stat
+  effect_stat: strength
+  effect_value: 1
+  passive_stat: null
+  passive_value: 0
+- key: suture_kit
+  name: Suture Kit
+  description: 'Stolen from a first aid supply van. Needle, thread, antiseptic wipes,
+    and a pair of forceps that have clearly been used before. Closing a wound yourself
+    is a particular kind of evening.
+
+    '
+  is_consumable: true
+  effect_type: heal_hp
+  effect_stat: null
+  effect_value: 40
+  passive_stat: null
+  passive_value: 0
+- key: switchblade
+  name: Switchblade
+  description: Spring-loaded, matte handle. Works first time every time.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: strength
+  passive_value: 3
+- key: tailored_jacket
+  name: Tailored Jacket
+  description: "Not expensive \u2014 just fitted. Found at an estate sale in The Hill,\
+    \ altered once by a woman on Crane Street who didn't ask what for. Wearing something\
+    \ that fits correctly changes how a room reads you before you've opened your mouth.\n"
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: charisma
+  passive_value: 1
+- key: track_work
+  name: Track Work
+  description: 'Three weeks of running the old rail loop before sunrise. Nobody sees
+    you. Nobody cares. Your lungs start to forgive you for everything you''ve done
+    to them.
+
+    '
+  is_consumable: true
+  effect_type: add_stat
+  effect_stat: agility
+  effect_value: 1
+  passive_stat: null
+  passive_value: 0
+- key: zip_ties
+  name: Zip Ties
+  description: A handful. Multi-use.
+  is_consumable: false
+  effect_type: null
+  effect_stat: null
+  effect_value: 0
+  passive_stat: null
+  passive_value: 0
+- key: zonk_bump
+  name: "Zonk \u2014 Snorted"
+  description: "A folded paper square, pre-measured. Faster onset than smoking. Upper\
+    \ effect \u2014 sharper, more present, easier to talk to people and mean it. The\
+    \ come-down is its own conversation.\n"
+  is_consumable: true
+  effect_type: add_stat
+  effect_stat: charisma
+  effect_value: 1
+  passive_stat: null
+  passive_value: 0
+- key: zonk_pill
+  name: Zonk (pill)
+  description: Slow release. Hallucinogenic edge. Harder to dose.
+  is_consumable: true
+  effect_type: heal_hp
+  effect_stat: null
+  effect_value: 15
+  passive_stat: null
+  passive_value: 0
+- key: zonk_smoked
+  name: Zonk (smoked)
+  description: The standard. Mellow, dissociative.
+  is_consumable: true
+  effect_type: heal_hp
+  effect_stat: null
+  effect_value: 10
+  passive_stat: null
+  passive_value: 0
 enemies:
+- key: backstreet_boy
+  name: Backstreet Boy
+  description: "Craig's crew. More flash than discipline \u2014 chain visible, shoes\
+    \ clean, genuinely believes the outfit carries weight. It doesn't. Still hits\
+    \ hard enough that it doesn't matter.\n"
+  max_hp: 22
+  attack_modifier: 2
+  defense: 10
+  damage_min: 3
+  damage_max: 7
+- key: blues_officer
+  name: Blues Officer
+  description: "Cahill's people. Doesn't say anything incriminating. Doesn't need\
+    \ to \u2014 the badge does the threatening. Trained, structured, and operating\
+    \ with the full weight of the system behind him. The worst kind of opponent.\n"
+  max_hp: 35
+  attack_modifier: 4
+  defense: 14
+  damage_min: 4
+  damage_max: 10
+- key: bucco_associate
+  name: Bucco Associate
+  description: 'Old world structure means old world patience. He will wait for the
+    right moment in a way that street crews genuinely can''t. Suit jacket. Doesn''t
+    raise his voice. The calm is the threat.
+
+    '
+  max_hp: 32
+  attack_modifier: 3
+  defense: 13
+  damage_min: 4
+  damage_max: 9
+- key: bucco_capo
+  name: Bucco Capo
+  description: "Been with the family long enough that Richie Bucco knows his children's\
+    \ names. That's not warmth \u2014 that's depth of investment. Removing him is\
+    \ a family matter now, not just a business one.\n"
+  max_hp: 50
+  attack_modifier: 5
+  defense: 14
+  damage_min: 5
+  damage_max: 12
 - key: corner_boy
   name: Corner Boy
   description: Young, jumpy, more bark than bite. Stands his ground out of pride.
@@ -121,6 +508,18 @@ enemies:
   defense: 13
   damage_min: 2
   damage_max: 8
+- key: dutch_enforcer
+  name: Dutch's Enforcer
+  description: 'Not the guy Dutch sends when he wants to make a point. The guy Dutch
+    sends when the point has already been made and ignored. Doesn''t talk much. Doesn''t
+    need to.
+
+    '
+  max_hp: 40
+  attack_modifier: 4
+  defense: 13
+  damage_min: 4
+  damage_max: 10
 - key: emilios_guys
   name: Emilio's Guys
   description: Tough guys
@@ -137,6 +536,42 @@ enemies:
   defense: 8
   damage_min: 1
   damage_max: 4
+- key: harlan_muscle
+  name: Harlan Street Muscle
+  description: 'Dutch sends muscle, not lawyers. This is the muscle. Older than the
+    Kings'' guys, quieter about it, less interested in the theatre of the thing. Has
+    done this enough times that it''s just work.
+
+    '
+  max_hp: 30
+  attack_modifier: 3
+  defense: 12
+  damage_min: 3
+  damage_max: 8
+- key: kings_lieutenant
+  name: Kings Lieutenant
+  description: 'One of several. The internal politics mean he''s always half-managing
+    someone else''s problem as well as his own. Experienced, genuinely dangerous,
+    and irritable about it.
+
+    '
+  max_hp: 38
+  attack_modifier: 4
+  defense: 13
+  damage_min: 4
+  damage_max: 10
+- key: kings_soldier
+  name: Kings Soldier
+  description: 'Generational Westside. Knows every block, every exit, every face that
+    doesn''t belong. The loose council structure means he''s not always sure who he''s
+    answering to, which makes him edgy in a way that''s hard to predict.
+
+    '
+  max_hp: 28
+  attack_modifier: 3
+  defense: 11
+  damage_min: 3
+  damage_max: 8
 - key: mareks_men
   name: mareks_men
   description: mareks_men
@@ -170,14 +605,74 @@ enemies:
   defense: 13
   damage_min: 2
   damage_max: 8
+- key: street_tough
+  name: Street Tough
+  description: 'Nobody''s soldier. Works alone or in loose pairs, opportunistic. Not
+    trained, not disciplined, but willing enough that it amounts to the same thing
+    in a dark stairwell.
+
+    '
+  max_hp: 18
+  attack_modifier: 1
+  defense: 9
+  damage_min: 2
+  damage_max: 6
+- key: street_tough_x2
+  name: Two Street Toughs
+  description: "Separately, a problem. Together, a system \u2014 one pushes, one flanks.\
+    \ They've done it before. Not coordinated exactly, but practiced.\n"
+  max_hp: 32
+  attack_modifier: 3
+  defense: 10
+  damage_min: 3
+  damage_max: 8
+- key: street_tough_x3
+  name: Three Street Toughs
+  description: 'Numbers are the whole strategy. They know it. You know it. The only
+    question is whether you can make that strategy expensive enough that someone reconsiders.
+
+    '
+  max_hp: 40
+  attack_modifier: 4
+  defense: 10
+  damage_min: 4
+  damage_max: 10
 - key: terrell
   name: Terrell
-  description: Terrell
-  max_hp: 5
-  attack_modifier: 0
-  defense: 8
-  damage_min: 1
-  damage_max: 4
+  description: 'Young, maybe twenty-five. Gold chain, clean sneakers, eyes that clock
+    you the second you round the corner. Got reach but no discipline. The stoop light
+    flickers. Somewhere above you a window slides shut.
+
+    '
+  max_hp: 24
+  attack_modifier: 2
+  defense: 11
+  damage_min: 3
+  damage_max: 8
+- key: westside_pair
+  name: Two Westside Runners
+  description: 'Both young, both fast, both with something to prove. The problem with
+    fighting people who haven''t learned their limits yet is that they don''t know
+    when to stop.
+
+    '
+  max_hp: 36
+  attack_modifier: 3
+  defense: 11
+  damage_min: 3
+  damage_max: 9
+- key: westside_runner
+  name: Westside Runner
+  description: 'Young, fast, not yet sure how much he''s willing to lose. Kings material
+    but not there yet. The danger is that he''s trying to prove something, which makes
+    him harder to read than someone who knows what they''re doing.
+
+    '
+  max_hp: 20
+  attack_modifier: 2
+  defense: 10
+  damage_min: 2
+  damage_max: 7
 contacts:
 - key: carla_the_fence
   name: Carla the Fence
@@ -185,25 +680,181 @@ contacts:
 - key: court_clerk
   name: Court Clerk
   description: Keeps one foot in public records and one in the rumor mill.
+- key: craig_richards
+  name: Craig Richards
+  description: 'Insists on being called King. Everyone calls him Craig. He hates it.
+    Runs the Backstreet Boys out of The New Build and The Strip. Believes every word
+    of his own hype. Making decent money. Nobody respects him for it, which he is
+    aware of and has completely failed to address.
+
+    '
 - key: dock_foreman
   name: Dock Foreman
   description: Knows what comes off-manifest and who can be trusted with it.
+- key: dutch
+  name: Dutch
+  description: "Runs the Harlan Street Crew out of The Flats. Old school, disciplined,\
+    \ fingers in everything quietly. Never wastes words. The fact that he's dealing\
+    \ with you directly means something \u2014 you're not sure yet whether it's good.\n"
+- key: eddie_reyes
+  name: Eddie Reyes
+  description: 'Runs Reyes Boxing in The Flats, two blocks from Corky''s. Been there
+    thirty years. Listens more than he talks. The only person in the city who has
+    told Dutch, Cahill, and Richie Bucco something they didn''t want to hear and had
+    all three thank him. Nobody brings their business through his door. Doesn''t broker
+    deals. Occasionally points someone in a direction. Once. Doesn''t follow up.
+
+    '
+- key: frank_cahill
+  name: Lt. Frank Cahill
+  description: 'Major Crimes Unit. Taxes every crew in the city except Dutch, with
+    whom he has a relationship built entirely on implication. Bureaucratically polite
+    at all times. Never says anything incriminating. Built his operation from inside
+    the system over decades. The scariest person in the city.
+
+    '
+- key: kings_contact
+  name: Kings Contact
+  description: 'No one name, no one throat to grab. The council structure means your
+    contact today might not be your contact tomorrow. Useful for exactly as long as
+    the internal politics allow it.
+
+    '
+- key: linda_marsh
+  name: Councilor Linda Marsh
+  description: 'City councilor for The Flats and the border of The New Build. Publicly
+    the voice of community preservation. Quietly taking money from the developers
+    eating her district alive. Frank Cahill uses her for planning permissions and
+    the occasional burial of an investigation. Has a newsletter with a recipe section.
+    Owns a rescue dog named Biscuit. Has been making one small reasonable decision
+    at a time for eleven years and can''t see the shape of what she''s built anymore.
+
+    '
 - key: marty
   name: Marty
   description: Hey, Its marty.
 - key: mickey_two_fingers
   name: Mickey Two-Fingers
   description: Card-room regular who notices who can handle pressure.
+- key: morris
+  name: Morris
+  description: 'Dutch''s intermediary. Transactional, precise, slightly disappointing
+    to talk to in the way that efficient people are. Calls when he has information
+    and hangs up when he''s done. Says things like "acceptable" and "noted." Has no
+    evident inner life but occasionally says something that suggests he might.
+
+    '
 - key: pawn_shop_owner
   name: Pawn Shop Owner
   description: Runs cash through a legal front and only talks business when asked.
+- key: richie_bucco
+  name: Richie Bucco
+  description: 'Runs the Bucco Family. Will talk to you for forty minutes about cold
+    pressing olive oil. Genuinely knowledgeable about it. Something terrible may happen
+    before dinner regardless. The oldest outfit in the city and he carries that history
+    like it''s earned, because it is.
+
+    '
 - key: sable
   name: Sable
   description: Sable
+- key: sal
+  name: Sal
+  description: 'Owns Corky''s in The Flats. Inherited it from a friend who left town
+    and just wants to run a quiet bar. Tired, not defeated. Dutch''s people have been
+    using his floor for years and he wants them out. The longer you talk to him the
+    more uncomfortable the moral math gets.
+
+    '
 - key: sister
   name: Vickie
-  description: Your sister
-properties: []
+  description: 'Your sister. Calls only when she needs something. Genuinely loves
+    you in her way, which is real but will immediately generate the next problem the
+    moment the current one is solved. A chaos agent who does not consider herself
+    a chaos agent. Heavy Zonk user. Always completely confident.
+
+    '
+properties:
+- id: 1
+  name: Corky's Bar
+  property_type: business
+  cash_per_turn: 75
+  heat_per_turn: 0
+  rep_per_turn: 2
+  is_contestable: true
+  resolution_scene: null
+- id: 2
+  name: Dockside Warehouse Unit
+  property_type: business
+  cash_per_turn: 200
+  heat_per_turn: 3
+  rep_per_turn: 0
+  is_contestable: true
+  resolution_scene: null
+- id: 4
+  name: Flats Lockup
+  property_type: safehouse
+  cash_per_turn: 0
+  heat_per_turn: -1
+  rep_per_turn: 0
+  is_contestable: false
+  resolution_scene: null
+- id: 10
+  name: The Docks
+  property_type: territory
+  cash_per_turn: 225
+  heat_per_turn: 3
+  rep_per_turn: 1
+  is_contestable: true
+  resolution_scene: null
+- id: 5
+  name: The Flats
+  property_type: territory
+  cash_per_turn: 100
+  heat_per_turn: 1
+  rep_per_turn: 3
+  is_contestable: true
+  resolution_scene: null
+- id: 9
+  name: The Hill
+  property_type: territory
+  cash_per_turn: 200
+  heat_per_turn: 1
+  rep_per_turn: 4
+  is_contestable: true
+  resolution_scene: null
+- id: 7
+  name: The New Build
+  property_type: territory
+  cash_per_turn: 150
+  heat_per_turn: 1
+  rep_per_turn: 1
+  is_contestable: true
+  resolution_scene: null
+- id: 8
+  name: The Strip
+  property_type: territory
+  cash_per_turn: 175
+  heat_per_turn: 2
+  rep_per_turn: 2
+  is_contestable: true
+  resolution_scene: null
+- id: 6
+  name: The Westside
+  property_type: territory
+  cash_per_turn: 125
+  heat_per_turn: 2
+  rep_per_turn: 2
+  is_contestable: true
+  resolution_scene: null
+- id: 3
+  name: Westside Safehouse
+  property_type: safehouse
+  cash_per_turn: 0
+  heat_per_turn: -2
+  rep_per_turn: 0
+  is_contestable: true
+  resolution_scene: null
 arcs:
 - key: intro
   title: Intro
@@ -214,6 +865,360 @@ arcs:
   - corkys
   - the-ride
 quests:
+- key: the-box
+  title: The Box
+  arc: null
+  arc_order: null
+  is_unlocked: true
+  is_repeatable: false
+  entrance_scene: the-box__casing-it
+  hub_scenes:
+  - hub__apartment
+  requirement_group_ids: []
+  scenes:
+  - key: the-box__casing-it
+    scene_type: normal
+    title: Casing It
+    order: 10
+  - key: the-box__inside
+    scene_type: normal
+    title: Inside
+    order: 20
+  - key: the-box__the-run
+    scene_type: normal
+    title: The Run
+    order: 30
+  - key: the-box__cornered
+    scene_type: normal
+    title: Cornered
+    order: 40
+  - key: the-box__talked-out
+    scene_type: normal
+    title: Talked Out
+    order: 50
+  - key: the-box__fought-out
+    scene_type: combat
+    title: Fought Out
+    order: 60
+  - key: the-box__clean
+    scene_type: ending
+    title: Clean
+    order: 70
+  - key: the-box__beaten
+    scene_type: ending
+    title: Beaten
+    order: 80
+  - key: the-box__busted
+    scene_type: ending
+    title: Busted
+    order: 90
+- key: the-debt
+  title: The Debt
+  arc: null
+  arc_order: null
+  is_unlocked: true
+  is_repeatable: false
+  entrance_scene: the-debt__summons
+  hub_scenes:
+  - hub__apartment
+  requirement_group_ids:
+  - 8
+  scenes:
+  - key: the-debt__summons
+    scene_type: normal
+    title: Summons
+    order: 10
+  - key: the-debt__negotiate
+    scene_type: normal
+    title: Negotiate
+    order: 20
+  - key: the-debt__the-job
+    scene_type: normal
+    title: The Job
+    order: 30
+  - key: the-debt__casing
+    scene_type: normal
+    title: Casing
+    order: 40
+  - key: the-debt__the-shop
+    scene_type: normal
+    title: The Shop
+    order: 50
+  - key: the-debt__keypad
+    scene_type: normal
+    title: Keypad
+    order: 60
+  - key: the-debt__garrett-confrontation
+    scene_type: normal
+    title: Garrett Confrontation
+    order: 70
+  - key: the-debt__garrett-knows
+    scene_type: normal
+    title: Garrett Knows
+    order: 80
+  - key: the-debt__took-both
+    scene_type: normal
+    title: Took Both
+    order: 90
+  - key: the-debt__garrett-fight
+    scene_type: combat
+    title: Garrett Fight
+    order: 95
+  - key: the-debt__basement
+    scene_type: normal
+    title: Basement
+    order: 100
+  - key: the-debt__stay-on-task
+    scene_type: normal
+    title: Stay On Task
+    order: 105
+  - key: the-debt__flip
+    scene_type: normal
+    title: Flip
+    order: 107
+  - key: the-debt__sable-meeting
+    scene_type: normal
+    title: Sable Meeting
+    order: 115
+  - key: the-debt__back-to-marek
+    scene_type: normal
+    title: Back To Marek
+    order: 120
+  - key: the-debt__allied
+    scene_type: ending
+    title: Allied
+    order: 130
+  - key: the-debt__independent
+    scene_type: ending
+    title: Independent
+    order: 140
+  - key: the-debt__cleared
+    scene_type: ending
+    title: Cleared
+    order: 150
+  - key: the-debt__garrett-won
+    scene_type: ending
+    title: Garrett Won
+    order: 160
+- key: the-fence
+  title: The Fence
+  arc: null
+  arc_order: null
+  is_unlocked: true
+  is_repeatable: false
+  entrance_scene: the-fence__intro
+  hub_scenes:
+  - hub__apartment
+  requirement_group_ids:
+  - 11
+  scenes:
+  - key: the-fence__intro
+    scene_type: normal
+    title: Intro
+    order: 10
+  - key: the-fence__marek
+    scene_type: normal
+    title: Marek
+    order: 20
+  - key: the-fence__marek-pushback
+    scene_type: normal
+    title: Marek Pushback
+    order: 30
+  - key: the-fence__lockup
+    scene_type: normal
+    title: Lockup
+    order: 40
+  - key: the-fence__lockup-grab
+    scene_type: normal
+    title: Lockup Grab
+    order: 50
+  - key: the-fence__lockup-cornered
+    scene_type: normal
+    title: Lockup Cornered
+    order: 60
+  - key: the-fence__lockup-bluff
+    scene_type: normal
+    title: Lockup Bluff
+    order: 70
+  - key: the-fence__lockup-run
+    scene_type: combat
+    title: Lockup Run
+    order: 80
+  - key: the-fence__lockup-clean
+    scene_type: normal
+    title: Lockup Clean
+    order: 90
+  - key: the-fence__duvall
+    scene_type: normal
+    title: Duvall
+    order: 100
+  - key: the-fence__duvall-light
+    scene_type: normal
+    title: Duvall Light
+    order: 110
+  - key: the-fence__duvall-done
+    scene_type: normal
+    title: Duvall Done
+    order: 120
+  - key: the-fence__double-cross
+    scene_type: normal
+    title: Double Cross
+    order: 130
+  - key: the-fence__fight-out
+    scene_type: combat
+    title: Fight Out
+    order: 140
+  - key: the-fence__flipped
+    scene_type: ending
+    title: Flipped
+    order: 150
+  - key: the-fence__escaped
+    scene_type: ending
+    title: Escaped
+    order: 160
+  - key: the-fence__taken
+    scene_type: ending
+    title: Taken
+    order: 170
+  - key: the-fence__busted-again
+    scene_type: ending
+    title: Busted Again
+    order: 180
+- key: the-hunt
+  title: The Hunt
+  arc: null
+  arc_order: null
+  is_unlocked: true
+  is_repeatable: false
+  entrance_scene: the-hunt__word-on-marek
+  hub_scenes:
+  - hub__apartment
+  requirement_group_ids:
+  - 12
+  scenes:
+  - key: the-hunt__word-on-marek
+    scene_type: normal
+    title: Word On Marek
+    order: 10
+  - key: the-hunt__crane-road
+    scene_type: normal
+    title: Crane Road
+    order: 20
+  - key: the-hunt__stall
+    scene_type: normal
+    title: Stall
+    order: 30
+  - key: the-hunt__brawl
+    scene_type: combat
+    title: Brawl
+    order: 40
+  - key: the-hunt__after-the-brawl
+    scene_type: normal
+    title: After The Brawl
+    order: 50
+  - key: the-hunt__cracks
+    scene_type: normal
+    title: Cracks
+    order: 55
+  - key: the-hunt__sable
+    scene_type: normal
+    title: Sable
+    order: 60
+  - key: the-hunt__alone
+    scene_type: normal
+    title: Alone
+    order: 70
+  - key: the-hunt__together
+    scene_type: normal
+    title: Together
+    order: 80
+  - key: the-hunt__cut-off
+    scene_type: normal
+    title: Cut Off
+    order: 85
+  - key: the-hunt__marek-found
+    scene_type: normal
+    title: Marek Found
+    order: 88
+  - key: the-hunt__wait
+    scene_type: normal
+    title: Wait
+    order: 89
+  - key: the-hunt__the-warehouse
+    scene_type: combat
+    title: The Warehouse
+    order: 90
+  - key: the-hunt__marek-cornered
+    scene_type: normal
+    title: Marek Cornered
+    order: 100
+  - key: the-hunt__took-the-deal
+    scene_type: ending
+    title: Took The Deal
+    order: 110
+  - key: the-hunt__took-everything
+    scene_type: ending
+    title: Took Everything
+    order: 120
+  - key: the-hunt__no-deal
+    scene_type: ending
+    title: No Deal
+    order: 130
+  - key: the-hunt__worked-over
+    scene_type: ending
+    title: Worked Over
+    order: 140
+- key: the-fallout
+  title: The Fallout
+  arc: null
+  arc_order: 0
+  is_unlocked: true
+  is_repeatable: false
+  entrance_scene: the-fallout__the-second-call
+  hub_scenes: []
+  requirement_group_ids:
+  - 4
+  scenes:
+  - key: the-fallout__the-second-call
+    scene_type: normal
+    title: The Second Call
+    order: 10
+  - key: the-fallout__her-building
+    scene_type: normal
+    title: Her Building
+    order: 20
+  - key: the-fallout__emilios-place
+    scene_type: normal
+    title: Emilio's Place
+    order: 30
+  - key: the-fallout__the-sit-down
+    scene_type: normal
+    title: The Sit Down
+    order: 40
+  - key: the-fallout__the-fight
+    scene_type: combat
+    title: The Fight
+    order: 50
+  - key: the-fallout__the-deal
+    scene_type: normal
+    title: The Deal
+    order: 60
+  - key: the-fallout__walked-out
+    scene_type: normal
+    title: Walked Out
+    order: 70
+  - key: the-fallout__done
+    scene_type: ending
+    title: Done
+    order: 80
+  - key: the-fallout__done-hard
+    scene_type: ending
+    title: Done Hard
+    order: 90
+  - key: the-fallout__beaten
+    scene_type: ending
+    title: Beaten
+    order: 100
 - key: the-call
   title: The Call
   arc: intro
@@ -794,6 +1799,42 @@ scenes:
   scene_items: []
   scene_contacts: []
   combat_encounter: null
+- key: the-box__casing-it
+  scene_type: normal
+  title: Casing It
+  order: 10
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 79
+    label: Take the alley door
+    order: 1
+    target_scene: the-box__inside
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 80
+    label: Go through the front window
+    order: 2
+    target_scene: the-box__inside
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
 - key: the-call__four-days-out
   scene_type: normal
   title: Four Days Out
@@ -822,6 +1863,143 @@ scenes:
     label: Let it ring out
     order: 2
     target_scene: the-call__her-voice
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-debt__summons
+  scene_type: normal
+  title: Summons
+  order: 10
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 90
+    label: Hear him out
+    order: 1
+    target_scene: the-debt__the-job
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 91
+    label: Push back on the number
+    order: 2
+    target_scene: the-debt__negotiate
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fallout__the-second-call
+  scene_type: normal
+  title: The Second Call
+  order: 10
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 161
+    label: Ask where she is
+    order: 1
+    target_scene: the-fallout__her-building
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 162
+    label: Tell her not to move
+    order: 2
+    target_scene: the-fallout__her-building
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__intro
+  scene_type: normal
+  title: Intro
+  order: 10
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 116
+    label: Head to Marek's
+    order: 1
+    target_scene: the-fence__marek
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids:
+    - 9
+  - id: 117
+    label: Hit the evidence lockup first
+    order: 2
+    target_scene: the-fence__lockup
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids:
+    - 10
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__word-on-marek
+  scene_type: normal
+  title: Word On Marek
+  order: 10
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 138
+    label: Go to the storage facility
+    order: 1
+    target_scene: the-hunt__crane-road
     success_scene: null
     failure_scene: null
     set_flag_name: null
@@ -920,6 +2098,42 @@ scenes:
   scene_items: []
   scene_contacts: []
   combat_encounter: null
+- key: the-box__inside
+  scene_type: normal
+  title: Inside
+  order: 20
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 81
+    label: "Move fast \u2014 straight out the way you came"
+    order: 1
+    target_scene: the-box__the-run
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 82
+    label: Kill the lights and wait it out
+    order: 2
+    target_scene: the-box__cornered
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
 - key: the-call__her-voice
   scene_type: normal
   title: Her Voice
@@ -948,6 +2162,132 @@ scenes:
     label: Ask her why she called you specifically
     order: 2
     target_scene: the-call__why-you
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-debt__negotiate
+  scene_type: normal
+  title: Negotiate
+  order: 20
+  requires_roll: true
+  roll_stat: charisma
+  roll_difficulty: 12
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 92
+    label: Make the case
+    order: 1
+    target_scene: null
+    success_scene: the-debt__the-job
+    failure_scene: the-debt__the-job
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fallout__her-building
+  scene_type: normal
+  title: Her Building
+  order: 20
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 163
+    label: Go meet Emilio
+    order: 1
+    target_scene: the-fallout__emilios-place
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__marek
+  scene_type: normal
+  title: Marek
+  order: 20
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 118
+    label: Agree
+    order: 1
+    target_scene: the-fence__duvall
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 119
+    label: Push back on the terms
+    order: 2
+    target_scene: the-fence__marek-pushback
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__crane-road
+  scene_type: normal
+  title: Crane Road
+  order: 20
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 139
+    label: Fight your way out
+    order: 1
+    target_scene: the-hunt__brawl
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 140
+    label: "Stall \u2014 find out what they know"
+    order: 2
+    target_scene: the-hunt__stall
     success_scene: null
     failure_scene: null
     set_flag_name: null
@@ -1046,6 +2386,33 @@ scenes:
   scene_items: []
   scene_contacts: []
   combat_encounter: null
+- key: the-box__the-run
+  scene_type: normal
+  title: The Run
+  order: 30
+  requires_roll: true
+  roll_stat: agility
+  roll_difficulty: 12
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 83
+    label: Wait for the gap and go
+    order: 1
+    target_scene: null
+    success_scene: the-box__clean
+    failure_scene: the-box__cornered
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
 - key: the-call__why-you
   scene_type: normal
   title: Why You
@@ -1067,6 +2434,123 @@ scenes:
     target_scene: the-call__terrell
     success_scene: null
     failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-debt__the-job
+  scene_type: normal
+  title: The Job
+  order: 30
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 93
+    label: Case the print shop first
+    order: 1
+    target_scene: the-debt__casing
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 94
+    label: Go straight in
+    order: 2
+    target_scene: the-debt__the-shop
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fallout__emilios-place
+  scene_type: normal
+  title: Emilio's Place
+  order: 30
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 164
+    label: Sit down
+    order: 1
+    target_scene: the-fallout__the-sit-down
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__marek-pushback
+  scene_type: normal
+  title: Marek Pushback
+  order: 30
+  requires_roll: true
+  roll_stat: charisma
+  roll_difficulty: 11
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 120
+    label: Make the case
+    order: 1
+    target_scene: null
+    success_scene: the-fence__duvall-light
+    failure_scene: the-fence__duvall
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__stall
+  scene_type: normal
+  title: Stall
+  order: 30
+  requires_roll: true
+  roll_stat: charisma
+  roll_difficulty: 12
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 141
+    label: Hold the performance together
+    order: 1
+    target_scene: null
+    success_scene: the-hunt__cracks
+    failure_scene: the-hunt__brawl
     set_flag_name: null
     clear_flag_name: null
     requirement_group_ids: []
@@ -1191,6 +2675,42 @@ scenes:
   scene_items: []
   scene_contacts: []
   combat_encounter: null
+- key: the-box__cornered
+  scene_type: normal
+  title: Cornered
+  order: 40
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 84
+    label: Talk your way out
+    order: 1
+    target_scene: the-box__talked-out
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 85
+    label: Run for it
+    order: 2
+    target_scene: the-box__fought-out
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
 - key: the-call__terrell
   scene_type: normal
   title: Terrell
@@ -1227,6 +2747,117 @@ scenes:
   scene_items: []
   scene_contacts: []
   combat_encounter: null
+- key: the-debt__casing
+  scene_type: normal
+  title: Casing
+  order: 40
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 95
+    label: Go in after hours
+    order: 1
+    target_scene: the-debt__the-shop
+    success_scene: null
+    failure_scene: null
+    set_flag_name: debt_cased
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fallout__the-sit-down
+  scene_type: normal
+  title: The Sit Down
+  order: 40
+  requires_roll: true
+  roll_stat: charisma
+  roll_difficulty: 13
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 165
+    label: Make him see it your way
+    order: 1
+    target_scene: null
+    success_scene: the-fallout__the-deal
+    failure_scene: the-fallout__the-fight
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__lockup
+  scene_type: normal
+  title: Lockup
+  order: 40
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 121
+    label: Go in during shift change
+    order: 1
+    target_scene: the-fence__lockup-grab
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 122
+    label: Wait and watch the building first
+    order: 2
+    target_scene: the-fence__lockup-grab
+    success_scene: null
+    failure_scene: null
+    set_flag_name: fence_lockup_scouted
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__brawl
+  scene_type: combat
+  title: Brawl
+  order: 40
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter:
+    enemy: mareks_men
+    victory_scene: the-hunt__after-the-brawl
+    defeat_scene: the-hunt__worked-over
 - key: the-ride__the-ambush
   scene_type: combat
   title: The Ambush
@@ -1299,6 +2930,33 @@ scenes:
   scene_items: []
   scene_contacts: []
   combat_encounter: null
+- key: the-box__talked-out
+  scene_type: normal
+  title: Talked Out
+  order: 50
+  requires_roll: true
+  roll_stat: charisma
+  roll_difficulty: 13
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 86
+    label: Hold the story together
+    order: 1
+    target_scene: null
+    success_scene: the-box__beaten
+    failure_scene: the-box__busted
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
 - key: the-call__squeeze
   scene_type: normal
   title: Squeeze
@@ -1320,6 +2978,126 @@ scenes:
     target_scene: null
     success_scene: the-call__backed-off
     failure_scene: the-call__the-fight
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-debt__the-shop
+  scene_type: normal
+  title: The Shop
+  order: 50
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 96
+    label: Crack the keypad
+    order: 1
+    target_scene: the-debt__keypad
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 97
+    label: Find Garrett and make him open it
+    order: 2
+    target_scene: the-debt__garrett-confrontation
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fallout__the-fight
+  scene_type: combat
+  title: The Fight
+  order: 50
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter:
+    enemy: emilios_guys
+    victory_scene: the-fallout__walked-out
+    defeat_scene: the-fallout__beaten
+- key: the-fence__lockup-grab
+  scene_type: normal
+  title: Lockup Grab
+  order: 50
+  requires_roll: true
+  roll_stat: agility
+  roll_difficulty: 12
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 123
+    label: Move fast and get out
+    order: 1
+    target_scene: null
+    success_scene: the-fence__lockup-clean
+    failure_scene: the-fence__lockup-cornered
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__after-the-brawl
+  scene_type: normal
+  title: After The Brawl
+  order: 50
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 142
+    label: Cut her loose and hear her out
+    order: 1
+    target_scene: the-hunt__sable
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 143
+    label: Cut her loose and take the map
+    order: 2
+    target_scene: the-hunt__sable
+    success_scene: null
+    failure_scene: null
     set_flag_name: null
     clear_flag_name: null
     requirement_group_ids: []
@@ -1407,6 +3185,33 @@ scenes:
   scene_items: []
   scene_contacts: []
   combat_encounter: null
+- key: the-hunt__cracks
+  scene_type: normal
+  title: Cracks
+  order: 55
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 144
+    label: Take out the men and free the woman
+    order: 1
+    target_scene: the-hunt__sable
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
 - key: corkys__sal-talks
   scene_type: normal
   title: Sal Talks
@@ -1470,6 +3275,27 @@ scenes:
   scene_items: []
   scene_contacts: []
   combat_encounter: null
+- key: the-box__fought-out
+  scene_type: combat
+  title: Fought Out
+  order: 60
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter:
+    enemy: patrol_officers
+    victory_scene: the-box__beaten
+    defeat_scene: the-box__busted
 - key: the-call__the-fight
   scene_type: combat
   title: The Fight
@@ -1491,6 +3317,135 @@ scenes:
     enemy: terrell
     victory_scene: the-call__roughed-up-win
     defeat_scene: the-call__beaten
+- key: the-debt__keypad
+  scene_type: normal
+  title: Keypad
+  order: 60
+  requires_roll: true
+  roll_stat: intellect
+  roll_difficulty: 11
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 98
+    label: Try it
+    order: 1
+    target_scene: null
+    success_scene: the-debt__basement
+    failure_scene: the-debt__garrett-confrontation
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fallout__the-deal
+  scene_type: normal
+  title: The Deal
+  order: 60
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 166
+    label: Shake on it
+    order: 1
+    target_scene: the-fallout__done
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__lockup-cornered
+  scene_type: normal
+  title: Lockup Cornered
+  order: 60
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 124
+    label: "Bluff \u2014 wrong room, wrong floor"
+    order: 1
+    target_scene: the-fence__lockup-bluff
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 125
+    label: Run
+    order: 2
+    target_scene: the-fence__lockup-run
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__sable
+  scene_type: normal
+  title: Sable
+  order: 60
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 145
+    label: Take her in
+    order: 1
+    target_scene: the-hunt__together
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 146
+    label: Take the information and go alone
+    order: 2
+    target_scene: the-hunt__alone
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts:
+  - contact: sable
+    action: gain
+    award_once: true
+  combat_encounter: null
 - key: the-ride__the-delivery
   scene_type: normal
   title: The Delivery
@@ -1671,6 +3626,33 @@ scenes:
   scene_items: []
   scene_contacts: []
   combat_encounter: null
+- key: the-box__clean
+  scene_type: ending
+  title: Clean
+  order: 70
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: victory
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 100
+  rep_change: 10
+  heat_change: 5
+  choices:
+  - id: 87
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: box_clean_exit
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
 - key: the-call__backed-off
   scene_type: normal
   title: Backed Off
@@ -1700,6 +3682,123 @@ scenes:
   - contact: sister
     action: gain
     award_once: true
+  combat_encounter: null
+- key: the-debt__garrett-confrontation
+  scene_type: normal
+  title: Garrett Confrontation
+  order: 70
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 99
+    label: Tell him it's Marek
+    order: 1
+    target_scene: the-debt__garrett-knows
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 100
+    label: Say nothing
+    order: 2
+    target_scene: the-debt__garrett-fight
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fallout__walked-out
+  scene_type: normal
+  title: Walked Out
+  order: 70
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 167
+    label: Leave
+    order: 1
+    target_scene: the-fallout__done-hard
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__lockup-bluff
+  scene_type: normal
+  title: Lockup Bluff
+  order: 70
+  requires_roll: true
+  roll_stat: charisma
+  roll_difficulty: 12
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 126
+    label: Hold the story
+    order: 1
+    target_scene: null
+    success_scene: the-fence__lockup-clean
+    failure_scene: the-fence__busted-again
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__alone
+  scene_type: normal
+  title: Alone
+  order: 70
+  requires_roll: true
+  roll_stat: charisma
+  roll_difficulty: 12
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 147
+    label: Hold your ground
+    order: 1
+    target_scene: null
+    success_scene: the-hunt__marek-found
+    failure_scene: the-hunt__together
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
   combat_encounter: null
 - key: the-ride__done-straight
   scene_type: ending
@@ -1950,6 +4049,33 @@ scenes:
   scene_items: []
   scene_contacts: []
   combat_encounter: null
+- key: the-box__beaten
+  scene_type: ending
+  title: Beaten
+  order: 80
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: neutral
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 5
+  heat_change: 20
+  choices:
+  - id: 88
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: box_rough_exit
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
 - key: the-call__done-clean
   scene_type: ending
   title: Done Clean
@@ -1972,6 +4098,135 @@ scenes:
     success_scene: null
     failure_scene: null
     set_flag_name: the_call_talked_out
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-debt__garrett-knows
+  scene_type: normal
+  title: Garrett Knows
+  order: 80
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 101
+    label: "Take both folders and the plates \u2014 decide later"
+    order: 1
+    target_scene: the-debt__took-both
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 102
+    label: "Take Marek's folder and the plates \u2014 stay on task"
+    order: 2
+    target_scene: the-debt__stay-on-task
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 103
+    label: "Take Garrett's folder only \u2014 flip on Marek"
+    order: 3
+    target_scene: the-debt__flip
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fallout__done
+  scene_type: ending
+  title: Done
+  order: 80
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: neutral
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 5
+  heat_change: 0
+  choices:
+  - id: 168
+    label: Back to the apartment
+    order: 1
+    target_scene: null
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__lockup-run
+  scene_type: combat
+  title: Lockup Run
+  order: 80
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter:
+    enemy: precinct_officer
+    victory_scene: the-fence__lockup-clean
+    defeat_scene: the-fence__busted-again
+- key: the-hunt__together
+  scene_type: normal
+  title: Together
+  order: 80
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 148
+    label: Hit it now before he's gone
+    order: 1
+    target_scene: the-hunt__the-warehouse
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 149
+    label: Cut off his exit first
+    order: 2
+    target_scene: the-hunt__cut-off
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
     clear_flag_name: null
     requirement_group_ids: []
   scene_items: []
@@ -2085,6 +4340,96 @@ scenes:
   scene_items: []
   scene_contacts: []
   combat_encounter: null
+- key: the-hunt__cut-off
+  scene_type: normal
+  title: Cut Off
+  order: 85
+  requires_roll: true
+  roll_stat: agility
+  roll_difficulty: 11
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 150
+    label: Move into position
+    order: 1
+    target_scene: null
+    success_scene: the-hunt__the-warehouse
+    failure_scene: the-hunt__the-warehouse
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__marek-found
+  scene_type: normal
+  title: Marek Found
+  order: 88
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 151
+    label: Go in anyway
+    order: 1
+    target_scene: the-hunt__the-warehouse
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 152
+    label: Wait and find a smarter angle
+    order: 2
+    target_scene: the-hunt__wait
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__wait
+  scene_type: normal
+  title: Wait
+  order: 89
+  requires_roll: true
+  roll_stat: intellect
+  roll_difficulty: 13
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 153
+    label: Move when the moment comes
+    order: 1
+    target_scene: null
+    success_scene: the-hunt__marek-cornered
+    failure_scene: the-hunt__the-warehouse
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
 - key: corkys__done-sal-caved
   scene_type: ending
   title: Done Sal Caved
@@ -2139,6 +4484,33 @@ scenes:
   scene_items: []
   scene_contacts: []
   combat_encounter: null
+- key: the-box__busted
+  scene_type: ending
+  title: Busted
+  order: 90
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: defeat
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: -50
+  rep_change: -10
+  heat_change: 30
+  choices:
+  - id: 89
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: box_busted
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
 - key: the-call__beaten
   scene_type: ending
   title: Beaten
@@ -2166,13 +4538,841 @@ scenes:
   scene_items: []
   scene_contacts: []
   combat_encounter: null
+- key: the-debt__took-both
+  scene_type: normal
+  title: Took Both
+  order: 90
+  requires_roll: true
+  roll_stat: intellect
+  roll_difficulty: 12
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 104
+    label: Walk out with everything
+    order: 1
+    target_scene: null
+    success_scene: the-debt__basement
+    failure_scene: the-debt__garrett-fight
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fallout__done-hard
+  scene_type: ending
+  title: Done Hard
+  order: 90
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: neutral
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 5
+  heat_change: 15
+  choices:
+  - id: 169
+    label: Back to the apartment
+    order: 1
+    target_scene: null
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__lockup-clean
+  scene_type: normal
+  title: Lockup Clean
+  order: 90
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 127
+    label: Head to Marek's
+    order: 1
+    target_scene: the-fence__marek
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__the-warehouse
+  scene_type: combat
+  title: The Warehouse
+  order: 90
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter:
+    enemy: mareks_men
+    victory_scene: the-hunt__marek-cornered
+    defeat_scene: the-hunt__worked-over
+- key: the-debt__garrett-fight
+  scene_type: combat
+  title: Garrett Fight
+  order: 95
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter:
+    enemy: garrett
+    victory_scene: the-debt__basement
+    defeat_scene: the-debt__garrett-won
+- key: the-debt__basement
+  scene_type: normal
+  title: Basement
+  order: 100
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 105
+    label: Take the filing cabinet contents too
+    order: 1
+    target_scene: the-debt__back-to-marek
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 106
+    label: Just take the plates
+    order: 2
+    target_scene: the-debt__back-to-marek
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items:
+  - item: forged_plates
+    quantity: 1
+    award_once: true
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fallout__beaten
+  scene_type: ending
+  title: Beaten
+  order: 100
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: defeat
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: -50
+  rep_change: -10
+  heat_change: 20
+  choices:
+  - id: 170
+    label: Back to the apartment
+    order: 1
+    target_scene: null
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__duvall
+  scene_type: normal
+  title: Duvall
+  order: 100
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 5
+  choices:
+  - id: 128
+    label: Leave him with a warning
+    order: 1
+    target_scene: the-fence__duvall-done
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 129
+    label: Make sure he remembers
+    order: 2
+    target_scene: the-fence__duvall-done
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__marek-cornered
+  scene_type: normal
+  title: Marek Cornered
+  order: 100
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 154
+    label: Take the name and let him go
+    order: 1
+    target_scene: the-hunt__took-the-deal
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 155
+    label: Take the name and don't honor the deal
+    order: 2
+    target_scene: the-hunt__took-everything
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 156
+    label: "Ignore the offer \u2014 this was never about information"
+    order: 3
+    target_scene: the-hunt__no-deal
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-debt__stay-on-task
+  scene_type: normal
+  title: Stay On Task
+  order: 105
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 107
+    label: Deliver to Marek
+    order: 1
+    target_scene: the-debt__back-to-marek
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items:
+  - item: forged_plates
+    quantity: 1
+    award_once: true
+  scene_contacts: []
+  combat_encounter: null
+- key: the-debt__flip
+  scene_type: normal
+  title: Flip
+  order: 107
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 108
+    label: Find Sable
+    order: 1
+    target_scene: the-debt__sable-meeting
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__duvall-light
+  scene_type: normal
+  title: Duvall Light
+  order: 110
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 50
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 130
+    label: Take the money and go
+    order: 1
+    target_scene: the-fence__duvall-done
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__took-the-deal
+  scene_type: ending
+  title: Took The Deal
+  order: 110
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: victory
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 200
+  rep_change: 20
+  heat_change: 5
+  choices:
+  - id: 157
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: hunt_victory
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-debt__sable-meeting
+  scene_type: normal
+  title: Sable Meeting
+  order: 115
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 109
+    label: Agree
+    order: 1
+    target_scene: the-debt__allied
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 110
+    label: Take her information and stay independent
+    order: 2
+    target_scene: the-debt__independent
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts:
+  - contact: sable
+    action: gain
+    award_once: true
+  combat_encounter: null
+- key: the-debt__back-to-marek
+  scene_type: normal
+  title: Back To Marek
+  order: 120
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 111
+    label: Walk away
+    order: 1
+    target_scene: the-debt__cleared
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__duvall-done
+  scene_type: normal
+  title: Duvall Done
+  order: 120
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 131
+    label: Read the room before it closes
+    order: 1
+    target_scene: the-fence__double-cross
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 132
+    label: Wait and see what they want
+    order: 2
+    target_scene: the-fence__taken
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__took-everything
+  scene_type: ending
+  title: Took Everything
+  order: 120
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: victory
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 350
+  rep_change: 25
+  heat_change: 15
+  choices:
+  - id: 158
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: hunt_victory
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-debt__allied
+  scene_type: ending
+  title: Allied
+  order: 130
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: victory
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 50
+  rep_change: 20
+  heat_change: -5
+  choices:
+  - id: 112
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: debt_victory
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__double-cross
+  scene_type: normal
+  title: Double Cross
+  order: 130
+  requires_roll: true
+  roll_stat: intellect
+  roll_difficulty: 13
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices:
+  - id: 133
+    label: Move first
+    order: 1
+    target_scene: null
+    success_scene: the-fence__flipped
+    failure_scene: the-fence__fight-out
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-hunt__no-deal
+  scene_type: ending
+  title: No Deal
+  order: 130
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: victory
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 100
+  rep_change: 15
+  heat_change: 5
+  choices:
+  - id: 159
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: hunt_victory
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-debt__independent
+  scene_type: ending
+  title: Independent
+  order: 140
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: neutral
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 25
+  rep_change: 10
+  heat_change: 5
+  choices:
+  - id: 113
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: debt_neutral
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__fight-out
+  scene_type: combat
+  title: Fight Out
+  order: 140
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: null
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  choices: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter:
+    enemy: mareks_men
+    victory_scene: the-fence__escaped
+    defeat_scene: the-fence__taken
+- key: the-hunt__worked-over
+  scene_type: ending
+  title: Worked Over
+  order: 140
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: defeat
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: -50
+  rep_change: -5
+  heat_change: 10
+  choices:
+  - id: 160
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: hunt_defeat
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-debt__cleared
+  scene_type: ending
+  title: Cleared
+  order: 150
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: neutral
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 75
+  rep_change: 5
+  heat_change: 10
+  choices:
+  - id: 114
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: debt_neutral
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__flipped
+  scene_type: ending
+  title: Flipped
+  order: 150
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: victory
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 400
+  rep_change: 20
+  heat_change: 10
+  choices:
+  - id: 134
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: fence_victory
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-debt__garrett-won
+  scene_type: ending
+  title: Garrett Won
+  order: 160
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: defeat
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: -50
+  rep_change: -10
+  heat_change: 15
+  choices:
+  - id: 115
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: debt_defeat
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__escaped
+  scene_type: ending
+  title: Escaped
+  order: 160
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: neutral
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: 0
+  rep_change: 5
+  heat_change: 15
+  choices:
+  - id: 135
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: fence_neutral
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__taken
+  scene_type: ending
+  title: Taken
+  order: 170
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: defeat
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: -100
+  rep_change: -10
+  heat_change: 5
+  choices:
+  - id: 136
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: fence_defeat
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
+- key: the-fence__busted-again
+  scene_type: ending
+  title: Busted Again
+  order: 180
+  requires_roll: false
+  roll_stat: null
+  roll_difficulty: 10
+  ending_type: defeat
+  consume_item: null
+  receive_property_id: null
+  lose_property_id: null
+  cash_change: -75
+  rep_change: -15
+  heat_change: 35
+  choices:
+  - id: 137
+    label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    set_flag_name: fence_defeat
+    clear_flag_name: null
+    requirement_group_ids: []
+  scene_items: []
+  scene_contacts: []
+  combat_encounter: null
 jobs: []
 requirement_groups:
 - id: 1
   label: Talked out
   logic: all
   conditions:
-  - id: 1
+  - id: 34
     condition_type: has_flag
     flag_name: the_call_talked_out
     stat_name: null
@@ -2185,7 +5385,7 @@ requirement_groups:
   label: Fought out
   logic: all
   conditions:
-  - id: 2
+  - id: 35
     condition_type: has_flag
     flag_name: the_call_fought_out
     stat_name: null
@@ -2198,7 +5398,7 @@ requirement_groups:
   label: Lost
   logic: all
   conditions:
-  - id: 3
+  - id: 36
     condition_type: has_flag
     flag_name: the_call_lost
     stat_name: null
@@ -2211,7 +5411,7 @@ requirement_groups:
   label: Must have completed the call
   logic: all
   conditions:
-  - id: 4
+  - id: 37
     condition_type: quest_completed
     flag_name: null
     stat_name: null
@@ -2224,7 +5424,7 @@ requirement_groups:
   label: Must have completed Corky's
   logic: all
   conditions:
-  - id: 8
+  - id: 38
     condition_type: quest_completed
     flag_name: null
     stat_name: null
@@ -2237,7 +5437,7 @@ requirement_groups:
   label: Must have read the room
   logic: all
   conditions:
-  - id: 6
+  - id: 32
     condition_type: has_flag
     flag_name: corkys_read_room
     stat_name: null
@@ -2250,7 +5450,7 @@ requirement_groups:
   label: Must have completed first word
   logic: all
   conditions:
-  - id: 7
+  - id: 33
     condition_type: quest_completed
     flag_name: null
     stat_name: null
@@ -2259,6 +5459,89 @@ requirement_groups:
     required_quest: first-word
     required_contact: null
     required_ending_type: null
+- id: 8
+  label: Must have been defeated by the fence
+  logic: all
+  conditions:
+  - id: 24
+    condition_type: quest_ending
+    flag_name: null
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: the-fence
+    required_contact: null
+    required_ending_type: defeat
+- id: 9
+  label: Clean or rough exit from the box
+  logic: any
+  conditions:
+  - id: 25
+    condition_type: quest_ending
+    flag_name: null
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: the-box
+    required_contact: null
+    required_ending_type: victory
+  - id: 26
+    condition_type: quest_ending
+    flag_name: null
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: the-box
+    required_contact: null
+    required_ending_type: neutral
+- id: 10
+  label: Got busted on the box
+  logic: all
+  conditions:
+  - id: 27
+    condition_type: quest_ending
+    flag_name: null
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: the-box
+    required_contact: null
+    required_ending_type: defeat
+- id: 11
+  label: Must have completed the box
+  logic: all
+  conditions:
+  - id: 28
+    condition_type: quest_completed
+    flag_name: null
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: the-box
+    required_contact: null
+    required_ending_type: null
+- id: 12
+  label: Must have completed the fence with victory or neutral
+  logic: any
+  conditions:
+  - id: 29
+    condition_type: quest_ending
+    flag_name: null
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: the-fence
+    required_contact: null
+    required_ending_type: victory
+  - id: 30
+    condition_type: quest_ending
+    flag_name: null
+    stat_name: null
+    stat_value: 0
+    required_item: null
+    required_quest: the-fence
+    required_contact: null
+    required_ending_type: neutral
 requirements:
 - id: 1
   condition_type: has_flag
@@ -2324,6 +5607,276 @@ requirements:
   required_contact: null
   required_ending_type: null
 - id: 8
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: corkys
+  required_contact: null
+  required_ending_type: null
+- id: 9
+  condition_type: quest_ending
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: defeat
+- id: 10
+  condition_type: quest_ending
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-box
+  required_contact: null
+  required_ending_type: victory
+- id: 11
+  condition_type: quest_ending
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-box
+  required_contact: null
+  required_ending_type: neutral
+- id: 12
+  condition_type: quest_ending
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-box
+  required_contact: null
+  required_ending_type: defeat
+- id: 13
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-box
+  required_contact: null
+  required_ending_type: null
+- id: 14
+  condition_type: quest_ending
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-fence
+  required_contact: null
+  required_ending_type: victory
+- id: 15
+  condition_type: quest_ending
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-fence
+  required_contact: null
+  required_ending_type: neutral
+- id: 16
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 17
+  condition_type: has_flag
+  flag_name: corkys_read_room
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 18
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: first-word
+  required_contact: null
+  required_ending_type: null
+- id: 19
+  condition_type: has_flag
+  flag_name: the_call_talked_out
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 20
+  condition_type: has_flag
+  flag_name: the_call_fought_out
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 21
+  condition_type: has_flag
+  flag_name: the_call_lost
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 22
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-call
+  required_contact: null
+  required_ending_type: null
+- id: 23
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: corkys
+  required_contact: null
+  required_ending_type: null
+- id: 24
+  condition_type: quest_ending
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-fence
+  required_contact: null
+  required_ending_type: defeat
+- id: 25
+  condition_type: quest_ending
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-box
+  required_contact: null
+  required_ending_type: victory
+- id: 26
+  condition_type: quest_ending
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-box
+  required_contact: null
+  required_ending_type: neutral
+- id: 27
+  condition_type: quest_ending
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-box
+  required_contact: null
+  required_ending_type: defeat
+- id: 28
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-box
+  required_contact: null
+  required_ending_type: null
+- id: 29
+  condition_type: quest_ending
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-fence
+  required_contact: null
+  required_ending_type: victory
+- id: 30
+  condition_type: quest_ending
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-fence
+  required_contact: null
+  required_ending_type: neutral
+- id: 31
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 32
+  condition_type: has_flag
+  flag_name: corkys_read_room
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 33
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: first-word
+  required_contact: null
+  required_ending_type: null
+- id: 34
+  condition_type: has_flag
+  flag_name: the_call_talked_out
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 35
+  condition_type: has_flag
+  flag_name: the_call_fought_out
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 36
+  condition_type: has_flag
+  flag_name: the_call_lost
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: null
+  required_contact: null
+  required_ending_type: null
+- id: 37
+  condition_type: quest_completed
+  flag_name: null
+  stat_name: null
+  stat_value: 0
+  required_item: null
+  required_quest: the-call
+  required_contact: null
+  required_ending_type: null
+- id: 38
   condition_type: quest_completed
   flag_name: null
   stat_name: null

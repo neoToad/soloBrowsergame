@@ -26,26 +26,7 @@ Below the 80% threshold. The riskiest gaps are in the combat loop (`execute_enem
 
 
 
-## 4. Redundancy Issues
 
-### `test_full_replay_loop_allows_replay_after_cooldown` / `test_contact_offer_unlock_and_offer_cooldown_are_enforced_independently`
-
-Both tests execute the full beat-1 → beat-2 → resolve sequence. The second test adds unique value (min_run_count gating, contact-offer cooldown), but beats 1 and 2 are copy-pasted. **Refactor suggestion:** extract a `_run_full_job(client, run, approach)` helper that encapsulates the beat 1 + beat 2 + resolve calls, then call it from both tests.
-
-### `test_stat_gte` / `test_level_gte`
-
-Both test a `>= threshold` numeric comparison on a different field. These could be a single parametrized test:
-
-```python
-@pytest.mark.parametrize("condition_type,stat_name,stat_value,player_value,expected", [
-    ('stat_gte', 'strength', 10, 10, True),
-    ('stat_gte', 'strength', 11, 10, False),
-    ('level_gte', None, 5, 5, True),
-    ('level_gte', None, 6, 5, False),
-])
-```
-
----
 
 ## 5. Test Quality Issues
 
