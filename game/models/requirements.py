@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Callable, ClassVar
 
 from django.db import models
+from django.db.models import Q
 
 from .items import Item
 
@@ -126,7 +127,19 @@ class RequirementGroup(models.Model):
 
     label = models.CharField(max_length=200)
     logic = models.CharField(max_length=10, choices=LOGIC_CHOICES, default="all")
+    scope_type = models.CharField(max_length=50, null=True, blank=True)
+    scope_key = models.CharField(max_length=255, null=True, blank=True)
+    group_key = models.CharField(max_length=255, null=True, blank=True)
     requirements = models.ManyToManyField(Requirement, related_name="groups")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["scope_type", "scope_key", "group_key"],
+                condition=Q(scope_type__isnull=False) & Q(scope_key__isnull=False) & Q(group_key__isnull=False),
+                name="uq_requirement_group_scoped_identity",
+            )
+        ]
 
     def evaluate(self, ctx: PlayerContext):
         results = [r.evaluate(ctx) for r in self.requirements.all()]

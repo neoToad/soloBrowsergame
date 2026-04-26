@@ -80,7 +80,7 @@ Introduce `game/services/gameplay/` use-case services (`resolve_choice`, `start_
 Decide ownership model explicitly:
 - Preferred: `Scene` belongs to exactly one `Quest` (FK), 
 
-4. **Consolidate import system.**   
+4. **Consolidate import system.**   DONE
 Create shared import services (`services/importers/*`) and make management commands thin wrappers.  
 Replace label-based requirement-group reuse with explicit scoped identifiers.
 
