@@ -91,7 +91,7 @@ Separate modules for: eligibility/listing, lifecycle transitions, rewards/cooldo
 Wrap flags in a typed API (enum/constants + helper methods).  
 Move combat pending attack from raw dict to explicit fields or a dedicated transition object.
 
-7. **Standardize endpoint contracts.**  
+7. **Standardize endpoint contracts.**  Done
 Define consistent HTMX response strategy (partial HTML + trigger schema + structured errors).
 
 8. **Clean naming and encoding.**  

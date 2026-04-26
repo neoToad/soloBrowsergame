@@ -1,3 +1,4 @@
+import json
 from unittest.mock import patch
 from django.test import TestCase, Client
 from django.urls import reverse
@@ -223,6 +224,9 @@ class GameNavigationTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 403)
+        self.assertIn('id="scene-panel"', response.content.decode())
+        triggers = json.loads(response.headers.get('HX-Trigger', '{}'))
+        self.assertIn('app.error', triggers)
         session.refresh_from_db()
         self.assertEqual(session.current_scene, initial_scene)
 
@@ -543,6 +547,9 @@ class QuestBuilderSceneTest(TestCase):
         self.assertIn('canvas-stage', body)
         self.assertIn('qb-toast-container', body)
         self.assertIn('Docks', body)
+        triggers = json.loads(response.headers.get('HX-Trigger', '{}'))
+        self.assertIn('sceneUpdated', triggers)
+        self.assertIn('scene.updated', triggers)
 
     def test_scene_create_get_not_allowed(self):
         response = self.client.get(self._create_url())
@@ -587,6 +594,9 @@ class QuestBuilderSceneTest(TestCase):
         self.assertIn('hx-swap-oob', body)
         self.assertIn(f'scene-card-{scene.pk}', body)
         self.assertIn('qb-toast-container', body)
+        triggers = json.loads(response.headers.get('HX-Trigger', '{}'))
+        self.assertIn('sceneUpdated', triggers)
+        self.assertIn('scene.updated', triggers)
 
     # ── DELETE ─────────────────────────────────────────────────────────────────
 
@@ -600,6 +610,9 @@ class QuestBuilderSceneTest(TestCase):
         response = self.client.post(self._delete_url(scene.pk), {'confirmed': '1'})
         self.assertEqual(response.status_code, 200,
             f"Expected 200, got {response.content[:400]}")
+        triggers = json.loads(response.headers.get('HX-Trigger', '{}'))
+        self.assertIn('sceneUpdated', triggers)
+        self.assertIn('scene.updated', triggers)
         self.assertFalse(Scene.objects.filter(pk=scene.pk).exists())
 
 
@@ -736,6 +749,7 @@ class NoticeBoardTest(TestCase):
         
         response = self.client.post(reverse('start_quest', kwargs={'quest_key': 'locked_quest'}))
         self.assertEqual(response.status_code, 403)
+        self.assertIn("[ REQUEST FAILED ]", response.content.decode())
         
         # Start available quest
         response = self.client.post(reverse('start_quest', kwargs={'quest_key': 'the_warehouse_job'}))

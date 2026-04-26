@@ -237,10 +237,14 @@ Contacts the player can acquire. Each has a `key` for use in `SceneContact` reco
 |-----|------|-------------|
 | `sister` | Vickie | Player's sister. Chaos agent. Available after The Call. Calls when she needs something, which is always. |
 | `morris` | Morris | Dutch's logistics man. Unlocks Dutch-aligned job pipeline. |
+| `dutch` | Dutch | Runs the Harlan Street Crew. Direct contact means you've cleared through Morris and arrived somewhere the crew takes seriously. |
 | `sal` | Sal | Owner of Corky's. Acquired through the Corky's arc, depending on resolution. |
 | `eddie_reyes` | Eddie Reyes | Gym owner. Rare, high-trust contact. Points in directions once. |
-| `darius` | Darius | Backstreet Boys-adjacent operator. Useful for Strip work. Complicated. |
 | `pruitt` | DeShawn Pruitt | Westside Kings council member. Opens Kings-side jobs. |
+| `kings_contact` | Kings Contact | Generic Kings pipeline contact. Useful as long as the internal politics hold. |
+| `darius` | Darius | Backstreet Boys-adjacent operator. Useful for Strip work. Complicated. |
+| `craig_richards` | Craig Richards | Backstreet Boys leader. Insists on being called King. Opens BSB-side jobs. Low prestige, unpredictable. |
+| `richie_bucco` | Richie Bucco | Bucco Family head. High-tier, high-risk. Not a contact you acquire casually or quickly. |
 | `linda_marsh` | Councilor Marsh | Political access, slow burn, high risk. |
 | `frank_cahill` | Lt. Cahill | Blues access. Not a contact you want. Or maybe you do. |
 
@@ -248,49 +252,57 @@ Contacts the player can acquire. Each has a `key` for use in `SceneContact` reco
 
 ## Items
 
-Items the player can carry. Each has a `key` for use in `SceneItem` records and requirements.
+Items the player can carry. Each has a `key` for use in `SceneItem` records and requirements. Passive bonuses are applied via `get_effective_stats()` while the item is in inventory — they do not persist to the DB.
 
 ### Weapons
 
-| key | Name | Description | Notes |
-|-----|------|-------------|-------|
-| `brass_knuckles` | Brass Knuckles | Someone else's initials scratched into the base. | Acquired in The Call (victory). Combat modifier. |
-| `switchblade` | Switchblade | Spring-loaded, matte handle, works first time every time. | General purchase or loot. |
-| `pipe` | Length of Pipe | Galvanized. Repurposed from something structural. | Environmental loot. |
-| `burner_pistol` | Burner Pistol | Unregistered. Has history you don't know about and don't want to. | High-tier. Heat risk on acquisition. |
-| `9mm` | 9mm | Clean. Registered to someone who lost it. | Mid-tier sidearm. |
+All weapons grant a passive `strength` bonus while carried.
+
+| key | Name | Description | Passive Bonus |
+|-----|------|-------------|---------------|
+| `brass_knuckles` | Brass Knuckles | Someone else's initials scratched into the base. | +2 strength |
+| `pipe` | Length of Pipe | Galvanized. Repurposed from something structural. | +2 strength |
+| `switchblade` | Switchblade | Spring-loaded, matte handle. Works first time every time. | +3 strength |
+| `crowbar` | Crowbar | Makes argument in a language everyone understands. | +3 strength |
+| `9mm` | 9mm | Clean. Registered to someone who reported it lost. | +5 strength |
+| `burner_pistol` | Burner Pistol | Unregistered. Has history you don't know about and don't want to. | +6 strength |
 
 ### Tools & Gear
 
-| key | Name | Description | Notes |
-|-----|------|-------------|-------|
-| `lockpick_set` | Lockpick Set | The good kind, not the tourist kind. | Unlocks Cunning-gated infiltration options. |
-| `zip_ties` | Zip Ties | A handful. Multi-use. | Utility, shows up in specific quest branches. |
-| `burner_phone` | Burner Phone | Fresh SIM. Untraceable for now. | Required for certain covert contact choices. |
-| `crowbar` | Crowbar | Heavy. Makes argument in a language everyone understands. | Combat + utility. |
-| `bolt_cutters` | Bolt Cutters | The big ones. For serious locks or light panic. | Required for Docks/warehouse infiltration. |
-| `duct_tape` | Duct Tape | | Utility. Appears in improvised solutions. |
-| `police_scanner` | Police Scanner | Old model, still works, picks up most of what you need. | Reduces heat gain on certain missions. |
+No mechanical effect unless noted. Presence in inventory gates choices via `has_item` requirements.
+
+| key | Name | Description | Passive Bonus |
+|-----|------|-------------|---------------|
+| `lockpick_set` | Lockpick Set | The good kind, not the tourist kind. | — |
+| `bolt_cutters` | Bolt Cutters | The big ones. For serious locks or light panic. | — |
+| `zip_ties` | Zip Ties | A handful. Multi-use. | — |
+| `burner_phone` | Burner Phone | Fresh SIM. Untraceable for now. | — |
+| `duct_tape` | Duct Tape | Utility. Appears in improvised solutions. | — |
+| `police_scanner` | Police Scanner | Old model, still works, picks up most of what you need. | -3 heat |
 
 ### Drugs & Consumables
 
-| key | Name | Description | Notes |
-|-----|------|-------------|-------|
-| `zonk_smoked` | Zonk (smoked) | The standard. Mellow, dissociative. | Consumable. Effect TBD mechanically. |
-| `zonk_pill` | Zonk (pill) | Slow release. Hallucinogenic edge. Harder to dose. | Consumable. |
-| `medkit` | Medkit | Field dressing, antiseptic, the basics. | Restores HP on consume. |
-| `painkillers` | Painkillers | Prescription. Not yours. | Small HP restore, reduces combat penalty. |
+All consumables are removed from inventory on use (`is_consumable: true`).
+
+| key | Name | Description | Effect |
+|-----|------|-------------|--------|
+| `medkit` | Medkit | Field dressing, antiseptic, the basics. | Restores 30 HP |
+| `zonk_pill` | Zonk (pill) | Slow release. Hallucinogenic edge. Harder to dose. | Restores 15 HP |
+| `painkillers` | Painkillers | Prescription. Not yours. | Restores 10 HP |
+| `zonk_smoked` | Zonk (smoked) | The standard. Mellow, dissociative. | Restores 10 HP |
 
 ### Documents & MacGuffins
 
-| key | Name | Description | Notes |
-|-----|------|-------------|-------|
-| `package_sealed` | Sealed Package | You don't know what's in it. That's the job. | Quest item. Various quests. |
-| `ledger` | Ledger | Handwritten. Names, numbers, dates. Belongs to someone who wants it back. | Quest item, leverage. |
-| `envelope_cash` | Envelope of Cash | Unmarked bills, rubber-banded. Delivery or payment TBD. | Quest item. |
-| `key_storage` | Storage Unit Key | A key. Number stamped on the fob. | Quest item. |
-| `flash_drive` | Flash Drive | Small, cheap, contents unknown. | Quest item. High stakes. |
-| `photo` | Photograph | Someone who would rather not be photographed doing what they're doing. | Leverage. |
+No effects. Exist only to satisfy `has_item` requirements.
+
+| key | Name | Description |
+|-----|------|-------------|
+| `package_sealed` | Sealed Package | You don't know what's in it. That's the job. |
+| `ledger` | Ledger | Handwritten. Names, numbers, dates. Belongs to someone who wants it back. |
+| `envelope_cash` | Envelope of Cash | Unmarked bills, rubber-banded. |
+| `flash_drive` | Flash Drive | Small, cheap, contents unknown. |
+| `photo` | Photograph | Someone who would rather not be photographed doing what they're doing. |
+| `key_storage` | Storage Unit Key | A key. Number stamped on the fob. |
 
 ---
 

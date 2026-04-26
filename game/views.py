@@ -1,7 +1,7 @@
 from functools import wraps
 
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, HttpResponseNotAllowed
+from django.http import HttpResponseNotAllowed
 
 from .models import (
     Choice, GameSession, Item,
@@ -15,6 +15,7 @@ from .services.progression import spend_stat_point
 from .services             import gameplay
 from .services.types       import GameplayError
 from .services             import jobs as jobs_service
+from .presentation import responses as response_utils
 from .utils import get_effective_stats
 from .constants import SESSION_KEY, STAT_DB_NAMES
 
@@ -32,7 +33,11 @@ def require_game_session(view_func):
 
 
 def _htmx_response(request, context):
-    response = render(request, 'game/partials/htmx_response.html', context)
+    response = response_utils.render_htmx_fragment(
+        request,
+        'game/partials/htmx_response.html',
+        context,
+    )
     scene = context.get('scene')
     if scene:
         from django.urls import reverse
@@ -52,7 +57,7 @@ def _render_current_scene(request, session, *, extra_context=None):
     )
     if extra_context:
         context.update(extra_context)
-    if request.headers.get('HX-Request') == 'true':
+    if response_utils.is_htmx(request):
         return _htmx_response(request, context)
     return redirect('scene_detail', scene_key=scene.key)
 
@@ -100,7 +105,7 @@ def choice_resolve(request, choice_id, *, session_context):
     try:
         result = gameplay.resolve_choice(session_context, choice)
     except GameplayError as exc:
-        return HttpResponse(str(exc), status=exc.status)
+        return response_utils.error_response(request, message=str(exc), status=exc.status)
 
     context = build_render_context(
         session, result.next_scene, stats, result.effective_stats, inventory, completed_map,
@@ -108,7 +113,7 @@ def choice_resolve(request, choice_id, *, session_context):
         turn_summary=result.turn_summary,
         roll_result=result.roll_result,
     )
-    if request.headers.get('HX-Request') == 'true':
+    if response_utils.is_htmx(request):
         return _htmx_response(request, context)
     return redirect('scene_detail', scene_key=result.next_scene.key)
 
@@ -123,13 +128,13 @@ def start_quest(request, quest_key, *, session_context):
     try:
         result = gameplay.start_quest(session_context, quest)
     except GameplayError as exc:
-        return HttpResponse(str(exc), status=exc.status)
+        return response_utils.error_response(request, message=str(exc), status=exc.status)
 
     context = build_render_context(
         session, result.next_scene, stats, result.effective_stats, inventory, completed_map,
         combat_state=result.combat_state,
     )
-    if request.headers.get('HX-Request') == 'true':
+    if response_utils.is_htmx(request):
         return _htmx_response(request, context)
     return redirect('scene_detail', scene_key=result.next_scene.key)
 
@@ -145,7 +150,7 @@ def job_recon_start(request, job_key, *, session_context):
     try:
         recon_preview = jobs_service.start_recon(session, job)
     except jobs_service.JobRulesError as exc:
-        return HttpResponse(str(exc), status=403)
+        return response_utils.error_response(request, message=str(exc), status=403)
 
     return _render_current_scene(request, session, extra_context={'job_recon_preview': recon_preview})
 
@@ -161,7 +166,7 @@ def job_recon_commit(request, job_key, *, session_context):
     try:
         run = jobs_service.commit_recon(session, job)
     except jobs_service.JobRulesError as exc:
-        return HttpResponse(str(exc), status=403)
+        return response_utils.error_response(request, message=str(exc), status=403)
 
     flush_event_log(session, [f"You commit to {job.title}. Beat 1 begins."])
     return _render_current_scene(request, session, extra_context={'job_run': run})
@@ -190,7 +195,7 @@ def job_contact_start(request, offer_id, *, session_context):
     try:
         run = jobs_service.start_contact_job(session, offer)
     except jobs_service.JobRulesError as exc:
-        return HttpResponse(str(exc), status=403)
+        return response_utils.error_response(request, message=str(exc), status=403)
 
     flush_event_log(session, [f"{offer.contact.name} lines up a job: {offer.job.title}."])
     return _render_current_scene(request, session, extra_context={'job_run': run})
@@ -203,18 +208,18 @@ def job_run_beat_1(request, run_id, *, session_context):
 
     approach_key = (request.POST.get('approach') or '').strip()
     if not approach_key:
-        return HttpResponse("Missing approach key.", status=400)
+        return response_utils.error_response(request, message="Missing approach key.", status=400)
 
     session, *_ = session_context
     run = get_object_or_404(JobRun, pk=run_id)
     approach = JobApproach.objects.filter(job_id=run.job_id, key=approach_key).first()
     if approach is None:
-        return HttpResponse("Invalid approach key.", status=400)
+        return response_utils.error_response(request, message="Invalid approach key.", status=400)
 
     try:
         result = jobs_service.resolve_beat_1(session, run, approach)
     except jobs_service.JobRulesError as exc:
-        return HttpResponse(str(exc), status=403)
+        return response_utils.error_response(request, message=str(exc), status=403)
 
     outcome = "success" if result['roll'].success else "failure"
     flush_event_log(session, [f"Beat 1 ({approach.label}): {outcome}."])
@@ -228,7 +233,7 @@ def job_run_beat_2(request, run_id, *, session_context):
 
     action_key = (request.POST.get('action') or '').strip()
     if not action_key:
-        return HttpResponse("Missing beat 2 action key.", status=400)
+        return response_utils.error_response(request, message="Missing beat 2 action key.", status=400)
 
     session, *_ = session_context
     run = get_object_or_404(JobRun, pk=run_id)
@@ -236,7 +241,7 @@ def job_run_beat_2(request, run_id, *, session_context):
     try:
         result = jobs_service.resolve_beat_2(session, run, action_key)
     except jobs_service.JobRulesError as exc:
-        return HttpResponse(str(exc), status=403)
+        return response_utils.error_response(request, message=str(exc), status=403)
 
     flush_event_log(session, [f"Beat 2 resolved: {result['variant'].title}."])
     return _render_current_scene(request, session, extra_context={'job_beat_2': result})
@@ -253,7 +258,7 @@ def job_run_abort(request, run_id, *, session_context):
     try:
         jobs_service.abort_job_run(session, run)
     except jobs_service.JobRulesError as exc:
-        return HttpResponse(str(exc), status=403)
+        return response_utils.error_response(request, message=str(exc), status=403)
 
     flush_event_log(session, [f"You abort {run.job.title}."])
     return _render_current_scene(request, session)
@@ -270,7 +275,7 @@ def job_run_resolve(request, run_id, *, session_context):
     try:
         result = jobs_service.resolve_beat_3(session, run)
     except jobs_service.JobRulesError as exc:
-        return HttpResponse(str(exc), status=403)
+        return response_utils.error_response(request, message=str(exc), status=403)
 
     rewards = result['rewards']
     flush_event_log(
@@ -290,7 +295,7 @@ def combat_attack(request, *, session_context):
     try:
         context = gameplay.run_player_attack(session_context)
     except GameplayError as exc:
-        return HttpResponse(str(exc), status=exc.status)
+        return response_utils.error_response(request, message=str(exc), status=exc.status)
 
     return _htmx_response(request, context)
 
@@ -303,7 +308,7 @@ def combat_resolve_enemy(request, *, session_context):
     try:
         context = gameplay.run_enemy_attack(session_context)
     except GameplayError as exc:
-        return HttpResponse(str(exc), status=exc.status)
+        return response_utils.error_response(request, message=str(exc), status=exc.status)
 
     return _htmx_response(request, context)
 
@@ -316,7 +321,7 @@ def combat_continue(request, *, session_context):
     try:
         context = gameplay.run_combat_continue(session_context)
     except GameplayError as exc:
-        return HttpResponse(str(exc), status=exc.status)
+        return response_utils.error_response(request, message=str(exc), status=exc.status)
 
     return _htmx_response(request, context)
 
@@ -332,7 +337,7 @@ def level_up(request, *, session_context):
     try:
         public_name, _field, new_value = spend_stat_point(stats, stat_name, STAT_DB_NAMES)
     except ValueError as exc:
-        return HttpResponse(str(exc), status=400)
+        return response_utils.error_response(request, message=str(exc), status=400)
 
     log_event(session, f"{public_name.upper()} increased to {new_value}.")
 
@@ -357,7 +362,7 @@ def use_item(request, item_id, *, session_context):
     try:
         result = gameplay.use_item(session_context, item)
     except GameplayError as exc:
-        return HttpResponse(str(exc), status=exc.status)
+        return response_utils.error_response(request, message=str(exc), status=exc.status)
 
     context = build_render_context(
         session, session.current_scene, stats, result.effective_stats, inventory, completed_map,

@@ -1,4 +1,3 @@
-import json
 from collections import defaultdict
 
 from django.shortcuts import render, get_object_or_404
@@ -26,6 +25,7 @@ from .services.quest_builder import (
     update_scene_contacts as update_scene_contacts_service,
 )
 from .constants import STAT_DISPLAY_NAMES
+from .presentation import responses as response_utils
 
 
 def _choice_context(*, quest, quest_id, choice=None, source_scene_id=None, routing_type='direct'):
@@ -174,12 +174,14 @@ def scene_save(request, quest_id, scene_id):
     try:
         scene = update_scene_service(scene_id, request.POST)
     except ValueError as exc:
-        html = render_to_string(
-            'admin/quest_builder/partials/inline_error.html',
-            {'error_message': str(exc)},
-            request=request,
+        return response_utils.error_response(
+            request,
+            message=str(exc),
+            status=400,
+            htmx_template='admin/quest_builder/partials/inline_error.html',
+            full_template='admin/quest_builder/partials/inline_error.html',
+            triggers={'quest_builder.error': {'message': str(exc), 'status': 400}},
         )
-        return HttpResponse(html, status=400)
 
     scene.hub_exits = get_scene_hub_exits(scene.id, quest_id)
     html = render_to_string(
@@ -192,7 +194,10 @@ def scene_save(request, quest_id, scene_id):
         request=request,
     )
     response = HttpResponse(html)
-    response['HX-Trigger'] = json.dumps({'sceneUpdated': {'sceneId': scene.id}})
+    response_utils.attach_triggers(response, {
+        'sceneUpdated': {'sceneId': scene.id},
+        'scene.updated': {'sceneId': scene.id},
+    })
     return response
 
 
@@ -204,12 +209,14 @@ def scene_create(request, quest_id):
     try:
         scene = create_scene_service(quest_id, request.POST)
     except ValueError as exc:
-        html = render_to_string(
-            'admin/quest_builder/partials/inline_error.html',
-            {'error_message': str(exc)},
-            request=request,
+        return response_utils.error_response(
+            request,
+            message=str(exc),
+            status=400,
+            htmx_template='admin/quest_builder/partials/inline_error.html',
+            full_template='admin/quest_builder/partials/inline_error.html',
+            triggers={'quest_builder.error': {'message': str(exc), 'status': 400}},
         )
-        return HttpResponse(html, status=400)
 
     html = render_to_string(
         'admin/quest_builder/partials/scene_create_response.html',
@@ -221,7 +228,10 @@ def scene_create(request, quest_id):
         request=request,
     )
     response = HttpResponse(html)
-    response['HX-Trigger'] = json.dumps({'sceneUpdated': {'sceneId': scene.id}})
+    response_utils.attach_triggers(response, {
+        'sceneUpdated': {'sceneId': scene.id},
+        'scene.updated': {'sceneId': scene.id},
+    })
     return response
 
 
@@ -259,7 +269,10 @@ def scene_delete(request, quest_id, scene_id):
         request=request,
     )
     response = HttpResponse(html)
-    response['HX-Trigger'] = json.dumps({'sceneUpdated': {'sceneId': scene_id}})
+    response_utils.attach_triggers(response, {
+        'sceneUpdated': {'sceneId': scene_id},
+        'scene.updated': {'sceneId': scene_id},
+    })
     return response
 
 
@@ -274,7 +287,14 @@ def scene_move(request, quest_id, scene_id):
         x = int((request.POST.get('x') or '').strip())
         y = int((request.POST.get('y') or '').strip())
     except (TypeError, ValueError):
-        return HttpResponse("x and y must be integers", status=400)
+        return response_utils.error_response(
+            request,
+            message="x and y must be integers",
+            status=400,
+            htmx_template='admin/quest_builder/partials/inline_error.html',
+            full_template='admin/quest_builder/partials/inline_error.html',
+            triggers={'quest_builder.error': {'message': 'x and y must be integers', 'status': 400}},
+        )
 
     save_scene_position_service(scene_id, x, y)
     return HttpResponse(status=204)
@@ -416,11 +436,25 @@ def choice_create(request, quest_id):
     quest = get_object_or_404(Quest, pk=quest_id)
     raw_source = (request.POST.get('source_scene_id') or '').strip()
     if not raw_source:
-        return HttpResponse("source_scene_id required", status=400)
+        return response_utils.error_response(
+            request,
+            message="source_scene_id required",
+            status=400,
+            htmx_template='admin/quest_builder/partials/inline_error.html',
+            full_template='admin/quest_builder/partials/inline_error.html',
+            triggers={'quest_builder.error': {'message': 'source_scene_id required', 'status': 400}},
+        )
     try:
         source_scene_id = int(raw_source)
     except ValueError:
-        return HttpResponse("source_scene_id must be a valid integer", status=400)
+        return response_utils.error_response(
+            request,
+            message="source_scene_id must be a valid integer",
+            status=400,
+            htmx_template='admin/quest_builder/partials/inline_error.html',
+            full_template='admin/quest_builder/partials/inline_error.html',
+            triggers={'quest_builder.error': {'message': 'source_scene_id must be a valid integer', 'status': 400}},
+        )
 
     choice = create_choice_service(source_scene_id, request.POST)
     routing_type = 'roll' if (choice.success_scene_id or choice.failure_scene_id) else 'direct'
@@ -438,7 +472,7 @@ def choice_create(request, quest_id):
         request=request,
     )
     response = HttpResponse(html)
-    response['HX-Trigger'] = json.dumps({
+    response_utils.attach_triggers(response, {
         'choiceCreated': {
             'id':               choice.id,
             'quest_id':         quest_id,
@@ -448,7 +482,17 @@ def choice_create(request, quest_id):
             'success_scene_id': choice.success_scene_id,
             'failure_scene_id': choice.failure_scene_id,
             'label':            choice.label,
-        }
+        },
+        'choice.created': {
+            'id':               choice.id,
+            'questId':          quest_id,
+            'sourceSceneId':    choice.scene_id,
+            'routingType':      routing_type,
+            'targetSceneId':    choice.target_scene_id,
+            'successSceneId':   choice.success_scene_id,
+            'failureSceneId':   choice.failure_scene_id,
+            'label':            choice.label,
+        },
     })
     return response
 
@@ -460,13 +504,20 @@ def choice_save(request, quest_id, choice_id):
     quest = get_object_or_404(Quest, pk=quest_id)
     choice_check = get_object_or_404(Choice, pk=choice_id)
     if not quest.scenes.filter(pk=choice_check.scene_id).exists():
-        return HttpResponse("Choice does not belong to this quest.", status=403)
+        return response_utils.error_response(
+            request,
+            message="Choice does not belong to this quest.",
+            status=403,
+            htmx_template='admin/quest_builder/partials/inline_error.html',
+            full_template='admin/quest_builder/partials/inline_error.html',
+            triggers={'quest_builder.error': {'message': 'Choice does not belong to this quest.', 'status': 403}},
+        )
     choice = update_choice_service(choice_id, request.POST)
     build_requirement_groups_from_post_service(choice, request.POST)
     routing_type = 'roll' if (choice.success_scene_id or choice.failure_scene_id) else 'direct'
 
-    response = HttpResponse('')
-    response['HX-Trigger'] = json.dumps({
+    response = response_utils.empty_response()
+    response_utils.attach_triggers(response, {
         'choiceUpdated': {
             'id':               choice.id,
             'source_scene_id':  choice.scene_id,
@@ -475,7 +526,16 @@ def choice_save(request, quest_id, choice_id):
             'success_scene_id': choice.success_scene_id,
             'failure_scene_id': choice.failure_scene_id,
             'label':            choice.label,
-        }
+        },
+        'choice.updated': {
+            'id':               choice.id,
+            'sourceSceneId':    choice.scene_id,
+            'routingType':      routing_type,
+            'targetSceneId':    choice.target_scene_id,
+            'successSceneId':   choice.success_scene_id,
+            'failureSceneId':   choice.failure_scene_id,
+            'label':            choice.label,
+        },
     })
     return response
 
@@ -487,15 +547,26 @@ def choice_delete(request, quest_id, choice_id):
     quest = get_object_or_404(Quest, pk=quest_id)
     choice = get_object_or_404(Choice, pk=choice_id)
     if not quest.scenes.filter(pk=choice.scene_id).exists():
-        return HttpResponse("Choice does not belong to this quest.", status=403)
+        return response_utils.error_response(
+            request,
+            message="Choice does not belong to this quest.",
+            status=403,
+            htmx_template='admin/quest_builder/partials/inline_error.html',
+            full_template='admin/quest_builder/partials/inline_error.html',
+            triggers={'quest_builder.error': {'message': 'Choice does not belong to this quest.', 'status': 403}},
+        )
     source_scene_id = delete_choice_service(choice_id)
 
-    response = HttpResponse('')
-    response['HX-Trigger'] = json.dumps({
+    response = response_utils.empty_response()
+    response_utils.attach_triggers(response, {
         'choiceDeleted': {
             'id':              choice_id,
             'source_scene_id': source_scene_id,
-        }
+        },
+        'choice.deleted': {
+            'id':           choice_id,
+            'sourceSceneId': source_scene_id,
+        },
     })
     return response
 
@@ -507,7 +578,14 @@ def choice_requirements_save(request, quest_id, choice_id):
     quest = get_object_or_404(Quest, pk=quest_id)
     choice = get_object_or_404(Choice, pk=choice_id)
     if not quest.scenes.filter(pk=choice.scene_id).exists():
-        return HttpResponse("Choice does not belong to this quest.", status=403)
+        return response_utils.error_response(
+            request,
+            message="Choice does not belong to this quest.",
+            status=403,
+            htmx_template='admin/quest_builder/partials/inline_error.html',
+            full_template='admin/quest_builder/partials/inline_error.html',
+            triggers={'quest_builder.error': {'message': 'Choice does not belong to this quest.', 'status': 403}},
+        )
     build_requirement_groups_from_post_service(choice, request.POST)
 
     html = render_to_string(

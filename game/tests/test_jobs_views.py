@@ -1,3 +1,4 @@
+import json
 from unittest.mock import patch
 
 from django.test import Client, TestCase
@@ -92,6 +93,8 @@ class JobEndpointsTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 403)
+        triggers = json.loads(response.headers.get("HX-Trigger", "{}"))
+        self.assertIn("app.error", triggers)
         self.assertIn("cooldown", response.content.decode().lower())
 
     @patch("game.services.jobs_rolls.roll_d20", return_value=20)

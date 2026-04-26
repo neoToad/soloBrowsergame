@@ -31,4 +31,16 @@
     </div>
 
 </div>
+<script>
+(function () {
+    document.body.addEventListener('htmx:responseError', function (evt) {
+        var target = evt.detail && evt.detail.target;
+        var xhr = evt.detail && evt.detail.xhr;
+        if (!target || target.id !== 'scene-panel' || !xhr || !xhr.responseText) {
+            return;
+        }
+        target.outerHTML = xhr.responseText;
+    });
+})();
+</script>
 {% endblock %}
