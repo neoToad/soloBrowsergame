@@ -804,7 +804,7 @@ class QueryBudgetTest(TestCase):
         self.assertLessEqual(len(ctx), 4)
 
 
-class PropertyServiceTest(TestCase):
+class RivalContestTest(TestCase):
     fixtures = [
         'game/fixtures/arc.json',
         'game/fixtures/property.json',

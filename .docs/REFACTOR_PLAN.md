@@ -72,8 +72,6 @@ Files: [tests.py](C:\Users\colin\PycharmProjects\soloBrowserGame\game\tests\test
 
 **Prioritized Refactor Plan**
 
-1. **Stabilize with characterization tests (first).**  
-Add high-value tests around current behavior for: choice resolution, combat transitions, job beats, import requirement-group handling.
 
 2. **Enforce application-service boundary.**  
 Introduce `game/services/gameplay/` use-case services (`resolve_choice`, `start_quest`, `run_combat_turn`, `use_item`) and reduce views to request parsing + response mapping.
