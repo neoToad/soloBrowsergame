@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+
+from ..constants import STAT_FIELDS
 
 class Item(models.Model):
     EFFECT_TYPES = [
@@ -23,6 +26,22 @@ class Item(models.Model):
     passive_stat  = models.CharField(max_length=20, blank=True)
     # Model field name to boost passively while carried: strength, agility, intellect, charisma
     passive_value = models.IntegerField(default=0)
+
+    def clean(self):
+        super().clean()
+        errors = {}
+        if self.effect_stat and self.effect_stat not in STAT_FIELDS:
+            errors["effect_stat"] = (
+                f"Invalid effect_stat '{self.effect_stat}'. "
+                f"Allowed values: {', '.join(STAT_FIELDS)}."
+            )
+        if self.passive_stat and self.passive_stat not in STAT_FIELDS:
+            errors["passive_stat"] = (
+                f"Invalid passive_stat '{self.passive_stat}'. "
+                f"Allowed values: {', '.join(STAT_FIELDS)}."
+            )
+        if errors:
+            raise ValidationError(errors)
 
     def __str__(self):
         return self.name

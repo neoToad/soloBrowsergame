@@ -15,16 +15,6 @@ Most services return log messages for views to flush, but combat services still 
 
 ---
 
-## Item stat target fields are not validated
-
-`Item.effect_stat`/`passive_stat` are free text. Runtime application uses dynamic attribute access, so typos fail silently (or mutate transient attributes not backed by DB fields).
-
-- Evidence: `game/models/items.py:19-25`, `game/services/inventory.py:84-87`, `game/utils.py:32-35`
-- Impact: Authoring mistakes produce silent gameplay inconsistencies.
-- Plan: Add model-level validation (`clean()`) restricting `effect_stat`/`passive_stat` to allowed stat fields, enforce it in admin/forms/imports, and add tests for invalid stat names.
-
----
-
 ## Flag names are freeform and unvalidated
 
 Choice and offer flag fields are plain strings with no schema/registry validation.
@@ -91,3 +81,4 @@ A single function assembles many unrelated concerns (choices, notice board, prop
 - Combat end-scene null handling hardened: `resolve_combat_end()` now guards missing `victory_scene`/`defeat_scene` with controlled `400` authoring errors, and endpoint regression tests cover both misconfiguration paths (`game/tests/test_combat.py`).
 - Roll-route null destination handling hardened: `resolve_choice()` now validates roll outcome routing and returns controlled `400` authoring errors for missing `success_scene`/`failure_scene`, with endpoint regression tests in `game/tests/test_navigation.py`.
 - Quest-builder `choice_create` now enforces source-scene quest ownership and returns controlled `403` on mismatch, with endpoint regression tests for cross-quest rejection and same-quest success (`game/tests/test_quest_builder.py`).
+- Item stat target validation completed: `Item.clean()` now restricts `effect_stat`/`passive_stat` to canonical stat fields; importer item writes run `full_clean()` and fail fast on invalid stat targets; runtime item application/effective-stat paths ignore invalid legacy stat names; invalid rows can be reported via `report_invalid_item_stats`; regression coverage added in `game/tests/test_inventory.py`.

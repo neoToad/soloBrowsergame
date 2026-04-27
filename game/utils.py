@@ -1,5 +1,6 @@
 import random
 
+from .constants import STAT_FIELDS
 from .services.types import RollResult, DamageResult, EffectiveStats
 
 __all__ = ['RollResult', 'DamageResult', 'EffectiveStats', 'roll_d20', 'stat_modifier', 'compute_max_hp', 'get_effective_stats']
@@ -29,7 +30,7 @@ def get_effective_stats(stats, inventory) -> EffectiveStats:
     bonuses: dict = {}
     for pi in inventory.values():
         item = pi.item
-        if item.passive_stat and item.passive_value:
+        if item.passive_stat in STAT_FIELDS and item.passive_value:
             bonuses[item.passive_stat] = (
                 bonuses.get(item.passive_stat, 0) + item.passive_value
             )

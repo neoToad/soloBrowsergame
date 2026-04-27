@@ -165,12 +165,11 @@ def execute_player_attack(session, stats, inventory, completed_map, combat_state
 def execute_enemy_attack(session, stats, inventory, completed_map, combat_state, effective_stats):
     """
     Apply the queued enemy attack and advance combat. Mutates stats and combat_state.
-    Returns (logs, context). On defeat, pre-defeat logs are flushed internally so they
-    precede resolve_combat_end's arrival logs; caller receives ([], defeat_context).
+    Returns (logs, context). On defeat, returns pre-defeat logs followed by combat-end logs
+    so callers can persist in order.
     Raises CombatEncounter.DoesNotExist if the encounter row is missing.
     """
     from ..models import CombatEncounter
-    from ..models.events import flush_event_log
     from ..utils import get_effective_stats, stat_modifier, RollResult, DamageResult
     from .session import build_render_context
 
@@ -205,13 +204,12 @@ def execute_enemy_attack(session, stats, inventory, completed_map, combat_state,
 
     if stats.hp <= 0:
         logs.append("You're down. You lose consciousness.")
-        flush_event_log(session, logs)
-        context = resolve_combat_end(
+        end_logs, context = resolve_combat_end(
             session, stats, inventory, completed_map,
             encounter.defeat_scene, combat_state,
             ending_type='defeat',
         )
-        return [], context
+        return [*logs, *end_logs], context
 
     effective_stats = get_effective_stats(stats, inventory)
     roll_result = RollResult(
@@ -234,8 +232,8 @@ def execute_enemy_attack(session, stats, inventory, completed_map, combat_state,
 
 
 def resolve_combat_end(session, stats, inventory, completed_map, next_scene, combat_state, *, xp_award=0, ending_type='neutral'):
-    """Finalize combat, transition to next scene, apply arrival/XP effects, and return render context."""
-    from ..models import EventLog, CombatEncounter
+    """Finalize combat, transition to next scene, and return (logs, render context)."""
+    from ..models import CombatEncounter
     from .progression import award_xp, LEVEL_UP_FLAVOR
     from .arrival import process_arrival
     from ..utils import get_effective_stats
@@ -287,14 +285,12 @@ def resolve_combat_end(session, stats, inventory, completed_map, next_scene, com
     if combat_init_log:
         log_queue.append(combat_init_log)
 
-    for text in log_queue:
-        EventLog.objects.create(session=session, text=text)
-
     effective_stats = get_effective_stats(stats, inventory)
-    return build_render_context(
+    context = build_render_context(
         session, next_scene, stats, effective_stats, inventory, completed_map,
         combat_state=next_combat_state,
     )
+    return log_queue, context
 
 
 def queue_enemy_attack(combat_state, attack: CombatRollResult) -> None:

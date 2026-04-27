@@ -73,7 +73,7 @@ def apply_item_effect(session, stats, inventory, item):
     Returns a list of log strings. Caller is responsible for persisting them.
     Preconditions (item in inventory, effect_type set) must be validated by the caller.
     """
-    from ..constants import USE_ITEM_FLAVOR
+    from ..constants import STAT_FIELDS, USE_ITEM_FLAVOR
     logs = []
     if item.effect_type == 'heal_hp':
         healed = min(item.effect_value, stats.max_hp - stats.hp)
@@ -81,7 +81,7 @@ def apply_item_effect(session, stats, inventory, item):
         stats.save()
         logs.append(f"{USE_ITEM_FLAVOR['heal_hp']} (+{healed} HP)")
     elif item.effect_type == 'add_stat':
-        if item.effect_stat:
+        if item.effect_stat and item.effect_stat in STAT_FIELDS:
             current = getattr(stats, item.effect_stat, 0)
             setattr(stats, item.effect_stat, current + item.effect_value)
             stats.save()

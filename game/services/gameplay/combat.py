@@ -45,12 +45,15 @@ def run_combat_continue(session_context) -> dict:
         raise GameplayError(
             "No combat encounter configured for this scene. Check quest content.", status=400
         )
-    return resolve_combat_end(
+    logs, context = resolve_combat_end(
         session, stats, inventory, completed_map,
         encounter.victory_scene, combat_state,
         xp_award=XP_AWARDS['combat_victory'],
         ending_type='victory',
     )
+    flush_event_log(session, logs)
+    context['choices'] = []
+    return context
 
 
 def _require_active_combat(session):

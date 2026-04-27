@@ -1,3 +1,8 @@
+from io import StringIO
+
+from django.core.exceptions import ValidationError
+from django.core.management import call_command
+from django.core.management.base import CommandError
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -77,6 +82,28 @@ class InventoryServiceTest(TestCase):
 
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.strength, original_str + 2)
+        self.assertFalse(PlayerInventory.objects.filter(session=self.session, item=item).exists())
+
+    def test_use_item_add_stat_effect_ignores_invalid_effect_stat(self):
+        from game.models import PlayerInventory
+        from game.services.inventory import apply_item_effect
+
+        item = make_item(
+            key="inv__bad_add_stat",
+            name="Glitched Tonic",
+            is_consumable=True,
+            effect_type="add_stat",
+            effect_stat="luck",
+            effect_value=5,
+        )
+        pi = PlayerInventory.objects.create(session=self.session, item=item, quantity=1)
+        inventory = {item.id: pi}
+        original_str = self.stats.strength
+
+        apply_item_effect(self.session, self.stats, inventory, item)
+
+        self.stats.refresh_from_db()
+        self.assertEqual(self.stats.strength, original_str)
         self.assertFalse(PlayerInventory.objects.filter(session=self.session, item=item).exists())
 
     def test_consume_item_decrements_quantity_without_deleting_when_qty_gt_1(self):
@@ -177,3 +204,88 @@ class EffectiveStatsTest(TestCase):
         self.assertEqual(effective.agility, 10)
         self.assertEqual(effective.bonuses["strength"], 3)
         self.assertEqual(effective.bonuses["agility"], 3)
+
+    def test_get_effective_stats_ignores_invalid_passive_stat_names(self):
+        from game.models import Item, PlayerInventory
+        from game.services.inventory import get_player_inventory
+        from game.utils import get_effective_stats
+
+        stats = self.session.stats
+        invalid_item = Item.objects.create(
+            key="phase6__bad_passive",
+            name="Broken Charm",
+            description="Legacy bad stat target.",
+            passive_stat="luck",
+            passive_value=10,
+        )
+        PlayerInventory.objects.create(session=self.session, item=invalid_item, quantity=1)
+
+        inventory = get_player_inventory(self.session)
+        effective = get_effective_stats(stats, inventory)
+
+        self.assertNotIn("luck", effective.bonuses)
+        self.assertEqual(effective.strength, stats.strength)
+
+
+class ItemValidationTest(TestCase):
+    def test_item_clean_rejects_invalid_effect_stat(self):
+        from game.models import Item
+
+        item = Item(
+            key="inv__invalid_effect",
+            name="Invalid Effect",
+            description="",
+            effect_type="add_stat",
+            effect_stat="luck",
+            effect_value=1,
+        )
+        with self.assertRaisesMessage(ValidationError, "effect_stat"):
+            item.full_clean()
+
+    def test_item_clean_rejects_invalid_passive_stat(self):
+        from game.models import Item
+
+        item = Item(
+            key="inv__invalid_passive",
+            name="Invalid Passive",
+            description="",
+            passive_stat="luck",
+            passive_value=1,
+        )
+        with self.assertRaisesMessage(ValidationError, "passive_stat"):
+            item.full_clean()
+
+
+class ItemImporterValidationTest(TestCase):
+    def test_import_items_data_rejects_invalid_stat_targets(self):
+        from game.services.importers.domain import import_items_data
+
+        with self.assertRaises(CommandError):
+            import_items_data({
+                "items": [
+                    {
+                        "key": "inv__import_invalid",
+                        "name": "Bad Import",
+                        "description": "",
+                        "effect_type": "add_stat",
+                        "effect_stat": "luck",
+                        "effect_value": 1,
+                    }
+                ]
+            })
+
+
+class ReportInvalidItemStatsCommandTest(TestCase):
+    def test_report_invalid_item_stats_command_reports_bad_rows(self):
+        from game.models import Item
+
+        Item.objects.create(
+            key="inv__report_bad",
+            name="Bad Row",
+            description="",
+            passive_stat="luck",
+            passive_value=1,
+        )
+        out = StringIO()
+        call_command("report_invalid_item_stats", stdout=out)
+        self.assertIn("inv__report_bad", out.getvalue())

@@ -118,13 +118,15 @@ class CombatServiceTest(TestCase):
         self.stats.hp = 10
         self.stats.save()
 
-        execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
+        logs, _context = execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
 
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.hp, 7)
         cs.refresh_from_db()
         self.assertEqual(cs.turn_number, 2)
         self.assertFalse(cs.enemy_attack_pending)
+        self.assertTrue(any("Hit! 3 damage." in line for line in logs))
+        self.assertEqual(self.session.log.count(), 0)
 
     def test_enemy_attack_miss_leaves_hp_unchanged(self):
         from game.services.combat import execute_enemy_attack
@@ -138,12 +140,14 @@ class CombatServiceTest(TestCase):
         self.stats.hp = 10
         self.stats.save()
 
-        execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
+        logs, _context = execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
 
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.hp, 10)
         cs.refresh_from_db()
         self.assertEqual(cs.turn_number, 2)
+        self.assertTrue(any("Missed." in line for line in logs))
+        self.assertEqual(self.session.log.count(), 0)
 
     def test_enemy_attack_reduces_player_to_zero_transitions_to_defeat_scene(self):
         from game.services.combat import execute_enemy_attack
@@ -157,7 +161,10 @@ class CombatServiceTest(TestCase):
         self.stats.hp = 2
         self.stats.save()
 
-        execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
+        self.encounter.defeat_arrival_flavor = "You wake up in a cold alley."
+        self.encounter.save(update_fields=["defeat_arrival_flavor"])
+
+        logs, _context = execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
 
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.hp, 0)
@@ -165,6 +172,36 @@ class CombatServiceTest(TestCase):
         self.assertEqual(self.session.current_scene, self.defeat_scene)
         cs.refresh_from_db()
         self.assertFalse(cs.is_active)
+        self.assertTrue(any("You're down. You lose consciousness." == line for line in logs))
+        self.assertIn("You wake up in a cold alley.", logs)
+        defeat_line_index = logs.index("You're down. You lose consciousness.")
+        arrival_line_index = logs.index("You wake up in a cold alley.")
+        self.assertLess(defeat_line_index, arrival_line_index)
+        self.assertEqual(self.session.log.count(), 0)
+
+    def test_resolve_combat_end_returns_logs_and_does_not_persist_events(self):
+        from game.services.combat import resolve_combat_end
+
+        cs = self._make_combat_state()
+        self.encounter.victory_arrival_flavor = "The crowd clears out."
+        self.encounter.save(update_fields=["victory_arrival_flavor"])
+
+        logs, context = resolve_combat_end(
+            self.session,
+            self.stats,
+            {},
+            {},
+            self.victory_scene,
+            cs,
+            xp_award=1,
+            ending_type="victory",
+        )
+
+        self.assertIn("The crowd clears out.", logs)
+        self.assertIn("+1 XP.", logs)
+        self.assertLess(logs.index("The crowd clears out."), logs.index("+1 XP."))
+        self.assertIn("scene", context)
+        self.assertEqual(self.session.log.count(), 0)
 
     def test_initialize_combat_state_deactivates_when_entering_non_combat_scene(self):
         from game.services.combat import initialize_combat_state
