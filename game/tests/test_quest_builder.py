@@ -261,3 +261,80 @@ class QuestBuilderValidationTest(TestCase):
         self._make_choice(entry, target_scene=end)
         self._make_choice(end, label="Return", target_scene=hub)
         self.assertNotIn("ending_no_hub_return", self._warning_types(quest))
+
+
+class QuestBuilderChoiceCreateOwnershipTest(TestCase):
+    def setUp(self):
+        from django.contrib.auth.models import User
+
+        self.admin = User.objects.create_superuser(
+            username="choiceadmin", password="testpass", email="choice@a.com"
+        )
+        self.client = Client()
+        self.client.force_login(self.admin)
+
+        self.quest = Quest.objects.create(
+            key="qb_choice_owner", title="Choice Owner Quest", description=""
+        )
+        self.other_quest = Quest.objects.create(
+            key="qb_choice_other", title="Other Quest", description=""
+        )
+
+        self.source_scene = Scene.objects.create(
+            quest=self.quest,
+            key="qb_choice_owner__source",
+            title="Owner Source",
+            body="",
+            scene_type="normal",
+        )
+        self.target_scene = Scene.objects.create(
+            quest=self.quest,
+            key="qb_choice_owner__target",
+            title="Owner Target",
+            body="",
+            scene_type="normal",
+        )
+        self.other_source_scene = Scene.objects.create(
+            quest=self.other_quest,
+            key="qb_choice_other__source",
+            title="Other Source",
+            body="",
+            scene_type="normal",
+        )
+
+    def _create_url(self):
+        return reverse("admin:quest_builder_choice_create", args=[self.quest.pk])
+
+    def test_choice_create_rejects_source_scene_from_other_quest(self):
+        response = self.client.post(
+            self._create_url(),
+            {
+                "source_scene_id": str(self.other_source_scene.pk),
+                "label": "Invalid cross quest choice",
+                "routing_type": "direct",
+                "target_scene": str(self.target_scene.pk),
+            },
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(response, "Source scene does not belong to this quest.", status_code=403)
+        self.assertFalse(
+            Choice.objects.filter(scene=self.other_source_scene, label="Invalid cross quest choice").exists()
+        )
+
+    def test_choice_create_allows_source_scene_in_same_quest(self):
+        response = self.client.post(
+            self._create_url(),
+            {
+                "source_scene_id": str(self.source_scene.pk),
+                "label": "Valid in quest choice",
+                "routing_type": "direct",
+                "target_scene": str(self.target_scene.pk),
+            },
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        choice = Choice.objects.get(scene=self.source_scene, label="Valid in quest choice")
+        self.assertEqual(choice.target_scene, self.target_scene)

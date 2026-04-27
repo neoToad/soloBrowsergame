@@ -1,38 +1,7 @@
 # Tech Debt
 
-Last audited: 2026-04-26
+Last audited: 2026-04-27
 
-## High Priority
-
-## Combat end-scene null handling can crash session flow
-
-`resolve_combat_end()` assumes `next_scene` is always present, but both combat paths allow nullable destination scenes (`CombatEncounter.victory_scene` and `defeat_scene` are nullable). If content is misconfigured, `session.current_scene` can become `None` and later rendering crashes.
-
-- Evidence: `game/models/combat.py` (`victory_scene`/`defeat_scene` nullable), `game/services/combat.py` (`resolve_combat_end` assigns `session.current_scene = next_scene` without a null guard)
-- Impact: Hard crash / broken save-state on malformed combat content.
-- Plan: Add explicit `next_scene is None` guards in combat resolution paths, return a controlled `400` with authoring guidance, and add tests for missing victory/defeat scene cases.
-
----
-
-## Roll-route choices can transition to `None` scene
-
-When a scene requires a roll, gameplay choice resolution trusts `resolve_roll()` output and does not validate that success/failure target scenes exist. Misconfigured content can route to `None`, then fail in arrival/render flow.
-
-- Evidence: `game/services/gameplay/resolve_choice.py:20-42`, `game/services/scene.py:41-42`, `game/services/session.py:19-22`
-- Impact: Runtime 500s and potentially invalid `current_scene` state.
-- Plan: Validate `next_scene` after `resolve_roll()` in gameplay choice resolution, return `400` for malformed routing, and add coverage for missing success/failure targets.
-
----
-
-## `choice_create` in quest builder does not verify source scene belongs to quest
-
-`choice_save`/`choice_delete` enforce quest ownership, but `choice_create` accepts `source_scene_id` without checking membership in `quest_id`.
-
-- Evidence: `game/quest_builder_views.py` (`choice_create` accepts `source_scene_id` and calls `create_choice_service` without verifying `choice.scene.quest_id == quest_id`); `choice_save`/`choice_delete` perform ownership checks.
-- Impact: Cross-quest data linkage bugs from malformed admin requests.
-- Plan: Enforce quest membership check in `choice_create` before service call, return `403` on mismatch, and add endpoint tests mirroring `choice_save`/`choice_delete` protections.
-
----
 
 ## Medium Priority
 
@@ -119,3 +88,6 @@ A single function assembles many unrelated concerns (choices, notice board, prop
 - Missing `Quest.entrance_scene` guard in `start_quest` now returns controlled `400`.
 - HTMX partial concatenation in `_htmx_response()` replaced with include-based template.
 - Heat clamp delta reporting corrected in `process_turn_income()`.
+- Combat end-scene null handling hardened: `resolve_combat_end()` now guards missing `victory_scene`/`defeat_scene` with controlled `400` authoring errors, and endpoint regression tests cover both misconfiguration paths (`game/tests/test_combat.py`).
+- Roll-route null destination handling hardened: `resolve_choice()` now validates roll outcome routing and returns controlled `400` authoring errors for missing `success_scene`/`failure_scene`, with endpoint regression tests in `game/tests/test_navigation.py`.
+- Quest-builder `choice_create` now enforces source-scene quest ownership and returns controlled `403` on mismatch, with endpoint regression tests for cross-quest rejection and same-quest success (`game/tests/test_quest_builder.py`).

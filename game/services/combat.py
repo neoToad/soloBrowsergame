@@ -2,6 +2,7 @@ import random
 from django.core.exceptions import FieldDoesNotExist
 from ..utils import roll_d20, stat_modifier
 from .types import CombatRollResult, PendingEnemyAttack
+from .types import GameplayError
 
 def resolve_player_attack(stats, enemy) -> CombatRollResult:
     """Resolve one player attack roll against an enemy and return hit/damage details."""
@@ -244,6 +245,20 @@ def resolve_combat_end(session, stats, inventory, completed_map, next_scene, com
         encounter = CombatEncounter.objects.get(scene=session.current_scene)
     except CombatEncounter.DoesNotExist:
         encounter = None
+
+    if next_scene is None:
+        scene_key = session.current_scene.key if session.current_scene else "unknown"
+        if ending_type == 'victory':
+            missing_field = "victory_scene"
+        elif ending_type == 'defeat':
+            missing_field = "defeat_scene"
+        else:
+            missing_field = "destination scene"
+        raise GameplayError(
+            f"Combat encounter on scene '{scene_key}' is missing {missing_field}. "
+            f"Set CombatEncounter.{missing_field} in quest content.",
+            status=400,
+        )
 
     combat_state.is_active = False
     combat_state.save()

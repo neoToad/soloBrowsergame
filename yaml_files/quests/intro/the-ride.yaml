@@ -34,15 +34,11 @@ scenes:
     title: The Job
     order: 10
     body: |
-      Morris calls at seven in the morning, which tells you something
-      about the job before he says a word.
+      Morris calls at seven in the morning, which already tells you something — Morris is a noon-at-the-earliest kind of person, and a seven a.m. call means the job is time-sensitive or something went wrong upstream and you're about to become part of it.
 
-      Package pickup at a lockup on Crane Street. Deliver it to an
-      address on the other side of the Flats, Aldwick Road, third
-      floor. Hand it to whoever answers. Don't open it. Don't stop
-      anywhere. Three hundred when it's done.
+      Package pickup at a lockup on Crane Street. Deliver it to an address on the other side of the Flats, Aldwick Road, third floor. Hand it to whoever answers. He says don't open it and don't stop anywhere, in the same tone he'd use to tell you the weather. Three hundred when it's done.
 
-      He doesn't say what's in it. You don't ask. That's how this works.
+      He hangs up. You've never met Morris in person. You're not sure that would clarify anything.
 
     roll:
       requires_roll: false
@@ -81,17 +77,9 @@ scenes:
     title: Crane Street
     order: 20
     body: |
-      The lockup is a steel door set into a brick wall between a
-      tyre place and something that used to be a print shop. A man
-      you've never seen opens it before you knock. Hands you a
-      package wrapped in brown paper, taped at both ends, about the
-      size of a shoebox but heavier. Doesn't speak. Closes the door.
+      The lockup is a steel door set into a brick wall between a tyre place and something that used to be a print shop. A man you've never seen opens it before you knock. Hands you a package wrapped in brown paper, taped at both ends — about the size of a shoebox and heavier than that. Doesn't speak. Closes the door.
 
-      You stand on Crane Street with the package under your arm.
-      Aldwick Road is twenty minutes on foot, straight through the
-      Flats. Quiet enough at this hour. Should be fine.
-
-      The package is heavier than a shoebox has any right to be.
+      You stand on Crane Street with it under your arm. Aldwick Road is twenty minutes on foot, straight through the Flats. Quiet enough at this hour.
 
     roll:
       requires_roll: false
@@ -130,15 +118,9 @@ scenes:
     title: Aldwick Approach
     order: 30
     body: |
-      Aldwick Road is residential, four-storey blocks either side,
-      cars parked tight to the kerb. You're half a block from the
-      address when you clock him — young guy, maybe twenty, leaning
-      against a car on the wrong side of casual. Eyes on you since
-      you turned the corner.
+      Aldwick Road is residential, four-storey blocks either side, cars parked tight to the kerb. You're half a block from the address when you clock him — young guy, maybe twenty, leaning against a car on the wrong side of casual. Eyes on you since you turned the corner.
 
-      There's another one in the doorway of the building you're
-      heading to. He's not a resident. The way he's standing says
-      he's been there a while.
+      There's another one in the doorway of the building you're heading to. He's not a resident. The way he's standing says he's been there a while.
 
       They know what you're carrying. They knew before you got here.
 
@@ -190,13 +172,9 @@ scenes:
     title: The Ambush
     order: 40
     body: |
-      The one by the car gets there first. He's quick and he's done
-      this before but he leads with his right and you read it. The
-      one from the doorway hangs back — waiting, watching, letting
-      his guy do the work.
+      The one by the car gets there first. He's quick and he's done this before but he leads with his right and you read it. The one from the doorway hangs back — waiting, watching, letting his guy do the work.
 
-      Behind him, a third. Older than the other two. Watching all
-      of it with his arms folded. He doesn't move.
+      Behind him, a third. Older than the other two. Watching all of it with his arms folded. He doesn't move.
 
     roll:
       requires_roll: false
@@ -231,22 +209,13 @@ scenes:
     title: Darius
     order: 50
     body: |
-      He's still standing there. Arms still folded. He looks at his
-      guy on the ground and then back at you with an expression that
-      is not quite respect and not quite irritation — somewhere between
-      the two, like a man revising an estimate.
+      He's still standing there. Arms still folded. He looks at his guy on the ground, then back at you, with the expression of a man who has just revised an estimate downward and is being professional about it.
 
-      He says his name is Darius. Says he's not here on Kings business,
-      which is a specific thing to volunteer. Says the package was
-      a personal opportunity and he misjudged it. He's not apologising.
-      He's just accounting for what happened.
+      He says his name is Darius. Says he's not here on Kings business — which is a specific thing to volunteer. Says the package was a personal opportunity and he misjudged the job. He's not apologising. He's accounting.
 
       He looks at the package under your arm. Then at you.
 
-      He says tell Dutch he says hello. Then he walks.
-
-      You let him. His guy is starting to sit up. You don't wait
-      around for that conversation.
+      Tell Dutch he says hello. Then he walks. No hurry. Doesn't check if you're watching.
 
     roll:
       requires_roll: false
@@ -285,20 +254,13 @@ scenes:
     title: The Delivery
     order: 60
     body: |
-      A woman answers. Forties, precise, looks at the package and not
-      at you. Takes it. Closes the door.
+      A woman answers. Forties, precise, looks at the package and not at you. Takes it. Closes the door.
 
       That's it. That's the job.
 
-      You stand in the stairwell for a moment. Your knuckles are
-      split. There's a noise coming from behind the door that might
-      be a scale. You don't know what was in the package. You still
-      don't ask.
+      You stand in the stairwell for a moment. Your knuckles are split. There's a noise coming from behind the door that might be a scale. You don't know what was in the package. You still don't ask.
 
-      You take out your phone to call Morris. You can tell him exactly
-      what happened — Darius, the Kings, the name dropped at the end.
-      Dutch would want to know. Or you can keep it simple. Package
-      delivered. Job done. Let Dutch figure out his own intelligence.
+      You take out your phone to call Morris. You can tell him exactly what happened — Darius, the Kings, the name dropped at the end. Dutch would want to know. Or you can keep it simple. Package delivered. Job done.
 
     roll:
       requires_roll: false
@@ -348,14 +310,9 @@ scenes:
     title: Taken
     order: 65
     body: |
-      You come back to yourself on the pavement. The package is gone.
-      Darius is gone. His guys are gone. The street looks exactly
-      like it did before — cars at the kerb, windows closed, nobody
-      saw anything.
+      You come back to yourself on the pavement. The package is gone. Darius is gone. His guys are gone. The street looks exactly like it did before — cars at the kerb, windows closed, nobody saw anything.
 
-      You call Morris. He listens to the whole thing without
-      interrupting. When you finish he says he'll call you back.
-      He doesn't call back.
+      You call Morris. He listens to the whole thing without interrupting. When you finish he says he'll call you back. He doesn't call back.
 
     roll:
       requires_roll: false
@@ -379,7 +336,7 @@ scenes:
         target_scene: the-ride__done-lost
         success_scene: null
         failure_scene: null
-        arrival_flavor: Three hundred dollars you won't be seeing. A package you can't account for. Dutch's name on the other end of a bad outcome.
+        arrival_flavor: Dutch's name is on the other end of a lost package. That's where you are now.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
@@ -394,17 +351,11 @@ scenes:
     title: Done Straight
     order: 70
     body: |
-      Morris calls back in an hour. Dutch wants the name again —
-      Darius — and the description. You give both. Morris asks if
-      he said anything else. You tell him about the not on Kings
-      business. Another pause.
+      Morris calls back in an hour. Dutch wants the name again — Darius — and the description. You give both. Morris asks if he said anything else. You tell him about the not on Kings business. Another pause, longer than the first.
 
-      The three hundred comes through plus a fifty on top. Information
-      tax, Morris calls it. Dutch values knowing things.
+      The three hundred comes through plus a fifty on top. Information tax, Morris calls it, in a tone that suggests he finds this categorisation accurate and sufficient.
 
-      You don't know what Dutch does with the name. That's not your
-      problem. You told the truth and got paid for it. In this city
-      that's not nothing.
+      You don't know what Dutch does with the name. You told the truth and got paid for it.
 
     roll:
       requires_roll: false
@@ -443,20 +394,11 @@ scenes:
     title: Done Covered
     order: 75
     body: |
-      Three hundred by end of day, same as promised. Morris doesn't
-      ask for details. You didn't offer any.
+      Three hundred by end of day, same as promised. Morris doesn't ask for details. You didn't offer any.
 
-      Somewhere in the Westside, Darius is telling someone about a
-      courier who wouldn't go down. Maybe he's telling the Kings
-      council. Maybe he's keeping it private, same as you. You don't
-      know. You won't know until it matters.
+      Somewhere in the Westside, Darius is telling someone about a courier who wouldn't go down. Maybe he's telling the Kings council. Maybe he's keeping it private, same as you. You won't know until it matters.
 
-      The split knuckles take three days to close up. Every time
-      you look at them you think about the way Darius stood there
-      with his arms folded, revising his estimate.
-
-      You think he'll be back. You don't know what you'll do
-      differently when he is.
+      The split knuckles take three days to close.
 
     roll:
       requires_roll: false
@@ -497,15 +439,9 @@ scenes:
     body: |
       Morris doesn't call back that day. Or the next.
 
-      On the third day a single text. Dutch wants the debt covered in
-      work, not cash. There'll be a job. It won't be a good one.
+      On the third day, a single text. Dutch wants the debt covered in work, not cash. There'll be a job. It won't be a good one.
 
-      You sit with that. The package is gone, in whatever hands Darius
-      was moving it to, doing whatever it was always going to do. You
-      were just the person carrying it. That's what you tell yourself.
-
-      The corkboard is empty. You wait for Morris to put something
-      on it.
+      The package is in whatever hands Darius was moving it to, doing whatever it was going to do. The corkboard is empty. You wait for Morris to put something on it.
 
     roll:
       requires_roll: false

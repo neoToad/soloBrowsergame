@@ -248,3 +248,53 @@ class CombatViewTest(TestCase):
         self.assertEqual(cs.turn_number, 2)
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.hp, initial_hp)
+
+    def test_combat_continue_returns_400_when_victory_scene_missing(self):
+        from game.models.combat import CombatEncounter, CombatState
+
+        encounter = CombatEncounter.objects.get(scene=self.combat_scene)
+        encounter.victory_scene = None
+        encounter.save(update_fields=["victory_scene"])
+
+        cs = CombatState.objects.get(session=self.session)
+        cs.pending_victory = True
+        cs.save(update_fields=["pending_victory"])
+
+        response = self.client.post(reverse("combat_continue"), HTTP_HX_REQUEST="true")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "missing victory_scene", status_code=400)
+        self.session.refresh_from_db()
+        self.assertEqual(self.session.current_scene, self.combat_scene)
+        cs.refresh_from_db()
+        self.assertTrue(cs.is_active)
+
+    def test_combat_enemy_resolve_returns_400_when_defeat_scene_missing(self):
+        from game.models.combat import CombatEncounter, CombatState
+
+        encounter = CombatEncounter.objects.get(scene=self.combat_scene)
+        encounter.defeat_scene = None
+        encounter.save(update_fields=["defeat_scene"])
+
+        cs = CombatState.objects.get(session=self.session)
+        cs.pending_enemy_roll = 18
+        cs.pending_enemy_total = 18
+        cs.pending_enemy_hit = True
+        cs.pending_enemy_damage = 5
+        cs.save(update_fields=[
+            "pending_enemy_roll",
+            "pending_enemy_total",
+            "pending_enemy_hit",
+            "pending_enemy_damage",
+        ])
+        self.stats.hp = 1
+        self.stats.save(update_fields=["hp"])
+
+        response = self.client.post(reverse("combat_resolve_enemy"), HTTP_HX_REQUEST="true")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "missing defeat_scene", status_code=400)
+        self.session.refresh_from_db()
+        self.assertEqual(self.session.current_scene, self.combat_scene)
+        cs.refresh_from_db()
+        self.assertTrue(cs.is_active)

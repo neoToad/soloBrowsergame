@@ -20,6 +20,16 @@ def resolve_choice(session_context, choice) -> ChoiceResult:
     if scene.requires_roll:
         next_scene, roll_log, roll_result = resolve_roll(scene, choice, effective_stats)
         log_queue.append(roll_log)
+        if next_scene is None:
+            if roll_result.success:
+                missing_target = "success_scene"
+            else:
+                missing_target = "failure_scene"
+            raise GameplayError(
+                f"Roll-routed choice is missing {missing_target}. "
+                f"Set Choice.{missing_target} in quest content.",
+                status=400,
+            )
     else:
         next_scene = choice.target_scene
         if next_scene is None:

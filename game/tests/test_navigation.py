@@ -1,4 +1,5 @@
 import json
+from unittest.mock import patch
 
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -225,6 +226,65 @@ class GameNavigationTest(TestCase):
         self.assertIn('id="scene-panel"', response.content.decode())
         triggers = json.loads(response.headers.get("HX-Trigger", "{}"))
         self.assertIn("app.error", triggers)
+        session.refresh_from_db()
+        self.assertEqual(session.current_scene, initial_scene)
+
+    def test_roll_choice_missing_success_scene_returns_400_and_does_not_move_session(self):
+        self.client.get("/game/")
+        session = GameSession.objects.first()
+        initial_scene = session.current_scene
+        session.current_scene.requires_roll = True
+        session.current_scene.roll_stat = "agility"
+        session.current_scene.roll_difficulty = 10
+        session.current_scene.save(update_fields=["requires_roll", "roll_stat", "roll_difficulty"])
+
+        choice = Choice.objects.create(
+            scene=initial_scene,
+            label="Risk the jump",
+            success_scene=None,
+            failure_scene=initial_scene,
+            order=5000,
+        )
+
+        with patch("game.services.scene.roll_d20", return_value=20):
+            response = self.client.post(
+                reverse("choice_resolve", kwargs={"choice_id": choice.pk}),
+                HTTP_HX_REQUEST="true",
+            )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "missing success_scene", status_code=400)
+        session.refresh_from_db()
+        self.assertEqual(session.current_scene, initial_scene)
+
+    def test_roll_choice_missing_failure_scene_returns_400_and_does_not_move_session(self):
+        self.client.get("/game/")
+        session = GameSession.objects.first()
+        initial_scene = session.current_scene
+        session.current_scene.requires_roll = True
+        session.current_scene.roll_stat = "agility"
+        session.current_scene.roll_difficulty = 30
+        session.current_scene.save(update_fields=["requires_roll", "roll_stat", "roll_difficulty"])
+
+        success_scene = Scene.objects.create(
+            key="test__roll_success_dest", title="Success", body="", scene_type="normal"
+        )
+        choice = Choice.objects.create(
+            scene=initial_scene,
+            label="Try anyway",
+            success_scene=success_scene,
+            failure_scene=None,
+            order=5001,
+        )
+
+        with patch("game.services.scene.roll_d20", return_value=1):
+            response = self.client.post(
+                reverse("choice_resolve", kwargs={"choice_id": choice.pk}),
+                HTTP_HX_REQUEST="true",
+            )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "missing failure_scene", status_code=400)
         session.refresh_from_db()
         self.assertEqual(session.current_scene, initial_scene)
 

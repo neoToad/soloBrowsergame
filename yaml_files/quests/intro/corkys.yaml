@@ -34,22 +34,11 @@ scenes:
     title: The Brief
     order: 10
     body: |
-      Morris has another job. He lays it out over the phone this time —
-      you've apparently graduated past needing to meet in person.
+      Morris calls at seven-thirty on a Wednesday. There's a bar in the Flats called Corky's — Dutch's people have been running product through it for three years, high foot traffic, regulars who know how to not see things. The owner, a guy named Sal, inherited it from a friend who left town. Sal has recently decided he wants the bar clean. He told Dutch's dealers to stop coming in. One of them got mouthy and Sal threw him out.
 
-      There's a bar in the Flats called Corky's. Dutch's people have
-      been using it as a sales floor for years — high foot traffic,
-      regular clientele, nobody asking questions. The owner, a guy
-      named Sal, inherited the place from a friend who left town. Sal
-      has decided he wants it clean. He told Dutch's dealers to stop
-      coming in. One of them got mouthy about it and Sal threw him out.
+      Dutch is not angry. Morris would tell you if Dutch were angry. Dutch just wants it resolved — the bar stays open, the dealers go back, Sal understands how the Flats works. Morris says this the way he says everything: like he's reading from an index card and is mildly satisfied with the index card.
 
-      Dutch is not angry. Dutch is never angry. Dutch just wants the
-      situation resolved. The bar stays open, the dealers go back in,
-      Sal understands how things work in the Flats. Simple.
-
-      Morris doesn't say what happens if Sal keeps pushing. He doesn't
-      need to.
+      He hangs up before you can ask what happens if Sal keeps pushing.
 
     roll:
       requires_roll: false
@@ -88,16 +77,9 @@ scenes:
     title: The Bar
     order: 20
     body: |
-      Corky's is the kind of bar that has been exactly the same for
-      thirty years and will be exactly the same for thirty more, or
-      until the building gets sold out from under it. Dark wood. A
-      jukebox that still takes quarters. Two old men at the far end
-      nursing pints like it's a job.
+      Corky's has been exactly this dark, exactly this quiet, for longer than anyone remembers. Old wood, a jukebox that still takes quarters, a TV above the register showing a game nobody's watching. Two men at the far end have been nursing pints since before you walked in and will be nursing them long after you leave.
 
-      Sal is behind the bar. Fifties, heavyset, the kind of tired that
-      comes from running a place alone. He clocks you the moment you
-      walk in — not with fear, just attention. He's been expecting
-      someone. Maybe not you specifically. Someone.
+      Sal is behind the bar. Fifties, heavyset, the kind of tired that comes from running a place alone for four years. He clocks you the moment you come through the door — not with fear, just recognition. He's been expecting someone. Maybe not you specifically. Someone.
 
       He doesn't stop wiping down the bar.
 
@@ -151,20 +133,11 @@ scenes:
     body: |
       You sit with it for twenty minutes. The bar tells you things.
 
-      There's a photo behind the register — Sal with an older man,
-      both of them grinning, the bar in the background looking exactly
-      the same as it does now. The friend who left it to him, probably.
-      On the shelf below it, a stack of envelopes. The kind with
-      cellophane windows. Bills. More than a few.
+      Behind the register there's a photo — Sal with an older man, both of them grinning, the bar looking exactly the same in the background as it does now. Dennis, probably. On the shelf below it: a stack of envelopes. Cellophane windows, return addresses from places that expect money. More than a few. The kind you leave on the shelf when you're not ready to open them.
 
-      One of the regulars at the end of the bar calls Sal by name when
-      he needs a refill. Sal knows his drink without being told. Knows
-      the other one's too. This is a man who has built something small
-      and is holding onto it.
+      One of the regulars at the end calls Sal by name when he needs a refill. Sal knows his drink without being told. Knows the other one's too. The two of them have been doing this long enough that they don't need to talk about it.
 
-      He's also behind on something. The envelopes are the kind you
-      don't leave on the shelf unless you're hoping they'll sort
-      themselves out.
+      The envelopes are the only thing in the room that doesn't fit.
 
     roll:
       requires_roll: false
@@ -203,16 +176,11 @@ scenes:
     title: Sal Face To Face
     order: 40
     body: |
-      Sal puts the cloth down. Folds his arms on the bar. He's not
-      aggressive — just done pretending he doesn't know why you're here.
+      Sal puts the cloth down. He doesn't fold his arms — he just stops, and looks at you, and waits. He's done pretending he doesn't know why you're here.
 
-      He says he knows who sent you. Says Dutch's people have been
-      using his bar for three years and he should have said something
-      sooner. Says he doesn't want trouble. He just wants to run his
-      bar. He says that last part quietly, like he knows how it sounds.
+      He knows who sent you. Dutch's people have been coming in for three years and he should have said something sooner, he knows that too. He doesn't want trouble. He just wants to run his bar. He says that last part in a voice that's already accounted for how it sounds to someone like you.
 
-      Behind him, the photo. The envelopes. The jukebox cycles to
-      something slow and nobody changes it.
+      Behind him: the photo, the envelopes, the jukebox cycling to something slow. Nobody changes it.
 
     roll:
       requires_roll: false
@@ -284,14 +252,9 @@ scenes:
     title: Lean On Sal
     order: 50
     body: |
-      You don't threaten him. You don't need to. You just lay out the
-      geography — Dutch has been in the Flats longer than Sal has owned
-      this bar. The dealers coming back in is not a negotiation. The
-      only question is whether Sal makes it difficult or whether he
-      makes it easy.
+      You lay out the geography. Dutch has been in the Flats longer than Sal has owned this bar. The dealers coming back isn't a negotiation — the only question is whether Sal makes it easy or makes it difficult, and the difference between those two things is significant and specific and he already knows what it is.
 
-      You watch him process it. He's not a stupid man. He knows what
-      you're saying. He knows what it means if he keeps pushing.
+      You keep your voice down. The trick is making sure he has to lean in slightly to hear you.
 
       He's deciding whether the bar is worth it.
 
@@ -334,15 +297,9 @@ scenes:
     body: |
       You ask him about the envelopes. He goes still.
 
-      You tell him you're not here to make it worse — you're here to
-      find an arrangement that works. Dutch's operation running through
-      the bar is quiet income on top of what the bar makes. It's not
-      nothing, especially when the cellophane-window envelopes are
-      stacking up. You're not telling him anything he doesn't know.
-      You're just saying it out loud so you're both looking at the
-      same picture.
+      You tell him you're not here to make it worse. Dutch's operation running through the bar is quiet income on top of what the bar makes — not nothing, when the cellophane windows are stacking up. You're not telling him anything he doesn't already know. You're just saying it out loud so you're both looking at the same picture.
 
-      He doesn't like it. That's fine. Liking it isn't the ask.
+      He doesn't like it. Liking it isn't the ask.
 
     roll:
       requires_roll: true
@@ -383,23 +340,11 @@ scenes:
     body: |
       He talks. Once he starts he doesn't stop for a while.
 
-      He inherited Corky's four years ago from a man named Dennis who
-      was his closest friend for twenty years and who left town in a
-      hurry for reasons Sal has never pressed on. The bar wasn't making
-      money then and it's barely making money now. He's kept it going
-      because it was Dennis's and because the regulars have nowhere else
-      to go and because some part of him still thinks it might turn
-      around.
+      He inherited Corky's four years ago from Dennis, who was his closest friend for twenty years and who left town in a hurry for reasons Sal has never pressed on. The bar wasn't making money then. It's barely making money now. He's kept it going because it was Dennis's and because the regulars have nowhere else to go and because some part of him still thinks it might turn around.
 
-      The dealers bother him less than the principle. It's his bar. If
-      he can't decide who comes in and who doesn't then it's not really
-      his bar. It's just a bar he works at.
+      The dealers bother him less than the principle. It's his bar. If he can't decide who comes in then it's just a bar he works at.
 
-      He stops. Looks embarrassed. Says he doesn't know why he's telling
-      you this.
-
-      You do. He's telling you because nobody has asked in a long time
-      and because he's tired of holding it by himself.
+      He stops. Looks at the cloth in his hands like he forgot he was holding it. Says he doesn't know why he's telling you this.
 
     roll:
       requires_roll: false
@@ -449,20 +394,11 @@ scenes:
     title: Counter Offer
     order: 65
     body: |
-      The offer you help him build is simple. Sal keeps Corky's clean
-      on weeknights — his regulars, his rules. Weekend afternoons,
-      Dutch's people can work the room. It's not what Dutch asked for
-      but it's not nothing. More importantly, it's sustainable. Sal
-      won't keep folding on an arrangement he resents. Dutch knows
-      that. Operations that run on resentment leak.
+      The offer is simple. Sal keeps Corky's clean on weeknights — his regulars, his rules. Weekend afternoons, Dutch's people can work the room. It's not what Dutch asked for but it's not nothing, and more importantly it's an arrangement Sal can live with. Operations that run on resentment leak. Dutch knows that, even if you've never met Dutch and are making an educated guess about what Dutch knows.
 
-      Sal writes it down on a bar napkin like that makes it official.
-      You don't tell him it doesn't. It costs nothing to let him have
-      the napkin.
+      Sal writes it down on a bar napkin. You don't tell him that doesn't make it a contract. He needs the napkin to be official, so the napkin is official.
 
-      You take a photo of it on your phone. Tell him you'll pass it up
-      the chain. Tell him Dutch is a reasonable man. You've never met
-      Dutch. You have no idea if that's true.
+      You take a photo of it on your phone. Tell him you'll pass it up the chain. Tell him Dutch is a reasonable man.
 
     roll:
       requires_roll: false
@@ -501,14 +437,9 @@ scenes:
     title: Sal Folds Intimidated
     order: 70
     body: |
-      He nods at the bar top. Says fine. One word. Then he goes to the
-      other end of the bar and starts restocking glasses and doesn't
-      look at you again.
+      He says fine. One word. Then he moves to the other end of the bar and starts restocking glasses and doesn't look at you again.
 
-      You sit there for a moment longer than you need to. The two old
-      men at the end haven't moved. The jukebox is between songs.
-
-      You did the job. That's what this was.
+      You sit there a moment longer than you need to. The two old men haven't moved. The jukebox is between songs.
 
     roll:
       requires_roll: false
@@ -532,7 +463,7 @@ scenes:
         target_scene: corkys__done-dealers-in
         success_scene: null
         failure_scene: null
-        arrival_flavor: Morris sounds pleased. That's the word — pleased. Like something being checked off a list.
+        arrival_flavor: Morris says acceptable. That's the word — acceptable. Like something being checked off a list.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
@@ -547,16 +478,9 @@ scenes:
     title: Sal Folds Leveraged
     order: 72
     body: |
-      He looks at the shelf for a long time. Then back at you. Then
-      he gives a small nod — not agreement exactly, more like a man
-      accepting a diagnosis he already suspected.
+      He looks at the shelf for a long time. Then back at you. Then he gives a small nod — not agreement exactly, more like a man accepting a diagnosis he already suspected.
 
-      He says the dealers can come back. He says it like it's a
-      business decision, which is what you gave him. A way to frame
-      it that wasn't pure capitulation. You're not sure whether that's
-      a kindness or not.
-
-      He goes back to the bar. You leave him to it.
+      He says the dealers can come back. He says it like a business decision, which is what you gave him — a frame that wasn't pure capitulation. You leave him to it.
 
     roll:
       requires_roll: false
@@ -580,7 +504,7 @@ scenes:
         target_scene: corkys__done-dealers-in
         success_scene: null
         failure_scene: null
-        arrival_flavor: Morris sounds satisfied. He doesn't ask how you got there.
+        arrival_flavor: Morris says satisfied. He doesn't ask how you got there.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
@@ -595,15 +519,9 @@ scenes:
     title: Sal Holds Firm
     order: 75
     body: |
-      He's not moving. You can see it — the decision is already made
-      and whatever you say next is just noise. Some people get to a
-      point where the fear stops working and all that's left is the
-      thing they're protecting. Sal's at that point.
+      He's not moving. The decision is already made and whatever you say next is noise. Some people get to a point where the fear stops working and all that's left is the thing they're protecting.
 
-      You don't push it further. There's a version of this where you
-      break him and it doesn't feel like anything you want to be today.
-
-      You tell him Dutch will be in touch. He says he knows. You leave.
+      You don't push it further. You tell him Dutch will be in touch. He says he knows. You leave.
 
     roll:
       requires_roll: false
@@ -642,21 +560,11 @@ scenes:
     title: Done Dealers In
     order: 80
     body: |
-      Morris calls that evening with the payout. Two hundred for the
-      job. Dutch is satisfied. The dealers go back into Corky's starting
-      Thursday and the situation is resolved.
+      Morris calls that evening. Two hundred for the job. The dealers go back into Corky's starting Thursday. He says Dutch is satisfied, which from Morris means he says satisfied and hangs up.
 
-      You don't go back to the bar. You don't have a reason to.
+      The money goes in the drawer. There's another slip on the corkboard already — Morris works fast.
 
-      The money goes in the drawer with the rest. The corkboard has
-      another slip on it — Morris works fast. You're useful now. That's
-      a thing you are.
-
-      You think about Sal restocking his glasses. The two old men at
-      the end of the bar. Whether they'll notice the dealers coming
-      back in on Thursday, and if they do, whether they'll say anything
-      about it. Probably not. That's the thing about places like
-      Corky's. People get very good at not noticing.
+      You don't go back to the bar. You don't have a reason to. Somewhere on the other side of the Flats, Sal is restocking glasses. The two old men at the end of the bar are still there, or they've gone home, and either way they'll be back tomorrow and the dealers will be back Thursday and nobody will say anything about it because that's the thing about Corky's. People learned a long time ago what not to notice.
 
     roll:
       requires_roll: false
@@ -680,7 +588,7 @@ scenes:
         target_scene: hub__apartment
         success_scene: null
         failure_scene: null
-        arrival_flavor: Dutch knows you get results. That's the job. That's what you told yourself.
+        arrival_flavor: Dutch knows you get results. Morris said acceptable. You take it.
         failure_arrival_flavor: null
         set_flag_name: corkys_dealers_in
         clear_flag_name: null
@@ -695,21 +603,11 @@ scenes:
     title: Done Sal Holds
     order: 85
     body: |
-      Morris calls back two hours later. Dutch looked at the
-      counter-offer. The answer is no. The dealers go back in on
-      Dutch's terms or the conversation becomes a different one.
+      Morris calls back two hours later. Dutch looked at the counter-offer. The answer is no — the dealers go back in on Dutch's terms or the conversation becomes a different one. There's no payout on this one.
 
-      Morris pauses. Then he says Dutch appreciated the creative
-      approach. That you showed initiative. He says it like a man
-      reading from a card.
+      Morris says Dutch appreciated the initiative. He says it the way he says everything: level, informational, not quite warm. He says there'll be more work. He says it carefully.
 
-      No payout on this one. You didn't deliver what was asked. Morris
-      says there'll be more work. He says it carefully, which means he's
-      not sure.
-
-      You sit with the bar napkin photo on your phone for a while.
-      Sal built himself a counter-offer on a napkin and it lasted
-      two hours. You're not sure what that says about either of you.
+      You still have the photo of the napkin on your phone. Sal built a counter-offer on a bar napkin and it lasted two hours.
 
     roll:
       requires_roll: false
@@ -733,7 +631,7 @@ scenes:
         target_scene: hub__apartment
         success_scene: null
         failure_scene: null
-        arrival_flavor: Sal's holding out. For now. You hope he knows what that costs.
+        arrival_flavor: Sal's holding out. Dutch will handle it. You hope he knows what that costs.
         failure_arrival_flavor: null
         set_flag_name: corkys_sal_holds
         clear_flag_name: null
@@ -748,20 +646,11 @@ scenes:
     title: Done Sal Caved
     order: 90
     body: |
-      Dutch handled it himself. You don't know what that means exactly
-      and Morris doesn't elaborate. What you know is that two days later
-      the dealers are back in Corky's and Sal is still behind the bar
-      and nothing visible has changed.
+      Dutch handled it himself. Morris doesn't elaborate on what that means and you don't ask. What you know is that two days later the dealers are back in Corky's and Sal is still behind the bar and nothing visible has changed.
 
-      Morris sends a hundred your way. Half rate. You showed up and
-      made the ask, even if you didn't close it. That's worth something,
-      apparently. Fifty less than something.
+      Morris sends a hundred. Half rate. You showed up and made the ask. That's apparently worth something — fifty less than something, but something.
 
-      You think about Sal. Whether he's okay. Whether okay is even the
-      right question for a man in his position. He's still got the bar.
-      That's probably what he'd say if you asked him.
-
-      You don't ask him.
+      Sal's still got the bar. That's probably what he'd say if you asked him.
 
     roll:
       requires_roll: false
@@ -785,7 +674,7 @@ scenes:
         target_scene: hub__apartment
         success_scene: null
         failure_scene: null
-        arrival_flavor: The city keeps score differently than you do. You're still learning its system.
+        arrival_flavor: The dealers are back in on Thursday. You drove past on Wednesday.
         failure_arrival_flavor: null
         set_flag_name: corkys_sal_caved
         clear_flag_name: null

@@ -456,6 +456,16 @@ def choice_create(request, quest_id):
             triggers={'quest_builder.error': {'message': 'source_scene_id must be a valid integer', 'status': 400}},
         )
 
+    if not quest.scenes.filter(pk=source_scene_id).exists():
+        return response_utils.error_response(
+            request,
+            message="Source scene does not belong to this quest.",
+            status=403,
+            htmx_template='admin/quest_builder/partials/inline_error.html',
+            full_template='admin/quest_builder/partials/inline_error.html',
+            triggers={'quest_builder.error': {'message': 'Source scene does not belong to this quest.', 'status': 403}},
+        )
+
     choice = create_choice_service(source_scene_id, request.POST)
     routing_type = 'roll' if (choice.success_scene_id or choice.failure_scene_id) else 'direct'
 
