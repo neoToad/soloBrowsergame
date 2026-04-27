@@ -401,6 +401,10 @@ class ChoiceAdmin(admin.ModelAdmin):
         }),
         ('Flags', {
             'fields': ('set_flag_name', 'clear_flag_name'),
+            'description': (
+                "Use a registered flag key or one of these dynamic patterns: "
+                "approach_<key>, approach_<key>_failed, ran_<job_key>_<3|5|10>x."
+            ),
         }),
     )
     inlines = [ChoiceRequirementGroupInline]
@@ -550,6 +554,22 @@ class ContactJobOfferAdmin(admin.ModelAdmin):
     list_select_related = True
     search_fields = ('key', 'contact__name', 'job__key', 'job__title')
     filter_horizontal = ('unlock_requirements',)
+    fieldsets = (
+        (None, {
+            'fields': (
+                'key', 'contact', 'job', 'scene', 'order', 'is_active',
+                'min_run_count', 'required_flag', 'cooldown_turns',
+                'unlock_requirements',
+            ),
+            'description': (
+                "required_flag must be a registered flag key or supported "
+                "dynamic pattern."
+            ),
+        }),
+        ('Text', {
+            'fields': ('first_meeting_text', 'standard_offer_text', 'nothing_available_text'),
+        }),
+    )
 
 
 @admin.register(PlayerContactOfferState)

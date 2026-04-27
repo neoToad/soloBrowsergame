@@ -3,6 +3,7 @@ from django.db import models
 from .requirements import RequirementGroup
 from .items import Item
 from ..constants import STAT_DISPLAY_NAMES
+from ..services.flag_registry import validate_flag_name
 
 class Arc(models.Model):
     key   = models.SlugField(unique=True)
@@ -203,9 +204,15 @@ class Choice(models.Model):
                                 help_text="Logged instead of arrival_flavor when a roll fails.")
 
     set_flag_name   = models.CharField(max_length=100, blank=True,
-                          help_text="If set, this flag is set on the session when this choice is taken.")
+                          help_text=(
+                              "If set, this flag is set on the session when this choice is taken. "
+                              "Use a registered key or supported dynamic pattern."
+                          ))
     clear_flag_name = models.CharField(max_length=100, blank=True,
-                          help_text="If set, this flag is cleared from the session when this choice is taken.")
+                          help_text=(
+                              "If set, this flag is cleared from the session when this choice is taken. "
+                              "Use a registered key or supported dynamic pattern."
+                          ))
 
     # Visibility and access requirements
     requirements = models.ManyToManyField(
@@ -216,6 +223,39 @@ class Choice(models.Model):
 
     class Meta:
         ordering = ['order']
+
+    def clean(self):
+        super().clean()
+        legacy_fields = {}
+        if self.pk:
+            legacy_fields = (
+                Choice.objects.filter(pk=self.pk)
+                .values("set_flag_name", "clear_flag_name")
+                .first()
+                or {}
+            )
+
+        set_legacy = (legacy_fields.get("set_flag_name", "").strip(),)
+        clear_legacy = (legacy_fields.get("clear_flag_name", "").strip(),)
+        errors = {}
+        try:
+            self.set_flag_name = validate_flag_name(
+                self.set_flag_name,
+                field_label="set_flag_name",
+                legacy_values=[v for v in set_legacy if v],
+            )
+        except ValidationError as exc:
+            errors["set_flag_name"] = exc.messages
+        try:
+            self.clear_flag_name = validate_flag_name(
+                self.clear_flag_name,
+                field_label="clear_flag_name",
+                legacy_values=[v for v in clear_legacy if v],
+            )
+        except ValidationError as exc:
+            errors["clear_flag_name"] = exc.messages
+        if errors:
+            raise ValidationError(errors)
 
     def __str__(self):
         return f"{self.scene.key} -> {self.label}"

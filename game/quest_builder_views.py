@@ -466,7 +466,17 @@ def choice_create(request, quest_id):
             triggers={'quest_builder.error': {'message': 'Source scene does not belong to this quest.', 'status': 403}},
         )
 
-    choice = create_choice_service(source_scene_id, request.POST)
+    try:
+        choice = create_choice_service(source_scene_id, request.POST)
+    except ValueError as exc:
+        return response_utils.error_response(
+            request,
+            message=str(exc),
+            status=400,
+            htmx_template='admin/quest_builder/partials/inline_error.html',
+            full_template='admin/quest_builder/partials/inline_error.html',
+            triggers={'quest_builder.error': {'message': str(exc), 'status': 400}},
+        )
     routing_type = 'roll' if (choice.success_scene_id or choice.failure_scene_id) else 'direct'
 
     context = _choice_context(
@@ -522,7 +532,17 @@ def choice_save(request, quest_id, choice_id):
             full_template='admin/quest_builder/partials/inline_error.html',
             triggers={'quest_builder.error': {'message': 'Choice does not belong to this quest.', 'status': 403}},
         )
-    choice = update_choice_service(choice_id, request.POST)
+    try:
+        choice = update_choice_service(choice_id, request.POST)
+    except ValueError as exc:
+        return response_utils.error_response(
+            request,
+            message=str(exc),
+            status=400,
+            htmx_template='admin/quest_builder/partials/inline_error.html',
+            full_template='admin/quest_builder/partials/inline_error.html',
+            triggers={'quest_builder.error': {'message': str(exc), 'status': 400}},
+        )
     build_requirement_groups_from_post_service(choice, request.POST)
     routing_type = 'roll' if (choice.success_scene_id or choice.failure_scene_id) else 'direct'
 

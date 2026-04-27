@@ -118,20 +118,32 @@ def import_world_data(data: dict) -> ImportResult:
 def _import_choices_for_scene(scene_data: dict, scene_obj: Scene, scene_map: dict[str, Scene], result: ImportResult) -> dict[tuple[str, int], Choice]:
     choices: dict[tuple[str, int], Choice] = {}
     for choice_data in (scene_data.get("choices") or []):
-        choice, created = Choice.objects.update_or_create(
+        choice = Choice.objects.filter(
             scene=scene_obj,
             label=choice_data["label"],
             order=choice_data.get("order", 0),
-            defaults={
-                "arrival_flavor": choice_data.get("arrival_flavor") or "",
-                "failure_arrival_flavor": choice_data.get("failure_arrival_flavor") or "",
-                "set_flag_name": choice_data.get("set_flag_name") or "",
-                "clear_flag_name": choice_data.get("clear_flag_name") or "",
-                "target_scene": resolve_scene(choice_data.get("target_scene"), scene_map, result),
-                "success_scene": resolve_scene(choice_data.get("success_scene"), scene_map, result),
-                "failure_scene": resolve_scene(choice_data.get("failure_scene"), scene_map, result),
-            },
-        )
+        ).first()
+        created = choice is None
+        if created:
+            choice = Choice(
+                scene=scene_obj,
+                label=choice_data["label"],
+                order=choice_data.get("order", 0),
+            )
+        choice.arrival_flavor = choice_data.get("arrival_flavor") or ""
+        choice.failure_arrival_flavor = choice_data.get("failure_arrival_flavor") or ""
+        choice.set_flag_name = choice_data.get("set_flag_name") or ""
+        choice.clear_flag_name = choice_data.get("clear_flag_name") or ""
+        choice.target_scene = resolve_scene(choice_data.get("target_scene"), scene_map, result)
+        choice.success_scene = resolve_scene(choice_data.get("success_scene"), scene_map, result)
+        choice.failure_scene = resolve_scene(choice_data.get("failure_scene"), scene_map, result)
+        try:
+            choice.full_clean()
+        except ValidationError as exc:
+            raise CommandError(
+                f"Invalid choice '{scene_obj.key}:{choice.label}#{choice.order}': {exc.message_dict}"
+            ) from exc
+        choice.save()
         choice.requirements.clear()
         key = (choice_data["label"], choice_data.get("order", 0))
         choices[key] = choice

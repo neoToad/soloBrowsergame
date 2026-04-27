@@ -5,25 +5,7 @@ Last audited: 2026-04-27
 
 ## Medium Priority
 
-## Event logging remains split between service-returns and direct DB writes
 
-Most services return log messages for views to flush, but combat services still directly write logs in places (`resolve_combat_end`) and flush within service logic (`execute_enemy_attack` defeat branch).
-
-- Evidence: `game/services/combat.py` (`execute_enemy_attack`, `resolve_combat_end`)
-- Impact: Inconsistent service contract and harder-to-test side effects.
-- Plan: Standardize combat services to return log messages only, move all flushing/persistence to views (or one logging service), and update tests to assert returned logs rather than DB writes inside service code.
-
----
-
-## Flag names are freeform and unvalidated
-
-Choice and offer flag fields are plain strings with no schema/registry validation.
-
-- Evidence: `game/models/world.py:205-208`, `game/models/jobs.py:180`
-- Impact: Typos create silent gating/flow bugs that are difficult to diagnose.
-- Plan: Introduce a shared flag registry (enum/constant source), validate `set_flag_name`/`clear_flag_name`/`required_flag` against it in model clean/admin, and provide migration-safe fallback for legacy flags.
-
----
 
 ## Scene key naming convention is documented but not enforced
 
@@ -82,3 +64,4 @@ A single function assembles many unrelated concerns (choices, notice board, prop
 - Roll-route null destination handling hardened: `resolve_choice()` now validates roll outcome routing and returns controlled `400` authoring errors for missing `success_scene`/`failure_scene`, with endpoint regression tests in `game/tests/test_navigation.py`.
 - Quest-builder `choice_create` now enforces source-scene quest ownership and returns controlled `403` on mismatch, with endpoint regression tests for cross-quest rejection and same-quest success (`game/tests/test_quest_builder.py`).
 - Item stat target validation completed: `Item.clean()` now restricts `effect_stat`/`passive_stat` to canonical stat fields; importer item writes run `full_clean()` and fail fast on invalid stat targets; runtime item application/effective-stat paths ignore invalid legacy stat names; invalid rows can be reported via `report_invalid_item_stats`; regression coverage added in `game/tests/test_inventory.py`.
+- Combat event logging contract standardized: low-level combat services now return logs only (no direct `EventLog` writes / internal flushes), and persistence is centralized at gameplay orchestration boundary (`game/services/gameplay/combat.py`), with combat tests updated to assert returned logs and boundary flushing behavior.

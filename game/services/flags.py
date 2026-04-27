@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from enum import Enum
 from typing import Iterable
 
+from django.core.exceptions import ValidationError
 
-class FlagKey(str, Enum):
-    BEAT2_PENALTY = "beat2_penalty"
+from .flag_registry import FlagKey, normalize_flag_name
 
 
 def has_flag(session, flag: str | FlagKey) -> bool:
@@ -56,8 +55,10 @@ def set_approach_outcome(session, approach_key: str, *, success: bool) -> None:
 
 
 def _normalize(flag: str | FlagKey) -> str:
-    value = flag.value if isinstance(flag, FlagKey) else str(flag)
-    value = value.strip()
+    try:
+        value = normalize_flag_name(flag, allow_blank=False)
+    except ValidationError as exc:
+        raise ValueError(exc.messages[0]) from exc
     if not value:
         raise ValueError("Flag name must be non-empty.")
     return value

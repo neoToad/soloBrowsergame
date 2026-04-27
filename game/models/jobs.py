@@ -1,7 +1,9 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 
 from ..constants import STAT_DISPLAY_NAMES
 from .requirements import RequirementGroup
+from ..services.flag_registry import validate_flag_name
 
 
 RECON_TIER_LOW = "low"
@@ -177,7 +179,14 @@ class ContactJobOffer(models.Model):
     is_active = models.BooleanField(default=True)
 
     min_run_count = models.PositiveIntegerField(default=0)
-    required_flag = models.CharField(max_length=100, blank=True)
+    required_flag = models.CharField(
+        max_length=100,
+        blank=True,
+        help_text=(
+            "Optional session flag gate. Use a registered key or supported "
+            "dynamic pattern."
+        ),
+    )
     unlock_requirements = models.ManyToManyField(
         RequirementGroup,
         blank=True,
@@ -198,6 +207,22 @@ class ContactJobOffer(models.Model):
                 name="uq_contactjoboffer_contact_job",
             )
         ]
+
+    def clean(self):
+        super().clean()
+        legacy_required_flag = ""
+        if self.pk:
+            legacy_required_flag = (
+                ContactJobOffer.objects.filter(pk=self.pk)
+                .values_list("required_flag", flat=True)
+                .first()
+                or ""
+            ).strip()
+        self.required_flag = validate_flag_name(
+            self.required_flag,
+            field_label="required_flag",
+            legacy_values=[legacy_required_flag] if legacy_required_flag else (),
+        )
 
     def __str__(self):
         return f"{self.contact.name} -> {self.job.title}"

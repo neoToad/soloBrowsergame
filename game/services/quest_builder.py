@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 
 from ..models.world import Quest, Scene, Choice, SceneItem, SceneContact
@@ -14,6 +15,18 @@ GRID_X_GAP = 280
 GRID_Y_GAP = 200
 CANVAS_PADDING = 120
 PARALLEL_ARROW_SPACING = 12
+
+
+def _raise_authoring_validation_error(exc: ValidationError) -> None:
+    message_dict = getattr(exc, "message_dict", None)
+    if message_dict:
+        details = "; ".join(
+            f"{field}: {', '.join(messages)}" for field, messages in message_dict.items()
+        )
+    else:
+        details = "; ".join(exc.messages)
+    raise ValueError(details) from exc
+
 
 def _build_canvas_data(quest_id):
     """
@@ -662,7 +675,7 @@ def create_choice(source_scene_id, data):
     """Create a choice on the given source scene from parsed form payload."""
     scene = Scene.objects.get(pk=source_scene_id)
     parsed = _parse_choice_form(data)
-    return Choice.objects.create(
+    choice = Choice(
         scene=scene,
         label=parsed['label'],
         target_scene_id=parsed['target_scene_id'],
@@ -673,6 +686,12 @@ def create_choice(source_scene_id, data):
         arrival_flavor=parsed['arrival_flavor'],
         failure_arrival_flavor=parsed['failure_arrival_flavor'],
     )
+    try:
+        choice.full_clean()
+    except ValidationError as exc:
+        _raise_authoring_validation_error(exc)
+    choice.save()
+    return choice
 
 def update_choice(choice_id, data):
     """Update an existing choice from parsed form payload."""
@@ -688,6 +707,10 @@ def update_choice(choice_id, data):
     choice.arrival_flavor         = parsed['arrival_flavor']
     choice.failure_arrival_flavor = parsed['failure_arrival_flavor']
 
+    try:
+        choice.full_clean()
+    except ValidationError as exc:
+        _raise_authoring_validation_error(exc)
     choice.save()
     return choice
 

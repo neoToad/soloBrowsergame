@@ -144,3 +144,43 @@ scenes:
     choices: []
 """
             )
+
+    def test_import_errors_when_choice_flag_name_is_invalid(self):
+        with self.assertRaises(CommandError):
+            self._run_import(
+                """
+quest:
+  key: import-test-invalid-flag
+  title: Import Test Invalid Flag
+  description: Import test
+  arc: null
+  arc_order: 0
+  is_repeatable: false
+  hub_scenes: []
+  entrance_scene: import-test-invalid-flag__start
+  requirements: []
+
+scenes:
+  - key: import-test-invalid-flag__start
+    scene_type: normal
+    title: Start
+    order: 10
+    body: |
+      Start scene.
+    choices:
+      - label: Finish
+        order: 1
+        target_scene: import-test-invalid-flag__end
+        set_flag_name: bad flag name
+
+  - key: import-test-invalid-flag__end
+    scene_type: ending
+    title: End
+    order: 20
+    body: |
+      Ending scene.
+    ending:
+      ending_type: victory
+    choices: []
+"""
+            )
