@@ -1,6 +1,6 @@
 # Tech Debt
 
-Last audited: 2026-04-25
+Last audited: 2026-04-26
 
 ## High Priority
 
@@ -8,7 +8,7 @@ Last audited: 2026-04-25
 
 `resolve_combat_end()` assumes `next_scene` is always present, but both combat paths allow nullable destination scenes (`CombatEncounter.victory_scene` and `defeat_scene` are nullable). If content is misconfigured, `session.current_scene` can become `None` and later rendering crashes.
 
-- Evidence: `game/models/combat.py` (`victory_scene`/`defeat_scene` nullable), `game/views.py:415-420`, `game/services/combat.py:211-215`, `game/services/combat.py:254-255`
+- Evidence: `game/models/combat.py` (`victory_scene`/`defeat_scene` nullable), `game/services/combat.py` (`resolve_combat_end` assigns `session.current_scene = next_scene` without a null guard)
 - Impact: Hard crash / broken save-state on malformed combat content.
 - Plan: Add explicit `next_scene is None` guards in combat resolution paths, return a controlled `400` with authoring guidance, and add tests for missing victory/defeat scene cases.
 
@@ -16,21 +16,11 @@ Last audited: 2026-04-25
 
 ## Roll-route choices can transition to `None` scene
 
-When a scene requires a roll, `choice_resolve()` trusts `resolve_roll()` output and does not validate that success/failure target scenes exist. Misconfigured content can route to `None`, then fail in arrival/render flow.
+When a scene requires a roll, gameplay choice resolution trusts `resolve_roll()` output and does not validate that success/failure target scenes exist. Misconfigured content can route to `None`, then fail in arrival/render flow.
 
-- Evidence: `game/views.py:113-121`, `game/services/scene.py:41-42`
+- Evidence: `game/services/gameplay/resolve_choice.py:20-42`, `game/services/scene.py:41-42`, `game/services/session.py:19-22`
 - Impact: Runtime 500s and potentially invalid `current_scene` state.
-- Plan: Validate `next_scene` after `resolve_roll()` in `choice_resolve()`, return `400` for malformed routing, and add coverage for missing success/failure targets.
-
----
-
-## YAML import reuses requirement groups by label (cross-content coupling)
-
-`import_quest` and `import_hubs` use `RequirementGroup.objects.get_or_create(label=...)`, then clear and rebuild requirements. Reusing labels across quests/hubs mutates shared groups unexpectedly.
-
-- Evidence: `game/management/commands/import_quest.py:165-180`, `game/management/commands/import_hubs.py:118-133`
-- Impact: Importing one content file can silently alter requirements for unrelated content.
-- Plan: Stop keying requirement groups by label alone; create scoped groups per import object (or deterministic unique key), migrate existing shared-label data safely, and add regression tests for cross-quest isolation.
+- Plan: Validate `next_scene` after `resolve_roll()` in gameplay choice resolution, return `400` for malformed routing, and add coverage for missing success/failure targets.
 
 ---
 
@@ -38,7 +28,7 @@ When a scene requires a roll, `choice_resolve()` trusts `resolve_roll()` output 
 
 `choice_save`/`choice_delete` enforce quest ownership, but `choice_create` accepts `source_scene_id` without checking membership in `quest_id`.
 
-- Evidence: `game/quest_builder_views.py:412-426`, compare with ownership checks in `game/quest_builder_views.py:460-463` and `487-490`
+- Evidence: `game/quest_builder_views.py` (`choice_create` accepts `source_scene_id` and calls `create_choice_service` without verifying `choice.scene.quest_id == quest_id`); `choice_save`/`choice_delete` perform ownership checks.
 - Impact: Cross-quest data linkage bugs from malformed admin requests.
 - Plan: Enforce quest membership check in `choice_create` before service call, return `403` on mismatch, and add endpoint tests mirroring `choice_save`/`choice_delete` protections.
 
@@ -50,19 +40,9 @@ When a scene requires a roll, `choice_resolve()` trusts `resolve_roll()` output 
 
 Most services return log messages for views to flush, but combat services still directly write logs in places (`resolve_combat_end`) and flush within service logic (`execute_enemy_attack` defeat branch).
 
-- Evidence: `game/services/combat.py:210`, `game/services/combat.py:278-279`
+- Evidence: `game/services/combat.py` (`execute_enemy_attack`, `resolve_combat_end`)
 - Impact: Inconsistent service contract and harder-to-test side effects.
 - Plan: Standardize combat services to return log messages only, move all flushing/persistence to views (or one logging service), and update tests to assert returned logs rather than DB writes inside service code.
-
----
-
-## `maybe_complete_quest` assumes ending scene belongs to a single quest
-
-Quest completion uses `next_scene.quests.first()` despite many-to-many quest-scene relations.
-
-- Evidence: `game/services/progression.py:102`
-- Impact: Silent incorrect quest completion if ending scenes are shared across quests.
-- Plan: Resolve quest context from transition source (active quest/run context) instead of `.first()`, or enforce one-quest-per-ending-scene invariant with validation; then add tests for shared-ending scenarios.
 
 ---
 
@@ -130,6 +110,9 @@ A single function assembles many unrelated concerns (choices, notice board, prop
 
 ## Recently Resolved (removed from active debt)
 
+- Test-suite monolith cleanup completed: `game/tests/tests.py` removed and split into focused modules (`test_navigation`, `test_combat`, `test_progression`, `test_inventory`, `test_property_and_arrival`, `test_quest_builder`, `test_performance`, `test_requirements`, `test_export_game_state`).
+- Quest completion ownership ambiguity resolved by scene ownership model change: `Scene` now has `quest` FK and completion resolves via `next_scene.quest` instead of M2M lookup (`game/services/progression.py`).
+- Import requirement-group cross-content coupling resolved via scoped importer requirement groups (`game/services/importers/requirements.py`) plus regression tests (`game/tests/test_import_refactor.py`).
 - `unique_together` modernization to explicit `UniqueConstraint` completed (`0044_unique_together_to_unique_constraint`).
 - Root URL lambda redirect replaced with named view (`views.root_redirect`).
 - Broad `except Exception` in quest builder panel path replaced with specific `CombatEncounter.DoesNotExist` handling.
