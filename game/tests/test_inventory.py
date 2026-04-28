@@ -6,7 +6,7 @@ from django.core.management.base import CommandError
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from .test_factories import make_game_session, make_item
+from game.tests.factories import ItemFactory, bootstrap_game_session
 
 
 class UseItemTest(TestCase):
@@ -14,7 +14,7 @@ class UseItemTest(TestCase):
         from game.models import Item, PlayerInventory
 
         self.client = Client()
-        self.session = make_game_session(self.client)
+        self.session = bootstrap_game_session(self.client)
         self.stats = self.session.stats
         self.heal_potion = Item.objects.create(
             key="test_potion",
@@ -59,14 +59,14 @@ class UseItemTest(TestCase):
 class InventoryServiceTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.session = make_game_session(self.client)
+        self.session = bootstrap_game_session(self.client)
         self.stats = self.session.stats
 
     def test_use_item_add_stat_effect_increases_stat_and_consumes_item(self):
         from game.models import PlayerInventory
         from game.services.inventory import apply_item_effect
 
-        item = make_item(
+        item = ItemFactory(
             key="inv__add_str",
             name="Strength Tonic",
             is_consumable=True,
@@ -88,7 +88,7 @@ class InventoryServiceTest(TestCase):
         from game.models import PlayerInventory
         from game.services.inventory import apply_item_effect
 
-        item = make_item(
+        item = ItemFactory(
             key="inv__bad_add_stat",
             name="Glitched Tonic",
             is_consumable=True,
@@ -110,7 +110,7 @@ class InventoryServiceTest(TestCase):
         from game.models import PlayerInventory
         from game.services.inventory import consume_item
 
-        item = make_item(key="inv__multi", name="Multi Item")
+        item = ItemFactory(key="inv__multi", name="Multi Item")
         pi = PlayerInventory.objects.create(session=self.session, item=item, quantity=2)
         inventory = {item.id: pi}
 
@@ -125,7 +125,7 @@ class InventoryServiceTest(TestCase):
         from game.services.inventory import award_scene_items
 
         scene = self.session.current_scene
-        item = make_item(key="inv__award_once", name="Once Item")
+        item = ItemFactory(key="inv__award_once", name="Once Item")
         SceneItem.objects.create(scene=scene, item=item, quantity=1, award_once=True)
 
         inventory = {}
@@ -160,7 +160,7 @@ class InventoryServiceTest(TestCase):
 class EffectiveStatsTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.session = make_game_session(self.client)
+        self.session = bootstrap_game_session(self.client)
 
     def test_get_effective_stats_applies_passive_item_bonuses(self):
         from game.models import Item, PlayerInventory
@@ -289,3 +289,4 @@ class ReportInvalidItemStatsCommandTest(TestCase):
         out = StringIO()
         call_command("report_invalid_item_stats", stdout=out)
         self.assertIn("inv__report_bad", out.getvalue())
+

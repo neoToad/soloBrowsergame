@@ -15,13 +15,13 @@ from game.models import (
     PlayerStats,
 )
 from game.models.jobs import RECON_TIER_HIGH
-from game.tests.test_factories import make_game_session
+from game.tests.factories import bootstrap_game_session
 
 
 class JobEndpointsTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.session = make_game_session(self.client)
+        self.session = bootstrap_game_session(self.client)
         self.scene = self.session.current_scene
 
     def _make_job(self, key="jobs__warehouse", **overrides):
@@ -457,3 +457,5 @@ class JobEndpointsTest(TestCase):
             HTTP_HX_REQUEST="true",
         )
         self.assertEqual(response.status_code, 200)
+
+

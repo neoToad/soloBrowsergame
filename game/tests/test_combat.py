@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from game.models import Enemy, GameSession, Scene
 
-from .test_factories import make_game_session
+from game.tests.factories import EnemyFactory, SceneFactory, bootstrap_game_session
 
 
 class CombatTest(TestCase):
@@ -68,10 +68,10 @@ class CombatServiceTest(TestCase):
         from game.models.combat import CombatEncounter
 
         self.client = Client()
-        self.session = make_game_session(self.client)
+        self.session = bootstrap_game_session(self.client)
         self.stats = self.session.stats
 
-        self.enemy = Enemy.objects.create(
+        self.enemy = EnemyFactory(
             key="cs__enemy",
             name="Corner Thug",
             description="",
@@ -81,13 +81,13 @@ class CombatServiceTest(TestCase):
             damage_min=2,
             damage_max=4,
         )
-        self.defeat_scene = Scene.objects.create(
+        self.defeat_scene = SceneFactory(
             key="cs__defeat", title="Defeat", body="", scene_type="ending", ending_type="defeat"
         )
-        self.victory_scene = Scene.objects.create(
+        self.victory_scene = SceneFactory(
             key="cs__victory", title="Victory", body="", scene_type="normal"
         )
-        self.combat_scene = Scene.objects.create(
+        self.combat_scene = SceneFactory(
             key="cs__combat", title="Combat", body="", scene_type="combat"
         )
         self.encounter = CombatEncounter.objects.create(
@@ -207,7 +207,7 @@ class CombatServiceTest(TestCase):
         from game.services.combat import initialize_combat_state
 
         cs = self._make_combat_state()
-        normal_scene = Scene.objects.create(key="cs__normal", title="Normal", body="", scene_type="normal")
+        normal_scene = SceneFactory(key="cs__normal", title="Normal", body="", scene_type="normal")
 
         result = initialize_combat_state(self.session, normal_scene)
 
@@ -235,10 +235,10 @@ class CombatViewTest(TestCase):
         from game.models.combat import CombatEncounter, CombatState
 
         self.client = Client()
-        self.session = make_game_session(self.client)
+        self.session = bootstrap_game_session(self.client)
         self.stats = self.session.stats
 
-        self.enemy = Enemy.objects.create(
+        self.enemy = EnemyFactory(
             key="cview__enemy",
             name="View Thug",
             description="",
@@ -248,10 +248,10 @@ class CombatViewTest(TestCase):
             damage_min=2,
             damage_max=2,
         )
-        self.victory_scene = Scene.objects.create(
+        self.victory_scene = SceneFactory(
             key="cview__victory", title="Victory", body="", scene_type="normal"
         )
-        self.combat_scene = Scene.objects.create(
+        self.combat_scene = SceneFactory(
             key="cview__combat", title="Combat", body="", scene_type="combat"
         )
         CombatEncounter.objects.create(
@@ -335,3 +335,5 @@ class CombatViewTest(TestCase):
         self.assertEqual(self.session.current_scene, self.combat_scene)
         cs.refresh_from_db()
         self.assertTrue(cs.is_active)
+
+

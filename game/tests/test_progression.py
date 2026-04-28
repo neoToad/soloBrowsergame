@@ -3,13 +3,13 @@ from django.urls import reverse
 
 from game.models import CompletedQuest, Quest, Scene
 
-from .test_factories import make_game_session
+from game.tests.factories import bootstrap_game_session
 
 
 class LevelUpTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.session = make_game_session(self.client)
+        self.session = bootstrap_game_session(self.client)
         self.stats = self.session.stats
 
     def test_level_up_success(self):
@@ -60,7 +60,7 @@ class LevelUpTest(TestCase):
 class ProgressionTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.session = make_game_session(self.client)
+        self.session = bootstrap_game_session(self.client)
         self.stats = self.session.stats
 
     def test_award_xp_crosses_multiple_levels(self):
@@ -119,7 +119,7 @@ class MaxHpTest(TestCase):
         from game.utils import compute_max_hp
 
         client = Client()
-        session = make_game_session(client)
+        session = bootstrap_game_session(client)
         stats = session.stats
         expected = compute_max_hp(5)
         self.assertEqual(stats.max_hp, expected)
@@ -132,7 +132,7 @@ class MaxHpTest(TestCase):
         from game.utils import compute_max_hp, get_effective_stats
 
         client = Client()
-        session = make_game_session(client)
+        session = bootstrap_game_session(client)
         stats = session.stats
         stats.strength = 10
         stats.max_hp = compute_max_hp(10)
@@ -160,7 +160,7 @@ class MaxHpTest(TestCase):
         from game.utils import compute_max_hp
 
         client = Client()
-        session = make_game_session(client)
+        session = bootstrap_game_session(client)
         stats = session.stats
         stats.strength = 10
         stats.max_hp = compute_max_hp(10)
@@ -179,7 +179,7 @@ class MaxHpTest(TestCase):
 class ProgressionServiceTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.session = make_game_session(self.client)
+        self.session = bootstrap_game_session(self.client)
         self.stats = self.session.stats
 
     def test_maybe_complete_quest_non_ending_scene_returns_empty(self):
@@ -211,3 +211,4 @@ class ProgressionServiceTest(TestCase):
 
         self.assertEqual(result, [])
         self.assertEqual(CompletedQuest.objects.filter(session=self.session, quest=quest).count(), 1)
+

@@ -4,7 +4,7 @@ from django.test import Client, TestCase
 
 from game.models import GameSession, Scene
 
-from .test_factories import make_game_session
+from game.tests.factories import bootstrap_game_session
 
 
 class RivalContestTest(TestCase):
@@ -155,7 +155,7 @@ class RivalContestTest(TestCase):
 class PropertyServiceTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.session = make_game_session(self.client)
+        self.session = bootstrap_game_session(self.client)
         self.stats = self.session.stats
 
     def test_apply_property_rewards_grants_property_on_arrival(self):
@@ -234,7 +234,7 @@ class PropertyServiceTest(TestCase):
 class ArrivalServiceTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.session = make_game_session(self.client)
+        self.session = bootstrap_game_session(self.client)
         self.stats = self.session.stats
 
     def test_process_arrival_on_quest_ending_triggers_income_and_turn_summary(self):
@@ -283,3 +283,4 @@ class ArrivalServiceTest(TestCase):
 
         self.assertFalse(RivalClaim.objects.filter(pk=claim.pk).exists())
         self.assertIn("Rival backed down", "\n".join(logs))
+

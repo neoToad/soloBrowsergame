@@ -16,13 +16,13 @@ from game.models import (
     Scene,
 )
 
-from .test_factories import make_hub_scene
+from game.tests.factories import HubSceneFactory
 
 
 class GameNavigationTest(TestCase):
     def setUp(self):
         self.client = Client()
-        hub = make_hub_scene()
+        hub = HubSceneFactory()
 
         notice_board = Scene.objects.create(
             key="hub__notice_board", title="The Board", body="", scene_type="hub"
@@ -420,3 +420,4 @@ class NoticeBoardTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('id="scene-panel"', response.content.decode())
         self.assertContains(response, self.warehouse_entrance.title)
+
