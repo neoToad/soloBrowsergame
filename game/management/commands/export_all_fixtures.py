@@ -45,8 +45,6 @@ class Command(BaseCommand):
                 "json",
                 queryset,
                 indent=2,
-                use_natural_foreign_keys=True,
-                use_natural_primary_keys=True,
             )
             # Validate it's non-empty before writing
             parsed = json.loads(data)

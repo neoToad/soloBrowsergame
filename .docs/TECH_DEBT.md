@@ -7,16 +7,6 @@ Last audited: 2026-04-27
 
 
 
-## Fixture export uses natural-key mode without natural key implementations
-
-`export_all_fixtures` serializes with `use_natural_foreign_keys=True` and `use_natural_primary_keys=True`, but models do not implement `natural_key()`.
-
-- Evidence: `game/management/commands/export_all_fixtures.py:48-49`
-- Impact: Portability/import assumptions are unclear and may break across environments.
-- Plan: Either implement `natural_key()` and managers for exported models or disable natural-key serialization; document the chosen contract and add fixture round-trip tests.
-
----
-
 ## Low Priority / Maintainability
 
 ## `quest_builder.py` remains a large low-cohesion module
@@ -55,3 +45,4 @@ A single function assembles many unrelated concerns (choices, notice board, prop
 - Quest-builder `choice_create` now enforces source-scene quest ownership and returns controlled `403` on mismatch, with endpoint regression tests for cross-quest rejection and same-quest success (`game/tests/test_quest_builder.py`).
 - Item stat target validation completed: `Item.clean()` now restricts `effect_stat`/`passive_stat` to canonical stat fields; importer item writes run `full_clean()` and fail fast on invalid stat targets; runtime item application/effective-stat paths ignore invalid legacy stat names; invalid rows can be reported via `report_invalid_item_stats`; regression coverage added in `game/tests/test_inventory.py`.
 - Combat event logging contract standardized: low-level combat services now return logs only (no direct `EventLog` writes / internal flushes), and persistence is centralized at gameplay orchestration boundary (`game/services/gameplay/combat.py`), with combat tests updated to assert returned logs and boundary flushing behavior.
+- Fixture export natural-key mismatch resolved: `export_all_fixtures` now uses PK-based serialization (natural-key flags removed) and regression coverage verifies FK shape plus `loaddata` round-trip (`game/management/commands/export_all_fixtures.py`, `game/tests/test_fixture_export.py`).
