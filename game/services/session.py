@@ -56,20 +56,74 @@ def create_session(request):
     return game_session
 
 
-def build_render_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state, turn_summary=None, roll_result=None, damage_result=None):
-    """Assemble canonical template context for scene rendering and HTMX partial updates."""
-    from .scene import get_available_choices, get_notice_board
+def _build_core_scene_context(
+    session,
+    scene,
+    stats,
+    effective_stats,
+    inventory,
+    completed_map,
+    *,
+    combat_state,
+    turn_summary=None,
+    roll_result=None,
+    damage_result=None,
+):
+    from .scene import get_available_choices
+
+    return {
+        "session": session,
+        "scene": scene,
+        "choices": get_available_choices(
+            scene,
+            effective_stats,
+            inventory,
+            completed_map,
+            flags=session.flags,
+        ),
+        "stats": stats,
+        "stat_bonuses": effective_stats.bonuses,
+        "inventory": inventory,
+        "logs": session.log.all()[:10],
+        "oob": True,
+        "combat_state": combat_state,
+        "turn_summary": turn_summary,
+        "roll_result": roll_result,
+        "damage_result": damage_result,
+    }
+
+
+def _build_social_property_context(session):
     from ..models import PlayerContact, PlayerGangStanding
+
+    player_properties = PlayerProperty.objects.filter(session=session).select_related("property")
+    all_territories = Property.objects.filter(property_type="territory")
+    owned_territory_ids = {
+        pp.property_id for pp in player_properties if pp.property.property_type == "territory"
+    }
+    player_contacts = PlayerContact.objects.filter(session=session).select_related("contact")
+    player_gang_standings = PlayerGangStanding.objects.filter(session=session).select_related("gang")
+    return {
+        "player_properties": player_properties,
+        "all_territories": all_territories,
+        "owned_territory_ids": owned_territory_ids,
+        "player_contacts": player_contacts,
+        "player_gang_standings": player_gang_standings,
+    }
+
+
+def _build_hub_context(session, scene, effective_stats, inventory, completed_map):
+    from .scene import get_notice_board
+
     notice_board = None
     if scene.is_hub:
-        notice_board = get_notice_board(scene, inventory, completed_map, effective_stats, flags=session.flags)
-    player_properties = PlayerProperty.objects.filter(session=session).select_related('property')
-    all_territories   = Property.objects.filter(property_type='territory')
-    owned_territory_ids = {
-        pp.property_id for pp in player_properties if pp.property.property_type == 'territory'
-    }
-    player_contacts       = PlayerContact.objects.filter(session=session).select_related('contact')
-    player_gang_standings = PlayerGangStanding.objects.filter(session=session).select_related('gang')
+        notice_board = get_notice_board(
+            scene,
+            inventory,
+            completed_map,
+            effective_stats,
+            flags=session.flags,
+        )
     jobs_hub_context = jobs_service.build_jobs_hub_context(
         session,
         scene,
@@ -78,23 +132,25 @@ def build_render_context(session, scene, stats, effective_stats, inventory, comp
         completed_map,
     )
     return {
-        'session':                session,
-        'scene':                  scene,
-        'choices':                get_available_choices(scene, effective_stats, inventory, completed_map, flags=session.flags),
-        'stats':                  stats,
-        'stat_bonuses':           effective_stats.bonuses,
-        'inventory':              inventory,
-        'logs':                   session.log.all()[:10],
-        'oob':                    True,
-        'combat_state':           combat_state,
-        'notice_board':           notice_board,
-        'turn_summary':           turn_summary,
-        'roll_result':            roll_result,
-        'damage_result':          damage_result,
-        'player_properties':      player_properties,
-        'all_territories':        all_territories,
-        'owned_territory_ids':    owned_territory_ids,
-        'player_contacts':        player_contacts,
-        'player_gang_standings':  player_gang_standings,
+        "notice_board": notice_board,
         **jobs_hub_context,
     }
+
+
+def build_render_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state, turn_summary=None, roll_result=None, damage_result=None):
+    """Assemble canonical template context for scene rendering and HTMX partial updates."""
+    context = _build_core_scene_context(
+        session,
+        scene,
+        stats,
+        effective_stats,
+        inventory,
+        completed_map,
+        combat_state=combat_state,
+        turn_summary=turn_summary,
+        roll_result=roll_result,
+        damage_result=damage_result,
+    )
+    context.update(_build_hub_context(session, scene, effective_stats, inventory, completed_map))
+    context.update(_build_social_property_context(session))
+    return context

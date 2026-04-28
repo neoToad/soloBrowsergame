@@ -128,8 +128,8 @@ items:
     effect_type: ""
     effect_stat: ""
     effect_value: 0
-    passive_stat: heat
-    passive_value: -3
+    passive_stat: intellect
+    passive_value: 3
 
   # -------------------------
   # CONSUMABLES

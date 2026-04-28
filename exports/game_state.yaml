@@ -1,14 +1,14 @@
 meta:
   version: 1
-  exported_at: '2026-04-26T20:33:23.446790+00:00'
+  exported_at: '2026-04-28T22:18:56.960570+00:00'
   include_scene_body: false
 counts:
   items: 22
   enemies: 26
-  contacts: 10
+  contacts: 11
   properties: 11
   arcs: 1
-  quests: 5
+  quests: 4
   scenes: 64
   jobs: 0
   requirement_groups: 7
@@ -464,16 +464,14 @@ enemies:
   damage_max: 10
 - key: terrell
   name: Terrell
-  description: 'Young, maybe twenty-five. Gold chain, clean sneakers, eyes that clock
+  description: Young, maybe twenty-five. Gold chain, clean sneakers, eyes that clock
     you the second you round the corner. Got reach but no discipline. The stoop light
     flickers. Somewhere above you a window slides shut.
-
-    '
-  max_hp: 24
-  attack_modifier: 2
-  defense: 11
-  damage_min: 3
-  damage_max: 8
+  max_hp: 15
+  attack_modifier: -4
+  defense: 8
+  damage_min: 1
+  damage_max: 3
 - key: the_cook
   name: The Cook
   description: "Defensive encounter only \u2014 he didn't want this. Zonk cook, not\
@@ -563,6 +561,15 @@ contacts:
     to talk to in the way that efficient people are. Calls when he has information
     and hangs up when he''s done. Says things like "acceptable" and "noted." Has no
     evident inner life but occasionally says something that suggests he might.
+
+    '
+- key: pruitt
+  name: DeShawn Pruitt
+  description: 'One of the Kings'' council''s more stable voices. Runs the northern
+    Westside blocks. Former high school football player with a scholarship that fell
+    through in a way he doesn''t like to discuss. Still keeps a football in his apartment.
+    The three hundred dollars he owes you has been in a ziplock bag in his freezer
+    for four months. He was going to call.
 
     '
 - key: richie_bucco
@@ -688,53 +695,6 @@ arcs:
   - corkys
   - the-ride
 quests:
-- key: the-storage-job
-  title: The Storage Job
-  arc: null
-  arc_order: null
-  is_unlocked: true
-  is_repeatable: false
-  entrance_scene: the-storage-job__corner
-  hub_scenes:
-  - hub__apartment
-  requirement_group_ids: []
-  scenes:
-  - key: the-storage-job__corner
-    scene_type: normal
-    title: The Corner
-    order: 10
-  - key: the-storage-job__what-is-it
-    scene_type: normal
-    title: What Is It
-    order: 20
-  - key: the-storage-job__walk-over
-    scene_type: normal
-    title: Walk Over
-    order: 30
-  - key: the-storage-job__talking
-    scene_type: normal
-    title: Talking
-    order: 40
-  - key: the-storage-job__forced-open
-    scene_type: combat
-    title: Forced Open
-    order: 50
-  - key: the-storage-job__fight
-    scene_type: combat
-    title: Fight
-    order: 60
-  - key: the-storage-job__inside
-    scene_type: normal
-    title: Inside
-    order: 70
-  - key: the-storage-job__done
-    scene_type: ending
-    title: Done
-    order: 80
-  - key: the-storage-job__beaten
-    scene_type: ending
-    title: Beaten
-    order: 90
 - key: the-call
   title: The Call
   arc: intro
@@ -1973,6 +1933,15 @@ scenes:
     set_flag_name: null
     clear_flag_name: null
     requirement_group_ids: []
+  - id: 89
+    label: Let it land
+    order: 1
+    target_scene: null
+    success_scene: the-call__backed-off
+    failure_scene: the-call__the-fight
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
   scene_items: []
   scene_contacts: []
   combat_encounter: null
@@ -2068,6 +2037,15 @@ scenes:
   choices:
   - id: 55
     label: "Offer him a deal \u2014 three hundred now, three hundred by end of month"
+    order: 1
+    target_scene: first-word__deal-roll
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 90
+    label: Offer him a deal
     order: 1
     target_scene: first-word__deal-roll
     success_scene: null
@@ -2263,6 +2241,15 @@ scenes:
   choices:
   - id: 57
     label: Give him one more chance
+    order: 1
+    target_scene: first-word__lean-on-pruitt
+    success_scene: null
+    failure_scene: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirement_group_ids: []
+  - id: 91
+    label: Push again
     order: 1
     target_scene: first-word__lean-on-pruitt
     success_scene: null
@@ -2960,7 +2947,7 @@ requirement_groups:
   label: Must have read the room
   logic: all
   conditions:
-  - id: 29
+  - id: 57
     condition_type: has_flag
     flag_name: corkys_read_room
     stat_name: null
@@ -2973,7 +2960,7 @@ requirement_groups:
   label: Must have completed first word
   logic: all
   conditions:
-  - id: 30
+  - id: 58
     condition_type: quest_completed
     flag_name: null
     stat_name: null
@@ -2986,7 +2973,7 @@ requirement_groups:
   label: Talked out
   logic: all
   conditions:
-  - id: 31
+  - id: 59
     condition_type: has_flag
     flag_name: the_call_talked_out
     stat_name: null
@@ -2999,7 +2986,7 @@ requirement_groups:
   label: Fought out
   logic: all
   conditions:
-  - id: 32
+  - id: 60
     condition_type: has_flag
     flag_name: the_call_fought_out
     stat_name: null
@@ -3012,7 +2999,7 @@ requirement_groups:
   label: Lost
   logic: all
   conditions:
-  - id: 33
+  - id: 61
     condition_type: has_flag
     flag_name: the_call_lost
     stat_name: null
@@ -3025,7 +3012,7 @@ requirement_groups:
   label: Must have completed the call
   logic: all
   conditions:
-  - id: 34
+  - id: 62
     condition_type: quest_completed
     flag_name: null
     stat_name: null
@@ -3038,7 +3025,7 @@ requirement_groups:
   label: Must have completed Corky's
   logic: all
   conditions:
-  - id: 35
+  - id: 63
     condition_type: quest_completed
     flag_name: null
     stat_name: null
@@ -3048,7 +3035,7 @@ requirement_groups:
     required_contact: null
     required_ending_type: null
 requirements:
-- id: 29
+- id: 57
   condition_type: has_flag
   flag_name: corkys_read_room
   stat_name: null
@@ -3057,7 +3044,7 @@ requirements:
   required_quest: null
   required_contact: null
   required_ending_type: null
-- id: 30
+- id: 58
   condition_type: quest_completed
   flag_name: null
   stat_name: null
@@ -3066,7 +3053,7 @@ requirements:
   required_quest: first-word
   required_contact: null
   required_ending_type: null
-- id: 31
+- id: 59
   condition_type: has_flag
   flag_name: the_call_talked_out
   stat_name: null
@@ -3075,7 +3062,7 @@ requirements:
   required_quest: null
   required_contact: null
   required_ending_type: null
-- id: 32
+- id: 60
   condition_type: has_flag
   flag_name: the_call_fought_out
   stat_name: null
@@ -3084,7 +3071,7 @@ requirements:
   required_quest: null
   required_contact: null
   required_ending_type: null
-- id: 33
+- id: 61
   condition_type: has_flag
   flag_name: the_call_lost
   stat_name: null
@@ -3093,7 +3080,7 @@ requirements:
   required_quest: null
   required_contact: null
   required_ending_type: null
-- id: 34
+- id: 62
   condition_type: quest_completed
   flag_name: null
   stat_name: null
@@ -3102,7 +3089,7 @@ requirements:
   required_quest: the-call
   required_contact: null
   required_ending_type: null
-- id: 35
+- id: 63
   condition_type: quest_completed
   flag_name: null
   stat_name: null
