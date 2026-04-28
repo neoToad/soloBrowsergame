@@ -63,6 +63,14 @@ class QuestBuilderSceneTest(TestCase):
         scene = self.quest.scenes.get()
         self.assertIn("test_quest", scene.key)
         self.assertIn("dark", scene.key)
+    
+    def test_scene_create_rejects_key_with_wrong_quest_prefix(self):
+        response = self.client.post(
+            self._create_url(),
+            {"title": "Rooftop", "key": "wrong_quest__rooftop", "scene_type": "normal", "description": ""},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Scene key must start with", response.content.decode())
 
     def test_scene_create_returns_oob_html(self):
         response = self.client.post(
@@ -119,6 +127,17 @@ class QuestBuilderSceneTest(TestCase):
         triggers = json.loads(response.headers.get("HX-Trigger", "{}"))
         self.assertIn("sceneUpdated", triggers)
         self.assertIn("scene.updated", triggers)
+    
+    def test_scene_save_rejects_key_with_invalid_slug_segment(self):
+        scene = Scene.objects.create(
+            quest=self.quest, key="test_quest__old", title="Spot", body="", scene_type="normal"
+        )
+        response = self.client.post(
+            self._save_url(scene.pk),
+            {"title": "Spot", "key": "test_quest__Bad_Slug", "scene_type": "normal", "description": ""},
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Scene key must match", response.content.decode())
 
     def test_scene_delete_removes_from_db(self):
         scene = Scene.objects.create(

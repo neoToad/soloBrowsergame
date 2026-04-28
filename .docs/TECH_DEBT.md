@@ -7,16 +7,6 @@ Last audited: 2026-04-27
 
 
 
-## Scene key naming convention is documented but not enforced
-
-Admin hints recommend `{quest_key}__{scene_slug}`, but no model validation enforces that convention.
-
-- Evidence: `game/admin.py:384-385`, `game/models/world.py` (`Scene.key` has no convention-specific validator)
-- Impact: Inconsistent keys and fragile content/tooling assumptions.
-- Plan: Add `Scene.clean()` validation for `{quest_key}__{scene_slug}` when scene is attached to a quest, provide admin helper autofill, and include a management command to report/fix legacy violations.
-
----
-
 ## Fixture export uses natural-key mode without natural key implementations
 
 `export_all_fixtures` serializes with `use_natural_foreign_keys=True` and `use_natural_primary_keys=True`, but models do not implement `natural_key()`.

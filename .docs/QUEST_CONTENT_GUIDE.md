@@ -1,8 +1,8 @@
 # Quest Content & Voice Guide
 
-This document defines the writing standard for all quest content. It supplements
-QUEST_AUTHORING.md and QUEST_AUTHORING_AMENDMENTS.md and should be treated as
-equally binding. Read this before writing a single line of scene body text.
+This document defines the writing standard for all quest content: tone, sentence rhythm, character voice, dialogue, arrival flavors, endings, and scene length. It is the authoritative source for craft decisions.
+
+Structural rules — models, scene types, routing, requirements, flags, YAML formatting — live in `QUEST_AUTHORING_COMPLETE.md`. Read both before authoring a quest. Both are equally binding.
 
 ---
 

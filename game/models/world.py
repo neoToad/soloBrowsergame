@@ -1,3 +1,5 @@
+import re
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from .requirements import RequirementGroup
@@ -153,12 +155,24 @@ class Scene(models.Model):
         return self.scene_type == 'ending'
 
     def clean(self):
+        super().clean()
         if self.requires_roll and self.roll_stat not in STAT_DISPLAY_NAMES:
             raise ValidationError({'roll_stat': 'Must be a valid stat when requires_roll is True.'})
         if self.scene_type == 'ending' and not self.ending_type:
             raise ValidationError({'ending_type': 'Ending scenes must have a non-blank ending_type.'})
         if self.ending_type and self.scene_type != 'ending':
             raise ValidationError({'scene_type': 'Scenes with an ending_type must have scene_type "ending".'})
+        if self.quest_id:
+            expected_prefix = f"{self.quest.key}__"
+            if not self.key.startswith(expected_prefix):
+                raise ValidationError(
+                    {'key': f'Scene key must start with "{expected_prefix}" when attached to this quest.'}
+                )
+            slug_part = self.key[len(expected_prefix):]
+            if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug_part):
+                raise ValidationError(
+                    {'key': f'Scene key must match "{expected_prefix}{{scene-slug}}" using lowercase letters, numbers, and hyphens.'}
+                )
 
     class Meta:
         ordering = ['order']

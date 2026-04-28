@@ -1,6 +1,8 @@
 # Quest Authoring Guide
 
-This document describes how to create quests in this Django text-adventure game. It is intended for LLMs generating quest content or assisting quest authors. It consolidates `QUEST_AUTHORING.md`, `QUEST_AUTHORING_AMENDMENTS.md`, and `QUEST_AUTHORING_AMENDMENTS_NEW.md` into a single source of truth.
+This document covers the structural rules for quest authoring: models, scene types, routing, requirements, flags, YAML formatting, and common mistakes. It is intended for LLMs generating quest content or assisting quest authors.
+
+**Before writing any prose** — scene body text, arrival flavors, choice labels — read `QUEST_CONTENT_GUIDE.md`. That document defines tone, sentence rhythm, character voice, dialogue conventions, and the scene-level writing checklist. Both documents are equally binding.
 
 ---
 
@@ -189,20 +191,18 @@ Central location (e.g., Back Home). Has a notice board listing available quests.
 
 Hub scenes are returned to repeatedly. Their `body` text must hold up on the first visit and the fiftieth. Do not put story-specific or time-sensitive narration in a hub body. Opening narration and story context belong in a one-time entrance scene inside the first quest, not in the hub itself.
 
+Hub body text follows different rhythm rules than narrative scenes. Where entrance and normal scenes need sentences that connect and build — each one doing something the previous one set up — hub bodies are ambient and environmental. Short declarative sentences are appropriate here because the purpose is texture, not story: establishing a place the player will return to fifty times, not moving them through a situation. The short-sentence rhythm that reads as telegram in a narrative scene reads as atmosphere in a hub.
+
 **Wrong:**
 ```
 body:
-  You've been out four days. Your parole officer wants you in a job
-  by the end of the month. Your old crew hasn't called. Then your
-  phone buzzes.
+  You've been out four days. Your parole officer wants you in a job by the end of the month. Your old crew hasn't called. Then your phone buzzes.
 ```
 
 **Right:**
 ```
 body:
-  Home. Relative term. The radiator clanks. The window looks out on
-  a brick wall. There's a corkboard on the back of the door where
-  you've started pinning job leads. Old habits die. New ones move in.
+  Home. Relative term. The radiator clanks. The window looks out on a brick wall. There's a corkboard on the back of the door where you've started pinning job leads. Old habits die. New ones move in.
 ```
 
 ### `combat`
@@ -253,9 +253,7 @@ Every roll scene must be preceded by a normal scene that establishes the situati
   scene_type: normal
   requires_roll: false
   body: |
-    The contact hands you the package. The lobby is busier than
-    you expected. Two men near the door haven't looked away since
-    you came in. You have to walk past them to get out.
+    The contact hands you the package. The lobby is busier than you expected. Two men near the door haven't looked away since you came in. You have to walk past them to get out.
 
   choices:
     - label: Play it cool
@@ -268,8 +266,7 @@ Every roll scene must be preceded by a normal scene that establishes the situati
   roll_stat: intellect
   roll_difficulty: 13
   body: |
-    You keep your pace even. Don't look at them. The door is
-    twenty feet away.
+    You keep your pace even. Don't look at them. The door is twenty feet away.
 ```
 
 ---
@@ -332,21 +329,33 @@ Choices:
      order: 1
 ```
 
-### Dialogue and quotation marks
+### Body text line breaks
 
-In scene `body` text, use quotation marks freely for direct character speech when the line is specific enough to earn it. A character's voice is part of who they are and direct dialogue is often the fastest way to put that on the page.
+Each paragraph in a `body` field must be a single continuous line in the YAML file, no matter how long. The YAML `|` block scalar preserves every line break literally — hard-wrapping a sentence across two lines for readability causes a mid-sentence break in-game.
 
-Quotation marks on **choice labels** are reserved for when the player is saying something directly. Do not use them for action labels or stage directions.
+Paragraph breaks are represented by a single blank line between paragraphs, which `|` stores as `\n\n`. That double newline is the only intentional line break in body text.
 
-**Correct (player speaking):**
-```
-label: "Tell him you're not here to negotiate"
+**Wrong (hard-wrapped — breaks mid-sentence in game):**
+```yaml
+body: |
+  Morris calls at seven in the morning, which already tells you something — Morris
+  is a noon-at-the-earliest kind of person, and a seven a.m. call means either
+  the job is time-sensitive or something went wrong upstream.
+
+  He doesn't explain which.
 ```
 
-**Wrong (not player speech):**
+**Right (each paragraph is one unbroken line):**
+```yaml
+body: |
+  Morris calls at seven in the morning, which already tells you something — Morris is a noon-at-the-earliest kind of person, and a seven a.m. call means either the job is time-sensitive or something went wrong upstream.
+
+  He doesn't explain which.
 ```
-label: "Walk over and make it clear you're serious"
-```
+
+This applies to all `body` fields on scenes. It also applies to `arrival_flavor` and `failure_arrival_flavor`, though those are single sentences and the problem rarely arises there.
+
+When converting a markdown spec to YAML, never introduce line breaks inside a paragraph to fit a column width. The spec may have prose wrapped at 80 characters for readability — do not carry that wrapping into the YAML output. Unwrap each paragraph into a single line before writing it to the `body` block.
 
 ### Branching on prior quest outcomes
 
@@ -563,3 +572,4 @@ ambush__knocked_out          (ending, defeat)
 - **Arc flag set on scene arrival** — set arc flags on the hub return choice using `set_flag_name`, not in the arrival block
 - **Multiple RequirementGroups for mutually exclusive endings** — groups are AND'd; use one group with `logic: any` instead
 - **Non-speech choice labels in quotation marks** — quotes on labels are for player dialogue only
+- **Body text hard-wrapped at column width** — the `|` scalar preserves every line break; each paragraph must be one continuous line or it breaks mid-sentence in game

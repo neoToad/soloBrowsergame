@@ -77,19 +77,6 @@ Player-facing systems currently active:
 4. Use `flags.py` helpers (`has_flag`, `set_flag`, `clear_flag`) for flag mutation.
 5. Keep GET endpoints read-only for domain state when possible.
 
----
-
-## Current Risks / Active Refactor Tracks
-
-Canonical backlog files:
-- `.docs/codebase_audit.txt`
-- `.docs/codebase_audit_addendum.txt`
-
-Key active concerns:
-- Remaining gameplay logic still embedded in some views (combat/use-item paths).
-- GET scene rendering currently contains at least one write-side side effect path.
-- Some authoring integrity guards are missing (null/missing route targets/encounters).
-- Quest-builder endpoints need stronger ownership validation for `quest_id` + `choice_id`.
 
 ---
 

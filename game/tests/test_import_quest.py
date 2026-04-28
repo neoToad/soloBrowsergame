@@ -23,7 +23,7 @@ class ImportQuestCommandTests(TestCase):
         self._run_import(
             """
 quest:
-  key: import-test-quest
+  key: import-test
   title: Import Test Quest
   description: Import test
   arc: null
@@ -181,6 +181,32 @@ scenes:
       Ending scene.
     ending:
       ending_type: victory
+    choices: []
+"""
+            )
+
+    def test_import_errors_when_scene_key_prefix_does_not_match_quest_key(self):
+        with self.assertRaises(CommandError):
+            self._run_import(
+                """
+quest:
+  key: import-prefix-quest
+  title: Import Prefix Quest
+  description: Import test
+  arc: null
+  arc_order: 0
+  is_repeatable: false
+  hub_scenes: []
+  entrance_scene: wrong-prefix__start
+  requirements: []
+
+scenes:
+  - key: wrong-prefix__start
+    scene_type: normal
+    title: Start
+    order: 10
+    body: |
+      Start scene.
     choices: []
 """
             )

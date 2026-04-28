@@ -571,7 +571,7 @@ def create_scene(quest_id, data):
         canvas_x = GRID_START_X + (index % 4) * GRID_X_GAP
         canvas_y = GRID_START_Y + (index // 4) * GRID_Y_GAP
 
-    scene = Scene.objects.create(
+    scene = Scene(
         quest=quest,
         title=parsed['title'],
         key=key,
@@ -590,6 +590,11 @@ def create_scene(quest_id, data):
         receive_property_id=parsed['receive_property_id'],
         lose_property_id=parsed['lose_property_id'],
     )
+    try:
+        scene.clean()
+    except ValidationError as exc:
+        _raise_authoring_validation_error(exc)
+    scene.save()
     return scene
 
 def update_scene(scene_id, data):
@@ -617,6 +622,10 @@ def update_scene(scene_id, data):
     scene.receive_property_id = parsed['receive_property_id']
     scene.lose_property_id    = parsed['lose_property_id']
 
+    try:
+        scene.clean()
+    except ValidationError as exc:
+        _raise_authoring_validation_error(exc)
     scene.save()
     return scene
 

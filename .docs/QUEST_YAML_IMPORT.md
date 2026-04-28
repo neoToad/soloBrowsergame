@@ -44,7 +44,7 @@ The importer uses Django's `update_or_create` keyed on `key` for quests and scen
 ## Schema Conventions
 
 - Every field is always present. Use `null` for unused fields rather than omitting them. This keeps the importer simple — it never has to handle missing keys.
-- `body` always uses the YAML block scalar (`|`) to preserve paragraph breaks. Blank lines between paragraphs become `\n\n` in the DB.
+- `body` always uses the YAML block scalar (`|`) to preserve paragraph breaks. Each paragraph must be written as a single continuous line — never hard-wrap at a column width. Blank lines between paragraphs become `\n\n` in the DB. That double newline is the only intentional line break; all other wrapping is the renderer's job.
 - All scene and quest references use `key` strings. The importer resolves them to FK relationships after all scenes are created.
 - `requirements` is a list of `RequirementGroup` objects. Multiple groups means ALL groups must pass (AND between groups). Within each group, `logic` controls AND/OR between individual conditions.
 - `combat_encounter` is only present on scenes with `scene_type: combat`. The importer ignores it on all other scene types.
@@ -637,7 +637,8 @@ Rules:
 - Use the | block scalar for all body text.
 - All scene references use key strings only — no nesting.
 - Do not add quotation marks to arrival_flavor or body text unless the player is speaking.
-- Preserve all paragraph breaks in body text as blank lines.
+- Preserve all paragraph breaks in body text as blank lines between paragraphs.
+- Each paragraph in body text must be a single continuous line — never hard-wrap at a column width. If the source spec has prose wrapped at 80 characters, unwrap each paragraph into one line before writing it to the body block.
 - combat_encounter block only appears on scenes with scene_type: combat.
 - choices: [] on combat scenes.
 ```

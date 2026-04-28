@@ -288,26 +288,30 @@ def import_quest_data(data: dict) -> ImportResult:
             raise CommandError(
                 f"Scene '{sdata['key']}' is scene_type='ending' but has no ending.ending_type value."
             )
-        scene, created = Scene.objects.update_or_create(
-            key=sdata["key"],
-            defaults={
-                "quest": quest,
-                "scene_type": sdata["scene_type"],
-                "title": sdata["title"],
-                "body": sdata["body"],
-                "order": sdata.get("order", 0),
-                "requires_roll": roll.get("requires_roll", False),
-                "roll_stat": roll.get("roll_stat") or "",
-                "roll_difficulty": roll.get("roll_difficulty") or 10,
-                "ending_type": ending_type,
-                "cash_change": arrival.get("cash_change", sdata.get("cash_change", 0)),
-                "rep_change": arrival.get("rep_change", sdata.get("rep_change", 0)),
-                "heat_change": arrival.get("heat_change", sdata.get("heat_change", 0)),
-                "consume_item": get_by_key_or_warn(Item, arrival.get("consume_item"), result),
-                "receive_property": get_by_key_or_warn(Property, arrival.get("receive_property"), result),
-                "lose_property": get_by_key_or_warn(Property, arrival.get("lose_property"), result),
-            },
-        )
+        scene = Scene.objects.filter(key=sdata["key"]).first()
+        created = scene is None
+        if scene is None:
+            scene = Scene(key=sdata["key"])
+        scene.quest = quest
+        scene.scene_type = sdata["scene_type"]
+        scene.title = sdata["title"]
+        scene.body = sdata["body"]
+        scene.order = sdata.get("order", 0)
+        scene.requires_roll = roll.get("requires_roll", False)
+        scene.roll_stat = roll.get("roll_stat") or ""
+        scene.roll_difficulty = roll.get("roll_difficulty") or 10
+        scene.ending_type = ending_type
+        scene.cash_change = arrival.get("cash_change", sdata.get("cash_change", 0))
+        scene.rep_change = arrival.get("rep_change", sdata.get("rep_change", 0))
+        scene.heat_change = arrival.get("heat_change", sdata.get("heat_change", 0))
+        scene.consume_item = get_by_key_or_warn(Item, arrival.get("consume_item"), result)
+        scene.receive_property = get_by_key_or_warn(Property, arrival.get("receive_property"), result)
+        scene.lose_property = get_by_key_or_warn(Property, arrival.get("lose_property"), result)
+        try:
+            scene.clean()
+        except ValidationError as exc:
+            raise CommandError(f"Invalid scene '{sdata['key']}': {exc.message_dict}") from exc
+        scene.save()
         scene_map[scene.key] = scene
         if created:
             result.record_created("scenes")
