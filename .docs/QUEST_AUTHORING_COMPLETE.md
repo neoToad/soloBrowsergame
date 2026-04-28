@@ -268,7 +268,18 @@ Every roll scene must be preceded by a normal scene that establishes the situati
   body: |
     You keep your pace even. Don't look at them. The door is twenty feet away.
 ```
+Post-roll confirmation scenes
+On both a successful and a failed roll, insert a short normal scene between the roll scene and the outcome scene. This scene surfaces the roll result to the player and lands the moment before consequences play out. It should be two or three sentences at most — enough to close the check, not enough to front-run the outcome.
+Body text should open by naming the result directly as a terse in-world note, then land the immediate physical or situational beat:
+Success:
 
+Nerve check passed. He holds it for a second. Then something in his posture settles, the way a bluff does when the other person calls it and there's nothing left to protect.
+
+Failure:
+
+Nerve check failed. He laughs — short, sharp, meant to be seen — and calls something over his shoulder. Two guys come off the wall across the street.
+
+Each confirmation scene routes via a single choice to its outcome scene. It carries no arrival effects and sets no flags — it is a beat, not a decision point. The failure_arrival_flavor on the roll choice should still be set, as it fires before the failure confirmation scene loads.
 ---
 
 ## Arrival Processing Order
@@ -573,3 +584,4 @@ ambush__knocked_out          (ending, defeat)
 - **Multiple RequirementGroups for mutually exclusive endings** — groups are AND'd; use one group with `logic: any` instead
 - **Non-speech choice labels in quotation marks** — quotes on labels are for player dialogue only
 - **Body text hard-wrapped at column width** — the `|` scalar preserves every line break; each paragraph must be one continuous line or it breaks mid-sentence in game
+- **Roll routing directly to outcome scene** — insert a post-roll confirmation scene for both success and failure paths; routing straight through skips the beat where the result lands

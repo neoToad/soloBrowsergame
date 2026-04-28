@@ -257,10 +257,88 @@ scenes:
       - label: Let it land
         order: 1
         target_scene: null
-        success_scene: the-call__backed-off
-        failure_scene: the-call__the-fight
+        success_scene: the-call__squeeze-success
+        failure_scene: the-call__squeeze-failure
         arrival_flavor: Something shifts behind his eyes. He nods, once, at the pavement. Steps back.
         failure_arrival_flavor: He laughs — short, sharp, meant to be seen — and calls something over his shoulder. Two guys come off the wall across the street.
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # SQUEEZE SUCCESS — CHARISMA PASS
+  # -------------------------
+
+  - key: the-call__squeeze-success
+    scene_type: normal
+    title: Squeeze Success
+    order: 55
+    body: |
+      Nerve check passed. He holds it for a second. Then something in his posture settles, the way a bluff does when the other person calls it and there's nothing left to protect. He doesn't say anything. He doesn't have to.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: Move on
+        order: 1
+        target_scene: the-call__backed-off
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: null
+        failure_arrival_flavor: null
+        set_flag_name: null
+        clear_flag_name: null
+        requirements: []
+
+  # -------------------------
+  # SQUEEZE FAILURE — CHARISMA FAIL
+  # -------------------------
+
+  - key: the-call__squeeze-failure
+    scene_type: normal
+    title: Squeeze Failure
+    order: 57
+    body: |
+      Nerve check failed. He laughs — short, sharp, meant to be seen — and calls something over his shoulder. Two guys come off the wall across the street. Terrell looks at you like a question he already knows the answer to.
+
+    roll:
+      requires_roll: false
+      roll_stat: null
+      roll_difficulty: null
+    ending:
+      ending_type: null
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+    scene_items: []
+    scene_contacts: []
+
+    choices:
+      - label: No way out of this
+        order: 1
+        target_scene: the-call__the-fight
+        success_scene: null
+        failure_scene: null
+        arrival_flavor: null
+        failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
         requirements: []
