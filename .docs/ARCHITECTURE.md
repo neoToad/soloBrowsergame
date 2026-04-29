@@ -61,24 +61,54 @@ game/
     combat.py         Enemy, CombatEncounter, CombatState
     property.py       Property, PlayerProperty, RivalClaim
     requirements.py   Requirement, RequirementGroup, PlayerContext
+    items.py          Item model
     events.py         EventLog + log helpers
 
   services/
     session.py        load_session_context, create_session, build_render_context
-    scene.py          resolve_roll, get_available_choices, get_notice_board
+    scene.py          scene rendering state helpers
     arrival.py        process_arrival
     progression.py    XP awards/thresholds, quest completion, stat spending
     inventory.py      inventory/contact awards + consumption
     property_service.py turn-income, rival contests, contest resolution
-    combat.py         combat resolution helpers + combat state init/end
-    jobs.py           recon/contact job lifecycle and rewards
+    combat.py         core combat state transition helpers
     flags.py          has_flag, set_flag, clear_flag
-    quest_builder.py  admin quest-builder domain logic
+    flag_registry.py  centralized flag key registry/validation
 
-  views.py            gameplay HTTP endpoints
+    gameplay/
+      resolve_choice.py  choice resolution orchestration
+      start_quest.py     quest start flow
+      use_item.py        item-use gameplay flow
+      combat.py          gameplay-facing combat orchestration
+
+    jobs.py              compatibility/entry layer
+    jobs_common.py
+    jobs_eligibility.py
+    jobs_flags.py
+    jobs_lifecycle.py
+    jobs_listing.py
+    jobs_rewards.py
+    jobs_rolls.py
+
+    quest_builder/
+      mutations.py       admin quest-builder write flows
+      validation.py      quest-builder validation services
+      canvas.py          canvas graph/layout helpers
+      requirements.py    requirement parsing and persistence helpers
+
+    importers/
+      orchestrator.py    import pipeline coordination
+      domain.py          import domain transforms
+      refs.py            import reference resolution
+      requirements.py    import requirement mapping
+
+  presentation/
+    responses.py         HTMX/template response assembly helpers
+
+  views.py               gameplay HTTP endpoints
   quest_builder_views.py admin HTMX endpoints for quest builder
-  constants.py        session/stat mapping/display constants
-  utils.py            dice/stat math + effective stats
+  constants.py           session/stat mapping/display constants
+  utils.py               dice/stat math + effective stats
 ```
 
 ---
@@ -90,7 +120,7 @@ game/
 3. `POST /game/choose/<choice_id>/` resolves routing/rolls/flags.
 4. Arrival processing (`process_arrival`) applies scene effects, quest completion, item/contact effects.
 5. On quest completion, turn systems run (property income, rival contest checks, turn summary).
-6. HTMX requests return concatenated partial updates via `_htmx_response`.
+6. HTMX requests return composite partial updates via the presentation response layer.
 
 Combat sub-loop:
 - `POST /game/combat/attack/`
@@ -117,11 +147,12 @@ Jobs sub-loop:
 ## Known Refactor Priorities
 
 Tracked in:
-- `.docs/codebase_audit.txt`
-- `.docs/codebase_audit_addendum.txt`
+- `.docs/refactor-inventory.md`
+- `.docs/tech-debt-register.md`
+- `.docs/CURRENT_TASK.md` (active in-progress work)
 
 Highest-priority active items:
-- Move remaining combat and item business logic from views into services.
+- Move any remaining combat and item business logic from views into services.
 - Remove write-side effects from `scene_detail` GET path.
 - Validate quest-builder choice ownership by `quest_id`.
 - Guard missing combat encounter/scene routing data to avoid 500s.
@@ -143,7 +174,7 @@ Highest-priority active items:
 
 ## HTMX Rendering Contract
 
-`_htmx_response` currently concatenates these partials:
+The gameplay HTMX response payload currently includes these core partial targets:
 - `scene_panel`
 - `stats_bar`
 - `top_stats_bar`

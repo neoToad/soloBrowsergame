@@ -1,88 +1,42 @@
 # Solo Browser Game - Project Context
 
-A Django + HTMX noir text RPG. The player progresses through scenes, completes jobs/quests,
-and develops stats, contacts, territory, and reputation over a persistent session.
+High-level onboarding snapshot for the project. This file is summary-only.
 
----
+## What This Project Is
+A Django + HTMX noir text RPG where players move through scenes, make choices, complete jobs/quests, and progress stats, contacts, territory, and reputation in a persistent session.
 
 ## Stack
-
 - Python 3.10+
 - Django 6.0+
-- HTMX (no JS framework)
-- SQLite in dev (via Django ORM)
+- HTMX (no frontend framework)
+- SQLite in development
 
----
+## Runtime at a Glance
+- Entry route: `GET /game/`
+- Core scene route: `GET /game/scene/<scene_key>/`
+- Core choice route: `POST /game/choose/<choice_id>/`
+- Session anchor: `request.session[SESSION_KEY] -> GameSession.pk`
+- Hub start scene key: `hub__apartment`
 
-## Runtime Summary
+## Main Gameplay Systems
+- Scene/choice routing with optional stat-roll checks
+- Requirement evaluation (items, stats, quests, flags, contacts)
+- Inventory with active/passive item effects
+- Two-phase combat encounters
+- Multi-stage jobs flow (recon, approach, beats, rewards/cooldowns)
+- Property/territory turn effects tied to quest progression
 
-- Entry: `GET /game/`
-- Session pointer: `request.session[SESSION_KEY] -> GameSession.pk`
-- Start scene constant: `HUB_START_SCENE_KEY = 'hub__apartment'`
-- Main render endpoint: `GET /game/scene/<scene_key>/`
-- Main action endpoint: `POST /game/choose/<choice_id>/`
+## Core Domain Entities
+- Session/player: `GameSession`, `PlayerStats`, `CompletedQuest`
+- Narrative world: `Arc`, `Quest`, `Scene`, `Choice`
+- Systems: requirements, combat encounters/state, jobs state, property/rival claims
 
-Player-facing systems currently active:
-- Scene/choice routing with optional roll gating
-- Requirement groups (items, stats, quests, flags, contacts)
-- Inventory items (active + passive effects)
-- Combat encounters (two-phase rounds)
-- Jobs pipeline (recon, approaches, beats, rewards/cooldowns)
-- Property income/contest loop tied to quest completion events
-
----
-
-## Domain Concepts
-
-### Session and Stats
-- `GameSession` tracks current scene, turn counter, and flags JSON.
-- `PlayerStats` tracks combat stats, XP/level, and economy (`cash`, `heat`, `rep`).
-- `CompletedQuest` records first-time quest completion per session/quest.
-
-### Scenes and Choices
-- Scene types: `normal`, `hub`, `combat`, `ending`.
-- Choice routing:
-  - direct route: `target_scene`
-  - roll route: `success_scene` / `failure_scene`
-- Roll checks use effective stats and `roll_difficulty`.
-
-### Requirements
-- Objects can have many `RequirementGroup`s.
-- Between groups: AND logic (all groups must pass).
-- Within group: `all` (AND) or `any` (OR).
-
-### Combat
-- `CombatEncounter` binds combat scene -> enemy + victory/defeat routes.
-- `CombatState` is 1:1 with `GameSession`.
-- Enemy attack is pre-rolled and stored for two-step UX.
-
-### Jobs
-- District jobs and contact offers are hub-driven.
-- Runs advance through beats 1/2/3 with tiered recon and rewards.
-- Cooldowns and run-count milestones are stored in player job state models.
-
-### Property Turn Loop
-- Triggered after quest completion arrivals.
-- Applies passive property income/effects.
-- Rolls rival contest chance from heat (`heat / 200`).
-- Creates/clears `RivalClaim` through contest resolution scenes.
-
----
-
-## Important Rules
-
-1. Business logic belongs in `game/services/*`, not views.
-2. Services should return log strings; callers flush via event log helpers.
-3. Use effective stats for checks; mutate persistent values on `PlayerStats`.
-4. Use `flags.py` helpers (`has_flag`, `set_flag`, `clear_flag`) for flag mutation.
-5. Keep GET endpoints read-only for domain state when possible.
-
-
----
-
-## Test Notes
-
-- Use `python manage.py test`.
-- HTMX responses require `HTTP_HX_REQUEST='true'` in tests.
-- Many tests assume initial session creation via `GET /game/` before actions.
-- Existing tests cover jobs, combat, and scene routing; add coverage with each refactor migration from view -> service.
+## Where to Look Next
+- Architecture rules/invariants: `.docs/ARCHITECTURE.md`
+- Current implementation status: `.docs/CURRENT_TASK.md`
+- Endpoint/HTMX response contract: `.docs/ENDPOINT_RESPONSE_CONTRACT.md`
+- Structural refactor backlog: `.docs/refactor-inventory.md`
+- Debt/risk register: `.docs/tech-debt-register.md`
+- Documentation map and ownership: `.docs/README.md`
+- Quest authoring index: `.docs/QUEST_AUTHORING_COMPLETE.md`
+- World lore index: `.docs/WORLD_LORE.md`
