@@ -96,12 +96,7 @@ def _build_core_scene_context(
 def _build_social_property_context(session):
     from ..models import PlayerContact, PlayerGangStanding
 
-    territory_keys = set(Territory.objects.values_list("key", flat=True))
-    player_properties = [
-        pp
-        for pp in PlayerProperty.objects.filter(session=session).select_related("property")
-        if pp.property.key not in territory_keys
-    ]
+    player_properties = PlayerProperty.objects.filter(session=session).select_related("property")
     all_territories = Territory.objects.all()
     owned_territory_ids = set(
         PlayerTerritory.objects.filter(session=session).values_list("territory_id", flat=True)

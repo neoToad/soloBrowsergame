@@ -6,7 +6,7 @@ from django.utils.text import slugify
 
 from game.models.combat import CombatEncounter, Enemy
 from game.models.items import Item
-from game.models.property import Property
+from game.models.property import Property, Territory
 from game.models.world import Arc, Choice, Contact, Gang, Quest, Scene, SceneContact, SceneItem
 
 from .refs import get_by_key_or_warn, resolve_scene
@@ -96,11 +96,19 @@ def import_world_data(data: dict) -> ImportResult:
         property_key = pdata.get("key") or slugify(pdata["name"])
         if not pdata.get("key"):
             result.warn(f"Property '{pdata['name']}' missing key; using generated key '{property_key}'")
+        property_type = pdata.get("property_type")
+        allowed_property_types = {choice[0] for choice in Property.PROPERTY_TYPES}
+        if property_type not in allowed_property_types:
+            result.warn(
+                f"Property '{property_key}' has unsupported property_type '{property_type}'; "
+                "skipping."
+            )
+            continue
         _, created = Property.objects.update_or_create(
             key=property_key,
             defaults={
                 "name": pdata["name"],
-                "property_type": pdata["property_type"],
+                "property_type": property_type,
                 "cash_per_turn": pdata.get("cash_per_turn", 0),
                 "heat_per_turn": pdata.get("heat_per_turn", 0),
                 "rep_per_turn": pdata.get("rep_per_turn", 0),
@@ -112,6 +120,27 @@ def import_world_data(data: dict) -> ImportResult:
             result.record_created("properties")
         else:
             result.record_updated("properties")
+
+    for tdata in data.get("territories") or []:
+        territory_key = tdata.get("key") or slugify(tdata["name"])
+        if not tdata.get("key"):
+            result.warn(f"Territory '{tdata['name']}' missing key; using generated key '{territory_key}'")
+        _, created = Territory.objects.update_or_create(
+            key=territory_key,
+            defaults={
+                "name": tdata["name"],
+                "description": tdata.get("description", ""),
+                "cash_per_turn": tdata.get("cash_per_turn", 0),
+                "heat_per_turn": tdata.get("heat_per_turn", 0),
+                "rep_per_turn": tdata.get("rep_per_turn", 0),
+                "is_contestable": tdata.get("is_contestable", False),
+                "resolution_scene": get_by_key_or_warn(Scene, tdata.get("resolution_scene"), result),
+            },
+        )
+        if created:
+            result.record_created("territories")
+        else:
+            result.record_updated("territories")
     return result
 
 
@@ -231,6 +260,8 @@ def import_hubs_data(data: dict) -> ImportResult:
                 "consume_item": get_by_key_or_warn(Item, arrival.get("consume_item"), result),
                 "receive_property": None,
                 "lose_property": None,
+                "receive_territory": None,
+                "lose_territory": None,
             },
         )
         scene_map[scene.key] = scene
@@ -307,6 +338,8 @@ def import_quest_data(data: dict) -> ImportResult:
         scene.consume_item = get_by_key_or_warn(Item, arrival.get("consume_item"), result)
         scene.receive_property = get_by_key_or_warn(Property, arrival.get("receive_property"), result)
         scene.lose_property = get_by_key_or_warn(Property, arrival.get("lose_property"), result)
+        scene.receive_territory = get_by_key_or_warn(Territory, arrival.get("receive_territory"), result)
+        scene.lose_territory = get_by_key_or_warn(Territory, arrival.get("lose_territory"), result)
         try:
             scene.clean()
         except ValidationError as exc:

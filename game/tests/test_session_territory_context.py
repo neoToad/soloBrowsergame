@@ -16,17 +16,11 @@ class SessionTerritoryContextTest(TestCase):
         from game.models.property import PlayerProperty, PlayerTerritory, Property, Territory
 
         territory = Territory.objects.create(key="west-harbor", name="West Harbor")
-        legacy_property = Property.objects.create(
-            key="west-harbor",
-            name="West Harbor Legacy",
-            property_type="territory",
-        )
         normal_property = Property.objects.create(
             key="bookmaker",
             name="Bookmaker",
             property_type="business",
         )
-        PlayerProperty.objects.create(session=self.session, property=legacy_property)
         PlayerProperty.objects.create(session=self.session, property=normal_property)
         PlayerTerritory.objects.create(session=self.session, territory=territory)
 

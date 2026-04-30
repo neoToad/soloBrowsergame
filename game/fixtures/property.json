@@ -19,7 +19,7 @@
   "fields": {
     "key": "financial_district",
     "name": "Financial District",
-    "property_type": "territory",
+    "property_type": "business",
     "cash_per_turn": 0,
     "heat_per_turn": 0,
     "rep_per_turn": 0,

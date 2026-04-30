@@ -6,20 +6,16 @@ def process_turn_income(session):
     Returns (log_strings: list[str], income_totals: dict).
     Heat is clamped at 0. stats.save() called once if any property paid out.
     """
-    from ..models import PlayerProperty, PlayerTerritory, Territory
+    from ..models import PlayerProperty, PlayerTerritory
     stats = session.stats
     totals = {'cash': 0, 'heat': 0, 'rep': 0}
     logs = []
-    territory_keys = set(Territory.objects.values_list("key", flat=True))
-
     properties = PlayerProperty.objects.filter(
         session=session, is_contested=False
     ).select_related('property')
 
     for pp in properties:
         prop = pp.property
-        if prop.key in territory_keys:
-            continue
         stats.cash += prop.cash_per_turn
         totals['cash'] += prop.cash_per_turn
 
@@ -73,7 +69,7 @@ def trigger_rival_contest(session):
     Rolls against heat to trigger a rival contest on a random contestable property.
     Returns (log_string: str | None, unlocked_scene: Scene | None).
     """
-    from ..models import PlayerProperty, Territory
+    from ..models import PlayerProperty
     from ..models.property import RivalClaim
 
     stats = session.stats
@@ -81,7 +77,6 @@ def trigger_rival_contest(session):
     if random.random() >= contest_chance:
         return None, None
 
-    territory_keys = set(Territory.objects.values_list("key", flat=True))
     contestable = PlayerProperty.objects.filter(
         session=session,
         is_contested=False,
@@ -89,7 +84,7 @@ def trigger_rival_contest(session):
         property__resolution_scene__isnull=False,
     ).select_related('property')
 
-    contestable_list = [pp for pp in contestable if pp.property.key not in territory_keys]
+    contestable_list = list(contestable)
     if not contestable_list:
         return None, None
 
@@ -131,31 +126,19 @@ def apply_property_rewards(session, scene):
     Awards or removes properties based on scene arrival effects.
     Returns a list of log strings.
     """
-    from ..models.property import PlayerProperty, PlayerTerritory, Territory
+    from ..models.property import PlayerProperty, PlayerTerritory
     logs = []
 
     if scene.receive_property:
-        mapped_territory = Territory.objects.filter(key=scene.receive_property.key).first()
-        if mapped_territory and scene.receive_territory_id:
-            if not PlayerTerritory.objects.filter(session=session, territory=mapped_territory).exists():
-                PlayerTerritory.objects.create(session=session, territory=mapped_territory)
-                logs.append(f"You have acquired: {mapped_territory.name}")
-        elif not PlayerProperty.objects.filter(session=session, property=scene.receive_property).exists():
+        if not PlayerProperty.objects.filter(session=session, property=scene.receive_property).exists():
             PlayerProperty.objects.create(session=session, property=scene.receive_property)
             logs.append(f"You have acquired: {scene.receive_property.name}")
 
     if scene.lose_property:
-        mapped_territory = Territory.objects.filter(key=scene.lose_property.key).first()
-        if mapped_territory and scene.lose_territory_id:
-            pt = PlayerTerritory.objects.filter(session=session, territory=mapped_territory).first()
-            if pt:
-                pt.delete()
-                logs.append(f"You have lost: {mapped_territory.name}")
-        else:
-            pp = PlayerProperty.objects.filter(session=session, property=scene.lose_property).first()
-            if pp:
-                pp.delete()
-                logs.append(f"You have lost: {scene.lose_property.name}")
+        pp = PlayerProperty.objects.filter(session=session, property=scene.lose_property).first()
+        if pp:
+            pp.delete()
+            logs.append(f"You have lost: {scene.lose_property.name}")
 
     if scene.receive_territory:
         if not PlayerTerritory.objects.filter(session=session, territory=scene.receive_territory).exists():

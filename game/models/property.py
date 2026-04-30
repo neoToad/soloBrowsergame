@@ -5,7 +5,6 @@ class Property(models.Model):
     PROPERTY_TYPES = [
         ("safehouse", "Safe House"),
         ("business", "Business"),
-        ("territory", "Territory"),
     ]
     key = models.SlugField(unique=True)
     name = models.CharField(max_length=200)
@@ -19,6 +18,23 @@ class Property(models.Model):
         "game.Scene", null=True, blank=True,
         on_delete=models.SET_NULL, related_name="+"
     )
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(property_type__in=["safehouse", "business"]),
+                name="property_type_no_territory",
+            ),
+        ]
+
+    def clean(self):
+        super().clean()
+        if self.property_type == "territory":
+            from django.core.exceptions import ValidationError
+
+            raise ValidationError(
+                {"property_type": "Territory is no longer a valid Property type. Use Territory model instead."}
+            )
 
     def __str__(self):
         return self.name

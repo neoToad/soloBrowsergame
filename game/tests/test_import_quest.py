@@ -6,6 +6,7 @@ from django.core.management.base import CommandError
 from django.test import TestCase
 
 from game.models import Scene
+from game.models.property import Territory
 
 
 class ImportQuestCommandTests(TestCase):
@@ -210,3 +211,42 @@ scenes:
     choices: []
 """
             )
+
+    def test_import_resolves_territory_arrival_fields(self):
+        Territory.objects.create(key="the_docks", name="The Docks")
+        self._run_import(
+            """
+quest:
+  key: import-territory-arrival
+  title: Import Territory Arrival
+  description: Import test
+  arc: null
+  arc_order: 0
+  is_repeatable: false
+  hub_scenes: []
+  entrance_scene: import-territory-arrival__start
+  requirements: []
+
+scenes:
+  - key: import-territory-arrival__start
+    scene_type: normal
+    title: Start
+    order: 10
+    body: |
+      Start scene.
+    arrival:
+      cash_change: 0
+      rep_change: 0
+      heat_change: 0
+      consume_item: null
+      receive_property: null
+      lose_property: null
+      receive_territory: the_docks
+      lose_territory: null
+    choices: []
+"""
+        )
+
+        start_scene = Scene.objects.get(key="import-territory-arrival__start")
+        self.assertIsNotNone(start_scene.receive_territory)
+        self.assertEqual(start_scene.receive_territory.key, "the_docks")
