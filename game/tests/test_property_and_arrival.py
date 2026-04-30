@@ -230,6 +230,52 @@ class PropertyServiceTest(TestCase):
         self.assertGreater(len(logs), 0)
         self.assertIn("Cash Cow", logs[0])
 
+    def test_apply_property_rewards_grants_territory_on_arrival(self):
+        from game.models.property import PlayerTerritory, Territory
+        from game.services.property_service import apply_property_rewards
+
+        territory = Territory.objects.create(key="riverfront", name="Riverfront", cash_per_turn=12)
+        scene = Scene.objects.create(
+            key="territory__receive_runtime",
+            title="Receive Territory",
+            body="",
+            scene_type="normal",
+            receive_territory=territory,
+        )
+
+        logs = apply_property_rewards(self.session, scene)
+
+        self.assertTrue(PlayerTerritory.objects.filter(session=self.session, territory=territory).exists())
+        self.assertIn("Riverfront", "\n".join(logs))
+
+    def test_process_turn_income_with_active_territories_applies_cash_rep_heat(self):
+        from game.models.property import PlayerTerritory, Territory
+        from game.services.property_service import process_turn_income
+
+        territory = Territory.objects.create(
+            key="iron-ward",
+            name="Iron Ward",
+            cash_per_turn=50,
+            heat_per_turn=4,
+            rep_per_turn=2,
+        )
+        PlayerTerritory.objects.create(session=self.session, territory=territory)
+        self.stats.cash = 0
+        self.stats.heat = 10
+        self.stats.rep = 0
+        self.stats.save()
+
+        logs, totals = process_turn_income(self.session)
+
+        self.stats.refresh_from_db()
+        self.assertEqual(self.stats.cash, 50)
+        self.assertEqual(self.stats.heat, 6)
+        self.assertEqual(self.stats.rep, 2)
+        self.assertEqual(totals["cash"], 50)
+        self.assertEqual(totals["heat"], -4)
+        self.assertEqual(totals["rep"], 2)
+        self.assertIn("Iron Ward", "\n".join(logs))
+
 
 class ArrivalServiceTest(TestCase):
     def setUp(self):
