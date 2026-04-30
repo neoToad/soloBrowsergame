@@ -359,7 +359,7 @@ class SceneAdmin(admin.ModelAdmin):
     list_select_related = True
     prepopulated_fields = {'key': ('title',)}
     readonly_fields = ('key_format_note',)
-    autocomplete_fields = ('consume_item', 'receive_property', 'lose_property')
+    autocomplete_fields = ('consume_item', 'receive_property', 'lose_property', 'receive_territory', 'lose_territory')
     fieldsets = (
         ('Identity', {
             'fields': ('key', 'key_format_note', 'title', 'order')
@@ -374,8 +374,17 @@ class SceneAdmin(admin.ModelAdmin):
             'fields': ('requires_roll', 'roll_difficulty', 'roll_stat')
         }),
         ('Arrival Effects', {
-            'fields': ('cash_change', 'rep_change', 'heat_change', 'consume_item', 'receive_property', 'lose_property'),
-            'description': 'Stat rewards/penalties, property changes, and item consumption upon arrival.',
+            'fields': (
+                'cash_change',
+                'rep_change',
+                'heat_change',
+                'consume_item',
+                'receive_property',
+                'lose_property',
+                'receive_territory',
+                'lose_territory',
+            ),
+            'description': 'Stat rewards/penalties, property/territory changes, and item consumption upon arrival.',
         }),
     )
     inlines = [ChoiceInline, SceneItemInline, SceneContactInline, CombatEncounterInline]

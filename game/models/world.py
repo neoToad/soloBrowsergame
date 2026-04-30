@@ -141,6 +141,20 @@ class Scene(models.Model):
         related_name='+',
         help_text="Property lost when arriving at this scene."
     )
+    receive_territory = models.ForeignKey(
+        "game.Territory",
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Territory awarded when arriving at this scene.",
+    )
+    lose_territory = models.ForeignKey(
+        "game.Territory",
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Territory lost when arriving at this scene.",
+    )
 
     @property
     def is_hub(self):
@@ -162,6 +176,14 @@ class Scene(models.Model):
             raise ValidationError({'ending_type': 'Ending scenes must have a non-blank ending_type.'})
         if self.ending_type and self.scene_type != 'ending':
             raise ValidationError({'scene_type': 'Scenes with an ending_type must have scene_type "ending".'})
+        if self.receive_property_id and self.receive_territory_id:
+            raise ValidationError(
+                {"receive_territory": "Cannot set both receive_property and receive_territory on the same scene."}
+            )
+        if self.lose_property_id and self.lose_territory_id:
+            raise ValidationError(
+                {"lose_territory": "Cannot set both lose_property and lose_territory on the same scene."}
+            )
         if self.quest_id:
             expected_prefix = f"{self.quest.key}__"
             if not self.key.startswith(expected_prefix):
