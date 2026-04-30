@@ -126,6 +126,32 @@
             </div>
 
             <div style="margin-bottom: 10px;">
+                <label for="receive-territory"><strong>Receive Territory</strong></label><br>
+                <select id="receive-territory" name="receive_territory_id" style="width: 100%; margin-top: 4px;">
+                    <option value="">â€” none â€”</option>
+                    {% for territory in all_territories %}
+                        <option value="{{ territory.id }}"
+                            {% if scene and scene.receive_territory_id == territory.id %}selected{% endif %}>
+                            {{ territory.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="margin-bottom: 10px;">
+                <label for="lose-territory"><strong>Lose Territory</strong></label><br>
+                <select id="lose-territory" name="lose_territory_id" style="width: 100%; margin-top: 4px;">
+                    <option value="">â€” none â€”</option>
+                    {% for territory in all_territories %}
+                        <option value="{{ territory.id }}"
+                            {% if scene and scene.lose_territory_id == territory.id %}selected{% endif %}>
+                            {{ territory.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="margin-bottom: 10px;">
                 <label for="consume-item"><strong>Consume Item on Arrival</strong></label><br>
                 <select id="consume-item" name="consume_item_id" style="width: 100%; margin-top: 4px;">
                     <option value="">— none —</option>

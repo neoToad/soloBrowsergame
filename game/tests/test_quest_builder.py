@@ -3,7 +3,7 @@ import json
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from game.models import Choice, CombatEncounter, Contact, Enemy, Item, Quest, Scene, SceneContact, SceneItem
+from game.models import Choice, CombatEncounter, Contact, Enemy, Item, Quest, Scene, SceneContact, SceneItem, Territory
 
 
 class QuestBuilderSceneTest(TestCase):
@@ -111,6 +111,51 @@ class QuestBuilderSceneTest(TestCase):
         self.assertEqual(scene.title, "New Title")
         self.assertEqual(scene.scene_type, "hub")
         self.assertEqual(scene.body, "new body")
+
+    def test_scene_create_persists_territory_arrival_fields(self):
+        gain_territory = Territory.objects.create(key="qb-gain", name="QB Gain")
+        lose_territory = Territory.objects.create(key="qb-lose", name="QB Lose")
+
+        response = self.client.post(
+            self._create_url(),
+            {
+                "title": "Territory Scene",
+                "key": "test_quest__territory-scene",
+                "scene_type": "normal",
+                "description": "Territory effects.",
+                "receive_territory_id": str(gain_territory.id),
+                "lose_territory_id": str(lose_territory.id),
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        scene = self.quest.scenes.get(key="test_quest__territory-scene")
+        self.assertEqual(scene.receive_territory_id, gain_territory.id)
+        self.assertEqual(scene.lose_territory_id, lose_territory.id)
+
+    def test_scene_save_updates_territory_arrival_fields(self):
+        gain_territory = Territory.objects.create(key="qb-gain-save", name="QB Gain Save")
+        lose_territory = Territory.objects.create(key="qb-lose-save", name="QB Lose Save")
+        scene = Scene.objects.create(
+            quest=self.quest, key="test_quest__territory-edit", title="Territory Edit", body="", scene_type="normal"
+        )
+
+        response = self.client.post(
+            self._save_url(scene.pk),
+            {
+                "title": "Territory Edit",
+                "key": "test_quest__territory-edit",
+                "scene_type": "normal",
+                "description": "",
+                "receive_territory_id": str(gain_territory.id),
+                "lose_territory_id": str(lose_territory.id),
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        scene.refresh_from_db()
+        self.assertEqual(scene.receive_territory_id, gain_territory.id)
+        self.assertEqual(scene.lose_territory_id, lose_territory.id)
 
     def test_scene_save_returns_oob_html(self):
         scene = Scene.objects.create(

@@ -19,6 +19,8 @@ class QuestFormParser:
             "heat_change": int(data.get("heat_change") or 0),
             "receive_property_id": int(data.get("receive_property_id") or 0) or None,
             "lose_property_id": int(data.get("lose_property_id") or 0) or None,
+            "receive_territory_id": int(data.get("receive_territory_id") or 0) or None,
+            "lose_territory_id": int(data.get("lose_territory_id") or 0) or None,
         }
 
     @staticmethod

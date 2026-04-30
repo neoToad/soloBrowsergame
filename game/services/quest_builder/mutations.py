@@ -46,6 +46,8 @@ def create_scene(quest_id, data):
         heat_change=parsed["heat_change"],
         receive_property_id=parsed["receive_property_id"],
         lose_property_id=parsed["lose_property_id"],
+        receive_territory_id=parsed["receive_territory_id"],
+        lose_territory_id=parsed["lose_territory_id"],
     )
     try:
         scene.clean()
@@ -78,6 +80,8 @@ def update_scene(scene_id, data):
     scene.heat_change = parsed["heat_change"]
     scene.receive_property_id = parsed["receive_property_id"]
     scene.lose_property_id = parsed["lose_property_id"]
+    scene.receive_territory_id = parsed["receive_territory_id"]
+    scene.lose_territory_id = parsed["lose_territory_id"]
 
     try:
         scene.clean()

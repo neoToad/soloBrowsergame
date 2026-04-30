@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from .models import Choice, Contact, CombatEncounter, Item, Property, Quest, Requirement, Scene
+from .models import Choice, Contact, CombatEncounter, Item, Property, Quest, Requirement, Scene, Territory
 from .models.combat import Enemy as EnemyModel
 from .services.quest_builder import (
     get_canvas_data,
@@ -139,6 +139,7 @@ def scene_panel(request, quest_id, scene_id=None):
     all_enemies = list(EnemyModel.objects.order_by('name'))
     all_quests = list(Quest.objects.order_by('title'))
     all_properties = list(Property.objects.order_by('name'))
+    all_territories = list(Territory.objects.order_by('name'))
     quest_scenes = list(
         quest.scenes.only('id', 'key', 'title').order_by('order')
     )
@@ -156,6 +157,7 @@ def scene_panel(request, quest_id, scene_id=None):
         'all_contacts':          all_contacts,
         'all_enemies':           all_enemies,
         'all_properties':        all_properties,
+        'all_territories':       all_territories,
         'quest_scenes':          quest_scenes,
         'combat_encounter':      combat_encounter,
         'all_quests':            all_quests,
