@@ -12,7 +12,7 @@ from .models import (
     Arc, Quest, Item, Requirement, RequirementGroup, Scene, Choice,
     GameSession, PlayerStats, PlayerInventory, SceneItem, CompletedQuest,
     Enemy, CombatEncounter, CombatState, EventLog,
-    Property, PlayerProperty, RivalClaim,
+    Property, Territory, PlayerProperty, PlayerTerritory, RivalClaim,
     Gang, Contact, SceneContact, PlayerContact, PlayerGangStanding,
     Job, JobApproach, JobBeatVariant, PlayerJobState,
     ContactJobOffer, PlayerContactOfferState, JobRun,
@@ -103,6 +103,11 @@ class PlayerPropertyInline(admin.TabularInline):
     model = PlayerProperty
     extra = 0
     fields = ('property', 'is_contested')
+
+class PlayerTerritoryInline(admin.TabularInline):
+    model = PlayerTerritory
+    extra = 0
+    fields = ('territory', 'is_contested')
 
 class PlayerContactInline(admin.TabularInline):
     model = PlayerContact
@@ -415,7 +420,14 @@ class GameSessionAdmin(admin.ModelAdmin):
     list_display = ('session_key', 'turn_counter', 'current_scene', 'created_at')
     search_fields = ('session_key',)
     readonly_fields = ('session_key', 'created_at')
-    inlines = [PlayerStatsInline, PlayerInventoryInline, PlayerPropertyInline, PlayerContactInline, PlayerGangStandingInline]
+    inlines = [
+        PlayerStatsInline,
+        PlayerInventoryInline,
+        PlayerPropertyInline,
+        PlayerTerritoryInline,
+        PlayerContactInline,
+        PlayerGangStandingInline,
+    ]
 
 @admin.register(PlayerStats)
 class PlayerStatsAdmin(admin.ModelAdmin):
@@ -490,6 +502,18 @@ class PropertyAdmin(admin.ModelAdmin):
 @admin.register(PlayerProperty)
 class PlayerPropertyAdmin(admin.ModelAdmin):
     list_display = ('session', 'property', 'is_contested')
+    list_filter = ('is_contested',)
+    list_select_related = True
+
+@admin.register(Territory)
+class TerritoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'cash_per_turn', 'heat_per_turn', 'rep_per_turn', 'is_contestable', 'resolution_scene')
+    list_filter = ('is_contestable',)
+    search_fields = ('name', 'key')
+
+@admin.register(PlayerTerritory)
+class PlayerTerritoryAdmin(admin.ModelAdmin):
+    list_display = ('session', 'territory', 'is_contested')
     list_filter = ('is_contested',)
     list_select_related = True
 

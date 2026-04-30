@@ -28,6 +28,10 @@ STORY_FLAG_KEYS = frozenset(
         "first_word_burned",
         "first_word_paid_in_full",
         "first_word_partial",
+        "corkys_dealers_in",
+        "corkys_sal_holds",
+        "corkys_sal_caved",
+        "corkys_read_room",
         "hunt_defeat",
         "hunt_victory",
         "phase6_secret",
@@ -35,6 +39,9 @@ STORY_FLAG_KEYS = frozenset(
         "the_call_fought_out",
         "the_call_lost",
         "the_call_talked_out",
+        "the_ride_straight",
+        "the_ride_covered",
+        "the_ride_lost",
     }
 )
 
@@ -81,4 +88,3 @@ def validate_flag_name(
         "Use a registered key or a supported dynamic pattern "
         "('approach_<key>', 'approach_<key>_failed', 'ran_<job_key>_<3|5|10>x')."
     )
-

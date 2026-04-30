@@ -3,7 +3,7 @@ import json
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from game.models import Choice, Quest, Scene
+from game.models import Choice, CombatEncounter, Contact, Enemy, Item, Quest, Scene, SceneContact, SceneItem
 
 
 class QuestBuilderSceneTest(TestCase):
@@ -357,3 +357,72 @@ class QuestBuilderChoiceCreateOwnershipTest(TestCase):
         self.assertEqual(response.status_code, 200)
         choice = Choice.objects.get(scene=self.source_scene, label="Valid in quest choice")
         self.assertEqual(choice.target_scene, self.target_scene)
+
+
+class QuestDeleteCascadeTest(TestCase):
+    def test_deleting_quest_deletes_its_scenes_and_scene_children(self):
+        quest = Quest.objects.create(key="cascade_q", title="Cascade Quest", description="")
+        scene = Scene.objects.create(
+            quest=quest,
+            key="cascade_q__scene",
+            title="Scene",
+            body="",
+            scene_type="combat",
+        )
+        next_scene = Scene.objects.create(
+            quest=quest,
+            key="cascade_q__next",
+            title="Next",
+            body="",
+            scene_type="normal",
+        )
+        item = Item.objects.create(key="cascade_item", name="Cascade Item", description="")
+        contact = Contact.objects.create(key="cascade_contact", name="Cascade Contact", description="")
+        enemy = Enemy.objects.create(
+            key="cascade_enemy",
+            name="Cascade Enemy",
+            max_hp=10,
+            defense=0,
+            attack_modifier=0,
+            damage_min=1,
+            damage_max=2,
+        )
+
+        choice = Choice.objects.create(scene=scene, label="Go", target_scene=next_scene)
+        scene_item = SceneItem.objects.create(scene=scene, item=item, quantity=1, award_once=True)
+        scene_contact = SceneContact.objects.create(scene=scene, contact=contact, action="gain", award_once=True)
+        encounter = CombatEncounter.objects.create(scene=scene, enemy=enemy)
+
+        quest.delete()
+
+        self.assertFalse(Scene.objects.filter(pk=scene.pk).exists())
+        self.assertFalse(Scene.objects.filter(pk=next_scene.pk).exists())
+        self.assertFalse(Choice.objects.filter(pk=choice.pk).exists())
+        self.assertFalse(SceneItem.objects.filter(pk=scene_item.pk).exists())
+        self.assertFalse(SceneContact.objects.filter(pk=scene_contact.pk).exists())
+        self.assertFalse(CombatEncounter.objects.filter(pk=encounter.pk).exists())
+
+    def test_deleting_quest_nulls_cross_quest_choice_target(self):
+        doomed_quest = Quest.objects.create(key="doomed_q", title="Doomed Quest", description="")
+        survivor_quest = Quest.objects.create(key="survivor_q", title="Survivor Quest", description="")
+
+        doomed_scene = Scene.objects.create(
+            quest=doomed_quest,
+            key="doomed_q__end",
+            title="Doomed End",
+            body="",
+            scene_type="ending",
+        )
+        survivor_scene = Scene.objects.create(
+            quest=survivor_quest,
+            key="survivor_q__start",
+            title="Survivor Start",
+            body="",
+            scene_type="normal",
+        )
+        bridge_choice = Choice.objects.create(scene=survivor_scene, label="Bridge", target_scene=doomed_scene)
+
+        doomed_quest.delete()
+        bridge_choice.refresh_from_db()
+
+        self.assertIsNone(bridge_choice.target_scene)
