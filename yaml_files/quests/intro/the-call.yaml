@@ -61,7 +61,7 @@ scenes:
         target_scene: the-call__her-voice
         success_scene: null
         failure_scene: null
-        arrival_flavor: It goes to voicemail. Twenty seconds later, a text. I need help. Please. Then a second text, four minutes after the first — I know, okay. I know.
+        arrival_flavor: It goes to voicemail. Twenty seconds later, a text. I need help. Please. Then a second text, four minutes after the first — Please answer, its an emergency. You decide to call her.
         failure_arrival_flavor: null
         set_flag_name: null
         clear_flag_name: null
@@ -78,7 +78,7 @@ scenes:
     body: |
       She doesn't say hello. She launches into it like she's been rehearsing, which she probably has — Vickie always rehearses the part where she asks for something and never quite the part that comes before it.
 
-      There's a guy. His name is Terrell. He's been coming around her building saying she owes him for something her neighbour ran up, wrong place, wrong association, it's complicated, she'll explain later. What matters is he came by twice this week and the second time he put his hand on the door frame and leaned in, and Vickie — who is not, she wants you to understand, easily rattled — has been sleeping with the chain on.
+      "There's this guy, Terrell. Young, maybe twenty-five, gold chain, acts like he's somebody. He keeps coming around saying I owe him for something Destiny ran up — my neighbor, it's complicated, I'll explain later. Second time he came by he put his hand on my door frame and told me if I didn't have something for him by the end of the week he was gonna break my legs." A pause. "He said it like that. Just said it. Like it was nothing."
 
       You ask if she's okay. Long pause.
 
@@ -136,9 +136,9 @@ scenes:
     title: Why You
     order: 30
     body: |
-      She lets the silence run for a moment, like she's deciding how honest to be, which is usually a bad sign with Vickie because her honest and everyone else's honest are not always the same document.
+      She lets the silence run for a moment, like she's deciding how honest to be.
 
-      "Because there's nobody else," she says. "Because you're already the worst thing that could happen to someone, so what's one more time."
+      "Because you're the only person I know who can actually do something about it," she says. Then, quieter — "And because you owe me. You owe me about a thousand."
 
       It lands exactly like she means it to. You don't argue. There's nothing useful to argue with.
 
@@ -202,7 +202,7 @@ scenes:
     scene_contacts: []
 
     choices:
-      - label: Talk him down
+      - label: Reason with him, tell him to back off your sister
         order: 1
         target_scene: the-call__squeeze
         success_scene: null
@@ -233,7 +233,7 @@ scenes:
     title: Squeeze
     order: 50
     body: |
-      You tell him who you're there for. Then you tell him — quietly, without any particular emotion in it — what happens if he comes back. Not a speech. Just the information, laid out plainly, the way you'd explain a bus route. The trick is meaning it more than he does, and making sure he can tell the difference.
+      You tell him you're there for the woman on the third floor. That whatever she owes, she doesn't owe it anymore. You don't raise your voice. You don't need to — the point isn't volume, it's clarity. You look at him the way you look at something you've already decided about and let him work out the rest himself.
 
       Terrell is listening. Behind the performance of not being impressed, something is doing the math.
 
@@ -260,7 +260,7 @@ scenes:
         success_scene: the-call__squeeze-success
         failure_scene: the-call__squeeze-failure
         arrival_flavor: Something shifts behind his eyes. He nods, once, at the pavement. Steps back.
-        failure_arrival_flavor: He laughs — short, sharp, meant to be seen — and calls something over his shoulder. Two guys come off the wall across the street.
+        failure_arrival_flavor: Some people need a different kind of convincing.
         set_flag_name: null
         clear_flag_name: null
         requirements: []
@@ -313,7 +313,7 @@ scenes:
     title: Squeeze Failure
     order: 57
     body: |
-      Nerve check failed. He laughs — short, sharp, meant to be seen — and calls something over his shoulder. Two guys come off the wall across the street. Terrell looks at you like a question he already knows the answer to.
+      Nerve check failed. He laughs — short, sharp, meant to be seen. "I'm gonna crush you, you little twerp," he says. He means it.
 
     roll:
       requires_roll: false
@@ -352,7 +352,7 @@ scenes:
     title: The Fight
     order: 60
     body: |
-      It goes loud and fast the way these things do, the way you remembered from before — adrenaline first, thinking second, the stoop light flickering overhead like it's nervous too. Terrell has reach and he's done this before but he commits too early and that's the whole fight right there.
+      Terrell squares up before you've finished closing the distance. He's done this before — you can see it in how he sets his feet, how his hands come up. He's got reach and he knows it. What he doesn't have is patience.
 
       Somewhere above you a window slides shut. The city, taking no position.
 
@@ -458,6 +458,9 @@ scenes:
       - item: brass_knuckles
         quantity: 1
         award_once: true
+      - item: zonk_smoked
+        quantity: 1
+        award_once: false
     scene_contacts:
       - contact: sister
         action: gain
@@ -591,7 +594,10 @@ scenes:
       consume_item: null
       receive_property: null
       lose_property: null
-    scene_items: []
+    scene_items:
+      - item: zonk_smoked
+        quantity: 1
+        award_once: false
     scene_contacts: []
 
     choices:

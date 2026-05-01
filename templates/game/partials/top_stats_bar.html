@@ -14,6 +14,6 @@
     </div>
     <div class="top-stat top-stat--mobile-hp">
         <span class="top-stat-label">HP</span>
-        <span class="top-stat-value stat-value {{ stats.hp|hp_color_class:stats.max_hp }}">{{ stats.hp }}/{{ stats.max_hp }}</span>
+        <span class="top-stat-value stat-value {{ stats.hp|hp_color_class:effective_stats.max_hp }}">{{ stats.hp }}/{{ effective_stats.max_hp }}</span>
     </div>
 </div>

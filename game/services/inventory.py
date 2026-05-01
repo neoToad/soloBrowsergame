@@ -101,10 +101,12 @@ def apply_item_effect(session, stats, inventory, item):
     Preconditions (item in inventory, effect_type set) must be validated by the caller.
     """
     from ..constants import STAT_FIELDS, USE_ITEM_FLAVOR
+    from ..utils import get_effective_stats
     logs = []
     if item.effect_type == 'heal_hp':
-        healed = min(item.effect_value, stats.max_hp - stats.hp)
-        stats.hp = min(stats.max_hp, stats.hp + item.effect_value)
+        effective_max_hp = get_effective_stats(stats, inventory).max_hp
+        healed = min(item.effect_value, max(0, effective_max_hp - stats.hp))
+        stats.hp = min(effective_max_hp, stats.hp + item.effect_value)
         stats.save()
         logs.append(f"{USE_ITEM_FLAVOR['heal_hp']} (+{healed} HP)")
     elif item.effect_type == 'add_stat':

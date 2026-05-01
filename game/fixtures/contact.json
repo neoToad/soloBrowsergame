@@ -3,72 +3,99 @@
   "model": "game.contact",
   "pk": 1,
   "fields": {
-    "key": "marty",
-    "name": "Marty",
-    "description": "Hey, Its marty."
+    "key": "morris",
+    "name": "Morris",
+    "description": "Dutch's intermediary. Transactional, precise, slightly disappointing to talk to in the way that efficient people are. Calls when he has information and hangs up when he's done. Says things like \"acceptable\" and \"noted.\" Has no evident inner life but occasionally says something that suggests he might.\n"
   }
 },
 {
   "model": "game.contact",
   "pk": 2,
   "fields": {
-    "key": "sable",
-    "name": "Sable",
-    "description": "Sable"
+    "key": "dutch",
+    "name": "Dutch",
+    "description": "Runs the Harlan Street Crew out of The Flats. Old school, disciplined, fingers in everything quietly. Never wastes words. The fact that he's dealing with you directly means something â€” you're not sure yet whether it's good.\n"
   }
 },
 {
   "model": "game.contact",
   "pk": 3,
   "fields": {
+    "key": "richie_bucco",
+    "name": "Richie Bucco",
+    "description": "Runs the Bucco Family. Will talk to you for forty minutes about cold pressing olive oil. Genuinely knowledgeable about it. Something terrible may happen before dinner regardless. The oldest outfit in the city and he carries that history like it's earned, because it is.\n"
+  }
+},
+{
+  "model": "game.contact",
+  "pk": 4,
+  "fields": {
+    "key": "kings_contact",
+    "name": "Kings Contact",
+    "description": "No one name, no one throat to grab. The council structure means your contact today might not be your contact tomorrow. Useful for exactly as long as the internal politics allow it.\n"
+  }
+},
+{
+  "model": "game.contact",
+  "pk": 5,
+  "fields": {
+    "key": "craig_richards",
+    "name": "Craig Richards",
+    "description": "Insists on being called King. Everyone calls him Craig. He hates it. Runs the Backstreet Boys out of The New Build and The Strip. Believes every word of his own hype. Making decent money. Nobody respects him for it, which he is aware of and has completely failed to address.\n"
+  }
+},
+{
+  "model": "game.contact",
+  "pk": 6,
+  "fields": {
+    "key": "frank_cahill",
+    "name": "Lt. Frank Cahill",
+    "description": "Major Crimes Unit. Taxes every crew in the city except Dutch, with whom he has a relationship built entirely on implication. Bureaucratically polite at all times. Never says anything incriminating. Built his operation from inside the system over decades. The scariest person in the city.\n"
+  }
+},
+{
+  "model": "game.contact",
+  "pk": 7,
+  "fields": {
     "key": "sister",
     "name": "Vickie",
-    "description": "Your sister"
+    "description": "Your sister. Calls only when she needs something. Genuinely loves you in her way, which is real but will immediately generate the next problem the moment the current one is solved. A chaos agent who does not consider herself a chaos agent. Heavy Zonk user. Always completely confident.\n"
   }
 },
 {
   "model": "game.contact",
-  "pk": 1001,
+  "pk": 8,
   "fields": {
-    "key": "pawn_shop_owner",
-    "name": "Pawn Shop Owner",
-    "description": "Runs cash through a legal front and only talks business when asked."
+    "key": "sal",
+    "name": "Sal",
+    "description": "Owns Corky's in The Flats. Inherited it from a friend who left town and just wants to run a quiet bar. Tired, not defeated. Dutch's people have been using his floor for years and he wants them out. The longer you talk to him the more uncomfortable the moral math gets.\n"
   }
 },
 {
   "model": "game.contact",
-  "pk": 1002,
+  "pk": 9,
   "fields": {
-    "key": "carla_the_fence",
-    "name": "Carla the Fence",
-    "description": "Moves hot goods fast and prefers quiet side conversations."
+    "key": "eddie_reyes",
+    "name": "Eddie Reyes",
+    "description": "Runs Reyes Boxing in The Flats, two blocks from Corky's. Been there thirty years. Listens more than he talks. The only person in the city who has told Dutch, Cahill, and Richie Bucco something they didn't want to hear and had all three thank him. Nobody brings their business through his door. Doesn't broker deals. Occasionally points someone in a direction. Once. Doesn't follow up.\n"
   }
 },
 {
   "model": "game.contact",
-  "pk": 1003,
+  "pk": 10,
   "fields": {
-    "key": "mickey_two_fingers",
-    "name": "Mickey Two-Fingers",
-    "description": "Card-room regular who notices who can handle pressure."
+    "key": "linda_marsh",
+    "name": "Councilor Linda Marsh",
+    "description": "City councilor for The Flats and the border of The New Build. Publicly the voice of community preservation. Quietly taking money from the developers eating her district alive. Frank Cahill uses her for planning permissions and the occasional burial of an investigation. Has a newsletter with a recipe section. Owns a rescue dog named Biscuit. Has been making one small reasonable decision at a time for eleven years and can't see the shape of what she's built anymore.\n"
   }
 },
 {
   "model": "game.contact",
-  "pk": 1004,
+  "pk": 11,
   "fields": {
-    "key": "court_clerk",
-    "name": "Court Clerk",
-    "description": "Keeps one foot in public records and one in the rumor mill."
-  }
-},
-{
-  "model": "game.contact",
-  "pk": 1005,
-  "fields": {
-    "key": "dock_foreman",
-    "name": "Dock Foreman",
-    "description": "Knows what comes off-manifest and who can be trusted with it."
+    "key": "pruitt",
+    "name": "DeShawn Pruitt",
+    "description": "One of the Kings' council's more stable voices. Runs the northern Westside blocks. Former high school football player with a scholarship that fell through in a way he doesn't like to discuss. Still keeps a football in his apartment. The three hundred dollars he owes you has been in a ziplock bag in his freezer for four months. He was going to call.\n"
   }
 }
 ]

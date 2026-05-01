@@ -1,146 +1,26 @@
 [
 {
   "model": "game.combatencounter",
-  "pk": 1,
-  "fields": {
-    "scene": 21,
-    "enemy": 1,
-    "victory_scene": 22,
-    "defeat_scene": 24,
-    "victory_arrival_flavor": "",
-    "defeat_arrival_flavor": ""
-  }
-},
-{
-  "model": "game.combatencounter",
-  "pk": 2,
-  "fields": {
-    "scene": 22,
-    "enemy": 2,
-    "victory_scene": 23,
-    "defeat_scene": 24,
-    "victory_arrival_flavor": "",
-    "defeat_arrival_flavor": ""
-  }
-},
-{
-  "model": "game.combatencounter",
-  "pk": 4,
-  "fields": {
-    "scene": 41,
-    "enemy": 4,
-    "victory_scene": null,
-    "defeat_scene": null,
-    "victory_arrival_flavor": "",
-    "defeat_arrival_flavor": ""
-  }
-},
-{
-  "model": "game.combatencounter",
-  "pk": 5,
-  "fields": {
-    "scene": 69,
-    "enemy": 1,
-    "victory_scene": 70,
-    "defeat_scene": 72,
-    "victory_arrival_flavor": "Terrell's on the ground. He's breathing. That's generous of you.",
-    "defeat_arrival_flavor": "The pavement comes up fast. Last thing you hear is footsteps leaving."
-  }
-},
-{
-  "model": "game.combatencounter",
   "pk": 6,
   "fields": {
-    "scene": 78,
+    "scene": 112,
     "enemy": 5,
-    "victory_scene": 80,
-    "defeat_scene": 83,
-    "victory_arrival_flavor": "Both of them are down. Emilio stands, straightens his jacket, and looks at you with something close to interest.",
-    "defeat_arrival_flavor": "The floor comes up. Somewhere above you Emilio says to put you outside."
+    "victory_scene": 113,
+    "defeat_scene": 115,
+    "victory_arrival_flavor": "The first one's down. The second one backs off. The third — the older one — hasn't moved.",
+    "defeat_arrival_flavor": "Numbers win. The package is gone before you hit the ground."
   }
 },
 {
   "model": "game.combatencounter",
   "pk": 7,
   "fields": {
-    "scene": 89,
-    "enemy": 6,
-    "victory_scene": 91,
-    "defeat_scene": 92,
-    "victory_arrival_flavor": "You're out a side door before the radio crackles. Two blocks, then walking pace.",
-    "defeat_arrival_flavor": "They put you on the ground fast. Everything after that is paperwork."
-  }
-},
-{
-  "model": "game.combatencounter",
-  "pk": 8,
-  "fields": {
-    "scene": 100,
+    "scene": 126,
     "enemy": 7,
-    "victory_scene": 101,
-    "defeat_scene": 110,
-    "victory_arrival_flavor": "Out a side door before the radio crackles. Two blocks, then walking pace.",
-    "defeat_arrival_flavor": "They put you down hard. Second arrest this week."
-  }
-},
-{
-  "model": "game.combatencounter",
-  "pk": 9,
-  "fields": {
-    "scene": 106,
-    "enemy": 8,
-    "victory_scene": 108,
-    "defeat_scene": 109,
-    "victory_arrival_flavor": "Both of them down. You're out the back before Marek hears it.",
-    "defeat_arrival_flavor": "They're better than you expected. The room goes dark."
-  }
-},
-{
-  "model": "game.combatencounter",
-  "pk": 10,
-  "fields": {
-    "scene": 114,
-    "enemy": 8,
-    "victory_scene": 115,
-    "defeat_scene": 128,
-    "victory_arrival_flavor": "Two of them are down. The third one runs. You let him — you need him to carry a message back.",
-    "defeat_arrival_flavor": "Three on one in a locked room. The numbers catch up with you."
-  }
-},
-{
-  "model": "game.combatencounter",
-  "pk": 11,
-  "fields": {
-    "scene": 121,
-    "enemy": 8,
-    "victory_scene": 124,
-    "defeat_scene": 128,
-    "victory_arrival_flavor": "Marek backs into the van. Nowhere left to go.",
-    "defeat_arrival_flavor": "They're ready for you. The warehouse floor comes up fast."
-  }
-},
-{
-  "model": "game.combatencounter",
-  "pk": 12,
-  "fields": {
-    "scene": 142,
-    "enemy": 9,
-    "victory_scene": 138,
-    "defeat_scene": 147,
-    "victory_arrival_flavor": "Garrett's on the floor. You step over him.",
-    "defeat_arrival_flavor": "He knows this room better than you do. That's what does it."
-  }
-},
-{
-  "model": "game.combatencounter",
-  "pk": 13,
-  "fields": {
-    "scene": 153,
-    "enemy": 10,
-    "victory_scene": 155,
-    "defeat_scene": 158,
-    "victory_arrival_flavor": "Terrell's on the ground. He's breathing. That's generous of you.",
-    "defeat_arrival_flavor": "The pavement comes up fast. Last thing you hear is footsteps leaving."
+    "victory_scene": 128,
+    "defeat_scene": 131,
+    "victory_arrival_flavor": "Terrell's on the ground. He's breathing. That's the generous version of tonight.",
+    "defeat_arrival_flavor": "The pavement comes up fast. Last thing you hear is footsteps, unhurried, leaving."
   }
 }
 ]

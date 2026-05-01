@@ -3,99 +3,99 @@
   "model": "game.item",
   "pk": 1,
   "fields": {
-    "key": "burner_phone",
-    "name": "Burner Phone",
-    "description": "Pre-paid, untraceable. One-use comms.",
+    "key": "brass_knuckles",
+    "name": "Brass Knuckles",
+    "description": "Someone else's initials scratched into the base.",
     "is_consumable": false,
     "effect_type": "",
     "effect_stat": "",
     "effect_value": 0,
-    "passive_stat": "",
-    "passive_value": 0
+    "passive_stat": "strength",
+    "passive_value": 2
   }
 },
 {
   "model": "game.item",
   "pk": 2,
   "fields": {
-    "key": "lockpick_set",
-    "name": "Lockpick Set",
-    "description": "Slim jim and tension bar. No questions asked.",
+    "key": "pipe",
+    "name": "Length of Pipe",
+    "description": "Galvanized. Repurposed from something structural.",
     "is_consumable": false,
     "effect_type": "",
     "effect_stat": "",
     "effect_value": 0,
-    "passive_stat": "",
-    "passive_value": 0
+    "passive_stat": "strength",
+    "passive_value": 2
   }
 },
 {
   "model": "game.item",
   "pk": 3,
   "fields": {
-    "key": "flask",
-    "name": "Hip Flask",
-    "description": "Steel flask, three fingers of rye inside.",
-    "is_consumable": true,
-    "effect_type": "heal_hp",
-    "effect_stat": "HP",
-    "effect_value": 20,
-    "passive_stat": "",
-    "passive_value": 0
+    "key": "crowbar",
+    "name": "Crowbar",
+    "description": "Makes argument in a language everyone understands.",
+    "is_consumable": false,
+    "effect_type": "",
+    "effect_stat": "",
+    "effect_value": 0,
+    "passive_stat": "strength",
+    "passive_value": 3
   }
 },
 {
   "model": "game.item",
   "pk": 4,
   "fields": {
-    "key": "brass_knuckles",
-    "name": "Brass Knuckles",
-    "description": "Cold, heavy, and to the point.",
+    "key": "switchblade",
+    "name": "Switchblade",
+    "description": "Spring-loaded, matte handle. Works first time every time.",
     "is_consumable": false,
     "effect_type": "",
     "effect_stat": "",
     "effect_value": 0,
-    "passive_stat": "",
-    "passive_value": 0
+    "passive_stat": "strength",
+    "passive_value": 3
   }
 },
 {
   "model": "game.item",
   "pk": 5,
   "fields": {
-    "key": "kevlar_vest",
-    "name": "Kevlar Vest",
-    "description": "Secondhand. Stops a round, barely.",
+    "key": "9mm",
+    "name": "9mm",
+    "description": "Clean. Registered to someone who reported it lost.",
     "is_consumable": false,
     "effect_type": "",
     "effect_stat": "",
     "effect_value": 0,
-    "passive_stat": "",
-    "passive_value": 0
+    "passive_stat": "strength",
+    "passive_value": 5
   }
 },
 {
   "model": "game.item",
   "pk": 6,
   "fields": {
-    "key": "cash_envelope",
-    "name": "Cash Envelope",
-    "description": "Unmarked bills. Someone's cut.",
-    "is_consumable": true,
+    "key": "burner_pistol",
+    "name": "Burner Pistol",
+    "description": "Unregistered. Has history you don't know about and don't want to.",
+    "is_consumable": false,
     "effect_type": "",
     "effect_stat": "",
     "effect_value": 0,
-    "passive_stat": "",
-    "passive_value": 0
+    "passive_stat": "strength",
+    "passive_value": 6
   }
 },
 {
   "model": "game.item",
   "pk": 7,
   "fields": {
-    "key": "fake_id",
-    "name": "Fake ID",
-    "description": "Good enough to pass a cursory check.",
+    "key": "lockpick_set",
+    "name": "Lockpick Set",
+    "description": "The good kind, not the tourist kind.",
     "is_consumable": false,
     "effect_type": "",
     "effect_stat": "",
@@ -108,9 +108,9 @@
   "model": "game.item",
   "pk": 8,
   "fields": {
-    "key": "city_map",
-    "name": "City Map",
-    "description": "Dog-eared street map with safe houses marked.",
+    "key": "bolt_cutters",
+    "name": "Bolt Cutters",
+    "description": "The big ones. For serious locks or light panic.",
     "is_consumable": false,
     "effect_type": "",
     "effect_stat": "",
@@ -123,9 +123,174 @@
   "model": "game.item",
   "pk": 9,
   "fields": {
-    "key": "forged_plates",
-    "name": "forged_plates",
-    "description": "forged_plates quest item",
+    "key": "zip_ties",
+    "name": "Zip Ties",
+    "description": "A handful. Multi-use.",
+    "is_consumable": false,
+    "effect_type": "",
+    "effect_stat": "",
+    "effect_value": 0,
+    "passive_stat": "",
+    "passive_value": 0
+  }
+},
+{
+  "model": "game.item",
+  "pk": 10,
+  "fields": {
+    "key": "burner_phone",
+    "name": "Burner Phone",
+    "description": "Fresh SIM. Untraceable for now.",
+    "is_consumable": false,
+    "effect_type": "",
+    "effect_stat": "",
+    "effect_value": 0,
+    "passive_stat": "",
+    "passive_value": 0
+  }
+},
+{
+  "model": "game.item",
+  "pk": 11,
+  "fields": {
+    "key": "duct_tape",
+    "name": "Duct Tape",
+    "description": "No further description needed.",
+    "is_consumable": false,
+    "effect_type": "",
+    "effect_stat": "",
+    "effect_value": 0,
+    "passive_stat": "",
+    "passive_value": 0
+  }
+},
+{
+  "model": "game.item",
+  "pk": 12,
+  "fields": {
+    "key": "police_scanner",
+    "name": "Police Scanner",
+    "description": "Old model, still works, picks up most of what you need.",
+    "is_consumable": false,
+    "effect_type": "",
+    "effect_stat": "",
+    "effect_value": 0,
+    "passive_stat": "intellect",
+    "passive_value": 3
+  }
+},
+{
+  "model": "game.item",
+  "pk": 15,
+  "fields": {
+    "key": "zonk_smoked",
+    "name": "Zonk (smoked)",
+    "description": "The standard. Mellow, dissociative.",
+    "is_consumable": true,
+    "effect_type": "heal_hp",
+    "effect_stat": "",
+    "effect_value": 10,
+    "passive_stat": "",
+    "passive_value": 0
+  }
+},
+{
+  "model": "game.item",
+  "pk": 16,
+  "fields": {
+    "key": "zonk_pill",
+    "name": "Zonk (pill)",
+    "description": "Slow release. Hallucinogenic edge. Harder to dose.",
+    "is_consumable": true,
+    "effect_type": "heal_hp",
+    "effect_stat": "",
+    "effect_value": 15,
+    "passive_stat": "",
+    "passive_value": 0
+  }
+},
+{
+  "model": "game.item",
+  "pk": 17,
+  "fields": {
+    "key": "package_sealed",
+    "name": "Sealed Package",
+    "description": "You don't know what's in it. That's the job.",
+    "is_consumable": false,
+    "effect_type": "",
+    "effect_stat": "",
+    "effect_value": 0,
+    "passive_stat": "",
+    "passive_value": 0
+  }
+},
+{
+  "model": "game.item",
+  "pk": 18,
+  "fields": {
+    "key": "ledger",
+    "name": "Ledger",
+    "description": "Handwritten. Names, numbers, dates. Belongs to someone who wants it back.",
+    "is_consumable": false,
+    "effect_type": "",
+    "effect_stat": "",
+    "effect_value": 0,
+    "passive_stat": "",
+    "passive_value": 0
+  }
+},
+{
+  "model": "game.item",
+  "pk": 19,
+  "fields": {
+    "key": "envelope_cash",
+    "name": "Envelope of Cash",
+    "description": "Unmarked bills, rubber-banded.",
+    "is_consumable": false,
+    "effect_type": "",
+    "effect_stat": "",
+    "effect_value": 0,
+    "passive_stat": "",
+    "passive_value": 0
+  }
+},
+{
+  "model": "game.item",
+  "pk": 20,
+  "fields": {
+    "key": "flash_drive",
+    "name": "Flash Drive",
+    "description": "Small, cheap, contents unknown.",
+    "is_consumable": false,
+    "effect_type": "",
+    "effect_stat": "",
+    "effect_value": 0,
+    "passive_stat": "",
+    "passive_value": 0
+  }
+},
+{
+  "model": "game.item",
+  "pk": 21,
+  "fields": {
+    "key": "photo",
+    "name": "Photograph",
+    "description": "Someone who would rather not be photographed doing what they're doing.",
+    "is_consumable": false,
+    "effect_type": "",
+    "effect_stat": "",
+    "effect_value": 0,
+    "passive_stat": "",
+    "passive_value": 0
+  }
+},
+{
+  "model": "game.item",
+  "pk": 22,
+  "fields": {
+    "key": "key_storage",
+    "name": "Storage Unit Key",
+    "description": "A key. Number stamped on the fob.",
     "is_consumable": false,
     "effect_type": "",
     "effect_stat": "",

@@ -312,3 +312,75 @@ class ReportInvalidItemStatsCommandTest(TestCase):
         call_command("report_invalid_item_stats", stdout=out)
         self.assertIn("inv__report_bad", out.getvalue())
 
+
+class ContactsModalRenderTest(TestCase):
+    def setUp(self):
+        from game.models.player import PlayerContact
+        from game.models.world import Contact
+
+        self.client = Client()
+        self.session = bootstrap_game_session(self.client)
+        self.contact = Contact.objects.create(
+            key="inv__modal_contact",
+            name="Wire",
+            description="Knows who is moving product tonight.",
+        )
+        self.contact_no_desc = Contact.objects.create(
+            key="inv__modal_contact_blank",
+            name="Mute",
+            description="",
+        )
+        PlayerContact.objects.create(session=self.session, contact=self.contact)
+        PlayerContact.objects.create(session=self.session, contact=self.contact_no_desc)
+
+    def test_contacts_render_as_clickable_buttons_with_dialogs(self):
+        response = self.client.get(
+            reverse("scene_detail", kwargs={"scene_key": self.session.current_scene.key})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'class="item-name-btn"', count=2)
+        self.assertContains(response, f'id="contact-modal-{self.contact.id}"')
+        self.assertContains(response, self.contact.description)
+
+    def test_contact_modal_uses_fallback_when_description_missing(self):
+        response = self.client.get(
+            reverse("scene_detail", kwargs={"scene_key": self.session.current_scene.key})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, f'id="contact-modal-{self.contact_no_desc.id}"')
+        self.assertContains(response, "No intel yet.")
+
+
+class PropertiesModalRenderTest(TestCase):
+    def setUp(self):
+        from game.models.property import PlayerProperty, Property
+
+        self.client = Client()
+        self.session = bootstrap_game_session(self.client)
+        self.property_with_desc = Property.objects.create(
+            key="inv__prop_modal_desc",
+            name="Ash Street Garage",
+            description="A quiet place to stash gear and lay low.",
+            property_type="business",
+        )
+        self.property_blank_desc = Property.objects.create(
+            key="inv__prop_modal_blank",
+            name="Burner Flat",
+            description="",
+            property_type="safehouse",
+        )
+        PlayerProperty.objects.create(session=self.session, property=self.property_with_desc)
+        PlayerProperty.objects.create(session=self.session, property=self.property_blank_desc)
+
+    def test_properties_render_as_clickable_buttons_with_dialogs(self):
+        response = self.client.get(
+            reverse("scene_detail", kwargs={"scene_key": self.session.current_scene.key})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, f'id="property-modal-{self.property_with_desc.id}"')
+        self.assertContains(response, self.property_with_desc.description)
+        self.assertContains(response, f'id="property-modal-{self.property_blank_desc.id}"')
+        self.assertContains(response, "No intel yet.")
+

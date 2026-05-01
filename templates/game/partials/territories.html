@@ -5,17 +5,28 @@
             {% for territory in visible_territories %}
                 {% if territory.id in owned_territory_ids %}
                     <div class="property-row territory-row territory-owned">
-                        <span class="property-name">{{ territory.name }}</span>
+                        <button class="item-name-btn" onclick="document.getElementById('territory-modal-{{ territory.id }}').showModal()">
+                            {{ territory.name }}
+                        </button>
                         <span class="property-meta">
                             {% if territory.cash_per_turn %}+${{ territory.cash_per_turn }}{% endif %}
                         </span>
                     </div>
                 {% else %}
                     <div class="property-row territory-row">
-                        <span class="property-name">{{ territory.name }}</span>
-                        <span class="property-meta">—</span>
+                        <button class="item-name-btn" onclick="document.getElementById('territory-modal-{{ territory.id }}').showModal()">
+                            {{ territory.name }}
+                        </button>
+                        <span class="property-meta">&mdash;</span>
                     </div>
                 {% endif %}
+                <dialog id="territory-modal-{{ territory.id }}" class="item-modal">
+                    <div class="item-modal-header">{{ territory.name }}</div>
+                    <p class="item-modal-description">{{ territory.description|default:"No intel yet." }}</p>
+                    <div class="item-modal-footer">
+                        <button class="item-close-btn" onclick="this.closest('dialog').close()">CLOSE</button>
+                    </div>
+                </dialog>
             {% endfor %}
         </div>
     {% else %}
@@ -27,9 +38,19 @@
         <div class="item-list">
             {% for pgs in player_gang_standings %}
                 <div class="property-row territory-row">
-                    <span class="property-name">{{ pgs.gang.name }}</span>
+                    <button class="item-name-btn" onclick="document.getElementById('gang-modal-{{ pgs.gang.id }}').showModal()">
+                        {{ pgs.gang.name }}
+                    </button>
                     <span class="property-meta">{{ pgs.standing }}</span>
                 </div>
+                <dialog id="gang-modal-{{ pgs.gang.id }}" class="item-modal">
+                    <div class="item-modal-header">{{ pgs.gang.name }}</div>
+                    <p class="item-modal-description">{{ pgs.gang.description|default:"No intel yet." }}</p>
+                    <p class="item-modal-effect">Standing: {{ pgs.standing }}</p>
+                    <div class="item-modal-footer">
+                        <button class="item-close-btn" onclick="this.closest('dialog').close()">CLOSE</button>
+                    </div>
+                </dialog>
             {% endfor %}
         </div>
     {% endif %}

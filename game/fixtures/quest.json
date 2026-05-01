@@ -1,268 +1,80 @@
 [
-  {
-    "model": "game.quest",
-    "pk": 11,
-    "fields": {
-      "key": "the-box",
-      "title": "The Box",
-      "description": "A jewelry store. A lockbox nobody's supposed to know about. A job you're running alone. Should be simple.\n",
-      "is_unlocked": true,
-      "arc": null,
-      "arc_order": null,
-      "entrance_scene": 84,
-      "is_repeatable": false,
-      "requirements": [],
-      "hub_scenes": [
-        61
-      ]
-    }
-  },
-  {
-    "model": "game.quest",
-    "pk": 12,
-    "fields": {
-      "key": "the-fence",
-      "title": "The Fence",
-      "description": "You've been asking around about who moves stolen jewelry in this city. The same name keeps coming up. Marek. Dry cleaner's on Ansel Street. What you're bringing to that meeting is your own business.\n",
-      "is_unlocked": true,
-      "arc": null,
-      "arc_order": null,
-      "entrance_scene": 93,
-      "is_repeatable": false,
-      "requirements": [
-        11
-      ],
-      "hub_scenes": [
-        61
-      ]
-    }
-  },
-  {
-    "model": "game.quest",
-    "pk": 13,
-    "fields": {
-      "key": "the-hunt",
-      "title": "The Hunt",
-      "description": "Marek's dry cleaner's has been dark for three days. He's still in the city. You've been asking around. So has he.\n",
-      "is_unlocked": true,
-      "arc": null,
-      "arc_order": null,
-      "entrance_scene": 111,
-      "is_repeatable": false,
-      "requirements": [
-        12
-      ],
-      "hub_scenes": [
-        61
-      ]
-    }
-  },
-  {
-    "model": "game.quest",
-    "pk": 14,
-    "fields": {
-      "key": "the-debt",
-      "title": "The Debt",
-      "description": "There was a note under the door. No name, just an address and a time. You know who it's from. You know what it means.\n",
-      "is_unlocked": true,
-      "arc": null,
-      "arc_order": null,
-      "entrance_scene": 129,
-      "is_repeatable": false,
-      "requirements": [
-        13
-      ],
-      "hub_scenes": [
-        61
-      ]
-    }
-  },
-  {
-    "model": "game.quest",
-    "pk": 1,
-    "fields": {
-      "key": "the_warehouse_job",
-      "title": "The Warehouse Job",
-      "description": "A rival crew's been stashing stolen goods in a port warehouse. Someone wants to know what's inside \u00e2\u20ac\u201d or wants it gone.",
-      "is_unlocked": true,
-      "arc": null,
-      "arc_order": 0,
-      "entrance_scene": 4,
-      "is_repeatable": true,
-      "requirements": [],
-      "hub_scenes": [
-        2
-      ]
-    }
-  },
-  {
-    "model": "game.quest",
-    "pk": 6,
-    "fields": {
-      "key": "worst_day_job",
-      "title": "The Worst Day Job",
-      "description": "Odd job. Good pay. No questions.",
-      "is_unlocked": true,
-      "arc": 1,
-      "arc_order": 0,
-      "entrance_scene": 49,
-      "is_repeatable": true,
-      "requirements": [],
-      "hub_scenes": [
-        2
-      ]
-    }
-  },
-  {
-    "model": "game.quest",
-    "pk": 7,
-    "fields": {
-      "key": "the_squeeze",
-      "title": "The Squeeze",
-      "description": "Collection job. Simple work. Good cut.",
-      "is_unlocked": true,
-      "arc": 1,
-      "arc_order": 0,
-      "entrance_scene": 57,
-      "is_repeatable": true,
-      "requirements": [],
-      "hub_scenes": [
-        2
-      ]
-    }
-  },
-  {
-    "model": "game.quest",
-    "pk": 8,
-    "fields": {
-      "key": "sisters_trouble",
-      "title": "Sisters Trouble",
-      "description": "Your phone buzzes. Your sister's name on the screen.\r\nYou haven't spoken since the trial.",
-      "is_unlocked": true,
-      "arc": 2,
-      "arc_order": 0,
-      "entrance_scene": 62,
-      "is_repeatable": true,
-      "requirements": [],
-      "hub_scenes": [
-        61
-      ]
-    }
-  },
-  {
-    "model": "game.quest",
-    "pk": 10,
-    "fields": {
-      "key": "the-fallout",
-      "title": "The Fallout",
-      "description": "Roughing up Terrell didn't end it. It made it worse. Now your sister is being watched and someone wants a conversation.",
-      "is_unlocked": true,
-      "arc": null,
-      "arc_order": 0,
-      "entrance_scene": 74,
-      "is_repeatable": false,
-      "requirements": [
-        8
-      ],
-      "hub_scenes": [
-        61
-      ]
-    }
-  },
-  {
-    "model": "game.quest",
-    "pk": 2,
-    "fields": {
-      "key": "street_debt",
-      "title": "Street Debt",
-      "description": "A crew contact says a corner boy is sitting on money that belongs to you. Go collect.",
-      "is_unlocked": true,
-      "arc": 1,
-      "arc_order": 1,
-      "entrance_scene": 20,
-      "is_repeatable": true,
-      "requirements": [],
-      "hub_scenes": [
-        1
-      ]
-    }
-  },
-  {
-    "model": "game.quest",
-    "pk": 15,
-    "fields": {
-      "key": "the-call",
-      "title": "The Call",
-      "description": "Your sister reached out. First time in three years. She needs something taken care of. Family's family.\n",
-      "is_unlocked": true,
-      "arc": 2,
-      "arc_order": 1,
-      "entrance_scene": 148,
-      "is_repeatable": false,
-      "requirements": [],
-      "hub_scenes": [
-        61
-      ]
-    }
-  },
-  {
-    "model": "game.quest",
-    "pk": 3,
-    "fields": {
-      "key": "the_middleman",
-      "title": "The Middleman",
-      "description": "A contact needs a case walked across town. Simple job. Ten percent. Until it isn't.",
-      "is_unlocked": true,
-      "arc": null,
-      "arc_order": 2,
-      "entrance_scene": 30,
-      "is_repeatable": true,
-      "requirements": [
-        3
-      ],
-      "hub_scenes": [
-        2
-      ]
-    }
-  },
-  {
-    "model": "game.quest",
-    "pk": 16,
-    "fields": {
-      "key": "first-word",
-      "title": "First Word",
-      "description": "Someone heard about your sister's situation. They want to know if you're looking for work. First job's simple \u00e2\u20ac\u201d a debt collection. Guy named Pruitt. Six hundred dollars.\n",
-      "is_unlocked": true,
-      "arc": 2,
-      "arc_order": 2,
-      "entrance_scene": 159,
-      "is_repeatable": false,
-      "requirements": [
-        17
-      ],
-      "hub_scenes": [
-        61
-      ]
-    }
-  },
-  {
-    "model": "game.quest",
-    "pk": 4,
-    "fields": {
-      "key": "corner_tax",
-      "title": "Corner Tax",
-      "description": "An east-side crew has been running protection on shops in your territory. Time to remind them where the lines are.",
-      "is_unlocked": true,
-      "arc": null,
-      "arc_order": 3,
-      "entrance_scene": 40,
-      "is_repeatable": true,
-      "requirements": [
-        4
-      ],
-      "hub_scenes": [
-        2
-      ]
-    }
+{
+  "model": "game.quest",
+  "pk": 15,
+  "fields": {
+    "key": "the-call",
+    "title": "The Call",
+    "description": "Your sister reached out. First time in three years. She needs something taken care of. Family's family.\n",
+    "is_unlocked": true,
+    "arc": 1,
+    "arc_order": 1,
+    "entrance_scene": 119,
+    "is_repeatable": false,
+    "requirements": [],
+    "hub_scenes": [
+      1
+    ]
   }
+},
+{
+  "model": "game.quest",
+  "pk": 12,
+  "fields": {
+    "key": "first-word",
+    "title": "First Word",
+    "description": "Someone heard about your sister's situation. They want to know if you're looking for work. First job's simple - a debt collection. Guy named Pruitt. Six hundred dollars.\n",
+    "is_unlocked": true,
+    "arc": 1,
+    "arc_order": 2,
+    "entrance_scene": 82,
+    "is_repeatable": false,
+    "requirements": [
+      6
+    ],
+    "hub_scenes": [
+      1
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 11,
+  "fields": {
+    "key": "corkys",
+    "title": "Corky's",
+    "description": "Dutch wants his dealers back in a bar called Corky's. The owner pushed back. You're the push.\n",
+    "is_unlocked": true,
+    "arc": 1,
+    "arc_order": 3,
+    "entrance_scene": 68,
+    "is_repeatable": false,
+    "requirements": [
+      2
+    ],
+    "hub_scenes": [
+      1
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 14,
+  "fields": {
+    "key": "the-ride",
+    "title": "The Ride",
+    "description": "Morris has a courier job. Pick up a package, deliver it across the Flats. Simple work. It stops being simple at the handoff.\n",
+    "is_unlocked": true,
+    "arc": 1,
+    "arc_order": 4,
+    "entrance_scene": 109,
+    "is_repeatable": false,
+    "requirements": [
+      7
+    ],
+    "hub_scenes": [
+      1
+    ]
+  }
+}
 ]

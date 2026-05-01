@@ -30,7 +30,9 @@ def run_enemy_attack(session_context) -> dict:
             "No combat encounter configured for this scene. Check quest content.", status=400
         )
     flush_event_log(session, logs)
-    context['choices'] = []
+    returned_combat_state = context.get('combat_state')
+    if returned_combat_state and returned_combat_state.is_active:
+        context['choices'] = []
     return context
 
 
@@ -52,7 +54,9 @@ def run_combat_continue(session_context) -> dict:
         ending_type='victory',
     )
     flush_event_log(session, logs)
-    context['choices'] = []
+    returned_combat_state = context.get('combat_state')
+    if returned_combat_state and returned_combat_state.is_active:
+        context['choices'] = []
     return context
 
 

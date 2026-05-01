@@ -3,13 +3,14 @@
   "model": "game.property",
   "pk": 1,
   "fields": {
-    "key": "sals_bar",
-    "name": "Sals Bar",
-    "property_type": "safehouse",
-    "cash_per_turn": 50,
+    "key": "corkys_bar",
+    "name": "Corky's Bar",
+    "description": null,
+    "property_type": "business",
+    "cash_per_turn": 75,
     "heat_per_turn": 0,
-    "rep_per_turn": 0,
-    "is_contestable": false,
+    "rep_per_turn": 2,
+    "is_contestable": true,
     "resolution_scene": null
   }
 },
@@ -17,13 +18,14 @@
   "model": "game.property",
   "pk": 2,
   "fields": {
-    "key": "financial_district",
-    "name": "Financial District",
+    "key": "dockside_warehouse_unit",
+    "name": "Dockside Warehouse Unit",
+    "description": "",
     "property_type": "business",
-    "cash_per_turn": 0,
-    "heat_per_turn": 0,
+    "cash_per_turn": 200,
+    "heat_per_turn": 3,
     "rep_per_turn": 0,
-    "is_contestable": false,
+    "is_contestable": true,
     "resolution_scene": null
   }
 },
@@ -31,8 +33,39 @@
   "model": "game.property",
   "pk": 3,
   "fields": {
-    "key": "your_dingy_apartment",
-    "name": "Your dingy apartment",
+    "key": "westside_safehouse",
+    "name": "Westside Safehouse",
+    "description": null,
+    "property_type": "safehouse",
+    "cash_per_turn": 0,
+    "heat_per_turn": -2,
+    "rep_per_turn": 0,
+    "is_contestable": true,
+    "resolution_scene": null
+  }
+},
+{
+  "model": "game.property",
+  "pk": 4,
+  "fields": {
+    "key": "flats_lockup",
+    "name": "Flats Lockup",
+    "description": null,
+    "property_type": "safehouse",
+    "cash_per_turn": 0,
+    "heat_per_turn": -1,
+    "rep_per_turn": 0,
+    "is_contestable": false,
+    "resolution_scene": null
+  }
+},
+{
+  "model": "game.property",
+  "pk": 11,
+  "fields": {
+    "key": "storage_unit",
+    "name": "Storage Unit",
+    "description": "A rented unit with a lock that works. For now.",
     "property_type": "safehouse",
     "cash_per_turn": 0,
     "heat_per_turn": 0,

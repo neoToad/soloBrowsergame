@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from game.models import Enemy, GameSession, Scene
 
-from game.tests.factories import EnemyFactory, SceneFactory, bootstrap_game_session
+from game.tests.factories import ChoiceFactory, EnemyFactory, SceneFactory, bootstrap_game_session
 
 
 class CombatTest(TestCase):
@@ -179,6 +179,26 @@ class CombatServiceTest(TestCase):
         self.assertLess(defeat_line_index, arrival_line_index)
         self.assertEqual(self.session.log.count(), 0)
 
+    def test_run_enemy_attack_keeps_destination_scene_choices_after_defeat(self):
+        from game.services.gameplay import run_enemy_attack
+
+        ChoiceFactory(scene=self.defeat_scene, label="Regain your footing", target_scene=self.victory_scene)
+
+        cs = self._make_combat_state(
+            pending_enemy_roll=15,
+            pending_enemy_total=17,
+            pending_enemy_hit=True,
+            pending_enemy_damage=5,
+        )
+        self.stats.hp = 2
+        self.stats.save(update_fields=["hp"])
+
+        context = run_enemy_attack((self.session, self.stats, {}, self.stats, {}))
+
+        self.assertEqual(context["scene"], self.defeat_scene)
+        self.assertGreater(len(context["choices"]), 0)
+        self.assertIn("Regain your footing", [choice.label for choice in context["choices"]])
+
     def test_resolve_combat_end_returns_logs_and_does_not_persist_events(self):
         from game.services.combat import resolve_combat_end
 
@@ -306,6 +326,21 @@ class CombatViewTest(TestCase):
         cs.refresh_from_db()
         self.assertTrue(cs.is_active)
 
+    def test_combat_continue_shows_victory_scene_choices_without_refresh(self):
+        from game.models.combat import CombatState
+
+        ChoiceFactory(scene=self.victory_scene, label="Take the payout", target_scene=self.victory_scene)
+
+        cs = CombatState.objects.get(session=self.session)
+        cs.pending_victory = True
+        cs.save(update_fields=["pending_victory"])
+
+        response = self.client.post(reverse("combat_continue"), HTTP_HX_REQUEST="true")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Take the payout")
+        self.assertNotContains(response, "No choices available.")
+
     def test_combat_enemy_resolve_returns_400_when_defeat_scene_missing(self):
         from game.models.combat import CombatEncounter, CombatState
 
@@ -335,5 +370,34 @@ class CombatViewTest(TestCase):
         self.assertEqual(self.session.current_scene, self.combat_scene)
         cs.refresh_from_db()
         self.assertTrue(cs.is_active)
+
+    def test_combat_enemy_resolve_shows_defeat_scene_choices_without_refresh(self):
+        from game.models.combat import CombatState
+
+        ChoiceFactory(scene=self.victory_scene, label="Press the edge", target_scene=self.victory_scene)
+
+        cs = CombatState.objects.get(session=self.session)
+        cs.pending_enemy_roll = 18
+        cs.pending_enemy_total = 18
+        cs.pending_enemy_hit = True
+        cs.pending_enemy_damage = 999
+        cs.save(update_fields=[
+            "pending_enemy_roll",
+            "pending_enemy_total",
+            "pending_enemy_hit",
+            "pending_enemy_damage",
+        ])
+        self.stats.hp = 1
+        self.stats.save(update_fields=["hp"])
+
+        encounter = self.combat_scene.combat_encounter
+        encounter.defeat_scene = self.victory_scene
+        encounter.save(update_fields=["defeat_scene"])
+
+        response = self.client.post(reverse("combat_resolve_enemy"), HTTP_HX_REQUEST="true")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Press the edge")
+        self.assertNotContains(response, "No choices available.")
 
 

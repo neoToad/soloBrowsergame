@@ -1,94 +1,10 @@
 [
 {
   "model": "game.requirement",
-  "pk": 1,
+  "pk": 141,
   "fields": {
-    "condition_type": "stat_gte",
-    "flag_name": "",
-    "stat_name": "agility",
-    "stat_value": 7,
-    "required_item": null,
-    "required_quest": null,
-    "required_ending_type": "",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 3,
-  "fields": {
-    "condition_type": "quest_completed",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 2,
-    "required_ending_type": "",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 4,
-  "fields": {
-    "condition_type": "level_gte",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 2,
-    "required_item": null,
-    "required_quest": null,
-    "required_ending_type": "",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 5,
-  "fields": {
-    "condition_type": "stat_gte",
-    "flag_name": "",
-    "stat_name": "strength",
-    "stat_value": 4,
-    "required_item": null,
-    "required_quest": null,
-    "required_ending_type": "",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 6,
-  "fields": {
-    "condition_type": "stat_gte",
-    "flag_name": "",
-    "stat_name": "strength",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": null,
-    "required_ending_type": "",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 7,
-  "fields": {
-    "condition_type": "stat_gte",
-    "flag_name": "",
-    "stat_name": "strength",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": null,
-    "required_ending_type": "",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 8,
-  "fields": {
-    "condition_type": "quest_completed",
-    "flag_name": "",
+    "condition_type": "has_flag",
+    "flag_name": "corkys_read_room",
     "stat_name": "",
     "stat_value": 0,
     "required_item": null,
@@ -99,231 +15,21 @@
 },
 {
   "model": "game.requirement",
-  "pk": 9,
+  "pk": 142,
   "fields": {
     "condition_type": "quest_completed",
     "flag_name": "",
     "stat_name": "",
     "stat_value": 0,
     "required_item": null,
-    "required_quest": 8,
+    "required_quest": 12,
     "required_ending_type": "",
     "required_contact": null
   }
 },
 {
   "model": "game.requirement",
-  "pk": 10,
-  "fields": {
-    "condition_type": "quest_completed",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 8,
-    "required_ending_type": "",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 11,
-  "fields": {
-    "condition_type": "quest_ending",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 11,
-    "required_ending_type": "victory",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 12,
-  "fields": {
-    "condition_type": "quest_ending",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 11,
-    "required_ending_type": "neutral",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 13,
-  "fields": {
-    "condition_type": "quest_ending",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 11,
-    "required_ending_type": "defeat",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 14,
-  "fields": {
-    "condition_type": "quest_completed",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 11,
-    "required_ending_type": "",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 15,
-  "fields": {
-    "condition_type": "quest_ending",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 11,
-    "required_ending_type": "victory",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 16,
-  "fields": {
-    "condition_type": "quest_ending",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 11,
-    "required_ending_type": "neutral",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 17,
-  "fields": {
-    "condition_type": "quest_ending",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 11,
-    "required_ending_type": "defeat",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 18,
-  "fields": {
-    "condition_type": "quest_completed",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 11,
-    "required_ending_type": "",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 19,
-  "fields": {
-    "condition_type": "quest_ending",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 12,
-    "required_ending_type": "victory",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 20,
-  "fields": {
-    "condition_type": "quest_ending",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 12,
-    "required_ending_type": "neutral",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 21,
-  "fields": {
-    "condition_type": "quest_ending",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 12,
-    "required_ending_type": "victory",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 22,
-  "fields": {
-    "condition_type": "quest_ending",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 12,
-    "required_ending_type": "neutral",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 23,
-  "fields": {
-    "condition_type": "quest_ending",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 12,
-    "required_ending_type": "defeat",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 24,
-  "fields": {
-    "condition_type": "quest_ending",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 12,
-    "required_ending_type": "defeat",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 28,
+  "pk": 143,
   "fields": {
     "condition_type": "has_flag",
     "flag_name": "the_call_talked_out",
@@ -337,7 +43,7 @@
 },
 {
   "model": "game.requirement",
-  "pk": 29,
+  "pk": 144,
   "fields": {
     "condition_type": "has_flag",
     "flag_name": "the_call_fought_out",
@@ -351,7 +57,7 @@
 },
 {
   "model": "game.requirement",
-  "pk": 30,
+  "pk": 145,
   "fields": {
     "condition_type": "has_flag",
     "flag_name": "the_call_lost",
@@ -365,14 +71,28 @@
 },
 {
   "model": "game.requirement",
-  "pk": 31,
+  "pk": 146,
   "fields": {
     "condition_type": "quest_completed",
     "flag_name": "",
     "stat_name": "",
     "stat_value": 0,
     "required_item": null,
-    "required_quest": 15,
+    "required_quest": null,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 147,
+  "fields": {
+    "condition_type": "quest_completed",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": 11,
     "required_ending_type": "",
     "required_contact": null
   }

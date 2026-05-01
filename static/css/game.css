@@ -627,27 +627,27 @@ dialog.item-modal::backdrop {
 }
 
 .item-modal-description {
-    color: var(--text-dim);
-    font-size: 12px;
+    color: var(--text);
+    font-size: 14px;
     margin: 0 0 12px 0;
 }
 
 .item-modal-effect {
-    color: var(--warning);
-    font-size: 12px;
+    color: var(--text);
+    font-size: 14px;
     margin: 4px 0;
 }
 
 .item-modal-passive {
-    color: var(--accent);
-    font-size: 12px;
+    color: var(--text);
+    font-size: 14px;
     margin: 4px 0;
 }
 
 .item-modal-consumable {
-    color: var(--text-dim);
+    color: var(--text);
     font-style: italic;
-    font-size: 11px;
+    font-size: 13px;
     margin: 4px 0;
 }
 
@@ -688,6 +688,10 @@ dialog.item-modal::backdrop {
 
 .item-name-btn:hover {
     color: var(--accent);
+}
+
+.contact-modal .item-modal-footer {
+    justify-content: flex-end;
 }
 
 /* PASSIVE BONUS INDICATOR (stats bar) */

@@ -11,9 +11,9 @@
             <span class="bar-label">YOU</span>
             <div class="hp-track">
                 <div class="hp-fill"
-                     style="width: {{ stats.hp|hp_pct:stats.max_hp }}%"></div>
+                     style="width: {{ stats.hp|hp_pct:effective_stats.max_hp }}%"></div>
             </div>
-            <span class="bar-val">{{ stats.hp }}/{{ stats.max_hp }}</span>
+            <span class="bar-val">{{ stats.hp }}/{{ effective_stats.max_hp }}</span>
         </div>
         <div class="combat-bar-row">
             <span class="bar-label">THEM</span>

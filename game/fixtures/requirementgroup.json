@@ -3,10 +3,27 @@
   "model": "game.requirementgroup",
   "pk": 1,
   "fields": {
-    "label": "Agility >= 7",
+    "label": "Must have read the room",
     "logic": "all",
+    "scope_type": "choice",
+    "scope_key": "corkys__sal-face-to-face:2:Ask him about the envelopes on the shelf",
+    "group_key": "Must have read the room",
     "requirements": [
-      1
+      141
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 2,
+  "fields": {
+    "label": "Must have completed first word",
+    "logic": "all",
+    "scope_type": "quest",
+    "scope_key": "corkys",
+    "group_key": "Must have completed first word",
+    "requirements": [
+      142
     ]
   }
 },
@@ -14,10 +31,13 @@
   "model": "game.requirementgroup",
   "pk": 3,
   "fields": {
-    "label": "Street Debt completed",
+    "label": "Talked out",
     "logic": "all",
+    "scope_type": "choice",
+    "scope_key": "first-word__the-message:1:Go to the meeting",
+    "group_key": "Talked out",
     "requirements": [
-      3
+      143
     ]
   }
 },
@@ -25,122 +45,55 @@
   "model": "game.requirementgroup",
   "pk": 4,
   "fields": {
-    "label": "Level 2+",
-    "logic": "all",
-    "requirements": [
-      4
-    ]
-  }
-},
-{
-  "model": "game.requirementgroup",
-  "pk": 8,
-  "fields": {
-    "label": "Must have completed sisters trouble",
-    "logic": "all",
-    "requirements": [
-      10
-    ]
-  }
-},
-{
-  "model": "game.requirementgroup",
-  "pk": 9,
-  "fields": {
-    "label": "Clean or rough exit from the box",
-    "logic": "any",
-    "requirements": [
-      15,
-      16
-    ]
-  }
-},
-{
-  "model": "game.requirementgroup",
-  "pk": 10,
-  "fields": {
-    "label": "Got busted on the box",
-    "logic": "all",
-    "requirements": [
-      17
-    ]
-  }
-},
-{
-  "model": "game.requirementgroup",
-  "pk": 11,
-  "fields": {
-    "label": "Must have completed the box",
-    "logic": "all",
-    "requirements": [
-      18
-    ]
-  }
-},
-{
-  "model": "game.requirementgroup",
-  "pk": 12,
-  "fields": {
-    "label": "Must have completed the fence with victory or neutral",
-    "logic": "any",
-    "requirements": [
-      21,
-      22
-    ]
-  }
-},
-{
-  "model": "game.requirementgroup",
-  "pk": 13,
-  "fields": {
-    "label": "Must have been defeated by the fence",
-    "logic": "all",
-    "requirements": [
-      24
-    ]
-  }
-},
-{
-  "model": "game.requirementgroup",
-  "pk": 14,
-  "fields": {
-    "label": "Talked out",
-    "logic": "all",
-    "requirements": [
-      28
-    ]
-  }
-},
-{
-  "model": "game.requirementgroup",
-  "pk": 15,
-  "fields": {
     "label": "Fought out",
     "logic": "all",
+    "scope_type": "choice",
+    "scope_key": "first-word__the-message:2:Go to the meeting",
+    "group_key": "Fought out",
     "requirements": [
-      29
+      144
     ]
   }
 },
 {
   "model": "game.requirementgroup",
-  "pk": 16,
+  "pk": 5,
   "fields": {
     "label": "Lost",
     "logic": "all",
+    "scope_type": "choice",
+    "scope_key": "first-word__the-message:3:Go to the meeting",
+    "group_key": "Lost",
     "requirements": [
-      30
+      145
     ]
   }
 },
 {
   "model": "game.requirementgroup",
-  "pk": 17,
+  "pk": 6,
   "fields": {
     "label": "Must have completed the call",
     "logic": "all",
+    "scope_type": "quest",
+    "scope_key": "first-word",
+    "group_key": "Must have completed the call",
     "requirements": [
-      31
+      146
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 7,
+  "fields": {
+    "label": "Must have completed Corky's",
+    "logic": "all",
+    "scope_type": "quest",
+    "scope_key": "the-ride",
+    "group_key": "Must have completed Corky's",
+    "requirements": [
+      147
     ]
   }
 }

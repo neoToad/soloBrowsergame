@@ -82,6 +82,7 @@ def _build_core_scene_context(
             flags=session.flags,
         ),
         "stats": stats,
+        "effective_stats": effective_stats,
         "stat_bonuses": effective_stats.bonuses,
         "inventory": inventory,
         "logs": session.log.all()[:10],

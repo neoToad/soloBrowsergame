@@ -63,12 +63,21 @@
         <div class="item-list">
             {% for pp in player_properties %}
                 <div class="property-row{% if pp.is_contested %} property-contested{% endif %}">
-                    <span class="property-name">{{ pp.property.name }}</span>
+                    <button class="item-name-btn" onclick="document.getElementById('property-modal-{{ pp.property.id }}').showModal()">
+                        {{ pp.property.name }}
+                    </button>
                     <span class="property-meta">
                         {% if pp.property.cash_per_turn %}+${{ pp.property.cash_per_turn }}{% endif %}
                         {% if pp.is_contested %}<span class="property-contested-badge">!</span>{% endif %}
                     </span>
                 </div>
+                <dialog id="property-modal-{{ pp.property.id }}" class="item-modal">
+                    <div class="item-modal-header">{{ pp.property.name }}</div>
+                    <p class="item-modal-description">{{ pp.property.description|default:"No intel yet." }}</p>
+                    <div class="item-modal-footer">
+                        <button class="item-close-btn" onclick="this.closest('dialog').close()">CLOSE</button>
+                    </div>
+                </dialog>
             {% endfor %}
         </div>
     {% endif %}
@@ -78,8 +87,17 @@
         <div class="item-list">
             {% for pc in player_contacts %}
                 <div class="property-row">
-                    <span class="property-name">{{ pc.contact.name }}</span>
+                    <button class="item-name-btn" onclick="document.getElementById('contact-modal-{{ pc.contact.id }}').showModal()">
+                        {{ pc.contact.name }}
+                    </button>
                 </div>
+                <dialog id="contact-modal-{{ pc.contact.id }}" class="item-modal contact-modal">
+                    <div class="item-modal-header">{{ pc.contact.name }}</div>
+                    <p class="item-modal-description">{{ pc.contact.description|default:"No intel yet." }}</p>
+                    <div class="item-modal-footer">
+                        <button class="item-close-btn" onclick="this.closest('dialog').close()">CLOSE</button>
+                    </div>
+                </dialog>
             {% endfor %}
         </div>
     {% endif %}

@@ -1,9 +1,9 @@
 [
 {
   "model": "game.sceneitem",
-  "pk": 1,
+  "pk": 34,
   "fields": {
-    "scene": 2,
+    "scene": 128,
     "item": 1,
     "quantity": 1,
     "award_once": true
@@ -11,132 +11,22 @@
 },
 {
   "model": "game.sceneitem",
-  "pk": 3,
+  "pk": 35,
   "fields": {
-    "scene": 5,
-    "item": 3,
+    "scene": 128,
+    "item": 15,
     "quantity": 1,
     "award_once": false
   }
 },
 {
   "model": "game.sceneitem",
-  "pk": 4,
+  "pk": 36,
   "fields": {
-    "scene": 7,
-    "item": 6,
+    "scene": 131,
+    "item": 15,
     "quantity": 1,
-    "award_once": true
-  }
-},
-{
-  "model": "game.sceneitem",
-  "pk": 5,
-  "fields": {
-    "scene": 10,
-    "item": 4,
-    "quantity": 1,
-    "award_once": true
-  }
-},
-{
-  "model": "game.sceneitem",
-  "pk": 6,
-  "fields": {
-    "scene": 11,
-    "item": 5,
-    "quantity": 1,
-    "award_once": true
-  }
-},
-{
-  "model": "game.sceneitem",
-  "pk": 8,
-  "fields": {
-    "scene": 57,
-    "item": 1,
-    "quantity": 3,
-    "award_once": true
-  }
-},
-{
-  "model": "game.sceneitem",
-  "pk": 9,
-  "fields": {
-    "scene": 57,
-    "item": 2,
-    "quantity": 1,
-    "award_once": true
-  }
-},
-{
-  "model": "game.sceneitem",
-  "pk": 12,
-  "fields": {
-    "scene": 4,
-    "item": 1,
-    "quantity": 3,
-    "award_once": true
-  }
-},
-{
-  "model": "game.sceneitem",
-  "pk": 13,
-  "fields": {
-    "scene": 4,
-    "item": 2,
-    "quantity": 2,
-    "award_once": true
-  }
-},
-{
-  "model": "game.sceneitem",
-  "pk": 14,
-  "fields": {
-    "scene": 70,
-    "item": 4,
-    "quantity": 1,
-    "award_once": true
-  }
-},
-{
-  "model": "game.sceneitem",
-  "pk": 15,
-  "fields": {
-    "scene": 69,
-    "item": 1,
-    "quantity": 1,
-    "award_once": true
-  }
-},
-{
-  "model": "game.sceneitem",
-  "pk": 18,
-  "fields": {
-    "scene": 138,
-    "item": 9,
-    "quantity": 1,
-    "award_once": true
-  }
-},
-{
-  "model": "game.sceneitem",
-  "pk": 19,
-  "fields": {
-    "scene": 139,
-    "item": 9,
-    "quantity": 1,
-    "award_once": true
-  }
-},
-{
-  "model": "game.sceneitem",
-  "pk": 24,
-  "fields": {
-    "scene": 155,
-    "item": 4,
-    "quantity": 1,
-    "award_once": true
+    "award_once": false
   }
 }
 ]
