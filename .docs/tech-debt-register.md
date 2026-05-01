@@ -11,7 +11,7 @@ Inventory of shortcuts, workarounds, missing features, and scaling risks observe
   - [`game/views.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/views.py)
 - Risk:
   - High coupling across unrelated endpoints; small edits can break multiple flows.
-  - Hard to enforce architecture rule ìbusiness logic in services onlyî consistently.
+  - Hard to enforce architecture rule ‚Äúbusiness logic in services only‚Äù consistently.
 
 2. Monolithic admin module with mixed concerns.
 - File: [`game/admin.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/admin.py)

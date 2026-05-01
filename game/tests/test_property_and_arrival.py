@@ -276,6 +276,51 @@ class PropertyServiceTest(TestCase):
         self.assertEqual(totals["rep"], 2)
         self.assertIn("Iron Ward", "\n".join(logs))
 
+    def test_process_turn_income_skips_contested_territories(self):
+        from game.models.property import PlayerTerritory, Territory
+        from game.services.property_service import process_turn_income
+
+        territory = Territory.objects.create(
+            key="contested-yard",
+            name="Contested Yard",
+            cash_per_turn=80,
+            heat_per_turn=3,
+            rep_per_turn=1,
+        )
+        PlayerTerritory.objects.create(session=self.session, territory=territory, is_contested=True)
+        self.stats.cash = 5
+        self.stats.heat = 10
+        self.stats.rep = 2
+        self.stats.save()
+
+        logs, totals = process_turn_income(self.session)
+
+        self.stats.refresh_from_db()
+        self.assertEqual(self.stats.cash, 5)
+        self.assertEqual(self.stats.heat, 10)
+        self.assertEqual(self.stats.rep, 2)
+        self.assertEqual(logs, [])
+        self.assertEqual(totals, {"cash": 0, "heat": 0, "rep": 0})
+
+    def test_apply_property_rewards_removes_territory_on_arrival(self):
+        from game.models.property import PlayerTerritory, Territory
+        from game.services.property_service import apply_property_rewards
+
+        territory = Territory.objects.create(key="red-line", name="Red Line")
+        PlayerTerritory.objects.create(session=self.session, territory=territory)
+        scene = Scene.objects.create(
+            key="territory__lose_runtime",
+            title="Lose Territory",
+            body="",
+            scene_type="normal",
+            lose_territory=territory,
+        )
+
+        logs = apply_property_rewards(self.session, scene)
+
+        self.assertFalse(PlayerTerritory.objects.filter(session=self.session, territory=territory).exists())
+        self.assertIn("Red Line", "\n".join(logs))
+
 
 class ArrivalServiceTest(TestCase):
     def setUp(self):

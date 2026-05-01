@@ -261,6 +261,7 @@ ambush__knocked_out          (ending, defeat)
 - **`roll_stat` using in-game alias** — use the DB field (`charisma`, not `nerve`)
 - **`award_once=False` on a SceneItem in a repeatable quest** — player farms it on every run; set `award_once=True`
 - **Arc flag set on scene arrival** — set arc flags on the hub return choice using `set_flag_name`, not in the arrival block
+- **Flag cleared in the wrong quest** — if a flag set in Quest N is still needed in Quest N+1, don't clear it on Quest N's hub return; clear it on Quest N+1's hub return choice once it has done its last job
 - **Multiple RequirementGroups for mutually exclusive endings** — groups are AND'd; use one group with `logic: any` instead
 - **Non-speech choice labels in quotation marks** — quotes on labels are for player dialogue only
 - **Body text hard-wrapped at column width** — the `|` scalar preserves every line break; each paragraph must be one continuous line or it breaks mid-sentence in game

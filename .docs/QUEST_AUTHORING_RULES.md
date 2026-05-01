@@ -169,6 +169,8 @@ Flags are used for stateful branching within a quest, e.g. tracking whether the 
 
 When a quest's ending needs to gate a later quest in an arc, set the flag on the hub return choice inside the ending scene using `set_flag_name` — not on the scene's arrival block. Arrival effects are reserved for stat and item changes. Every ending scene in a multi-quest arc should have exactly one flag set on its hub return choice corresponding to its outcome.
 
+**Flag hygiene:** Flags should be cleared once they are no longer needed. The right place to clear a flag is on the hub return choice of the quest where the flag last does its job — using `clear_flag_name` on that choice. This keeps `GameSession.flags` clean and prevents stale state accumulating across quests. If a flag set in Quest N is still doing work in Quest N+1, it should not be cleared until Quest N+1's hub return choice. Don't clear a flag in the quest that sets it if a later quest still needs to read it.
+
 ---
 ## Scene Types and Their Rules
 
