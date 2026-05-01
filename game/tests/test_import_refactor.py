@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 from django.core.management import call_command
 from django.test import TestCase
 
-from game.models import Contact, Enemy, Property, Quest, RequirementGroup, Scene, Territory
+from game.models import Contact, Enemy, Gang, Property, Quest, RequirementGroup, Scene, Territory
 
 
 class ImportRefactorTests(TestCase):
@@ -288,3 +288,51 @@ contacts:
 
         self.assertTrue(Enemy.objects.filter(key="split_test_enemy").exists())
         self.assertTrue(Contact.objects.filter(key="split_test_contact").exists())
+
+    def test_import_all_merges_split_world_files(self):
+        with TemporaryDirectory() as tmp_dir:
+            gangs_yaml = Path(tmp_dir) / "gangs.yaml"
+            gangs_yaml.write_text(
+                """
+gangs:
+  - key: split_test_gang
+    name: Split Test Gang
+    description: Gang from split file.
+""",
+                encoding="utf-8",
+            )
+            properties_yaml = Path(tmp_dir) / "properties.yaml"
+            properties_yaml.write_text(
+                """
+properties:
+  - key: split_test_property
+    name: Split Test Property
+    property_type: business
+    cash_per_turn: 10
+    heat_per_turn: 0
+    rep_per_turn: 1
+    is_contestable: false
+    resolution_scene: null
+""",
+                encoding="utf-8",
+            )
+            territories_yaml = Path(tmp_dir) / "territories.yaml"
+            territories_yaml.write_text(
+                """
+territories:
+  - key: split_test_territory
+    name: Split Test Territory
+    description: Territory from split file.
+    cash_per_turn: 5
+    heat_per_turn: 0
+    rep_per_turn: 2
+    is_contestable: true
+    resolution_scene: null
+""",
+                encoding="utf-8",
+            )
+            call_command("import_all", tmp_dir)
+
+        self.assertTrue(Gang.objects.filter(key="split_test_gang").exists())
+        self.assertTrue(Property.objects.filter(key="split_test_property").exists())
+        self.assertTrue(Territory.objects.filter(key="split_test_territory").exists())

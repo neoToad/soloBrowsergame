@@ -4,10 +4,14 @@ from game.services.importers.orchestrator import import_single_source
 
 
 class Command(BaseCommand):
-    help = "Import gangs and properties from a YAML file"
+    help = "Import world data from a YAML file"
 
     def add_arguments(self, parser):
-        parser.add_argument("yaml_path", type=str, help="Path to the world data YAML file")
+        parser.add_argument(
+            "yaml_path",
+            type=str,
+            help="Path to a world YAML file (supports gangs-only, properties-only, territories-only, or combined)",
+        )
 
     def handle(self, *args, **options):
         result = import_single_source(options["yaml_path"], expected_type="world")

@@ -29,7 +29,7 @@ def detect_import_type(data: dict) -> str | None:
         return "items"
     if keys & {"enemies", "contacts"}:
         return "enemies_contacts"
-    if keys & {"gangs", "properties"}:
+    if keys & {"gangs", "properties", "territories"}:
         return "world"
     return None
 
