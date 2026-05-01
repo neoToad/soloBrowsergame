@@ -1,6 +1,8 @@
 from django.test import Client, TestCase
 
-from game.models import PlayerTerritory, Scene, Territory
+from django.db import IntegrityError
+
+from game.models import PlayerDiscoveredTerritory, PlayerTerritory, Scene, Territory
 from game.tests.factories import bootstrap_game_session
 
 
@@ -49,3 +51,10 @@ class TerritoryModelsTest(TestCase):
             ).exists()
         )
         self.assertEqual(self.session.territories.count(), 1)
+
+    def test_player_discovered_territory_is_unique_per_session_territory(self):
+        territory = Territory.objects.create(key="north-end", name="North End")
+        PlayerDiscoveredTerritory.objects.create(session=self.session, territory=territory)
+
+        with self.assertRaises(IntegrityError):
+            PlayerDiscoveredTerritory.objects.create(session=self.session, territory=territory)

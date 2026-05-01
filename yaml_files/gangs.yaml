@@ -1,15 +1,12 @@
 ﻿# =============================================================================
-# WORLD DATA â€” Gangs
-# Import with: python manage.py import_world gangs.yaml
+# WORLD DATA: GANGS
+# File: yaml_files/gangs.yaml
+# Import this file: python manage.py import_world yaml_files/gangs.yaml
+# Import all YAML files: python manage.py import_all
 # =============================================================================
 #
-# Import order:
-#   1. Gang records (no FK dependencies)
-#   2. Property/territory records (FK â†’ Scene for resolution_scene, resolved by key)
-#
-# resolution_scene uses a scene key string. The importer resolves it to a FK
-# after scenes exist. If the scene hasn't been imported yet, set to null and
-# update on a subsequent run.
+# This file contains only gang records.
+# No FK dependencies.
 # =============================================================================
 
 
@@ -57,18 +54,4 @@ gangs:
       all times. Never says anything incriminating. Built from within
       the system by someone who understood it completely.
 
-
-# -----------------------------------------------------------------------------
-# PROPERTIES
-# -----------------------------------------------------------------------------
-#
-# property_type options: safehouse | business
-#
-# cash_per_turn, heat_per_turn, rep_per_turn: applied each turn while owned.
-# Use negative values to subtract (e.g. heat_per_turn: -2 to reduce heat).
-#
-# is_contestable: if true, other gangs can attempt to take this property.
-#
-# resolution_scene: scene key for the contest/defence event that fires when
-# this property is contested. null if no contest scene exists yet.
 

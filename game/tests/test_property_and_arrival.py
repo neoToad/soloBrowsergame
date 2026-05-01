@@ -231,7 +231,7 @@ class PropertyServiceTest(TestCase):
         self.assertIn("Cash Cow", logs[0])
 
     def test_apply_property_rewards_grants_territory_on_arrival(self):
-        from game.models.property import PlayerTerritory, Territory
+        from game.models.property import PlayerDiscoveredTerritory, PlayerTerritory, Territory
         from game.services.property_service import apply_property_rewards
 
         territory = Territory.objects.create(key="riverfront", name="Riverfront", cash_per_turn=12)
@@ -246,6 +246,9 @@ class PropertyServiceTest(TestCase):
         logs = apply_property_rewards(self.session, scene)
 
         self.assertTrue(PlayerTerritory.objects.filter(session=self.session, territory=territory).exists())
+        self.assertTrue(
+            PlayerDiscoveredTerritory.objects.filter(session=self.session, territory=territory).exists()
+        )
         self.assertIn("Riverfront", "\n".join(logs))
 
     def test_process_turn_income_with_active_territories_applies_cash_rep_heat(self):

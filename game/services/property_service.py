@@ -126,7 +126,7 @@ def apply_property_rewards(session, scene):
     Awards or removes properties based on scene arrival effects.
     Returns a list of log strings.
     """
-    from ..models.property import PlayerProperty, PlayerTerritory
+    from ..models.property import PlayerDiscoveredTerritory, PlayerProperty, PlayerTerritory
     logs = []
 
     if scene.receive_property:
@@ -141,6 +141,7 @@ def apply_property_rewards(session, scene):
             logs.append(f"You have lost: {scene.lose_property.name}")
 
     if scene.receive_territory:
+        PlayerDiscoveredTerritory.objects.get_or_create(session=session, territory=scene.receive_territory)
         if not PlayerTerritory.objects.filter(session=session, territory=scene.receive_territory).exists():
             PlayerTerritory.objects.create(session=session, territory=scene.receive_territory)
             if f"You have acquired: {scene.receive_territory.name}" not in logs:

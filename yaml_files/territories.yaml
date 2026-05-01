@@ -1,4 +1,16 @@
-﻿territories:
+﻿# =============================================================================
+# WORLD DATA: TERRITORIES
+# File: yaml_files/territories.yaml
+# Import this file: python manage.py import_world yaml_files/territories.yaml
+# Import all YAML files: python manage.py import_all
+# =============================================================================
+#
+# cash_per_turn, heat_per_turn, rep_per_turn: applied each turn while owned.
+# is_contestable: if true, other gangs can attempt to take this territory.
+# resolution_scene: scene key for a contest/defense event; null if none yet.
+# =============================================================================
+
+territories:
 
   - key: the_flats
     name: The Flats

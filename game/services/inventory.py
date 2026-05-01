@@ -7,6 +7,33 @@ def get_player_contacts(session):
     return {pc.contact_id: pc for pc in qs}
 
 
+def get_discovered_territories(session):
+    """
+    Returns a dict keyed by territory_id: {territory_id: PlayerDiscoveredTerritory instance}.
+    """
+    from ..models.property import PlayerDiscoveredTerritory
+
+    qs = PlayerDiscoveredTerritory.objects.filter(session=session).select_related("territory")
+    return {row.territory_id: row for row in qs}
+
+
+def award_scene_discovered_territories(session, scene, discovered: dict) -> list:
+    """
+    Ensures any territory referenced by scene arrival effects is discoverable.
+    Mutates `discovered` in-place. Returns list of newly discovered Territory rows.
+    """
+    from ..models.property import PlayerDiscoveredTerritory
+
+    newly_discovered = []
+    for territory in (scene.receive_territory, scene.lose_territory):
+        if not territory or territory.id in discovered:
+            continue
+        row, _ = PlayerDiscoveredTerritory.objects.get_or_create(session=session, territory=territory)
+        discovered[territory.id] = row
+        newly_discovered.append(territory)
+    return newly_discovered
+
+
 def award_scene_contacts(session, scene, contacts: dict) -> tuple[list, list]:
     """
     Processes all SceneContacts attached to `scene`.

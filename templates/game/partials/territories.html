@@ -1,8 +1,8 @@
 <div id="territories-panel" {% if oob %}hx-swap-oob="true"{% endif %}>
     <p class="panel-label">[ TERRITORIES ]</p>
-    {% if all_territories %}
+    {% if visible_territories %}
         <div class="item-list">
-            {% for territory in all_territories %}
+            {% for territory in visible_territories %}
                 {% if territory.id in owned_territory_ids %}
                     <div class="property-row territory-row territory-owned">
                         <span class="property-name">{{ territory.name }}</span>
@@ -19,7 +19,7 @@
             {% endfor %}
         </div>
     {% else %}
-        <p class="item-empty">No territories exist.</p>
+        <p class="item-empty">No territories discovered.</p>
     {% endif %}
 
     {% if player_gang_standings %}

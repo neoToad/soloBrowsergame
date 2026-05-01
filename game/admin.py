@@ -12,7 +12,7 @@ from .models import (
     Arc, Quest, Item, Requirement, RequirementGroup, Scene, Choice,
     GameSession, PlayerStats, PlayerInventory, SceneItem, CompletedQuest,
     Enemy, CombatEncounter, CombatState, EventLog,
-    Property, Territory, PlayerProperty, PlayerTerritory, RivalClaim,
+    Property, Territory, PlayerProperty, PlayerTerritory, PlayerDiscoveredTerritory, RivalClaim,
     Gang, Contact, SceneContact, PlayerContact, PlayerGangStanding,
     Job, JobApproach, JobBeatVariant, PlayerJobState,
     ContactJobOffer, PlayerContactOfferState, JobRun,
@@ -108,6 +108,13 @@ class PlayerTerritoryInline(admin.TabularInline):
     model = PlayerTerritory
     extra = 0
     fields = ('territory', 'is_contested')
+
+
+class PlayerDiscoveredTerritoryInline(admin.TabularInline):
+    model = PlayerDiscoveredTerritory
+    extra = 0
+    fields = ('territory', 'discovered_at')
+    readonly_fields = ('discovered_at',)
 
 class PlayerContactInline(admin.TabularInline):
     model = PlayerContact
@@ -434,6 +441,7 @@ class GameSessionAdmin(admin.ModelAdmin):
         PlayerInventoryInline,
         PlayerPropertyInline,
         PlayerTerritoryInline,
+        PlayerDiscoveredTerritoryInline,
         PlayerContactInline,
         PlayerGangStandingInline,
     ]
@@ -525,6 +533,13 @@ class PlayerTerritoryAdmin(admin.ModelAdmin):
     list_display = ('session', 'territory', 'is_contested')
     list_filter = ('is_contested',)
     list_select_related = True
+
+
+@admin.register(PlayerDiscoveredTerritory)
+class PlayerDiscoveredTerritoryAdmin(admin.ModelAdmin):
+    list_display = ("session", "territory", "discovered_at")
+    list_select_related = True
+    readonly_fields = ("discovered_at",)
 
 @admin.register(RivalClaim)
 class RivalClaimAdmin(admin.ModelAdmin):

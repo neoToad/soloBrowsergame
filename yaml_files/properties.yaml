@@ -1,4 +1,18 @@
-﻿properties:
+﻿# =============================================================================
+# WORLD DATA: PROPERTIES
+# File: yaml_files/properties.yaml
+# Import this file: python manage.py import_world yaml_files/properties.yaml
+# Import all YAML files: python manage.py import_all
+# =============================================================================
+#
+# property_type options: safehouse | business
+# cash_per_turn, heat_per_turn, rep_per_turn: applied each turn while owned.
+# Use negative values to subtract (example: heat_per_turn: -2).
+# is_contestable: if true, other gangs can attempt to take this property.
+# resolution_scene: scene key for a contest/defense event; null if none yet.
+# =============================================================================
+
+properties:
 
   # --- BUSINESSES ---
 
@@ -43,8 +57,4 @@
     rep_per_turn: 0
     is_contestable: false
     resolution_scene: null
-
-# -----------------------------------------------------------------------------
-# TERRITORIES
-# -----------------------------------------------------------------------------
 

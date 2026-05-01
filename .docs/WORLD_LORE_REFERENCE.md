@@ -176,9 +176,7 @@ All consumables are removed from inventory on use (`is_consumable: true`).
 
 | key | Name | Description | Effect |
 |-----|------|-------------|--------|
-| `medkit` | Medkit | Field dressing, antiseptic, the basics. | Restores 30 HP |
 | `zonk_pill` | Zonk (pill) | Slow release. Hallucinogenic edge. Harder to dose. | Restores 15 HP |
-| `painkillers` | Painkillers | Prescription. Not yours. | Restores 10 HP |
 | `zonk_smoked` | Zonk (smoked) | The standard. Mellow, dissociative. | Restores 10 HP |
 
 ### Documents & MacGuffins

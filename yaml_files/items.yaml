@@ -138,26 +138,6 @@ items:
   # add_stat: permanently increases effect_stat by effect_value.
   # -------------------------
 
-  - key: medkit
-    name: Medkit
-    description: Field dressing, antiseptic, the basics.
-    is_consumable: true
-    effect_type: heal_hp
-    effect_stat: ""
-    effect_value: 30
-    passive_stat: ""
-    passive_value: 0
-
-  - key: painkillers
-    name: Painkillers
-    description: Prescription. Not yours.
-    is_consumable: true
-    effect_type: heal_hp
-    effect_stat: ""
-    effect_value: 10
-    passive_stat: ""
-    passive_value: 0
-
   - key: zonk_smoked
     name: Zonk (smoked)
     description: The standard. Mellow, dissociative.

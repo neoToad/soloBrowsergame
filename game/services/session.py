@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from ..models import GameSession, PlayerStats, Scene, CompletedQuest
-from ..models.property import PlayerProperty, PlayerTerritory, Territory
+from ..models.property import PlayerDiscoveredTerritory, PlayerProperty, PlayerTerritory, Territory
 from ..constants import HUB_START_SCENE_KEY, SESSION_KEY
 from .inventory import get_player_inventory
 from . import jobs as jobs_service
@@ -97,7 +97,10 @@ def _build_social_property_context(session):
     from ..models import PlayerContact, PlayerGangStanding
 
     player_properties = PlayerProperty.objects.filter(session=session).select_related("property")
-    all_territories = Territory.objects.all()
+    discovered_territory_ids = list(
+        PlayerDiscoveredTerritory.objects.filter(session=session).values_list("territory_id", flat=True)
+    )
+    visible_territories = Territory.objects.filter(id__in=discovered_territory_ids)
     owned_territory_ids = set(
         PlayerTerritory.objects.filter(session=session).values_list("territory_id", flat=True)
     )
@@ -105,7 +108,7 @@ def _build_social_property_context(session):
     player_gang_standings = PlayerGangStanding.objects.filter(session=session).select_related("gang")
     return {
         "player_properties": player_properties,
-        "all_territories": all_territories,
+        "visible_territories": visible_territories,
         "owned_territory_ids": owned_territory_ids,
         "player_contacts": player_contacts,
         "player_gang_standings": player_gang_standings,

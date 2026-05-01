@@ -156,6 +156,28 @@ class InventoryServiceTest(TestCase):
         self.assertTrue(PlayerContact.objects.filter(session=self.session, contact=gained).exists())
         self.assertFalse(PlayerContact.objects.filter(session=self.session, contact=lost).exists())
 
+    def test_award_scene_discovered_territories_adds_receive_and_lose_targets(self):
+        from game.models.property import PlayerDiscoveredTerritory, Territory
+        from game.services.inventory import award_scene_discovered_territories, get_discovered_territories
+
+        scene = self.session.current_scene
+        gain_territory = Territory.objects.create(key="inv__gain_t", name="Gain Territory")
+        lose_territory = Territory.objects.create(key="inv__lose_t", name="Lose Territory")
+        scene.receive_territory = gain_territory
+        scene.lose_territory = lose_territory
+        scene.save(update_fields=["receive_territory", "lose_territory"])
+
+        discovered = get_discovered_territories(self.session)
+        newly_discovered = award_scene_discovered_territories(self.session, scene, discovered)
+
+        self.assertEqual({t.id for t in newly_discovered}, {gain_territory.id, lose_territory.id})
+        self.assertTrue(
+            PlayerDiscoveredTerritory.objects.filter(session=self.session, territory=gain_territory).exists()
+        )
+        self.assertTrue(
+            PlayerDiscoveredTerritory.objects.filter(session=self.session, territory=lose_territory).exists()
+        )
+
 
 class EffectiveStatsTest(TestCase):
     def setUp(self):

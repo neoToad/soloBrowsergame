@@ -75,6 +75,24 @@ class PlayerTerritory(models.Model):
         return f"{self.session} - {self.territory.name}"
 
 
+class PlayerDiscoveredTerritory(models.Model):
+    session = models.ForeignKey("game.GameSession", related_name="discovered_territories", on_delete=models.CASCADE)
+    territory = models.ForeignKey(Territory, related_name="discovered_by", on_delete=models.CASCADE)
+    discovered_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["discovered_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["session", "territory"],
+                name="uq_playerdiscoveredterritory_session_territory",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.session} - discovered {self.territory.name}"
+
+
 class RivalClaim(models.Model):
     player_property = models.ForeignKey(PlayerProperty, related_name="claims", on_delete=models.CASCADE)
     resolution_scene = models.ForeignKey(

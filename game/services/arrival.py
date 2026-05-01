@@ -9,7 +9,13 @@ from .property_service import (
     get_turn_summary,
     resolve_contest,
 )
-from .inventory import award_scene_items, award_scene_contacts, get_player_contacts
+from .inventory import (
+    award_scene_items,
+    award_scene_contacts,
+    award_scene_discovered_territories,
+    get_player_contacts,
+    get_discovered_territories,
+)
 from .scene import consume_arrival_item
 
 
@@ -22,6 +28,7 @@ def process_arrival(session, stats, inventory, completed_map, next_scene, contac
     with transaction.atomic():
         if contacts is None:
             contacts = get_player_contacts(session)
+        discovered_territories = get_discovered_territories(session)
 
         logs = []
 
@@ -40,6 +47,8 @@ def process_arrival(session, stats, inventory, completed_map, next_scene, contac
             logs.append(f"You gained a contact: {contact.name}.")
         for contact in lost:
             logs.append(f"You lost contact with {contact.name}.")
+        for territory in award_scene_discovered_territories(session, next_scene, discovered_territories):
+            logs.append(f"You discovered a territory: {territory.name}.")
 
         turn_summary = None
         if quest_logs:
