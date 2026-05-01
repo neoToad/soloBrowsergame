@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 from django.core.management import call_command
 from django.test import TestCase
 
-from game.models import Property, Quest, RequirementGroup, Scene, Territory
+from game.models import Contact, Enemy, Property, Quest, RequirementGroup, Scene, Territory
 
 
 class ImportRefactorTests(TestCase):
@@ -256,3 +256,35 @@ scenes:
         self.assertEqual(territory_scene.receive_territory.key, "the_docks")
         self.assertTrue(Property.objects.filter(key="storage_unit").exists())
         self.assertTrue(Territory.objects.filter(key="the_docks").exists())
+
+    def test_import_all_merges_split_enemies_and_contacts_files(self):
+        with TemporaryDirectory() as tmp_dir:
+            enemies_yaml = Path(tmp_dir) / "enemies.yaml"
+            enemies_yaml.write_text(
+                """
+enemies:
+  - key: split_test_enemy
+    name: Split Test Enemy
+    description: Enemy from split file.
+    max_hp: 21
+    attack_modifier: 2
+    defense: 10
+    damage_min: 2
+    damage_max: 6
+""",
+                encoding="utf-8",
+            )
+            contacts_yaml = Path(tmp_dir) / "contacts.yaml"
+            contacts_yaml.write_text(
+                """
+contacts:
+  - key: split_test_contact
+    name: Split Test Contact
+    description: Contact from split file.
+""",
+                encoding="utf-8",
+            )
+            call_command("import_all", tmp_dir)
+
+        self.assertTrue(Enemy.objects.filter(key="split_test_enemy").exists())
+        self.assertTrue(Contact.objects.filter(key="split_test_contact").exists())

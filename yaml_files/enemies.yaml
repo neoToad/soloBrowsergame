@@ -1,4 +1,4 @@
-enemies:
+﻿enemies:
 
   # -------------------------
   # STREET LEVEL
@@ -19,7 +19,7 @@ enemies:
   - key: street_thug_x2
     name: Two Street Thugs
     description: >
-      Separately, a problem. Together, a system — one pushes, one flanks.
+      Separately, a problem. Together, a system â€” one pushes, one flanks.
       They've done it before. Not coordinated exactly, but practiced.
     max_hp: 32
     attack_modifier: 3
@@ -107,7 +107,7 @@ enemies:
     name: Two Harlan Muscle
     description: >
       One talks, one doesn't. The one who doesn't is the problem. Dutch's
-      people work in pairs for a reason — they've thought about the geometry
+      people work in pairs for a reason â€” they've thought about the geometry
       of a room before they walk into it.
     max_hp: 52
     attack_modifier: 4
@@ -119,7 +119,7 @@ enemies:
     name: Harlan Enforcer
     description: >
       Mid-tier. Professional. Doesn't get creative, doesn't make mistakes.
-      Not the guy Dutch sends when he wants to make a point — the guy Dutch
+      Not the guy Dutch sends when he wants to make a point â€” the guy Dutch
       sends when the point has already been made and ignored.
     max_hp: 36
     attack_modifier: 4
@@ -147,7 +147,7 @@ enemies:
     name: Kings Soldier
     description: >
       Generational Westside. Knows every block, every exit, every face that
-      doesn't belong. Fights like someone who grew up fighting — territorial,
+      doesn't belong. Fights like someone who grew up fighting â€” territorial,
       committed, not easily rattled.
     max_hp: 28
     attack_modifier: 3
@@ -200,7 +200,7 @@ enemies:
     description: >
       Punches up in self-image. Punches at or below weight in practice.
       Craig's people confuse flash for power and it shows. The danger is
-      volume — they come in numbers because individually they know better.
+      volume â€” they come in numbers because individually they know better.
     max_hp: 22
     attack_modifier: 2
     defense: 10
@@ -224,7 +224,7 @@ enemies:
     name: Craig's Security
     description: >
       Professional hired help, not crew. Impersonal. More effective than BSB
-      regulars because they don't have anything to prove — they're just working.
+      regulars because they don't have anything to prove â€” they're just working.
       Craig pays well enough to get the good kind.
     max_hp: 32
     attack_modifier: 4
@@ -264,7 +264,7 @@ enemies:
     name: Bucco Capo
     description: >
       Been with the family long enough that Richie Bucco knows his children's
-      names. That's not warmth — that's depth of investment. Removing him
+      names. That's not warmth â€” that's depth of investment. Removing him
       is a family matter now, not just a business one.
     max_hp: 50
     attack_modifier: 5
@@ -291,7 +291,7 @@ enemies:
   - key: blues_officer
     name: Blues Officer
     description: >
-      Cahill's people. Doesn't say anything incriminating. Doesn't need to —
+      Cahill's people. Doesn't say anything incriminating. Doesn't need to â€”
       the badge does the threatening. Trained, structured, and operating with
       the full weight of the system behind him. Combat with a Blues officer
       is a serious escalation. The heat cost is significant. Not a casual encounter.
@@ -321,7 +321,7 @@ enemies:
   - key: big_mal
     name: Big Mal
     description: >
-      Independent heavy. For hire. No faction loyalty — works for whoever's
+      Independent heavy. For hire. No faction loyalty â€” works for whoever's
       paying, which tells you everything about the person who sent him. Shows
       up when someone wants to send a message they're paying for. The message
       is that they're serious enough to pay for Mal.
@@ -334,7 +334,7 @@ enemies:
   - key: the_cook
     name: The Cook
     description: >
-      Defensive encounter only — he didn't want this. Zonk cook, not a
+      Defensive encounter only â€” he didn't want this. Zonk cook, not a
       fighter. Has been improvising solutions to problems his whole life and
       that habit does not turn off under pressure. Better with improvised
       weapons than anyone expects. The workspace gives him options.
@@ -345,125 +345,3 @@ enemies:
     damage_max: 8
 
 
-contacts:
-
-  # -------------------------
-  # FACTION — HARLAN STREET CREW
-  # -------------------------
-
-  - key: morris
-    name: Morris
-    description: >
-      Dutch's intermediary. Transactional, precise, slightly disappointing to
-      talk to in the way that efficient people are. Calls when he has
-      information and hangs up when he's done. Says things like "acceptable"
-      and "noted." Has no evident inner life but occasionally says something
-      that suggests he might.
-
-  - key: dutch
-    name: Dutch
-    description: >
-      Runs the Harlan Street Crew out of The Flats. Old school, disciplined,
-      fingers in everything quietly. Never wastes words. The fact that he's
-      dealing with you directly means something — you're not sure yet whether
-      it's good.
-
-  # -------------------------
-  # FACTION — BUCCO FAMILY
-  # -------------------------
-
-  - key: richie_bucco
-    name: Richie Bucco
-    description: >
-      Runs the Bucco Family. Will talk to you for forty minutes about cold
-      pressing olive oil. Genuinely knowledgeable about it. Something terrible
-      may happen before dinner regardless. The oldest outfit in the city and
-      he carries that history like it's earned, because it is.
-
-  # -------------------------
-  # FACTION — WESTSIDE KINGS
-  # -------------------------
-
-  - key: kings_contact
-    name: Kings Contact
-    description: >
-      No one name, no one throat to grab. The council structure means your
-      contact today might not be your contact tomorrow. Useful for exactly as
-      long as the internal politics allow it.
-
-  - key: pruitt
-    name: DeShawn Pruitt
-    description: >
-      One of the Kings' council's more stable voices. Runs the northern
-      Westside blocks. Former high school football player with a scholarship
-      that fell through in a way he doesn't like to discuss. Still keeps a
-      football in his apartment. The three hundred dollars he owes you has
-      been in a ziplock bag in his freezer for four months. He was going to
-      call.
-
-  # -------------------------
-  # FACTION — BACKSTREET BOYS
-  # -------------------------
-
-  - key: craig_richards
-    name: Craig Richards
-    description: >
-      Insists on being called King. Everyone calls him Craig. He hates it.
-      Runs the Backstreet Boys out of The New Build and The Strip. Believes
-      every word of his own hype. Making decent money. Nobody respects him
-      for it, which he is aware of and has completely failed to address.
-
-  # -------------------------
-  # FACTION — THE BLUES
-  # -------------------------
-
-  - key: frank_cahill
-    name: Lt. Frank Cahill
-    description: >
-      Major Crimes Unit. Taxes every crew in the city except Dutch, with whom
-      he has a relationship built entirely on implication. Bureaucratically
-      polite at all times. Never says anything incriminating. Built his
-      operation from inside the system over decades. The scariest person in
-      the city.
-
-  # -------------------------
-  # CIVILIANS
-  # -------------------------
-
-  - key: sister
-    name: Vickie
-    description: >
-      Your sister. Calls only when she needs something. Genuinely loves you
-      in her way, which is real but will immediately generate the next problem
-      the moment the current one is solved. A chaos agent who does not
-      consider herself a chaos agent. Heavy Zonk user. Always completely
-      confident.
-
-  - key: sal
-    name: Sal
-    description: >
-      Owns Corky's in The Flats. Inherited it from a friend who left town and
-      just wants to run a quiet bar. Tired, not defeated. Dutch's people have
-      been using his floor for years and he wants them out. The longer you
-      talk to him the more uncomfortable the moral math gets.
-
-  - key: eddie_reyes
-    name: Eddie Reyes
-    description: >
-      Runs Reyes Boxing in The Flats, two blocks from Corky's. Been there
-      thirty years. Listens more than he talks. The only person in the city
-      who has told Dutch, Cahill, and Richie Bucco something they didn't want
-      to hear and had all three thank him. Nobody brings their business through
-      his door. Doesn't broker deals. Occasionally points someone in a
-      direction. Once. Doesn't follow up.
-
-  - key: linda_marsh
-    name: Councilor Linda Marsh
-    description: >
-      City councilor for The Flats and the border of The New Build. Publicly
-      the voice of community preservation. Quietly taking money from the
-      developers eating her district alive. Frank Cahill uses her for planning
-      permissions and the occasional burial of an investigation. Has a
-      newsletter with a recipe section. Owns a rescue dog named Biscuit.
-      Has been making one small reasonable decision at a time for eleven years
-      and can't see the shape of what she's built anymore.
