@@ -1,5 +1,9 @@
 # Solo Browser Game - Project Context
 
+- Owner: Engineering
+- Update Trigger: Major feature/module changes that alter onboarding-relevant structure.
+- Last Verified Against Code: 2026-05-02
+
 High-level onboarding snapshot for the project. This file is summary-only.
 
 ## What This Project Is

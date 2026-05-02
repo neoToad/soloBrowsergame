@@ -1,5 +1,9 @@
 # Architecture
 
+- Owner: Engineering
+- Update Trigger: Any service boundary, runtime flow, or architecture invariant change.
+- Last Verified Against Code: 2026-05-02
+
 ## Dev Setup
 
 ### Prerequisites
@@ -44,7 +48,7 @@ Views:
 Services:
 - Own gameplay rules and orchestration
 - Own write-side domain mutations
-- Return log strings; caller flushes logs
+- May write `EventLog` directly in gameplay modules during transition period; preferred direction is return log strings and caller flushes logs.
 
 ---
 
@@ -137,6 +141,7 @@ Jobs sub-loop:
 ## Architectural Invariants
 
 1. Services should not write `EventLog` directly; they return log text and caller flushes.
+   - Current exception: gameplay services still write logs directly in several paths; this remains tracked debt.
 2. Views should not execute gameplay mutations beyond minimal session routing.
 3. Arrival effects happen on transitions, not on read-only page views.
 4. Guard all authoring-dependent pointers (`target_scene`, `entrance_scene`, combat encounter scenes) before use.

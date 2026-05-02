@@ -1,5 +1,9 @@
 # Current Task
 
+- Owner: Engineering
+- Update Trigger: Any docs/program-level milestone or priority shift.
+- Last Verified Against Code: 2026-05-02
+
 ## Focus
 Finalize documentation consolidation in `.docs/` with clear source-of-truth boundaries, no stale references, and split content docs that preserve full canonical content.
 
@@ -32,11 +36,11 @@ Finalize documentation consolidation in `.docs/` with clear source-of-truth boun
 - Content docs are now navigable via index files and split canonical references.
 
 ### In Progress
-- Final verification pass for cross-doc consistency and stale references.
+- Apply drift-audit follow-up updates from `.docs/drift-audit-2026-05-02.md`.
 
 ### Next
-- Decide whether to keep or retire `.docs/docs-consolidation-plan.md` now that plan actions are implemented.
-- Optionally add top-of-file metadata blocks (`Owner`, `Update Trigger`, `Last Verified Against Code`) to core docs.
+- Keep docs aligned with runtime behavior as code changes land (especially gameplay logging boundaries and response semantics).
+- Update audit docs when findings become stale or are resolved.
 
 ## Ongoing Product Work (Non-Docs)
 - Jobs subsystem, combat flow, quest builder, and property systems remain active product areas.

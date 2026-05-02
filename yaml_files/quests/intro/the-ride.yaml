@@ -1,472 +1,477 @@
 quest:
   key: the-ride
   title: The Ride
-  description: >
-    Morris has a courier job. Pick up a package, deliver it across the
+  description: 'Morris has a courier job. Pick up a package, deliver it across the
     Flats. Simple work. It stops being simple at the handoff.
+
+    '
   arc: intro
   arc_order: 4
   is_repeatable: false
   hub_scenes:
-    - hub__apartment
+  - hub__apartment
   entrance_scene: the-ride__the-job
   requirements:
-    - label: Must have completed Corky's
-      logic: all
-      conditions:
-        - condition_type: quest_completed
-          required_quest: corkys
-          flag_name: null
-          stat_name: null
-          stat_value: null
-          required_item: null
-          required_ending_type: null
-          required_contact: null
-
+  - label: Must have completed Corky's
+    logic: all
+    conditions:
+    - condition_type: quest_completed
+      flag_name: null
+      stat_name: null
+      stat_value: 0
+      required_item: null
+      required_quest: corkys
+      required_contact: null
+      required_ending_type: null
+    group_key: Must have completed Corky's
 scenes:
+- key: the-ride__the-job
+  scene_type: normal
+  title: The Job
+  order: 10
+  body: "Morris calls at seven in the morning, which already tells you something \u2014\
+    \ Morris is a noon-at-the-earliest kind of person, and a seven a.m. call means\
+    \ the job is time-sensitive or something went wrong upstream and you're about\
+    \ to become part of it.\n\nPackage pickup at a lockup on Crane Street. Deliver\
+    \ it to an address on the other side of the Flats, Aldwick Road, third floor.\
+    \ Hand it to whoever answers. He says don't open it and don't stop anywhere, in\
+    \ the same tone he'd use to tell you the weather. Three hundred when it's done.\n\
+    \nHe hangs up. You've never met Morris in person. You're not sure that would clarify\
+    \ anything.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Head to Crane Street
+    order: 1
+    target_scene: the-ride__crane-street
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Early morning in the Flats. The street cleaners haven't been through
+      yet.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-ride__crane-street
+  scene_type: normal
+  title: Crane Street
+  order: 20
+  body: "The lockup is a steel door set into a brick wall between a tyre place and\
+    \ something that used to be a print shop. A man you've never seen opens it before\
+    \ you knock. Hands you a package wrapped in brown paper, taped at both ends \u2014\
+    \ about the size of a shoebox and heavier than that. Doesn't speak. Closes the\
+    \ door.\n\nYou stand on Crane Street with it under your arm. Aldwick Road is twenty\
+    \ minutes on foot, straight through the Flats. Quiet enough at this hour.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Move
+    order: 1
+    target_scene: the-ride__aldwick-approach
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You keep to the main streets. Easier to look like you belong.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-ride__aldwick-approach
+  scene_type: normal
+  title: Aldwick Approach
+  order: 30
+  body: "Aldwick Road is residential, four-storey blocks either side, cars parked\
+    \ tight to the kerb. You're half a block from the address when you clock him \u2014\
+    \ young guy, maybe twenty, leaning against a car on the wrong side of casual.\
+    \ Eyes on you since you turned the corner.\n\nThere's another one in the doorway\
+    \ of the building you're heading to. He's not a resident. The way he's standing\
+    \ says he's been there a while.\n\nThey know what you're carrying. They knew before\
+    \ you got here.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Keep walking
+    order: 1
+    target_scene: the-ride__the-ambush
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You don't break stride. If they're going to move, make them do
+      it first.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Stop and let them come to you
+    order: 2
+    target_scene: the-ride__the-ambush
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You put your back to the nearest wall. Choose your ground. They
+      come off the car.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-ride__the-ambush
+  scene_type: combat
+  title: The Ambush
+  order: 40
+  body: "The one by the car gets there first. He's quick and he's done this before\
+    \ but he leads with his right and you read it. The one from the doorway hangs\
+    \ back \u2014 waiting, watching, letting his guy do the work.\n\nBehind him, a\
+    \ third. Older than the other two. Watching all of it with his arms folded. He\
+    \ doesn't move.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices: []
+  combat_encounter:
+    enemy: westside_runner
+    victory_scene: the-ride__darius
+    defeat_scene: the-ride__taken
+    victory_arrival_flavor: "The first one's down. The second one backs off. The third\
+      \ \u2014 the older one \u2014 hasn't moved."
+    defeat_arrival_flavor: Numbers win. The package is gone before you hit the ground.
+- key: the-ride__darius
+  scene_type: normal
+  title: Darius
+  order: 50
+  body: "He's still standing there. Arms still folded. He looks at his guy on the\
+    \ ground, then back at you, with the expression of a man who has just revised\
+    \ an estimate downward and is being professional about it.\n\nHe says his name\
+    \ is Darius. Says he's not here on Kings business \u2014 which is a specific thing\
+    \ to volunteer. Says the package was a personal opportunity and he misjudged the\
+    \ job. He's not apologising. He's accounting.\n\nHe looks at the package under\
+    \ your arm. Then at you.\n\nTell Dutch he says hello. Then he walks. No hurry.\
+    \ Doesn't check if you're watching.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Deliver the package
+    order: 1
+    target_scene: the-ride__the-delivery
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Third floor. The door opens before you knock. These people have
+      been waiting.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-ride__the-delivery
+  scene_type: normal
+  title: The Delivery
+  order: 60
+  body: "A woman answers. Forties, precise, looks at the package and not at you. Takes\
+    \ it. Closes the door.\n\nThat's it. That's the job.\n\nYou stand in the stairwell\
+    \ for a moment. Your knuckles are split. There's a noise coming from behind the\
+    \ door that might be a scale. You don't know what was in the package. You still\
+    \ don't ask.\n\nYou take out your phone to call Morris. You can tell him exactly\
+    \ what happened \u2014 Darius, the Kings, the name dropped at the end. Dutch would\
+    \ want to know. Or you can keep it simple. Package delivered. Job done.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: "Tell Morris everything \u2014 Darius, the Kings, all of it"
+    order: 1
+    target_scene: the-ride__done-straight
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Morris goes quiet for a moment. Then he says stay by your phone.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Keep it simple. Package delivered, ran into some trouble, handled it.
+    order: 2
+    target_scene: the-ride__done-covered
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Morris says good work. Three hundred by end of day. You pocket
+      your phone and go.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-ride__taken
+  scene_type: normal
+  title: Taken
+  order: 65
+  body: "You come back to yourself on the pavement. The package is gone. Darius is\
+    \ gone. His guys are gone. The street looks exactly like it did before \u2014\
+    \ cars at the kerb, windows closed, nobody saw anything.\n\nYou call Morris. He\
+    \ listens to the whole thing without interrupting. When you finish he says he'll\
+    \ call you back. He doesn't call back.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: -10
+    heat_change: 10
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Go home
+    order: 1
+    target_scene: the-ride__done-lost
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Dutch's name is on the other end of a lost package. That's where
+      you are now.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-ride__done-straight
+  scene_type: ending
+  title: Done Straight
+  order: 70
+  body: "Morris calls back in an hour. Dutch wants the name again \u2014 Darius \u2014\
+    \ and the description. You give both. Morris asks if he said anything else. You\
+    \ tell him about the not on Kings business. Another pause, longer than the first.\n\
+    \nThe three hundred comes through plus a fifty on top. Information tax, Morris\
+    \ calls it, in a tone that suggests he finds this categorisation accurate and\
+    \ sufficient.\n\nYou don't know what Dutch does with the name. You told the truth\
+    \ and got paid for it.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: victory
+  arrival:
+    cash_change: 350
+    rep_change: 15
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Darius said tell Dutch he says hello. Dutch now knows. Whatever
+      that starts, it started before you got involved.
+    failure_arrival_flavor: null
+    set_flag_name: the_ride_straight
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-ride__done-covered
+  scene_type: ending
+  title: Done Covered
+  order: 75
+  body: 'Three hundred by end of day, same as promised. Morris doesn''t ask for details.
+    You didn''t offer any.
 
-  # -------------------------
-  # ENTRANCE SCENE
-  # -------------------------
 
-  - key: the-ride__the-job
-    scene_type: normal
-    title: The Job
-    order: 10
-    body: |
-      Morris calls at seven in the morning, which already tells you something — Morris is a noon-at-the-earliest kind of person, and a seven a.m. call means the job is time-sensitive or something went wrong upstream and you're about to become part of it.
+    Somewhere in the Westside, Darius is telling someone about a courier who wouldn''t
+    go down. Maybe he''s telling the Kings council. Maybe he''s keeping it private,
+    same as you. You won''t know until it matters.
 
-      Package pickup at a lockup on Crane Street. Deliver it to an address on the other side of the Flats, Aldwick Road, third floor. Hand it to whoever answers. He says don't open it and don't stop anywhere, in the same tone he'd use to tell you the weather. Three hundred when it's done.
 
-      He hangs up. You've never met Morris in person. You're not sure that would clarify anything.
+    The split knuckles take three days to close.
 
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: victory
+  arrival:
+    cash_change: 300
+    rep_change: 10
+    heat_change: 5
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Dutch got his package. What he doesn't know won't hurt you. Probably.
+    failure_arrival_flavor: null
+    set_flag_name: the_ride_covered
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-ride__done-lost
+  scene_type: ending
+  title: Done Lost
+  order: 80
+  body: 'Morris doesn''t call back that day. Or the next.
 
-    choices:
-      - label: Head to Crane Street
-        order: 1
-        target_scene: the-ride__crane-street
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Early morning in the Flats. The street cleaners haven't been through yet.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
 
-  # -------------------------
-  # CRANE STREET PICKUP
-  # -------------------------
+    On the third day, a single text. Dutch wants the debt covered in work, not cash.
+    There''ll be a job. It won''t be a good one.
 
-  - key: the-ride__crane-street
-    scene_type: normal
-    title: Crane Street
-    order: 20
-    body: |
-      The lockup is a steel door set into a brick wall between a tyre place and something that used to be a print shop. A man you've never seen opens it before you knock. Hands you a package wrapped in brown paper, taped at both ends — about the size of a shoebox and heavier than that. Doesn't speak. Closes the door.
 
-      You stand on Crane Street with it under your arm. Aldwick Road is twenty minutes on foot, straight through the Flats. Quiet enough at this hour.
+    The package is in whatever hands Darius was moving it to, doing whatever it was
+    going to do. The corkboard is empty. You wait for Morris to put something on it.
 
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Move
-        order: 1
-        target_scene: the-ride__aldwick-approach
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: You keep to the main streets. Easier to look like you belong.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # ALDWICK APPROACH — SETUP FOR AMBUSH
-  # -------------------------
-
-  - key: the-ride__aldwick-approach
-    scene_type: normal
-    title: Aldwick Approach
-    order: 30
-    body: |
-      Aldwick Road is residential, four-storey blocks either side, cars parked tight to the kerb. You're half a block from the address when you clock him — young guy, maybe twenty, leaning against a car on the wrong side of casual. Eyes on you since you turned the corner.
-
-      There's another one in the doorway of the building you're heading to. He's not a resident. The way he's standing says he's been there a while.
-
-      They know what you're carrying. They knew before you got here.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Keep walking
-        order: 1
-        target_scene: the-ride__the-ambush
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: You don't break stride. If they're going to move, make them do it first.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Stop and let them come to you
-        order: 2
-        target_scene: the-ride__the-ambush
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: You put your back to the nearest wall. Choose your ground. They come off the car.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # THE AMBUSH — COMBAT
-  # -------------------------
-
-  - key: the-ride__the-ambush
-    scene_type: combat
-    title: The Ambush
-    order: 40
-    body: |
-      The one by the car gets there first. He's quick and he's done this before but he leads with his right and you read it. The one from the doorway hangs back — waiting, watching, letting his guy do the work.
-
-      Behind him, a third. Older than the other two. Watching all of it with his arms folded. He doesn't move.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-    choices: []
-
-    combat_encounter:
-      enemy: westside_runner
-      victory_scene: the-ride__darius
-      defeat_scene: the-ride__taken
-      victory_arrival_flavor: The first one's down. The second one backs off. The third — the older one — hasn't moved.
-      defeat_arrival_flavor: Numbers win. The package is gone before you hit the ground.
-
-  # -------------------------
-  # DARIUS — POST-COMBAT
-  # -------------------------
-
-  - key: the-ride__darius
-    scene_type: normal
-    title: Darius
-    order: 50
-    body: |
-      He's still standing there. Arms still folded. He looks at his guy on the ground, then back at you, with the expression of a man who has just revised an estimate downward and is being professional about it.
-
-      He says his name is Darius. Says he's not here on Kings business — which is a specific thing to volunteer. Says the package was a personal opportunity and he misjudged the job. He's not apologising. He's accounting.
-
-      He looks at the package under your arm. Then at you.
-
-      Tell Dutch he says hello. Then he walks. No hurry. Doesn't check if you're watching.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Deliver the package
-        order: 1
-        target_scene: the-ride__the-delivery
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Third floor. The door opens before you knock. These people have been waiting.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # THE DELIVERY
-  # -------------------------
-
-  - key: the-ride__the-delivery
-    scene_type: normal
-    title: The Delivery
-    order: 60
-    body: |
-      A woman answers. Forties, precise, looks at the package and not at you. Takes it. Closes the door.
-
-      That's it. That's the job.
-
-      You stand in the stairwell for a moment. Your knuckles are split. There's a noise coming from behind the door that might be a scale. You don't know what was in the package. You still don't ask.
-
-      You take out your phone to call Morris. You can tell him exactly what happened — Darius, the Kings, the name dropped at the end. Dutch would want to know. Or you can keep it simple. Package delivered. Job done.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Tell Morris everything — Darius, the Kings, all of it
-        order: 1
-        target_scene: the-ride__done-straight
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Morris goes quiet for a moment. Then he says stay by your phone.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Keep it simple. Package delivered, ran into some trouble, handled it.
-        order: 2
-        target_scene: the-ride__done-covered
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Morris says good work. Three hundred by end of day. You pocket your phone and go.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # DEFEAT — PACKAGE TAKEN
-  # -------------------------
-
-  - key: the-ride__taken
-    scene_type: normal
-    title: Taken
-    order: 65
-    body: |
-      You come back to yourself on the pavement. The package is gone. Darius is gone. His guys are gone. The street looks exactly like it did before — cars at the kerb, windows closed, nobody saw anything.
-
-      You call Morris. He listens to the whole thing without interrupting. When you finish he says he'll call you back. He doesn't call back.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: -10
-      heat_change: 10
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Go home
-        order: 1
-        target_scene: the-ride__done-lost
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Dutch's name is on the other end of a lost package. That's where you are now.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # VICTORY ENDING — TOLD THE TRUTH
-  # -------------------------
-
-  - key: the-ride__done-straight
-    scene_type: ending
-    title: Done Straight
-    order: 70
-    body: |
-      Morris calls back in an hour. Dutch wants the name again — Darius — and the description. You give both. Morris asks if he said anything else. You tell him about the not on Kings business. Another pause, longer than the first.
-
-      The three hundred comes through plus a fifty on top. Information tax, Morris calls it, in a tone that suggests he finds this categorisation accurate and sufficient.
-
-      You don't know what Dutch does with the name. You told the truth and got paid for it.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: victory
-    arrival:
-      cash_change: 350
-      rep_change: 15
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Back to the apartment
-        order: 1
-        target_scene: hub__apartment
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Darius said tell Dutch he says hello. Dutch now knows. Whatever that starts, it started before you got involved.
-        failure_arrival_flavor: null
-        set_flag_name: the_ride_straight
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # VICTORY ENDING — COVERED THE STORY
-  # -------------------------
-
-  - key: the-ride__done-covered
-    scene_type: ending
-    title: Done Covered
-    order: 75
-    body: |
-      Three hundred by end of day, same as promised. Morris doesn't ask for details. You didn't offer any.
-
-      Somewhere in the Westside, Darius is telling someone about a courier who wouldn't go down. Maybe he's telling the Kings council. Maybe he's keeping it private, same as you. You won't know until it matters.
-
-      The split knuckles take three days to close.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: victory
-    arrival:
-      cash_change: 300
-      rep_change: 10
-      heat_change: 5
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Back to the apartment
-        order: 1
-        target_scene: hub__apartment
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Dutch got his package. What he doesn't know won't hurt you. Probably.
-        failure_arrival_flavor: null
-        set_flag_name: the_ride_covered
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # DEFEAT ENDING — PACKAGE LOST
-  # -------------------------
-
-  - key: the-ride__done-lost
-    scene_type: ending
-    title: Done Lost
-    order: 80
-    body: |
-      Morris doesn't call back that day. Or the next.
-
-      On the third day, a single text. Dutch wants the debt covered in work, not cash. There'll be a job. It won't be a good one.
-
-      The package is in whatever hands Darius was moving it to, doing whatever it was going to do. The corkboard is empty. You wait for Morris to put something on it.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: defeat
-    arrival:
-      cash_change: 0
-      rep_change: -10
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Back to the apartment
-        order: 1
-        target_scene: hub__apartment
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Dutch is owed a good job. The next one has to count.
-        failure_arrival_flavor: null
-        set_flag_name: the_ride_lost
-        clear_flag_name: null
-        requirements: []
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: defeat
+  arrival:
+    cash_change: 0
+    rep_change: -10
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Dutch is owed a good job. The next one has to count.
+    failure_arrival_flavor: null
+    set_flag_name: the_ride_lost
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null

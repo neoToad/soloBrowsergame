@@ -5,7 +5,7 @@ import yaml
 from django.core.management import call_command
 from django.test import TestCase
 
-from game.models import Contact, Gang, Item, Scene
+from game.models import Contact, Gang, Item, Quest, Scene
 from game.models.combat import Enemy
 from game.models.property import Property, Territory
 from game.models.world import Choice, SceneContact, SceneGangStanding, SceneItem
@@ -86,6 +86,34 @@ class ExportDomainYamlTests(TestCase):
         SceneItem.objects.create(scene=self.hub, item=self.item, quantity=2, award_once=False)
         SceneContact.objects.create(scene=self.hub, contact=self.contact, action="gain", award_once=True)
         SceneGangStanding.objects.create(scene=self.hub, gang=self.gang, standing_change=4)
+        self.quest = Quest.objects.create(
+            key="export-domain-quest",
+            title="Export Domain Quest",
+            description="Quest exported from export_all_yaml.",
+            arc=None,
+            arc_order=0,
+            is_repeatable=False,
+        )
+        self.quest_start = Scene.objects.create(
+            key="export-domain-quest__start",
+            scene_type="normal",
+            title="Start",
+            body="Start body",
+            order=1,
+            quest=self.quest,
+        )
+        self.quest_end = Scene.objects.create(
+            key="export-domain-quest__end",
+            scene_type="ending",
+            ending_type="victory",
+            title="End",
+            body="End body",
+            order=2,
+            quest=self.quest,
+        )
+        Choice.objects.create(scene=self.quest_start, label="Finish", order=1, target_scene=self.quest_end)
+        self.quest.entrance_scene = self.quest_start
+        self.quest.save(update_fields=["entrance_scene"])
 
     def test_export_all_yaml_writes_split_files_with_expected_roots(self):
         with TemporaryDirectory() as tmp_dir:
@@ -98,6 +126,7 @@ class ExportDomainYamlTests(TestCase):
                 "gangs.yaml",
                 "properties.yaml",
                 "territories.yaml",
+                "quests/misc/export-domain-quest.yaml",
             ]
             for rel_path in expected_files:
                 self.assertTrue((Path(tmp_dir) / rel_path).exists(), rel_path)
@@ -125,5 +154,6 @@ class ExportDomainYamlTests(TestCase):
             self.assertTrue(Gang.objects.filter(key="export_gang").exists())
             self.assertTrue(Property.objects.filter(key="export_property").exists())
             self.assertTrue(Territory.objects.filter(key="export_territory").exists())
+            self.assertTrue(Quest.objects.filter(key="export-domain-quest").exists())
             hub = Scene.objects.get(key="hub__export")
             self.assertEqual(hub.scene_gang_standings.count(), 1)

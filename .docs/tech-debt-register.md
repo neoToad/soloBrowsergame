@@ -11,7 +11,7 @@ Inventory of shortcuts, workarounds, missing features, and scaling risks observe
   - [`game/views.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/views.py)
 - Risk:
   - High coupling across unrelated endpoints; small edits can break multiple flows.
-  - Hard to enforce architecture rule “business logic in services only” consistently.
+  - Hard to enforce architecture rule "business logic in services only" consistently.
 
 2. Monolithic admin module with mixed concerns.
 - File: [`game/admin.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/admin.py)
@@ -103,6 +103,9 @@ Inventory of shortcuts, workarounds, missing features, and scaling risks observe
 
 4. Encoding/mojibake artifacts in source text/comments.
 - Files seen with artifacts:
+  - [`AGENTS.md`](/C:/Users/colin/PycharmProjects/soloBrowserGame/AGENTS.md)
+  - [`game/fixtures/contact.json`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/fixtures/contact.json)
+  - [`game/services/quest_builder/validation.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/quest_builder/validation.py)
   - [`game/admin.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/admin.py)
   - [`game/services/combat.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/combat.py)
   - [`game/models/player.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/models/player.py)

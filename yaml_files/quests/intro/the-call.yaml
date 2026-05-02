@@ -45,6 +45,8 @@ scenes:
     lose_property: null
     receive_territory: null
     lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
   scene_items: []
   scene_contacts: []
   choices:
@@ -102,6 +104,8 @@ scenes:
     lose_property: null
     receive_territory: null
     lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
   scene_items: []
   scene_contacts: []
   choices:
@@ -151,6 +155,8 @@ scenes:
     lose_property: null
     receive_territory: null
     lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
   scene_items: []
   scene_contacts: []
   choices:
@@ -192,6 +198,8 @@ scenes:
     lose_property: null
     receive_territory: null
     lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
   scene_items: []
   scene_contacts: []
   choices:
@@ -241,6 +249,8 @@ scenes:
     lose_property: null
     receive_territory: null
     lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
   scene_items: []
   scene_contacts: []
   choices:
@@ -280,6 +290,8 @@ scenes:
     lose_property: null
     receive_territory: null
     lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
   scene_items: []
   scene_contacts: []
   choices:
@@ -315,6 +327,8 @@ scenes:
     lose_property: null
     receive_territory: null
     lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
   scene_items: []
   scene_contacts: []
   choices:
@@ -352,6 +366,8 @@ scenes:
     lose_property: null
     receive_territory: null
     lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
   scene_items: []
   scene_contacts: []
   choices: []
@@ -388,6 +404,8 @@ scenes:
     lose_property: null
     receive_territory: null
     lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
   scene_items: []
   scene_contacts:
   - contact: sister
@@ -431,6 +449,8 @@ scenes:
     lose_property: null
     receive_territory: null
     lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
   scene_items:
   - item: brass_knuckles
     quantity: 1
@@ -492,6 +512,8 @@ scenes:
     lose_property: null
     receive_territory: null
     lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
   scene_items: []
   scene_contacts: []
   choices:
@@ -539,6 +561,8 @@ scenes:
     lose_property: null
     receive_territory: null
     lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
   scene_items: []
   scene_contacts: []
   choices:
@@ -581,6 +605,8 @@ scenes:
     lose_property: null
     receive_territory: null
     lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
   scene_items:
   - item: zonk_smoked
     quantity: 1

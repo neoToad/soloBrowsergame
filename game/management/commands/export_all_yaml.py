@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from django.core.management.base import BaseCommand, CommandError
 
+from game.models.world import Quest
 from game.services.domain_export import (
     build_contacts_payload,
     build_enemies_contacts_payload,
@@ -15,13 +16,14 @@ from game.services.domain_export import (
     default_domain_export_paths,
     render_yaml,
 )
+from game.services.quest_export import build_quest_export_payload, render_quest_yaml
 
 
-VALID_TYPES = {"items", "enemies", "contacts", "hubs", "gangs", "properties", "territories"}
+VALID_TYPES = {"items", "enemies", "contacts", "hubs", "gangs", "properties", "territories", "quests"}
 
 
 class Command(BaseCommand):
-    help = "Export non-quest game YAML files (items, hubs, enemies/contacts, world data)."
+    help = "Export game YAML files (items, hubs, enemies/contacts, world data, quests)."
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -31,7 +33,7 @@ class Command(BaseCommand):
         )
         parser.add_argument(
             "--types",
-            default="items,enemies,contacts,hubs,gangs,properties,territories",
+            default="items,enemies,contacts,hubs,gangs,properties,territories,quests",
             help="Comma-separated types to export",
         )
         parser.add_argument(
@@ -90,3 +92,13 @@ class Command(BaseCommand):
             out_path.parent.mkdir(parents=True, exist_ok=True)
             out_path.write_text(output, encoding="utf-8")
             self.stdout.write(self.style.SUCCESS(f"Exported {export_type}: {out_path}"))
+
+        if "quests" in requested_types:
+            base_out_dir = paths["items"].parent
+            for quest_key in Quest.objects.order_by("key").values_list("key", flat=True):
+                payload = build_quest_export_payload(quest_key)
+                arc_key = payload["quest"].get("arc") or "misc"
+                out_path = base_out_dir / "quests" / arc_key / f"{payload['quest']['key']}.yaml"
+                out_path.parent.mkdir(parents=True, exist_ok=True)
+                out_path.write_text(render_quest_yaml(payload), encoding="utf-8")
+                self.stdout.write(self.style.SUCCESS(f"Exported quest: {out_path}"))
