@@ -90,6 +90,8 @@ SceneItem
 └── award_once  bool — if True, skip award if player already holds this item
 ```
 
+Consumable heal items (e.g. `zonk_smoked`) can be awarded via `scene_items` on combat outcome scenes — both victory and defeat. In-world this can be loot taken after a win or something pocketed while walking away after a loss. For consumables, set `award_once: false`; unlike persistent gear, repeat runs should still be able to award spendable recovery items.
+
 ### SceneContact
 
 Contacts gained or lost in a scene. Processed during arrival.
@@ -272,6 +274,8 @@ Failure:
 Nerve check failed. He laughs — short, sharp, meant to be seen — and calls something over his shoulder. Two guys come off the wall across the street.
 
 Each confirmation scene routes via a single choice to its outcome scene. It carries no arrival effects and sets no flags — it is a beat, not a decision point. The failure_arrival_flavor on the roll choice should still be set, as it fires before the failure confirmation scene loads.
+
+Exception: when the failure path routes directly into a combat scene, the failure confirmation scene and combat setup scene can be the same scene. In that case, keep the confirmation content in the combat scene body (name the failed result and land the immediate beat) before opening the fight setup. Do not skip the confirmation beat.
 ---
 ## Arrival Processing Order
 

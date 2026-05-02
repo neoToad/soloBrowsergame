@@ -110,6 +110,16 @@ the player in her way, which is real but also will immediately generate the next
 problem the moment the current one is solved. The comedy of Vickie is that she is
 always completely confident.
 
+Vickie's dialogue should feel like someone managing her own image while asking for help. She names people and volunteers details that are not strictly necessary. She undercuts herself without noticing. When writing her lines, the gap between what she is asking for and how she is asking for it is where her character lives.
+
+Example register:
+
+> "There's this guy, Terrell. Young, maybe twenty-five, gold chain, acts like he's somebody. He keeps coming around saying I owe him for something Destiny ran up, my neighbor, it's complicated, I'll explain later."
+>
+> "I didn't want to call you. I want you to know that."
+
+The second line is spoken to someone she is currently calling. Never point at that contradiction in narration; let it land on its own.
+
 ---
 
 ## Comedy Guidelines

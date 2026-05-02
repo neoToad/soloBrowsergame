@@ -9,11 +9,13 @@ from game.models import (
     Choice,
     CompletedQuest,
     GameSession,
+    PlayerDiscoveredTerritory,
     PlayerStats,
     Quest,
     Requirement,
     RequirementGroup,
     Scene,
+    Territory,
 )
 
 from game.tests.factories import HubSceneFactory
@@ -54,6 +56,7 @@ class GameNavigationTest(TestCase):
         self.assertRedirects(response, "/game/", target_status_code=302)
 
     def test_game_hub_creates_session_and_redirects(self):
+        Territory.objects.create(key="the_flats", name="The Flats")
         response = self.client.get("/game/")
         self.assertRedirects(
             response, reverse("scene_detail", kwargs={"scene_key": "hub__apartment"})
@@ -62,6 +65,12 @@ class GameNavigationTest(TestCase):
         self.assertEqual(GameSession.objects.count(), 1)
         self.assertEqual(PlayerStats.objects.count(), 1)
         self.assertIn(SESSION_KEY, self.client.session)
+        session = GameSession.objects.get(pk=self.client.session[SESSION_KEY])
+        self.assertTrue(
+            PlayerDiscoveredTerritory.objects.filter(
+                session=session, territory__key="the_flats"
+            ).exists()
+        )
 
     def test_scene_navigation(self):
         self.client.get("/game/")

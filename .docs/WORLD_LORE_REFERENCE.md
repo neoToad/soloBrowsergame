@@ -201,7 +201,7 @@ Enemy entries for use in `CombatEncounter` records. Each has a `key`.
 
 | key | Name | Faction | Notes |
 |-----|------|---------|-------|
-| `terrell` | Terrell | Westside Kings (loose) | Solo. Young, reach but no discipline. Introduced in The Call. |
+| `terrell` | Terrell | Westside Kings (loose) | Solo. Young, reach but no discipline. Introduced in The Call. Threat lands through casualness, not volume; he says hard things like they cost him nothing. He is not a hothead. |
 | `street_thug` | Street Thug | Unaffiliated | Generic low-level. Fast, undisciplined. Solo encounter. |
 | `street_thug_x2` | Two Street Thugs | Unaffiliated | Group encounter. Coordinate loosely. |
 | `street_thug_x3` | Three Street Thugs | Unaffiliated | Group encounter. First one is a distraction. |

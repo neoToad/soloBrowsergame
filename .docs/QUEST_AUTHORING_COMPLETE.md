@@ -12,3 +12,4 @@ Index for quest authoring documentation.
 ## Notes
 - This file is intentionally summary/index only.
 - The full former content from this guide now lives in the split docs above.
+- `QUEST_AUTHORING_AMENDMENT_001.md` has been rolled into the canonical split docs (`QUEST_CONTENT_GUIDE.md`, `WORLD_LORE_REFERENCE.md`, `QUEST_AUTHORING_RULES.md`, and `QUEST_AUTHORING_PATTERNS.md`).

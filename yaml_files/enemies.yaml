@@ -81,11 +81,11 @@
       Young, maybe twenty-five. Gold chain, clean sneakers, eyes that clock
       you the second you round the corner. Got reach but no discipline. The
       stoop light flickers. Somewhere above you a window slides shut.
-    max_hp: 24
-    attack_modifier: 2
-    defense: 11
-    damage_min: 3
-    damage_max: 8
+    max_hp: 10
+    attack_modifier: -4
+    defense: 8
+    damage_min: 1
+    damage_max: 3
 
   # -------------------------
   # HARLAN STREET CREW

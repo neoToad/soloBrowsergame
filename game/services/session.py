@@ -52,6 +52,9 @@ def create_session(request):
     )
     initial_max_hp = compute_max_hp(5)  # default strength is 5
     PlayerStats.objects.create(session=game_session, max_hp=initial_max_hp, hp=initial_max_hp)
+    flats = Territory.objects.filter(key="the_flats").first()
+    if flats:
+        PlayerDiscoveredTerritory.objects.get_or_create(session=game_session, territory=flats)
     request.session[SESSION_KEY] = game_session.pk
     return game_session
 
