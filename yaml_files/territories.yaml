@@ -1,73 +1,78 @@
-﻿# =============================================================================
-# WORLD DATA: TERRITORIES
-# File: yaml_files/territories.yaml
-# Import this file: python manage.py import_world yaml_files/territories.yaml
-# Import all YAML files: python manage.py import_all
-# =============================================================================
-#
-# cash_per_turn, heat_per_turn, rep_per_turn: applied each turn while owned.
-# is_contestable: if true, other gangs can attempt to take this territory.
-# resolution_scene: scene key for a contest/defense event; null if none yet.
-# =============================================================================
-
 territories:
-
-  - key: the_flats
-    name: The Flats
-    description: Old industrial. Wide streets built for trucks that stopped coming years ago, low buildings, working class holdouts who've been here long enough to be furniture. Dutch's turf by default and by tenure. Having a foothold here means having a foothold in the city's oldest criminal infrastructure â€” the supply chains, the relationships, the unspoken agreements that keep everything moving without anyone having to say so out loud.
-    cash_per_turn: 100
-    heat_per_turn: 1
-    rep_per_turn: 3
-    is_contestable: true
-    resolution_scene: null
-
-
-
-  - key: the_westside
-    name: The Westside
-    description: Dense residential. Corner economy. Generational crews and buildings close enough together that everyone knows what their neighbors had for dinner. Kings territory, contested internally as much as externally. The money here moves in small amounts through a lot of hands, which means owning a piece of it means managing a lot of relationships. The rep it builds is real. So is the friction.
-    cash_per_turn: 125
-    heat_per_turn: 2
-    rep_per_turn: 2
-    is_contestable: true
-    resolution_scene: null
-
-
-  - key: the_new_build
-    name: The New Build
-    description: Gentrifying, fast. Glass-front coffee shops next to barbershops that have been there forty years, new money moving in and old operators getting squeezed toward the edges. The Backstreet Boys are here because Craig thinks it looks like the future. He might be right, which is the unsettling part. The territory generates well but doesn't carry weight â€” nobody respects flash, even when it pays.
-    cash_per_turn: 150
-    heat_per_turn: 1
-    rep_per_turn: 1
-    is_contestable: true
-    resolution_scene: null
-
-
-  - key: the_strip
-    name: The Strip
-    description: Commercial corridor, high foot traffic, visible crime dressed up nicely. Bars and restaurants where everybody has somewhere to be and nobody asks questions, which is the whole reason it works. Shared turf, historically â€” the kind of place where multiple hands are in the same pocket and everyone pretends otherwise. Good money, consistent heat, and the constant low-level negotiation of a place that belongs to whoever's standing in it right now.
-    cash_per_turn: 175
-    heat_per_turn: 2
-    rep_per_turn: 2
-    is_contestable: true
-    resolution_scene: null
-
-
-  - key: the_hill
-    name: The Hill
-    description: Old money adjacent. Legitimate fronts, quieter streets, parking that is somehow always available in a way that is either reassuring or unsettling. The Bucco Family's respectable face lives here, which means operating in the Hill means operating in their eyeline. The rep it builds is the kind that opens doors that don't have visible handles. The heat it generates is the quiet kind, which is the kind that accumulates without announcing itself.
-    cash_per_turn: 200
-    heat_per_turn: 1
-    rep_per_turn: 4
-    is_contestable: true
-    resolution_scene: null
-
-
-  - key: the_docks
-    name: The Docks
-    description: Waterfront. Shipping infrastructure, old union money, the smell of salt and diesel that never fully leaves your jacket. The Buccos have run this end of the city for thirty years and the workers who remain treat that arrangement like a fact of nature. Having territory here means having access to the city's most reliable import corridor â€” and having an ongoing conversation with the Bucco Family about where exactly your interests stop and theirs start.
-    cash_per_turn: 225
-    heat_per_turn: 3
-    rep_per_turn: 1
-    is_contestable: true
-    resolution_scene: null
+- key: the_docks
+  name: The Docks
+  description: "Waterfront. Shipping infrastructure, old union money, the smell of\
+    \ salt and diesel that never fully leaves your jacket. The Buccos have run this\
+    \ end of the city for thirty years and the workers who remain treat that arrangement\
+    \ like a fact of nature. Having territory here means having access to the city's\
+    \ most reliable import corridor \xE2\u20AC\u201D and having an ongoing conversation\
+    \ with the Bucco Family about where exactly your interests stop and theirs start."
+  cash_per_turn: 225
+  heat_per_turn: 3
+  rep_per_turn: 1
+  is_contestable: true
+  resolution_scene: null
+- key: the_flats
+  name: The Flats
+  description: "Old industrial. Wide streets built for trucks that stopped coming\
+    \ years ago, low buildings, working class holdouts who've been here long enough\
+    \ to be furniture. Dutch's turf by default and by tenure. Having a foothold here\
+    \ means having a foothold in the city's oldest criminal infrastructure \xE2\u20AC\
+    \u201D the supply chains, the relationships, the unspoken agreements that keep\
+    \ everything moving without anyone having to say so out loud."
+  cash_per_turn: 100
+  heat_per_turn: 1
+  rep_per_turn: 3
+  is_contestable: true
+  resolution_scene: null
+- key: the_hill
+  name: The Hill
+  description: Old money adjacent. Legitimate fronts, quieter streets, parking that
+    is somehow always available in a way that is either reassuring or unsettling.
+    The Bucco Family's respectable face lives here, which means operating in the Hill
+    means operating in their eyeline. The rep it builds is the kind that opens doors
+    that don't have visible handles. The heat it generates is the quiet kind, which
+    is the kind that accumulates without announcing itself.
+  cash_per_turn: 200
+  heat_per_turn: 1
+  rep_per_turn: 4
+  is_contestable: true
+  resolution_scene: null
+- key: the_new_build
+  name: The New Build
+  description: "Gentrifying, fast. Glass-front coffee shops next to barbershops that\
+    \ have been there forty years, new money moving in and old operators getting squeezed\
+    \ toward the edges. The Backstreet Boys are here because Craig thinks it looks\
+    \ like the future. He might be right, which is the unsettling part. The territory\
+    \ generates well but doesn't carry weight \xE2\u20AC\u201D nobody respects flash,\
+    \ even when it pays."
+  cash_per_turn: 150
+  heat_per_turn: 1
+  rep_per_turn: 1
+  is_contestable: true
+  resolution_scene: null
+- key: the_strip
+  name: The Strip
+  description: "Commercial corridor, high foot traffic, visible crime dressed up nicely.\
+    \ Bars and restaurants where everybody has somewhere to be and nobody asks questions,\
+    \ which is the whole reason it works. Shared turf, historically \xE2\u20AC\u201D\
+    \ the kind of place where multiple hands are in the same pocket and everyone pretends\
+    \ otherwise. Good money, consistent heat, and the constant low-level negotiation\
+    \ of a place that belongs to whoever's standing in it right now."
+  cash_per_turn: 175
+  heat_per_turn: 2
+  rep_per_turn: 2
+  is_contestable: true
+  resolution_scene: null
+- key: the_westside
+  name: The Westside
+  description: Dense residential. Corner economy. Generational crews and buildings
+    close enough together that everyone knows what their neighbors had for dinner.
+    Kings territory, contested internally as much as externally. The money here moves
+    in small amounts through a lot of hands, which means owning a piece of it means
+    managing a lot of relationships. The rep it builds is real. So is the friction.
+  cash_per_turn: 125
+  heat_per_turn: 2
+  rep_per_turn: 2
+  is_contestable: true
+  resolution_scene: null

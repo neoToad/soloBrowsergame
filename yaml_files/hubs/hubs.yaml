@@ -1,406 +1,367 @@
 hubs:
+- key: hub__apartment
+  scene_type: hub
+  title: The Apartment
+  order: 0
+  body: 'Home. Relative term. The radiator clanks. The window looks out on a brick
+    wall. There''s a corkboard on the back of the door where you''ve started pinning
+    job leads. Old habits die. New ones move in.
 
-  # ======================================================
-  # THE FLATS
-  # ======================================================
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Head to Corky's
+    order: 1
+    target_scene: hub__corkys
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Two blocks. The sign is half-lit, the way it always is.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Stop by Reyes Boxing
+    order: 2
+    target_scene: hub__reyes_boxing
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The gym smells like rubber and old sweat. Feels like somewhere.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Cross into the Westside
+    order: 3
+    target_scene: hub__westside_corner
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Different block, different rules. You clock the corners before
+      you move.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Head down to the Strip
+    order: 4
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The Strip is louder than the Flats. It always is.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+- key: hub__corkys
+  scene_type: hub
+  title: Corky's
+  order: 0
+  body: "Corky's has been here longer than most of the buildings around it. The sign\
+    \ outside is missing a letter that nobody remembers. Inside it's dark the way\
+    \ a bar should be \u2014 not romantic, just honest about what the light would\
+    \ show. Two old men have been nursing pints in the corner booth since before you\
+    \ were born. Sal is behind the bar, doing what Sal does: keeping the glasses clean\
+    \ and his head down.\n\nThere's a board on the wall near the back with notices\
+    \ pinned to it. Some of them have been there long enough to curl at the corners.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Head home
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The walk back is two blocks. The radiator is already going.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Stop by Reyes Boxing
+    order: 2
+    target_scene: hub__reyes_boxing
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Five minutes on foot. The gym's lights are on.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Head down to the Strip
+    order: 3
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The Strip is louder than the Flats. It always is.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+- key: hub__docks
+  scene_type: hub
+  title: The Docks
+  order: 0
+  body: 'The waterfront smells like it always has: diesel, brine, and the specific
+    rot of things left in water too long. The Bucco family has worked these docks
+    for two generations. Not loudly. The union halls and the shipping offices and
+    the cold storage warehouses all have the look of legitimate operations because
+    most of them are, which is exactly the point.
 
-  # -------------------------
-  # THE APARTMENT
-  # Player home base, The Flats
-  # -------------------------
 
-  - key: hub__apartment
-    scene_type: hub
-    title: The Apartment
-    order: 0
-    body: |
-      Home. Relative term. The radiator clanks. The window looks out on a brick wall. There's a corkboard on the back of the door where you've started pinning job leads. Old habits die. New ones move in.
+    The cranes don''t stop for anything. Whatever else is moving through here moves
+    on the same schedule.
 
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Head back up to the Strip
+    order: 1
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You leave the waterfront behind. The city gets louder as you go
+      up.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Head back to the Flats
+    order: 2
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Long walk. You know it well enough by now that you stop noticing
+      it.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+- key: hub__reyes_boxing
+  scene_type: hub
+  title: Reyes Boxing
+  order: 0
+  body: "Thirty years Eddie's been running this gym and it shows \u2014 not in neglect\
+    \ but in the particular wear of something used hard and maintained harder. The\
+    \ equipment is old. The floors are clean. The ring in the back has seen things.\
+    \ A speed bag in the corner ticks against its platform with the rhythm of someone\
+    \ who left an hour ago.\n\nEddie himself is usually somewhere in the room. Watching,\
+    \ or not watching, in a way that amounts to the same thing.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Head home
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You take the long way. The Flats at this hour is quiet, almost.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Stop by Corky's
+    order: 2
+    target_scene: hub__corkys
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Five minutes. The sign is half-lit, the way it always is.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Cross into the Westside
+    order: 3
+    target_scene: hub__westside_corner
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Different block, different rules. You clock the corners before
+      you move.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+- key: hub__the_strip
+  scene_type: hub
+  title: The Strip
+  order: 0
+  body: 'The Strip runs six blocks of bars, restaurants, and storefronts that have
+    learned to look legitimate without trying too hard. High foot traffic. Visible
+    money. The kind of street where a conversation in a doorway could be anything
+    and usually is something. The Backstreet Boys work the front end. Whatever else
+    happens here happens behind it.
 
-    ending:
-      ending_type: null
 
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
+    Nobody owns the Strip outright, which means everybody''s always auditioning.
 
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Head to Corky's
-        order: 1
-        target_scene: hub__corkys
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Two blocks. The sign is half-lit, the way it always is.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Stop by Reyes Boxing
-        order: 2
-        target_scene: hub__reyes_boxing
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: The gym smells like rubber and old sweat. Feels like somewhere.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Cross into the Westside
-        order: 3
-        target_scene: hub__westside_corner
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Different block, different rules. You clock the corners before you move.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Head down to the Strip
-        order: 4
-        target_scene: hub__the_strip
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: The Strip is louder than the Flats. It always is.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # CORKY'S BAR
-  # Sal's place, The Flats
-  # -------------------------
-
-  - key: hub__corkys
-    scene_type: hub
-    title: Corky's
-    order: 0
-    body: |
-      Corky's has been here longer than most of the buildings around it. The sign outside is missing a letter that nobody remembers. Inside it's dark the way a bar should be — not romantic, just honest about what the light would show. Two old men have been nursing pints in the corner booth since before you were born. Sal is behind the bar, doing what Sal does: keeping the glasses clean and his head down.
-
-      There's a board on the wall near the back with notices pinned to it. Some of them have been there long enough to curl at the corners.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-
-    ending:
-      ending_type: null
-
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Head home
-        order: 1
-        target_scene: hub__apartment
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: The walk back is two blocks. The radiator is already going.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Stop by Reyes Boxing
-        order: 2
-        target_scene: hub__reyes_boxing
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Five minutes on foot. The gym's lights are on.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Head down to the Strip
-        order: 3
-        target_scene: hub__the_strip
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: The Strip is louder than the Flats. It always is.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # REYES BOXING
-  # Eddie's gym, The Flats
-  # -------------------------
-
-  - key: hub__reyes_boxing
-    scene_type: hub
-    title: Reyes Boxing
-    order: 0
-    body: |
-      Thirty years Eddie's been running this gym and it shows — not in neglect but in the particular wear of something used hard and maintained harder. The equipment is old. The floors are clean. The ring in the back has seen things. A speed bag in the corner ticks against its platform with the rhythm of someone who left an hour ago.
-
-      Eddie himself is usually somewhere in the room. Watching, or not watching, in a way that amounts to the same thing.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-
-    ending:
-      ending_type: null
-
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Head home
-        order: 1
-        target_scene: hub__apartment
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: You take the long way. The Flats at this hour is quiet, almost.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Stop by Corky's
-        order: 2
-        target_scene: hub__corkys
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Five minutes. The sign is half-lit, the way it always is.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Cross into the Westside
-        order: 3
-        target_scene: hub__westside_corner
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Different block, different rules. You clock the corners before you move.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # ======================================================
-  # THE WESTSIDE
-  # ======================================================
-
-  # -------------------------
-  # WESTSIDE CORNER
-  # Kings territory, The Westside
-  # -------------------------
-
-  - key: hub__westside_corner
-    scene_type: hub
-    title: The Westside
-    order: 0
-    body: |
-      The Westside runs on a corner economy that's been here longer than the current crew running it. Dense blocks, deep roots, everybody knowing everybody's business and most people pretending they don't. The Kings operate here the way water operates in a pipe — you feel the pressure without seeing the source.
-
-      Things move out here. People too, if they're not careful about where they stand.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-
-    ending:
-      ending_type: null
-
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Head back to the Flats
-        order: 1
-        target_scene: hub__apartment
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Your block. The radiator. The corkboard. All of it exactly where you left it.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Head down to the Strip
-        order: 2
-        target_scene: hub__the_strip
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: The Strip picks up where the Westside leaves off. Different money, same business.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # ======================================================
-  # THE STRIP
-  # ======================================================
-
-  # -------------------------
-  # THE STRIP
-  # Shared territory, high foot traffic
-  # -------------------------
-
-  - key: hub__the_strip
-    scene_type: hub
-    title: The Strip
-    order: 0
-    body: |
-      The Strip runs six blocks of bars, restaurants, and storefronts that have learned to look legitimate without trying too hard. High foot traffic. Visible money. The kind of street where a conversation in a doorway could be anything and usually is something. The Backstreet Boys work the front end. Whatever else happens here happens behind it.
-
-      Nobody owns the Strip outright, which means everybody's always auditioning.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-
-    ending:
-      ending_type: null
-
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Head back to the Flats
-        order: 1
-        target_scene: hub__apartment
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: You peel off before the Strip gets too loud. The Flats is quieter.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Cross into the Westside
-        order: 2
-        target_scene: hub__westside_corner
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: The street changes at the intersection. You feel it before you see it.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Head down to the Docks
-        order: 3
-        target_scene: hub__docks
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: The smell hits you before the water does. Salt and diesel and old money.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # ======================================================
-  # THE DOCKS
-  # ======================================================
-
-  # -------------------------
-  # THE DOCKS
-  # Bucco Family territory, waterfront
-  # -------------------------
-
-  - key: hub__docks
-    scene_type: hub
-    title: The Docks
-    order: 0
-    body: |
-      The waterfront smells like it always has: diesel, brine, and the specific rot of things left in water too long. The Bucco family has worked these docks for two generations. Not loudly. The union halls and the shipping offices and the cold storage warehouses all have the look of legitimate operations because most of them are, which is exactly the point.
-
-      The cranes don't stop for anything. Whatever else is moving through here moves on the same schedule.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-
-    ending:
-      ending_type: null
-
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Head back up to the Strip
-        order: 1
-        target_scene: hub__the_strip
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: You leave the waterfront behind. The city gets louder as you go up.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Head back to the Flats
-        order: 2
-        target_scene: hub__apartment
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: Long walk. You know it well enough by now that you stop noticing it.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Head back to the Flats
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You peel off before the Strip gets too loud. The Flats is quieter.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Cross into the Westside
+    order: 2
+    target_scene: hub__westside_corner
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The street changes at the intersection. You feel it before you
+      see it.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Head down to the Docks
+    order: 3
+    target_scene: hub__docks
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The smell hits you before the water does. Salt and diesel and
+      old money.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+- key: hub__westside_corner
+  scene_type: hub
+  title: The Westside
+  order: 0
+  body: "The Westside runs on a corner economy that's been here longer than the current\
+    \ crew running it. Dense blocks, deep roots, everybody knowing everybody's business\
+    \ and most people pretending they don't. The Kings operate here the way water\
+    \ operates in a pipe \u2014 you feel the pressure without seeing the source.\n\
+    \nThings move out here. People too, if they're not careful about where they stand.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Head back to the Flats
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Your block. The radiator. The corkboard. All of it exactly where
+      you left it.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Head down to the Strip
+    order: 2
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The Strip picks up where the Westside leaves off. Different money,
+      same business.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []

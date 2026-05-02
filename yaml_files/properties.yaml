@@ -1,60 +1,41 @@
-﻿# =============================================================================
-# WORLD DATA: PROPERTIES
-# File: yaml_files/properties.yaml
-# Import this file: python manage.py import_world yaml_files/properties.yaml
-# Import all YAML files: python manage.py import_all
-# =============================================================================
-#
-# property_type options: safehouse | business
-# cash_per_turn, heat_per_turn, rep_per_turn: applied each turn while owned.
-# Use negative values to subtract (example: heat_per_turn: -2).
-# is_contestable: if true, other gangs can attempt to take this property.
-# resolution_scene: scene key for a contest/defense event; null if none yet.
-# =============================================================================
-
 properties:
-
-  # --- BUSINESSES ---
-
-  - key: corkys_bar
-    name: Corky's Bar
-    description: A Flats institution that never should have survived this long and keeps surviving anyway. Sal runs it like a man who has nowhere else to be, which is accurate. The regulars are loyal in the way that people are loyal to things that have stopped surprising them. Owning a piece of this means owning a piece of the neighborhood's institutional memory â€” and the foot traffic that comes with it.
-    property_type: business
-    cash_per_turn: 75
-    heat_per_turn: 0
-    rep_per_turn: 2
-    is_contestable: true
-    resolution_scene: null
-
-  - key: dockside_warehouse_unit
-    name: Dockside Warehouse Unit
-    description: One unit in a working dockside warehouse where the union workers have learned to ask the right questions and ignore the wrong ones. High throughput, good cover, plausible deniability baked into the lease. The Buccos have held the surrounding units for years. Having your own foothold here means playing in their yard, which is either an opportunity or a problem depending on how the next six months go.
-    property_type: business
-    cash_per_turn: 200
-    heat_per_turn: 3
-    rep_per_turn: 0
-    is_contestable: true
-    resolution_scene: null
-
-  # --- SAFEHOUSES ---
-
-  - key: westside_safehouse
-    name: Westside Safehouse
-    description: A second-floor flat on a residential Kings block. Unremarkable from the street, which is the point. The neighbors have seen enough to know what it is and enough to know not to say so. Useful for cooling off after something loud, or for keeping a low profile while the Flats gets too warm. The Kings know it's there. That's a condition of access, not a flaw in the arrangement.
-    property_type: safehouse
-    cash_per_turn: 0
-    heat_per_turn: -2
-    rep_per_turn: 0
-    is_contestable: true
-    resolution_scene: null
-
-  - key: flats_lockup
-    name: Flats Lockup
-    description: A storage unit on the industrial edge of the Flats, three blocks from anything anyone would call a landmark. Dutch's operation used to run through here before it outgrew the space. The new lock is yours. Nobody comes by. That's the whole value proposition â€” a place where things can sit quietly until you need them, and where you can do the same.
-    property_type: safehouse
-    cash_per_turn: 0
-    heat_per_turn: -1
-    rep_per_turn: 0
-    is_contestable: false
-    resolution_scene: null
-
+- key: corkys_bar
+  name: Corky's Bar
+  property_type: business
+  cash_per_turn: 75
+  heat_per_turn: 0
+  rep_per_turn: 2
+  is_contestable: true
+  resolution_scene: null
+- key: dockside_warehouse_unit
+  name: Dockside Warehouse Unit
+  property_type: business
+  cash_per_turn: 200
+  heat_per_turn: 3
+  rep_per_turn: 0
+  is_contestable: true
+  resolution_scene: null
+- key: flats_lockup
+  name: Flats Lockup
+  property_type: safehouse
+  cash_per_turn: 0
+  heat_per_turn: -1
+  rep_per_turn: 0
+  is_contestable: false
+  resolution_scene: null
+- key: storage_unit
+  name: Storage Unit
+  property_type: safehouse
+  cash_per_turn: 0
+  heat_per_turn: 0
+  rep_per_turn: 0
+  is_contestable: false
+  resolution_scene: null
+- key: westside_safehouse
+  name: Westside Safehouse
+  property_type: safehouse
+  cash_per_turn: 0
+  heat_per_turn: -2
+  rep_per_turn: 0
+  is_contestable: true
+  resolution_scene: null

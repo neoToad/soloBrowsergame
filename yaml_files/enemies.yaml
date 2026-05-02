@@ -1,347 +1,297 @@
-﻿enemies:
+enemies:
+- key: big_mal
+  name: Big Mal
+  description: "Independent heavy. For hire. No faction loyalty \xE2\u20AC\u201D works\
+    \ for whoever's paying, which tells you everything about the person who sent him.\
+    \ Shows up when someone wants to send a message they're paying for. The message\
+    \ is that they're serious enough to pay for Mal.\n"
+  max_hp: 55
+  attack_modifier: 5
+  defense: 14
+  damage_min: 5
+  damage_max: 12
+- key: blues_officer
+  name: Blues Officer
+  description: "Cahill's people. Doesn't say anything incriminating. Doesn't need\
+    \ to \xE2\u20AC\u201D the badge does the threatening. Trained, structured, and\
+    \ operating with the full weight of the system behind him. Combat with a Blues\
+    \ officer is a serious escalation. The heat cost is significant. Not a casual\
+    \ encounter.\n"
+  max_hp: 35
+  attack_modifier: 4
+  defense: 14
+  damage_min: 4
+  damage_max: 10
+- key: bsb_soldier
+  name: BSB Soldier
+  description: "Punches up in self-image. Punches at or below weight in practice.\
+    \ Craig's people confuse flash for power and it shows. The danger is volume \xE2\
+    \u20AC\u201D they come in numbers because individually they know better.\n"
+  max_hp: 22
+  attack_modifier: 2
+  defense: 10
+  damage_min: 3
+  damage_max: 7
+- key: bucco_associate
+  name: Bucco Associate
+  description: 'Old world structure means old world patience. He will wait for the
+    right moment in a way that street crews genuinely can''t. Suit jacket. Doesn''t
+    raise his voice. The calm is the threat.
 
-  # -------------------------
-  # STREET LEVEL
-  # -------------------------
+    '
+  max_hp: 32
+  attack_modifier: 3
+  defense: 13
+  damage_min: 4
+  damage_max: 9
+- key: bucco_capo
+  name: Bucco Capo
+  description: "Been with the family long enough that Richie Bucco knows his children's\
+    \ names. That's not warmth \xE2\u20AC\u201D that's depth of investment. Removing\
+    \ him is a family matter now, not just a business one.\n"
+  max_hp: 50
+  attack_modifier: 5
+  defense: 14
+  damage_min: 5
+  damage_max: 12
+- key: bucco_muscle
+  name: Bucco Muscle
+  description: 'Hired. Large. The kind of large that comes with a suit. Very little
+    expression. Doesn''t want to be here any more than you do, which is somehow not
+    reassuring.
 
-  - key: street_thug
-    name: Street Thug
-    description: >
-      Nobody's soldier. Works alone or in loose pairs, opportunistic. Not
-      trained, not disciplined, but willing enough that it amounts to the same
-      thing in a dark stairwell.
-    max_hp: 18
-    attack_modifier: 1
-    defense: 9
-    damage_min: 2
-    damage_max: 6
+    '
+  max_hp: 40
+  attack_modifier: 4
+  defense: 13
+  damage_min: 4
+  damage_max: 11
+- key: cahill_detail
+  name: Cahill's Detail
+  description: 'Two plainclothes officers. Professional. Arrives without announcement.
+    The fact that Cahill sent a detail means he''s paying attention, which is the
+    second worst thing that can happen. The worst thing is what the detail does when
+    it gets there.
 
-  - key: street_thug_x2
-    name: Two Street Thugs
-    description: >
-      Separately, a problem. Together, a system â€” one pushes, one flanks.
-      They've done it before. Not coordinated exactly, but practiced.
-    max_hp: 32
-    attack_modifier: 3
-    defense: 10
-    damage_min: 3
-    damage_max: 8
+    '
+  max_hp: 60
+  attack_modifier: 5
+  defense: 14
+  damage_min: 5
+  damage_max: 11
+- key: corner_boy
+  name: Corner Boy
+  description: 'Kings or BSB, depending on the block. Low-tier, more committed than
+    a generic thug. Has something to prove, which makes him more dangerous than his
+    experience warrants.
 
-  - key: street_thug_x3
-    name: Three Street Thugs
-    description: >
-      Numbers are the whole strategy. They know it. You know it. The only
-      question is whether you can make that strategy expensive enough that
-      someone reconsiders.
-    max_hp: 40
-    attack_modifier: 4
-    defense: 10
-    damage_min: 4
-    damage_max: 10
+    '
+  max_hp: 20
+  attack_modifier: 2
+  defense: 10
+  damage_min: 2
+  damage_max: 7
+- key: craig_security
+  name: Craig's Security
+  description: "Professional hired help, not crew. Impersonal. More effective than\
+    \ BSB regulars because they don't have anything to prove \xE2\u20AC\u201D they're\
+    \ just working. Craig pays well enough to get the good kind.\n"
+  max_hp: 32
+  attack_modifier: 4
+  defense: 13
+  damage_min: 4
+  damage_max: 9
+- key: darius
+  name: Darius
+  description: 'Named enemy. Competent. Mid-level operator in Craig''s orbit who runs
+    Strip-adjacent work without permission. Young, ambitious, committed to a version
+    of himself that is doing very well. Loses because he misjudged the situation,
+    not because he''s weak. Dangerous in a rematch.
 
-  - key: corner_boy
-    name: Corner Boy
-    description: >
-      Kings or BSB, depending on the block. Low-tier, more committed than a
-      generic thug. Has something to prove, which makes him more dangerous
-      than his experience warrants.
-    max_hp: 20
-    attack_modifier: 2
-    defense: 10
-    damage_min: 2
-    damage_max: 7
+    '
+  max_hp: 34
+  attack_modifier: 4
+  defense: 12
+  damage_min: 4
+  damage_max: 9
+- key: dockworker_hostile
+  name: Hostile Dockworker
+  description: 'Not mob, but mob-adjacent. Union solidarity takes interesting forms
+    at the Docks. Has been doing physical work for thirty years and it shows. Didn''t
+    want this fight. Is going to finish it anyway.
 
-  - key: westside_runner
-    name: Westside Runner
-    description: >
-      Young, fast, not yet sure how much he's willing to lose. Kings material
-      but not there yet. The danger is that he's trying to prove something,
-      which makes him harder to read than someone who knows what they're doing.
-    max_hp: 20
-    attack_modifier: 2
-    defense: 10
-    damage_min: 2
-    damage_max: 7
+    '
+  max_hp: 30
+  attack_modifier: 3
+  defense: 11
+  damage_min: 3
+  damage_max: 9
+- key: dutch_enforcer
+  name: Dutch's Enforcer
+  description: 'Doesn''t talk much. Doesn''t need to. The fact that Dutch sent him
+    specifically means you''ve cleared through everything else and arrived somewhere
+    serious.
 
-  - key: westside_pair
-    name: Two Westside Runners
-    description: >
-      Both young, both fast, both with something to prove. The problem with
-      fighting people who haven't learned their limits yet is that they
-      don't know when to stop.
-    max_hp: 36
-    attack_modifier: 3
-    defense: 11
-    damage_min: 3
-    damage_max: 9
+    '
+  max_hp: 40
+  attack_modifier: 4
+  defense: 13
+  damage_min: 4
+  damage_max: 10
+- key: harlan_enforcer
+  name: Harlan Enforcer
+  description: "Mid-tier. Professional. Doesn't get creative, doesn't make mistakes.\
+    \ Not the guy Dutch sends when he wants to make a point \xE2\u20AC\u201D the guy\
+    \ Dutch sends when the point has already been made and ignored.\n"
+  max_hp: 36
+  attack_modifier: 4
+  defense: 13
+  damage_min: 4
+  damage_max: 10
+- key: harlan_muscle
+  name: Harlan Street Muscle
+  description: 'Dutch sends muscle, not lawyers. This is the muscle. Older than the
+    Kings'' guys, quieter about it, less interested in the theatre of the thing. Has
+    done this enough times that it''s just work.
 
-  - key: terrell
-    name: Terrell
-    description: >
-      Young, maybe twenty-five. Gold chain, clean sneakers, eyes that clock
-      you the second you round the corner. Got reach but no discipline. The
-      stoop light flickers. Somewhere above you a window slides shut.
-    max_hp: 10
-    attack_modifier: -4
-    defense: 8
-    damage_min: 1
-    damage_max: 3
+    '
+  max_hp: 30
+  attack_modifier: 3
+  defense: 12
+  damage_min: 3
+  damage_max: 8
+- key: harlan_muscle_x2
+  name: Two Harlan Muscle
+  description: "One talks, one doesn't. The one who doesn't is the problem. Dutch's\
+    \ people work in pairs for a reason \xE2\u20AC\u201D they've thought about the\
+    \ geometry of a room before they walk into it.\n"
+  max_hp: 52
+  attack_modifier: 4
+  defense: 12
+  damage_min: 4
+  damage_max: 9
+- key: kings_enforcer
+  name: Kings Enforcer
+  description: 'Senior muscle. Deliberate. Slower than a soldier but reads the room
+    in a way the soldiers don''t bother with. The loose council structure means he''s
+    answering to someone, but you won''t know who until it matters.
 
-  # -------------------------
-  # HARLAN STREET CREW
-  # -------------------------
+    '
+  max_hp: 38
+  attack_modifier: 4
+  defense: 13
+  damage_min: 4
+  damage_max: 10
+- key: kings_lieutenant
+  name: Kings Lieutenant
+  description: 'One of several. The internal politics mean he''s always half-managing
+    someone else''s problem as well as his own. Experienced, genuinely dangerous,
+    and irritable about it.
 
-  - key: harlan_muscle
-    name: Harlan Street Muscle
-    description: >
-      Dutch sends muscle, not lawyers. This is the muscle. Older than the
-      Kings' guys, quieter about it, less interested in the theatre of
-      the thing. Has done this enough times that it's just work.
-    max_hp: 30
-    attack_modifier: 3
-    defense: 12
-    damage_min: 3
-    damage_max: 8
+    '
+  max_hp: 38
+  attack_modifier: 4
+  defense: 13
+  damage_min: 4
+  damage_max: 10
+- key: kings_soldier
+  name: Kings Soldier
+  description: "Generational Westside. Knows every block, every exit, every face that\
+    \ doesn't belong. Fights like someone who grew up fighting \xE2\u20AC\u201D territorial,\
+    \ committed, not easily rattled.\n"
+  max_hp: 28
+  attack_modifier: 3
+  defense: 11
+  damage_min: 3
+  damage_max: 8
+- key: pruitt_crew
+  name: Pruitt's Crew
+  description: 'Loyalists. Fight together and won''t run unless Pruitt''s out. The
+    northern Westside blocks are their floor and they know every inch of it. Removing
+    them is a statement, and the Kings'' council will read it as one.
 
-  - key: harlan_muscle_x2
-    name: Two Harlan Muscle
-    description: >
-      One talks, one doesn't. The one who doesn't is the problem. Dutch's
-      people work in pairs for a reason â€” they've thought about the geometry
-      of a room before they walk into it.
-    max_hp: 52
-    attack_modifier: 4
-    defense: 12
-    damage_min: 4
-    damage_max: 9
+    '
+  max_hp: 48
+  attack_modifier: 4
+  defense: 12
+  damage_min: 4
+  damage_max: 10
+- key: street_thug
+  name: Street Thug
+  description: 'Nobody''s soldier. Works alone or in loose pairs, opportunistic. Not
+    trained, not disciplined, but willing enough that it amounts to the same thing
+    in a dark stairwell.
 
-  - key: harlan_enforcer
-    name: Harlan Enforcer
-    description: >
-      Mid-tier. Professional. Doesn't get creative, doesn't make mistakes.
-      Not the guy Dutch sends when he wants to make a point â€” the guy Dutch
-      sends when the point has already been made and ignored.
-    max_hp: 36
-    attack_modifier: 4
-    defense: 13
-    damage_min: 4
-    damage_max: 10
+    '
+  max_hp: 18
+  attack_modifier: 1
+  defense: 9
+  damage_min: 2
+  damage_max: 6
+- key: street_thug_x2
+  name: Two Street Thugs
+  description: "Separately, a problem. Together, a system \xE2\u20AC\u201D one pushes,\
+    \ one flanks. They've done it before. Not coordinated exactly, but practiced.\n"
+  max_hp: 32
+  attack_modifier: 3
+  defense: 10
+  damage_min: 3
+  damage_max: 8
+- key: street_thug_x3
+  name: Three Street Thugs
+  description: 'Numbers are the whole strategy. They know it. You know it. The only
+    question is whether you can make that strategy expensive enough that someone reconsiders.
 
-  - key: dutch_enforcer
-    name: Dutch's Enforcer
-    description: >
-      Doesn't talk much. Doesn't need to. The fact that Dutch sent him
-      specifically means you've cleared through everything else and arrived
-      somewhere serious.
-    max_hp: 40
-    attack_modifier: 4
-    defense: 13
-    damage_min: 4
-    damage_max: 10
+    '
+  max_hp: 40
+  attack_modifier: 4
+  defense: 10
+  damage_min: 4
+  damage_max: 10
+- key: terrell
+  name: Terrell
+  description: 'Young, maybe twenty-five. Gold chain, clean sneakers, eyes that clock
+    you the second you round the corner. Got reach but no discipline. The stoop light
+    flickers. Somewhere above you a window slides shut.
 
-  # -------------------------
-  # WESTSIDE KINGS
-  # -------------------------
+    '
+  max_hp: 10
+  attack_modifier: -4
+  defense: 8
+  damage_min: 1
+  damage_max: 3
+- key: the_cook
+  name: The Cook
+  description: "Defensive encounter only \xE2\u20AC\u201D he didn't want this. Zonk\
+    \ cook, not a fighter. Has been improvising solutions to problems his whole life\
+    \ and that habit does not turn off under pressure. Better with improvised weapons\
+    \ than anyone expects. The workspace gives him options.\n"
+  max_hp: 22
+  attack_modifier: 2
+  defense: 10
+  damage_min: 3
+  damage_max: 8
+- key: westside_pair
+  name: Two Westside Runners
+  description: 'Both young, both fast, both with something to prove. The problem with
+    fighting people who haven''t learned their limits yet is that they don''t know
+    when to stop.
 
-  - key: kings_soldier
-    name: Kings Soldier
-    description: >
-      Generational Westside. Knows every block, every exit, every face that
-      doesn't belong. Fights like someone who grew up fighting â€” territorial,
-      committed, not easily rattled.
-    max_hp: 28
-    attack_modifier: 3
-    defense: 11
-    damage_min: 3
-    damage_max: 8
+    '
+  max_hp: 36
+  attack_modifier: 3
+  defense: 11
+  damage_min: 3
+  damage_max: 9
+- key: westside_runner
+  name: Westside Runner
+  description: 'Young, fast, not yet sure how much he''s willing to lose. Kings material
+    but not there yet. The danger is that he''s trying to prove something, which makes
+    him harder to read than someone who knows what they''re doing.
 
-  - key: kings_enforcer
-    name: Kings Enforcer
-    description: >
-      Senior muscle. Deliberate. Slower than a soldier but reads the room
-      in a way the soldiers don't bother with. The loose council structure
-      means he's answering to someone, but you won't know who until it matters.
-    max_hp: 38
-    attack_modifier: 4
-    defense: 13
-    damage_min: 4
-    damage_max: 10
-
-  - key: kings_lieutenant
-    name: Kings Lieutenant
-    description: >
-      One of several. The internal politics mean he's always half-managing
-      someone else's problem as well as his own. Experienced, genuinely
-      dangerous, and irritable about it.
-    max_hp: 38
-    attack_modifier: 4
-    defense: 13
-    damage_min: 4
-    damage_max: 10
-
-  - key: pruitt_crew
-    name: Pruitt's Crew
-    description: >
-      Loyalists. Fight together and won't run unless Pruitt's out. The
-      northern Westside blocks are their floor and they know every inch of it.
-      Removing them is a statement, and the Kings' council will read it as one.
-    max_hp: 48
-    attack_modifier: 4
-    defense: 12
-    damage_min: 4
-    damage_max: 10
-
-  # -------------------------
-  # BACKSTREET BOYS
-  # -------------------------
-
-  - key: bsb_soldier
-    name: BSB Soldier
-    description: >
-      Punches up in self-image. Punches at or below weight in practice.
-      Craig's people confuse flash for power and it shows. The danger is
-      volume â€” they come in numbers because individually they know better.
-    max_hp: 22
-    attack_modifier: 2
-    defense: 10
-    damage_min: 3
-    damage_max: 7
-
-  - key: darius
-    name: Darius
-    description: >
-      Named enemy. Competent. Mid-level operator in Craig's orbit who runs
-      Strip-adjacent work without permission. Young, ambitious, committed to
-      a version of himself that is doing very well. Loses because he misjudged
-      the situation, not because he's weak. Dangerous in a rematch.
-    max_hp: 34
-    attack_modifier: 4
-    defense: 12
-    damage_min: 4
-    damage_max: 9
-
-  - key: craig_security
-    name: Craig's Security
-    description: >
-      Professional hired help, not crew. Impersonal. More effective than BSB
-      regulars because they don't have anything to prove â€” they're just working.
-      Craig pays well enough to get the good kind.
-    max_hp: 32
-    attack_modifier: 4
-    defense: 13
-    damage_min: 4
-    damage_max: 9
-
-  # -------------------------
-  # BUCCO FAMILY
-  # -------------------------
-
-  - key: bucco_associate
-    name: Bucco Associate
-    description: >
-      Old world structure means old world patience. He will wait for the right
-      moment in a way that street crews genuinely can't. Suit jacket. Doesn't
-      raise his voice. The calm is the threat.
-    max_hp: 32
-    attack_modifier: 3
-    defense: 13
-    damage_min: 4
-    damage_max: 9
-
-  - key: bucco_muscle
-    name: Bucco Muscle
-    description: >
-      Hired. Large. The kind of large that comes with a suit. Very little
-      expression. Doesn't want to be here any more than you do, which is
-      somehow not reassuring.
-    max_hp: 40
-    attack_modifier: 4
-    defense: 13
-    damage_min: 4
-    damage_max: 11
-
-  - key: bucco_capo
-    name: Bucco Capo
-    description: >
-      Been with the family long enough that Richie Bucco knows his children's
-      names. That's not warmth â€” that's depth of investment. Removing him
-      is a family matter now, not just a business one.
-    max_hp: 50
-    attack_modifier: 5
-    defense: 14
-    damage_min: 5
-    damage_max: 12
-
-  - key: dockworker_hostile
-    name: Hostile Dockworker
-    description: >
-      Not mob, but mob-adjacent. Union solidarity takes interesting forms at
-      the Docks. Has been doing physical work for thirty years and it shows.
-      Didn't want this fight. Is going to finish it anyway.
-    max_hp: 30
-    attack_modifier: 3
-    defense: 11
-    damage_min: 3
-    damage_max: 9
-
-  # -------------------------
-  # THE BLUES
-  # -------------------------
-
-  - key: blues_officer
-    name: Blues Officer
-    description: >
-      Cahill's people. Doesn't say anything incriminating. Doesn't need to â€”
-      the badge does the threatening. Trained, structured, and operating with
-      the full weight of the system behind him. Combat with a Blues officer
-      is a serious escalation. The heat cost is significant. Not a casual encounter.
-    max_hp: 35
-    attack_modifier: 4
-    defense: 14
-    damage_min: 4
-    damage_max: 10
-
-  - key: cahill_detail
-    name: Cahill's Detail
-    description: >
-      Two plainclothes officers. Professional. Arrives without announcement.
-      The fact that Cahill sent a detail means he's paying attention, which
-      is the second worst thing that can happen. The worst thing is what
-      the detail does when it gets there.
-    max_hp: 60
-    attack_modifier: 5
-    defense: 14
-    damage_min: 5
-    damage_max: 11
-
-  # -------------------------
-  # NAMED / SPECIAL
-  # -------------------------
-
-  - key: big_mal
-    name: Big Mal
-    description: >
-      Independent heavy. For hire. No faction loyalty â€” works for whoever's
-      paying, which tells you everything about the person who sent him. Shows
-      up when someone wants to send a message they're paying for. The message
-      is that they're serious enough to pay for Mal.
-    max_hp: 55
-    attack_modifier: 5
-    defense: 14
-    damage_min: 5
-    damage_max: 12
-
-  - key: the_cook
-    name: The Cook
-    description: >
-      Defensive encounter only â€” he didn't want this. Zonk cook, not a
-      fighter. Has been improvising solutions to problems his whole life and
-      that habit does not turn off under pressure. Better with improvised
-      weapons than anyone expects. The workspace gives him options.
-    max_hp: 22
-    attack_modifier: 2
-    defense: 10
-    damage_min: 3
-    damage_max: 8
-
-
+    '
+  max_hp: 20
+  attack_modifier: 2
+  defense: 10
+  damage_min: 2
+  damage_max: 7

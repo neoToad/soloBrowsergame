@@ -1,224 +1,182 @@
 items:
-
-  # -------------------------
-  # WEAPONS
-  # Passive strength bonus while carried.
-  # -------------------------
-
-  - key: brass_knuckles
-    name: Brass Knuckles
-    description: Someone else's initials scratched into the base.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: strength
-    passive_value: 2
-
-  - key: pipe
-    name: Length of Pipe
-    description: Galvanized. Repurposed from something structural.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: strength
-    passive_value: 2
-
-  - key: crowbar
-    name: Crowbar
-    description: Makes argument in a language everyone understands.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: strength
-    passive_value: 3
-
-  - key: switchblade
-    name: Switchblade
-    description: Spring-loaded, matte handle. Works first time every time.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: strength
-    passive_value: 3
-
-  - key: 9mm
-    name: 9mm
-    description: Clean. Registered to someone who reported it lost.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: strength
-    passive_value: 5
-
-  - key: burner_pistol
-    name: Burner Pistol
-    description: Unregistered. Has history you don't know about and don't want to.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: strength
-    passive_value: 6
-
-  # -------------------------
-  # TOOLS & GEAR
-  # No mechanical effect — presence in inventory gates choices via has_item requirements.
-  # Exception: police_scanner passively reduces heat via passive_stat.
-  # -------------------------
-
-  - key: lockpick_set
-    name: Lockpick Set
-    description: The good kind, not the tourist kind.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: ""
-    passive_value: 0
-
-  - key: bolt_cutters
-    name: Bolt Cutters
-    description: The big ones. For serious locks or light panic.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: ""
-    passive_value: 0
-
-  - key: zip_ties
-    name: Zip Ties
-    description: A handful. Multi-use.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: ""
-    passive_value: 0
-
-  - key: burner_phone
-    name: Burner Phone
-    description: Fresh SIM. Untraceable for now.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: ""
-    passive_value: 0
-
-  - key: duct_tape
-    name: Duct Tape
-    description: No further description needed.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: ""
-    passive_value: 0
-
-  - key: police_scanner
-    name: Police Scanner
-    description: Old model, still works, picks up most of what you need.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: intellect
-    passive_value: 3
-
-  # -------------------------
-  # CONSUMABLES
-  # is_consumable: true. Removed from inventory on use.
-  # heal_hp: effect_value is HP restored (negative = HP cost).
-  # add_stat: permanently increases effect_stat by effect_value.
-  # -------------------------
-
-  - key: zonk_smoked
-    name: Zonk (smoked)
-    description: The standard. Mellow, dissociative.
-    is_consumable: true
-    effect_type: heal_hp
-    effect_stat: ""
-    effect_value: 10
-    passive_stat: ""
-    passive_value: 0
-
-  - key: zonk_pill
-    name: Zonk (pill)
-    description: Slow release. Hallucinogenic edge. Harder to dose.
-    is_consumable: true
-    effect_type: heal_hp
-    effect_stat: ""
-    effect_value: 15
-    passive_stat: ""
-    passive_value: 0
-
-  # -------------------------
-  # DOCUMENTS & MACGUFFINS
-  # No effects. Exist only to satisfy has_item requirements.
-  # -------------------------
-
-  - key: package_sealed
-    name: Sealed Package
-    description: You don't know what's in it. That's the job.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: ""
-    passive_value: 0
-
-  - key: ledger
-    name: Ledger
-    description: Handwritten. Names, numbers, dates. Belongs to someone who wants it back.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: ""
-    passive_value: 0
-
-  - key: envelope_cash
-    name: Envelope of Cash
-    description: Unmarked bills, rubber-banded.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: ""
-    passive_value: 0
-
-  - key: flash_drive
-    name: Flash Drive
-    description: Small, cheap, contents unknown.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: ""
-    passive_value: 0
-
-  - key: photo
-    name: Photograph
-    description: Someone who would rather not be photographed doing what they're doing.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: ""
-    passive_value: 0
-
-  - key: key_storage
-    name: Storage Unit Key
-    description: A key. Number stamped on the fob.
-    is_consumable: false
-    effect_type: ""
-    effect_stat: ""
-    effect_value: 0
-    passive_stat: ""
-    passive_value: 0
+- key: 9mm
+  name: 9mm
+  description: Clean. Registered to someone who reported it lost.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: strength
+  passive_value: 5
+- key: bolt_cutters
+  name: Bolt Cutters
+  description: The big ones. For serious locks or light panic.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: ''
+  passive_value: 0
+- key: brass_knuckles
+  name: Brass Knuckles
+  description: Someone else's initials scratched into the base.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: strength
+  passive_value: 2
+- key: burner_phone
+  name: Burner Phone
+  description: Fresh SIM. Untraceable for now.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: ''
+  passive_value: 0
+- key: burner_pistol
+  name: Burner Pistol
+  description: Unregistered. Has history you don't know about and don't want to.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: strength
+  passive_value: 6
+- key: crowbar
+  name: Crowbar
+  description: Makes argument in a language everyone understands.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: strength
+  passive_value: 3
+- key: duct_tape
+  name: Duct Tape
+  description: No further description needed.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: ''
+  passive_value: 0
+- key: envelope_cash
+  name: Envelope of Cash
+  description: Unmarked bills, rubber-banded.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: ''
+  passive_value: 0
+- key: flash_drive
+  name: Flash Drive
+  description: Small, cheap, contents unknown.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: ''
+  passive_value: 0
+- key: key_storage
+  name: Storage Unit Key
+  description: A key. Number stamped on the fob.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: ''
+  passive_value: 0
+- key: ledger
+  name: Ledger
+  description: Handwritten. Names, numbers, dates. Belongs to someone who wants it
+    back.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: ''
+  passive_value: 0
+- key: lockpick_set
+  name: Lockpick Set
+  description: The good kind, not the tourist kind.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: ''
+  passive_value: 0
+- key: package_sealed
+  name: Sealed Package
+  description: You don't know what's in it. That's the job.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: ''
+  passive_value: 0
+- key: photo
+  name: Photograph
+  description: Someone who would rather not be photographed doing what they're doing.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: ''
+  passive_value: 0
+- key: pipe
+  name: Length of Pipe
+  description: Galvanized. Repurposed from something structural.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: strength
+  passive_value: 2
+- key: police_scanner
+  name: Police Scanner
+  description: Old model, still works, picks up most of what you need.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: intellect
+  passive_value: 3
+- key: switchblade
+  name: Switchblade
+  description: Spring-loaded, matte handle. Works first time every time.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: strength
+  passive_value: 3
+- key: zip_ties
+  name: Zip Ties
+  description: A handful. Multi-use.
+  is_consumable: false
+  effect_type: ''
+  effect_stat: ''
+  effect_value: 0
+  passive_stat: ''
+  passive_value: 0
+- key: zonk_pill
+  name: Zonk (pill)
+  description: Slow release. Hallucinogenic edge. Harder to dose.
+  is_consumable: true
+  effect_type: heal_hp
+  effect_stat: ''
+  effect_value: 15
+  passive_stat: ''
+  passive_value: 0
+- key: zonk_smoked
+  name: Zonk (smoked)
+  description: The standard. Mellow, dissociative.
+  is_consumable: true
+  effect_type: heal_hp
+  effect_stat: ''
+  effect_value: 10
+  passive_stat: ''
+  passive_value: 0
