@@ -1,613 +1,600 @@
 quest:
   key: the-call
   title: The Call
-  description: >
-    Your sister reached out. First time in three years. She needs something taken care of. Family's family.
+  description: 'Your sister reached out. First time in three years. She needs something
+    taken care of. Family''s family.
+
+    '
   arc: intro
   arc_order: 1
   is_repeatable: false
   hub_scenes:
-    - hub__apartment
+  - hub__apartment
   entrance_scene: the-call__four-days-out
   requirements: []
-
 scenes:
-
-  # -------------------------
-  # ENTRANCE SCENE
-  # -------------------------
-
-  - key: the-call__four-days-out
-    scene_type: normal
-    title: Four Days Out
-    order: 10
-    body: |
-      Four days out and the city has already made its position clear: it didn't miss you. The apartment is exactly how you left it, which means the water stain on the ceiling is still shaped like a boot, the radiator still clanks like it's trying to tell you something, and the stack of mail by the door is three years deep and entirely bills. The envelope of cash you came home with is already half gone. Your parole officer wants you in legitimate work by the end of the month. Your old crew hasn't called.
-
-      All things considered, it could be worse. You're working on figuring out how.
-
-      Then your phone buzzes on the counter. Your sister's name on the screen — Vickie — and three years of silence sitting behind it like a held breath. She's calling at nine on a Tuesday night, which means either something has gone wrong or something is about to, and with Vickie the line between those two has always been thin. You stare at it for two rings.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Answer it
-        order: 1
-        target_scene: the-call__her-voice
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: You pick up. Neither of you says anything for a moment.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Let it ring out
-        order: 2
-        target_scene: the-call__her-voice
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: It goes to voicemail. Twenty seconds later, a text. I need help. Please. Then a second text, four minutes after the first — Please answer, its an emergency. You decide to call her.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # HER VOICE
-  # -------------------------
-
-  - key: the-call__her-voice
-    scene_type: normal
-    title: Her Voice
-    order: 20
-    body: |
-      She doesn't say hello. She launches into it like she's been rehearsing, which she probably has — Vickie always rehearses the part where she asks for something and never quite the part that comes before it.
-
-      "There's this guy, Terrell. Young, maybe twenty-five, gold chain, acts like he's somebody. He keeps coming around saying I owe him for something Destiny ran up — my neighbor, it's complicated, I'll explain later. Second time he came by he put his hand on my door frame and told me if I didn't have something for him by the end of the week he was gonna break my legs." A pause. "He said it like that. Just said it. Like it was nothing."
-
-      You ask if she's okay. Long pause.
-
-      "I'm fine," she says. "I just need it to stop."
-
-      Another pause. Longer.
-
-      "I didn't want to call you," she says. "I want you to know that." Which is a very Vickie thing to say to someone she is currently calling.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Tell her you'll handle it
-        order: 1
-        target_scene: the-call__terrell
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: She hangs up before you can say anything else. Classic.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Ask her why she called you specifically
-        order: 2
-        target_scene: the-call__why-you
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: A pause. Then — "Because you owe me about a thousand of them, that's why."
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # WHY YOU
-  # -------------------------
-
-  - key: the-call__why-you
-    scene_type: normal
-    title: Why You
-    order: 30
-    body: |
-      She lets the silence run for a moment, like she's deciding how honest to be.
-
-      "Because you're the only person I know who can actually do something about it," she says. Then, quieter — "And because you owe me. You owe me about a thousand."
-
-      It lands exactly like she means it to. You don't argue. There's nothing useful to argue with.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Tell her you'll handle it
-        order: 1
-        target_scene: the-call__terrell
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: She hangs up. You sit with it for a minute before you move.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # TERRELL
-  # -------------------------
-
-  - key: the-call__terrell
-    scene_type: normal
-    title: Terrell
-    order: 40
-    body: |
-      Vickie's building is a six-storey walkup off Decker Avenue, the kind of street that's been the same for forty years and is starting to notice. Terrell is exactly where she said he'd be — leaning against the stoop railing with the specific posture of someone who has decided that particular railing belongs to him now. Young. Maybe twenty-five. Gold chain, clean sneakers, the kind of eyes that clock you the second you turn the corner and don't look away after.
-
-      He watches you come without moving. When you're close enough he tilts his head.
-
-      "You lost?" he says.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Reason with him, tell him to back off your sister
-        order: 1
-        target_scene: the-call__squeeze
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: You keep your voice low. Make sure he has to lean in to hear you.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-      - label: Don't waste words
-        order: 2
-        target_scene: the-call__the-fight
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: You close the distance before he finishes the question.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # SQUEEZE — ROLL SCENE
-  # -------------------------
-
-  - key: the-call__squeeze
-    scene_type: normal
-    title: Squeeze
-    order: 50
-    body: |
-      You tell him you're there for the woman on the third floor. That whatever she owes, she doesn't owe it anymore. You don't raise your voice. You don't need to — the point isn't volume, it's clarity. You look at him the way you look at something you've already decided about and let him work out the rest himself.
-
-      Terrell is listening. Behind the performance of not being impressed, something is doing the math.
-
-    roll:
-      requires_roll: true
-      roll_stat: charisma
-      roll_difficulty: 11
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Let it land
-        order: 1
-        target_scene: null
-        success_scene: the-call__squeeze-success
-        failure_scene: the-call__squeeze-failure
-        arrival_flavor: Something shifts behind his eyes. He nods, once, at the pavement. Steps back.
-        failure_arrival_flavor: Some people need a different kind of convincing.
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # SQUEEZE SUCCESS — CHARISMA PASS
-  # -------------------------
-
-  - key: the-call__squeeze-success
-    scene_type: normal
-    title: Squeeze Success
-    order: 55
-    body: |
-      Nerve check passed. He holds it for a second. Then something in his posture settles, the way a bluff does when the other person calls it and there's nothing left to protect. He doesn't say anything. He doesn't have to.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Move on
-        order: 1
-        target_scene: the-call__backed-off
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: null
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # SQUEEZE FAILURE — CHARISMA FAIL
-  # -------------------------
-
-  - key: the-call__squeeze-failure
-    scene_type: normal
-    title: Squeeze Failure
-    order: 57
-    body: |
-      Nerve check failed. He laughs — short, sharp, meant to be seen. "I'm gonna crush you, you little twerp," he says. He means it.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: No way out of this
-        order: 1
-        target_scene: the-call__the-fight
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: null
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # COMBAT SCENE
-  # -------------------------
-
-  - key: the-call__the-fight
-    scene_type: combat
-    title: The Fight
-    order: 60
-    body: |
-      Terrell squares up before you've finished closing the distance. He's done this before — you can see it in how he sets his feet, how his hands come up. He's got reach and he knows it. What he doesn't have is patience.
-
-      Somewhere above you a window slides shut. The city, taking no position.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 0
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-    choices: []
-
-    combat_encounter:
-      enemy: terrell
-      victory_scene: the-call__roughed-up-win
-      defeat_scene: the-call__beaten
-      victory_arrival_flavor: Terrell's on the ground. He's breathing. That's the generous version of tonight.
-      defeat_arrival_flavor: The pavement comes up fast. Last thing you hear is footsteps, unhurried, leaving.
-
-  # -------------------------
-  # BACKED OFF — TALK SUCCESS
-  # -------------------------
-
-  - key: the-call__backed-off
-    scene_type: normal
-    title: Backed Off
-    order: 70
-    body: |
-      Terrell thinks about it for a moment — genuinely thinks, which is more than you expected — and then he pockets his phone and goes. No exit line. No last look. The ones who are actually scared never need the exit line.
-
-      You text Vickie two words. It's done.
-
-      She replies in three minutes with a thumbs up. A single thumbs up, after three years. You stare at it longer than makes sense and then put your phone away.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 0
-      rep_change: 5
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts:
-      - contact: sister
-        action: gain
-        award_once: true
-
-    choices:
-      - label: Go home
-        order: 1
-        target_scene: the-call__done-clean
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: The walk back is quiet. That's fine.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # ROUGHED UP WIN — FIGHT SUCCESS
-  # -------------------------
-
-  - key: the-call__roughed-up-win
-    scene_type: normal
-    title: Roughed Up Win
-    order: 75
-    body: |
-      Terrell's on the ground. His friends, who had opinions about this earlier, have revised them and left. You go through his pockets while he's still deciding whether to do something about that — a hundred and fifty in crumpled bills and a pair of brass knuckles with somebody else's initials scratched into the base, which tells a small story you don't have time for right now.
-
-      Your ribs are going to have thoughts about this tomorrow. You pocket both and go.
-
-      You text Vickie. It's done. The message sits on read.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: null
-    arrival:
-      cash_change: 150
-      rep_change: 5
-      heat_change: 10
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items:
-      - item: brass_knuckles
-        quantity: 1
-        award_once: true
-      - item: zonk_smoked
-        quantity: 1
-        award_once: false
-    scene_contacts:
-      - contact: sister
-        action: gain
-        award_once: true
-
-    choices:
-      - label: Go home
-        order: 1
-        target_scene: the-call__done-rough
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: You take the long way. Let the adrenaline settle before you're somewhere with good lighting.
-        failure_arrival_flavor: null
-        set_flag_name: null
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # VICTORY ENDING — CLEAN
-  # -------------------------
-
-  - key: the-call__done-clean
-    scene_type: ending
-    title: Done Clean
-    order: 80
-    body: |
-      Back in the apartment. Radiator having its opinions. The boot-shaped water stain unchanged, indifferent, exactly where you left it.
-
-      You didn't have to break anything tonight. That used to be the baseline and somewhere along the way it became an achievement, which is either personal growth or a bad sign and you're not ready to decide which.
-
-      Vickie sends another message an hour later. Just: thank you. No punctuation, which means she agonised over it. You know her. She probably typed it six different ways.
-
-      The corkboard on the back of the door has one job pinned to it. The city is paying attention. That's something.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: victory
-    arrival:
-      cash_change: 0
-      rep_change: 10
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Back to the apartment
-        order: 1
-        target_scene: hub__apartment
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: You hang your jacket up. First time in three years that felt like something normal.
-        failure_arrival_flavor: null
-        set_flag_name: the_call_talked_out
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # VICTORY ENDING — ROUGH
-  # -------------------------
-
-  - key: the-call__done-rough
-    scene_type: ending
-    title: Done Rough
-    order: 85
-    body: |
-      Back in the apartment. Ribs announcing themselves every time you breathe wrong. The hundred and fifty from Terrell's pocket on the counter next to the brass knuckles with the stranger's initials, which you should probably get rid of and probably won't.
-
-      Vickie never texted back. That's fine. You didn't do it for the reply.
-
-      The corkboard on the back of the door has one job pinned to it. Not a bad Tuesday, all things considered. The bar for that is low, but it's a bar.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: victory
-    arrival:
-      cash_change: 0
-      rep_change: 5
-      heat_change: 0
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items: []
-    scene_contacts: []
-
-    choices:
-      - label: Back to the apartment
-        order: 1
-        target_scene: hub__apartment
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: You ice your ribs over the sink. The city keeps going. So do you.
-        failure_arrival_flavor: null
-        set_flag_name: the_call_fought_out
-        clear_flag_name: null
-        requirements: []
-
-  # -------------------------
-  # DEFEAT ENDING
-  # -------------------------
-
-  - key: the-call__beaten
-    scene_type: ending
-    title: Beaten
-    order: 90
-    body: |
-      You come to on the pavement outside Vickie's building, which is not where you intended to end up tonight. Ribs aching, wallet lighter — someone took the liberty while you were unavailable to object. The stoop light is still flickering. It was flickering before. It'll be flickering tomorrow.
-
-      You don't go up. You can't do that conversation right now, can't stand in Vickie's doorway looking like this and tell her it's handled. You just walk. The Flats swallows you up the way it always has — wide streets, low buildings, sky overhead doing nothing in particular — and after a while you stop thinking about it.
-
-      Your phone has no new messages.
-
-    roll:
-      requires_roll: false
-      roll_stat: null
-      roll_difficulty: null
-    ending:
-      ending_type: defeat
-    arrival:
-      cash_change: -25
-      rep_change: -5
-      heat_change: 10
-      consume_item: null
-      receive_property: null
-      lose_property: null
-    scene_items:
-      - item: zonk_smoked
-        quantity: 1
-        award_once: false
-    scene_contacts: []
-
-    choices:
-      - label: Back to the apartment
-        order: 1
-        target_scene: hub__apartment
-        success_scene: null
-        failure_scene: null
-        arrival_flavor: You take the long way. Nobody should see you like this.
-        failure_arrival_flavor: null
-        set_flag_name: the_call_lost
-        clear_flag_name: null
-        requirements: []
+- key: the-call__four-days-out
+  scene_type: normal
+  title: Four Days Out
+  order: 10
+  body: "Four days out and the city has already made its position clear: it didn't\
+    \ miss you. The apartment is exactly how you left it, which means the water stain\
+    \ on the ceiling is still shaped like a boot, the radiator still clanks like it's\
+    \ trying to tell you something, and the stack of mail by the door is three years\
+    \ deep and entirely bills. The envelope of cash you came home with is already\
+    \ half gone. Your parole officer wants you in legitimate work by the end of the\
+    \ month. Your old crew hasn't called.\n\nAll things considered, it could be worse.\
+    \ You're working on figuring out how.\n\nThen your phone buzzes on the counter.\
+    \ Your sister's name on the screen \u2014 Vickie \u2014 and three years of silence\
+    \ sitting behind it like a held breath. She's calling at nine on a Tuesday night,\
+    \ which means either something has gone wrong or something is about to, and with\
+    \ Vickie the line between those two has always been thin. You stare at it for\
+    \ two rings.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Answer it
+    order: 1
+    target_scene: the-call__her-voice
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You pick up. Neither of you says anything for a moment.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Let it ring out
+    order: 2
+    target_scene: the-call__her-voice
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: "It goes to voicemail. Twenty seconds later, a text. I need help.\
+      \ Please. Then a second text, four minutes after the first \u2014 Please answer,\
+      \ its an emergency. You decide to call her."
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-call__her-voice
+  scene_type: normal
+  title: Her Voice
+  order: 20
+  body: "She doesn't say hello. She launches into it like she's been rehearsing, which\
+    \ she probably has \u2014 Vickie always rehearses the part where she asks for\
+    \ something and never quite the part that comes before it.\n\n\"There's this guy,\
+    \ Terrell. Young, maybe twenty-five, gold chain, acts like he's somebody. He keeps\
+    \ coming around saying I owe him for something Destiny ran up \u2014 my neighbor,\
+    \ it's complicated, I'll explain later. Second time he came by he put his hand\
+    \ on my door frame and told me if I didn't have something for him by the end of\
+    \ the week he was gonna break my legs.\" A pause. \"He said it like that. Just\
+    \ said it. Like it was nothing.\"\n\nYou ask if she's okay. Long pause.\n\n\"\
+    I'm fine,\" she says. \"I just need it to stop.\"\n\nAnother pause. Longer.\n\n\
+    \"I didn't want to call you,\" she says. \"I want you to know that.\" Which is\
+    \ a very Vickie thing to say to someone she is currently calling.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Tell her you'll handle it
+    order: 1
+    target_scene: the-call__terrell
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: She hangs up before you can say anything else. Classic.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Ask her why she called you specifically
+    order: 2
+    target_scene: the-call__why-you
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: "A pause. Then \u2014 \"Because you owe me about a thousand of\
+      \ them, that's why.\""
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-call__why-you
+  scene_type: normal
+  title: Why You
+  order: 30
+  body: "She lets the silence run for a moment, like she's deciding how honest to\
+    \ be.\n\n\"Because you're the only person I know who can actually do something\
+    \ about it,\" she says. Then, quieter \u2014 \"And because you owe me. You owe\
+    \ me about a thousand.\"\n\nIt lands exactly like she means it to. You don't argue.\
+    \ There's nothing useful to argue with.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Tell her you'll handle it
+    order: 1
+    target_scene: the-call__terrell
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: She hangs up. You sit with it for a minute before you move.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-call__terrell
+  scene_type: normal
+  title: Terrell
+  order: 40
+  body: "Vickie's building is a six-storey walkup off Decker Avenue, the kind of street\
+    \ that's been the same for forty years and is starting to notice. Terrell is exactly\
+    \ where she said he'd be \u2014 leaning against the stoop railing with the specific\
+    \ posture of someone who has decided that particular railing belongs to him now.\
+    \ Young. Maybe twenty-five. Gold chain, clean sneakers, the kind of eyes that\
+    \ clock you the second you turn the corner and don't look away after.\n\nHe watches\
+    \ you come without moving. When you're close enough he tilts his head.\n\n\"You\
+    \ lost?\" he says.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Reason with him, tell him to back off your sister
+    order: 1
+    target_scene: the-call__squeeze
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You keep your voice low. Make sure he has to lean in to hear you.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Don't waste words
+    order: 2
+    target_scene: the-call__the-fight
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You close the distance before he finishes the question.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-call__squeeze
+  scene_type: normal
+  title: Squeeze
+  order: 50
+  body: "You tell him you're there for the woman on the third floor. That whatever\
+    \ she owes, she doesn't owe it anymore. You don't raise your voice. You don't\
+    \ need to \u2014 the point isn't volume, it's clarity. You look at him the way\
+    \ you look at something you've already decided about and let him work out the\
+    \ rest himself.\n\nTerrell is listening. Behind the performance of not being impressed,\
+    \ something is doing the math.\n"
+  roll:
+    requires_roll: true
+    roll_stat: charisma
+    roll_difficulty: 11
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Let it land
+    order: 1
+    target_scene: null
+    success_scene: the-call__squeeze-success
+    failure_scene: the-call__squeeze-failure
+    arrival_flavor: Something shifts behind his eyes. He nods, once, at the pavement.
+      Steps back.
+    failure_arrival_flavor: Some people need a different kind of convincing.
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-call__squeeze-success
+  scene_type: normal
+  title: Squeeze Success
+  order: 55
+  body: 'Nerve check passed. He holds it for a second. Then something in his posture
+    settles, the way a bluff does when the other person calls it and there''s nothing
+    left to protect. He doesn''t say anything. He doesn''t have to.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Move on
+    order: 1
+    target_scene: the-call__backed-off
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: null
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-call__squeeze-failure
+  scene_type: normal
+  title: Squeeze Failure
+  order: 57
+  body: "Nerve check failed. He laughs \u2014 short, sharp, meant to be seen. \"I'm\
+    \ gonna crush you, you little twerp,\" he says. He means it.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: No way out of this
+    order: 1
+    target_scene: the-call__the-fight
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: null
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-call__the-fight
+  scene_type: combat
+  title: The Fight
+  order: 60
+  body: "Terrell squares up before you've finished closing the distance. He's done\
+    \ this before \u2014 you can see it in how he sets his feet, how his hands come\
+    \ up. He's got reach and he knows it. What he doesn't have is patience.\n\nSomewhere\
+    \ above you a window slides shut. The city, taking no position.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+  scene_items: []
+  scene_contacts: []
+  choices: []
+  combat_encounter:
+    enemy: terrell
+    victory_scene: the-call__roughed-up-win
+    defeat_scene: the-call__beaten
+    victory_arrival_flavor: Terrell's on the ground. He's breathing. That's the generous
+      version of tonight.
+    defeat_arrival_flavor: The pavement comes up fast. Last thing you hear is footsteps,
+      unhurried, leaving.
+- key: the-call__backed-off
+  scene_type: normal
+  title: Backed Off
+  order: 70
+  body: "Terrell thinks about it for a moment \u2014 genuinely thinks, which is more\
+    \ than you expected \u2014 and then he pockets his phone and goes. No exit line.\
+    \ No last look. The ones who are actually scared never need the exit line.\n\n\
+    You text Vickie two words. It's done.\n\nShe replies in three minutes with a thumbs\
+    \ up. A single thumbs up, after three years. You stare at it longer than makes\
+    \ sense and then put your phone away.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 5
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+  scene_items: []
+  scene_contacts:
+  - contact: sister
+    action: gain
+    award_once: true
+  choices:
+  - label: Go home
+    order: 1
+    target_scene: the-call__done-clean
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The walk back is quiet. That's fine.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-call__roughed-up-win
+  scene_type: normal
+  title: Roughed Up Win
+  order: 75
+  body: "Terrell's on the ground. His friends, who had opinions about this earlier,\
+    \ have revised them and left. You go through his pockets while he's still deciding\
+    \ whether to do something about that \u2014 a hundred and fifty in crumpled bills\
+    \ and a pair of brass knuckles with somebody else's initials scratched into the\
+    \ base, which tells a small story you don't have time for right now.\n\nYour ribs\
+    \ are going to have thoughts about this tomorrow. You pocket both and go.\n\n\
+    You text Vickie. It's done. The message sits on read.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 150
+    rep_change: 5
+    heat_change: 10
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+  scene_items:
+  - item: brass_knuckles
+    quantity: 1
+    award_once: true
+  - item: zonk_smoked
+    quantity: 1
+    award_once: false
+  scene_contacts:
+  - contact: sister
+    action: gain
+    award_once: true
+  choices:
+  - label: Go home
+    order: 1
+    target_scene: the-call__done-rough
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You take the long way. Let the adrenaline settle before you're
+      somewhere with good lighting.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-call__done-clean
+  scene_type: ending
+  title: Done Clean
+  order: 80
+  body: 'Back in the apartment. Radiator having its opinions. The boot-shaped water
+    stain unchanged, indifferent, exactly where you left it.
+
+
+    You didn''t have to break anything tonight. That used to be the baseline and somewhere
+    along the way it became an achievement, which is either personal growth or a bad
+    sign and you''re not ready to decide which.
+
+
+    Vickie sends another message an hour later. Just: thank you. No punctuation, which
+    means she agonised over it. You know her. She probably typed it six different
+    ways.
+
+
+    The corkboard on the back of the door has one job pinned to it. The city is paying
+    attention. That''s something.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: victory
+  arrival:
+    cash_change: 0
+    rep_change: 10
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You hang your jacket up. First time in three years that felt like
+      something normal.
+    failure_arrival_flavor: null
+    set_flag_name: the_call_talked_out
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-call__done-rough
+  scene_type: ending
+  title: Done Rough
+  order: 85
+  body: 'Back in the apartment. Ribs announcing themselves every time you breathe
+    wrong. The hundred and fifty from Terrell''s pocket on the counter next to the
+    brass knuckles with the stranger''s initials, which you should probably get rid
+    of and probably won''t.
+
+
+    Vickie never texted back. That''s fine. You didn''t do it for the reply.
+
+
+    The corkboard on the back of the door has one job pinned to it. Not a bad Tuesday,
+    all things considered. The bar for that is low, but it''s a bar.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: victory
+  arrival:
+    cash_change: 0
+    rep_change: 5
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You ice your ribs over the sink. The city keeps going. So do you.
+    failure_arrival_flavor: null
+    set_flag_name: the_call_fought_out
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-call__beaten
+  scene_type: ending
+  title: Beaten
+  order: 90
+  body: "You come to on the pavement outside Vickie's building, which is not where\
+    \ you intended to end up tonight. Ribs aching, wallet lighter \u2014 someone took\
+    \ the liberty while you were unavailable to object. The stoop light is still flickering.\
+    \ It was flickering before. It'll be flickering tomorrow.\n\nYou don't go up.\
+    \ You can't do that conversation right now, can't stand in Vickie's doorway looking\
+    \ like this and tell her it's handled. You just walk. The Flats swallows you up\
+    \ the way it always has \u2014 wide streets, low buildings, sky overhead doing\
+    \ nothing in particular \u2014 and after a while you stop thinking about it.\n\
+    \nYour phone has no new messages.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: defeat
+  arrival:
+    cash_change: -25
+    rep_change: -5
+    heat_change: 10
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+  scene_items:
+  - item: zonk_smoked
+    quantity: 1
+    award_once: false
+  scene_contacts: []
+  choices:
+  - label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You take the long way. Nobody should see you like this.
+    failure_arrival_flavor: null
+    set_flag_name: the_call_lost
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null

@@ -6,14 +6,14 @@ from .quest_builder_views import (
     quest_validate, quest_builder_list, quest_builder_canvas,
     scene_panel, scene_save, scene_create, scene_delete, scene_move,
     choice_panel, choice_create, choice_save, choice_delete,
-    scene_items_save, scene_combat_save, choice_requirements_save, scene_contacts_save,
+    scene_items_save, scene_combat_save, choice_requirements_save, scene_contacts_save, scene_gang_standings_save,
 )
 from .models import (
     Arc, Quest, Item, Requirement, RequirementGroup, Scene, Choice,
     GameSession, PlayerStats, PlayerInventory, SceneItem, CompletedQuest,
     Enemy, CombatEncounter, CombatState, EventLog,
     Property, Territory, PlayerProperty, PlayerTerritory, PlayerDiscoveredTerritory, RivalClaim,
-    Gang, Contact, SceneContact, PlayerContact, PlayerGangStanding,
+    Gang, Contact, SceneContact, SceneGangStanding, PlayerContact, PlayerGangStanding,
     Job, JobApproach, JobBeatVariant, PlayerJobState,
     ContactJobOffer, PlayerContactOfferState, JobRun,
 )
@@ -23,6 +23,12 @@ from .models import (
 def close_combat_states(modeladmin, request, queryset):
     updated = queryset.update(is_active=False)
     modeladmin.message_user(request, f'{updated} combat state(s) closed.')
+
+
+@admin.action(description="Show export_quest commands for selected quests")
+def show_export_quest_commands(modeladmin, request, queryset):
+    for quest in queryset.order_by("key"):
+        modeladmin.message_user(request, f"python manage.py export_quest {quest.key}")
 
 # 3. Inline classes
 class RequirementInline(admin.TabularInline):
@@ -79,6 +85,12 @@ class SceneContactInline(admin.TabularInline):
     model = SceneContact
     extra = 0
     fields = ('contact', 'action', 'award_once')
+
+
+class SceneGangStandingInline(admin.TabularInline):
+    model = SceneGangStanding
+    extra = 0
+    fields = ("gang", "standing_change")
 
 class CombatEncounterInline(admin.StackedInline):
     model = CombatEncounter
@@ -156,7 +168,7 @@ class QuestAdmin(admin.ModelAdmin):
     list_display = (
         'key', 'title', 'arc', 'arc_order', 'is_unlocked', 'is_repeatable',
         'entrance_scene',
-        'scene_count', 'view_builder_link',
+        'scene_count', 'view_builder_link', 'export_command_hint',
     )
     list_filter = ('arc', 'is_unlocked', 'is_repeatable')
     search_fields = ('key', 'title')
@@ -165,6 +177,7 @@ class QuestAdmin(admin.ModelAdmin):
     filter_horizontal = ('requirements', 'hub_scenes')
     inlines = []
     save_on_top = True
+    actions = [show_export_quest_commands]
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(
@@ -183,6 +196,10 @@ class QuestAdmin(admin.ModelAdmin):
             '<a href="{}">Open Builder →</a><br><small><a href="{}">View Static Graph</a></small>',
             url, graph_url
         )
+
+    @admin.display(description="Export Command")
+    def export_command_hint(self, obj):
+        return format_html("<code>python manage.py export_quest {}</code>", obj.key)
 
     def get_urls(self):
         custom = [
@@ -270,6 +287,11 @@ class QuestAdmin(admin.ModelAdmin):
                 'quest-builder/<int:quest_id>/scene/<int:scene_id>/contacts/save/',
                 self.admin_site.admin_view(scene_contacts_save),
                 name='quest_builder_scene_contacts_save',
+            ),
+            path(
+                'quest-builder/<int:quest_id>/scene/<int:scene_id>/gang-standings/save/',
+                self.admin_site.admin_view(scene_gang_standings_save),
+                name='quest_builder_scene_gang_standings_save',
             ),
             path(
                 'quest-builder/<int:quest_id>/scene/<int:scene_id>/combat/save/',
@@ -366,7 +388,14 @@ class SceneAdmin(admin.ModelAdmin):
     list_select_related = True
     prepopulated_fields = {'key': ('title',)}
     readonly_fields = ('key_format_note',)
-    autocomplete_fields = ('consume_item', 'receive_property', 'lose_property', 'receive_territory', 'lose_territory')
+    autocomplete_fields = (
+        'consume_item',
+        'receive_property',
+        'lose_property',
+        'receive_territory',
+        'lose_territory',
+        'discover_territory',
+    )
     fieldsets = (
         ('Identity', {
             'fields': ('key', 'key_format_note', 'title', 'order')
@@ -390,11 +419,12 @@ class SceneAdmin(admin.ModelAdmin):
                 'lose_property',
                 'receive_territory',
                 'lose_territory',
+                'discover_territory',
             ),
             'description': 'Stat rewards/penalties, property/territory changes, and item consumption upon arrival.',
         }),
     )
-    inlines = [ChoiceInline, SceneItemInline, SceneContactInline, CombatEncounterInline]
+    inlines = [ChoiceInline, SceneItemInline, SceneContactInline, SceneGangStandingInline, CombatEncounterInline]
     save_on_top = True
 
     @admin.display(description='Body Preview')

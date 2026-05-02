@@ -21,6 +21,7 @@ class QuestFormParser:
             "lose_property_id": int(data.get("lose_property_id") or 0) or None,
             "receive_territory_id": int(data.get("receive_territory_id") or 0) or None,
             "lose_territory_id": int(data.get("lose_territory_id") or 0) or None,
+            "discover_territory_id": int(data.get("discover_territory_id") or 0) or None,
         }
 
     @staticmethod

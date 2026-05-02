@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseNotAllowed
 from django.template.loader import render_to_string
 from django.urls import reverse
 
-from .models import Choice, Contact, CombatEncounter, Item, Property, Quest, Requirement, Scene, Territory
+from .models import Choice, Contact, CombatEncounter, Gang, Item, Property, Quest, Requirement, Scene, Territory
 from .models.combat import Enemy as EnemyModel
 from .services.quest_builder import (
     get_canvas_data,
@@ -23,6 +23,7 @@ from .services.quest_builder import (
     update_combat_encounter as update_combat_encounter_service,
     build_requirement_groups_from_post as build_requirement_groups_from_post_service,
     update_scene_contacts as update_scene_contacts_service,
+    update_scene_gang_standings as update_scene_gang_standings_service,
 )
 from .constants import STAT_DISPLAY_NAMES
 from .presentation import responses as response_utils
@@ -117,6 +118,7 @@ def scene_panel(request, quest_id, scene_id=None):
     scene = None
     scene_choices = []
     scene_items = []
+    scene_gang_standings = []
     combat_encounter = None
     if scene_id is not None:
         scene = get_object_or_404(quest.scenes.all(), pk=scene_id)
@@ -128,6 +130,9 @@ def scene_panel(request, quest_id, scene_id=None):
         scene_items = list(
             scene.scene_items.select_related('item').order_by('id')
         )
+        scene_gang_standings = list(
+            scene.scene_gang_standings.select_related("gang").order_by("id")
+        )
         try:
             combat_encounter = scene.combat_encounter
         except CombatEncounter.DoesNotExist:
@@ -138,6 +143,7 @@ def scene_panel(request, quest_id, scene_id=None):
     all_items = list(Item.objects.order_by('name'))
     all_enemies = list(EnemyModel.objects.order_by('name'))
     all_quests = list(Quest.objects.order_by('title'))
+    all_gangs = list(Gang.objects.order_by("name"))
     all_properties = list(Property.objects.order_by('name'))
     all_territories = list(Territory.objects.order_by('name'))
     quest_scenes = list(
@@ -161,8 +167,10 @@ def scene_panel(request, quest_id, scene_id=None):
         'quest_scenes':          quest_scenes,
         'combat_encounter':      combat_encounter,
         'all_quests':            all_quests,
+        'all_gangs':             all_gangs,
         'stat_choices':          [(field, label) for field, label in STAT_DISPLAY_NAMES.items()],
         'requirement_types':     Requirement.CONDITION_TYPES,
+        'scene_gang_standings':  scene_gang_standings,
     }
     return render(request, 'admin/quest_builder/partials/scene_panel.html', context)
 
@@ -373,6 +381,43 @@ def scene_contacts_save(request, quest_id, scene_id):
             'scene_contacts': scene_contacts,
             'all_contacts':  all_contacts,
             'toast_message': 'Contacts saved.',
+        },
+        request=request,
+    )
+    return HttpResponse(html)
+
+
+def scene_gang_standings_save(request, quest_id, scene_id):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    quest = get_object_or_404(Quest, pk=quest_id)
+    scene = get_object_or_404(quest.scenes.all(), pk=scene_id)
+
+    standings_data = []
+    index = 0
+    while True:
+        gang_id_key = f'gang_id_{index}'
+        standing_change_key = f'standing_change_{index}'
+        if gang_id_key not in request.POST and standing_change_key not in request.POST:
+            break
+        standings_data.append({
+            'gang_id': request.POST.get(gang_id_key, ''),
+            'standing_change': request.POST.get(standing_change_key, '0'),
+        })
+        index += 1
+
+    scene_gang_standings = update_scene_gang_standings_service(scene.id, standings_data)
+    all_gangs = list(Gang.objects.order_by("name"))
+
+    html = render_to_string(
+        'admin/quest_builder/partials/gang_standings_section.html',
+        {
+            'quest_id': quest_id,
+            'scene': scene,
+            'scene_gang_standings': scene_gang_standings,
+            'all_gangs': all_gangs,
+            'toast_message': 'Gang standings saved.',
         },
         request=request,
     )

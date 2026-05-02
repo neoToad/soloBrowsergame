@@ -1,4 +1,4 @@
-from .world import Arc, Quest, Scene, Choice, SceneItem, Gang, Contact, SceneContact
+from .world import Arc, Quest, Scene, Choice, SceneItem, Gang, Contact, SceneContact, SceneGangStanding
 from .requirements import Requirement, RequirementGroup, PlayerContext
 from .items import Item
 from .player import GameSession, PlayerStats, PlayerInventory, CompletedQuest, PlayerContact, PlayerGangStanding

@@ -13,6 +13,7 @@ from .inventory import (
     award_scene_items,
     award_scene_contacts,
     award_scene_discovered_territories,
+    apply_scene_gang_standing_changes,
     get_player_contacts,
     get_discovered_territories,
 )
@@ -49,6 +50,9 @@ def process_arrival(session, stats, inventory, completed_map, next_scene, contac
             logs.append(f"You lost contact with {contact.name}.")
         for territory in award_scene_discovered_territories(session, next_scene, discovered_territories):
             logs.append(f"You discovered a territory: {territory.name}.")
+        for gang, delta, new_total in apply_scene_gang_standing_changes(session, next_scene):
+            sign = "+" if delta >= 0 else ""
+            logs.append(f"Gang standing changed: {gang.name} {sign}{delta} (now {new_total}).")
 
         turn_summary = None
         if quest_logs:

@@ -3,7 +3,7 @@ from django.db import transaction
 from django.utils.text import slugify
 
 from ...models.combat import CombatEncounter
-from ...models.world import Choice, Quest, Scene, SceneContact, SceneItem
+from ...models.world import Choice, Quest, Scene, SceneContact, SceneGangStanding, SceneItem
 from .parsing import parse_choice_form, parse_combat_form, parse_scene_form
 from .shared import GRID_START_X, GRID_START_Y, GRID_X_GAP, GRID_Y_GAP, raise_authoring_validation_error
 
@@ -48,6 +48,7 @@ def create_scene(quest_id, data):
         lose_property_id=parsed["lose_property_id"],
         receive_territory_id=parsed["receive_territory_id"],
         lose_territory_id=parsed["lose_territory_id"],
+        discover_territory_id=parsed["discover_territory_id"],
     )
     try:
         scene.clean()
@@ -82,6 +83,7 @@ def update_scene(scene_id, data):
     scene.lose_property_id = parsed["lose_property_id"]
     scene.receive_territory_id = parsed["receive_territory_id"]
     scene.lose_territory_id = parsed["lose_territory_id"]
+    scene.discover_territory_id = parsed["discover_territory_id"]
 
     try:
         scene.clean()
@@ -209,6 +211,25 @@ def update_scene_contacts(scene_id, contacts_data):
                 scene_id=scene_id, contact_id=int(raw_id), action=action, award_once=bool(award_once)
             )
             created.append(scene_contact)
+    return created
+
+
+def update_scene_gang_standings(scene_id, standings_data):
+    with transaction.atomic():
+        SceneGangStanding.objects.filter(scene_id=scene_id).delete()
+        created = []
+        for entry in standings_data:
+            raw_gang_id = str(entry.get("gang_id") or "").strip()
+            if not raw_gang_id:
+                continue
+            raw_change = str(entry.get("standing_change") or "").strip()
+            standing_change = int(raw_change) if raw_change else 0
+            row = SceneGangStanding.objects.create(
+                scene_id=scene_id,
+                gang_id=int(raw_gang_id),
+                standing_change=standing_change,
+            )
+            created.append(row)
     return created
 
 

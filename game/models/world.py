@@ -155,6 +155,13 @@ class Scene(models.Model):
         related_name="+",
         help_text="Territory lost when arriving at this scene.",
     )
+    discover_territory = models.ForeignKey(
+        "game.Territory",
+        null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+        help_text="Territory discovered when arriving at this scene.",
+    )
 
     @property
     def is_hub(self):
@@ -357,3 +364,26 @@ class SceneContact(models.Model):
 
     def __str__(self):
         return f"{self.action} {self.contact.name} in {self.scene.key}"
+
+
+class SceneGangStanding(models.Model):
+    scene = models.ForeignKey(
+        Scene,
+        related_name="scene_gang_standings",
+        on_delete=models.CASCADE,
+    )
+    gang = models.ForeignKey(
+        Gang,
+        related_name="scene_standing_changes",
+        on_delete=models.CASCADE,
+    )
+    standing_change = models.IntegerField(default=0)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["scene", "gang"], name="uq_scenegangstanding_scene_gang"),
+        ]
+
+    def __str__(self):
+        sign = "+" if self.standing_change >= 0 else ""
+        return f"{self.scene.key}: {self.gang.name} {sign}{self.standing_change}"

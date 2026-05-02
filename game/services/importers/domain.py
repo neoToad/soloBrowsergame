@@ -7,7 +7,7 @@ from django.utils.text import slugify
 from game.models.combat import CombatEncounter, Enemy
 from game.models.items import Item
 from game.models.property import Property, Territory
-from game.models.world import Arc, Choice, Contact, Gang, Quest, Scene, SceneContact, SceneItem
+from game.models.world import Arc, Choice, Contact, Gang, Quest, Scene, SceneContact, SceneGangStanding, SceneItem
 
 from .refs import get_by_key_or_warn, resolve_scene
 from .requirements import RequirementScope, import_requirement_groups
@@ -211,6 +211,23 @@ def _import_scene_contacts(scene_data: dict, scene_obj: Scene, result: ImportRes
         result.record_created("scene_contacts")
 
 
+def _import_scene_gang_standings(scene_data: dict, scene_obj: Scene, result: ImportResult) -> None:
+    deleted, _ = SceneGangStanding.objects.filter(scene=scene_obj).delete()
+    if deleted:
+        result.record_deleted("scene_gang_standings", deleted)
+    arrival = scene_data.get("arrival") or {}
+    for entry in (arrival.get("gang_standing_changes") or []):
+        gang = get_by_key_or_warn(Gang, entry.get("gang"), result)
+        if gang is None:
+            continue
+        SceneGangStanding.objects.create(
+            scene=scene_obj,
+            gang=gang,
+            standing_change=entry.get("standing_change", 0),
+        )
+        result.record_created("scene_gang_standings")
+
+
 def _import_combat_encounter(scene_data: dict, scene_obj: Scene, scene_map: dict[str, Scene], result: ImportResult) -> None:
     if scene_data.get("scene_type") != "combat":
         return
@@ -262,6 +279,7 @@ def import_hubs_data(data: dict) -> ImportResult:
                 "lose_property": None,
                 "receive_territory": None,
                 "lose_territory": None,
+                "discover_territory": get_by_key_or_warn(Territory, arrival.get("discover_territory"), result),
             },
         )
         scene_map[scene.key] = scene
@@ -283,6 +301,7 @@ def import_hubs_data(data: dict) -> ImportResult:
             choice.requirements.set(groups)
         _import_scene_items(hdata, scene_obj, result)
         _import_scene_contacts(hdata, scene_obj, result)
+        _import_scene_gang_standings(hdata, scene_obj, result)
 
     return result
 
@@ -340,6 +359,7 @@ def import_quest_data(data: dict) -> ImportResult:
         scene.lose_property = get_by_key_or_warn(Property, arrival.get("lose_property"), result)
         scene.receive_territory = get_by_key_or_warn(Territory, arrival.get("receive_territory"), result)
         scene.lose_territory = get_by_key_or_warn(Territory, arrival.get("lose_territory"), result)
+        scene.discover_territory = get_by_key_or_warn(Territory, arrival.get("discover_territory"), result)
         try:
             scene.clean()
         except ValidationError as exc:
@@ -377,6 +397,7 @@ def import_quest_data(data: dict) -> ImportResult:
         scene_obj = scene_map[sdata["key"]]
         _import_scene_items(sdata, scene_obj, result)
         _import_scene_contacts(sdata, scene_obj, result)
+        _import_scene_gang_standings(sdata, scene_obj, result)
         _import_combat_encounter(sdata, scene_obj, scene_map, result)
 
     Scene.objects.filter(quest=quest).exclude(key__in=scene_map.keys()).update(quest=None)

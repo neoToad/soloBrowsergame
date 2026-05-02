@@ -16,6 +16,7 @@ from .mutations import (
     update_combat_encounter,
     update_scene,
     update_scene_contacts,
+    update_scene_gang_standings,
     update_scene_items,
 )
 from .parsing import QuestFormParser, parse_choice_form, parse_combat_form, parse_scene_form
@@ -51,6 +52,7 @@ __all__ = [
     "update_combat_encounter",
     "update_scene",
     "update_scene_contacts",
+    "update_scene_gang_standings",
     "update_scene_items",
     "validate_quest",
     "_build_canvas_data",

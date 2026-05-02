@@ -3,7 +3,7 @@ import json
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from game.models import Choice, CombatEncounter, Contact, Enemy, Item, Quest, Scene, SceneContact, SceneItem, Territory
+from game.models import Choice, CombatEncounter, Contact, Enemy, Gang, Item, Quest, Scene, SceneContact, SceneItem, Territory
 
 
 class QuestBuilderSceneTest(TestCase):
@@ -115,6 +115,7 @@ class QuestBuilderSceneTest(TestCase):
     def test_scene_create_persists_territory_arrival_fields(self):
         gain_territory = Territory.objects.create(key="qb-gain", name="QB Gain")
         lose_territory = Territory.objects.create(key="qb-lose", name="QB Lose")
+        discover_territory = Territory.objects.create(key="qb-discover", name="QB Discover")
 
         response = self.client.post(
             self._create_url(),
@@ -125,6 +126,7 @@ class QuestBuilderSceneTest(TestCase):
                 "description": "Territory effects.",
                 "receive_territory_id": str(gain_territory.id),
                 "lose_territory_id": str(lose_territory.id),
+                "discover_territory_id": str(discover_territory.id),
             },
         )
 
@@ -132,10 +134,12 @@ class QuestBuilderSceneTest(TestCase):
         scene = self.quest.scenes.get(key="test_quest__territory-scene")
         self.assertEqual(scene.receive_territory_id, gain_territory.id)
         self.assertEqual(scene.lose_territory_id, lose_territory.id)
+        self.assertEqual(scene.discover_territory_id, discover_territory.id)
 
     def test_scene_save_updates_territory_arrival_fields(self):
         gain_territory = Territory.objects.create(key="qb-gain-save", name="QB Gain Save")
         lose_territory = Territory.objects.create(key="qb-lose-save", name="QB Lose Save")
+        discover_territory = Territory.objects.create(key="qb-discover-save", name="QB Discover Save")
         scene = Scene.objects.create(
             quest=self.quest, key="test_quest__territory-edit", title="Territory Edit", body="", scene_type="normal"
         )
@@ -149,6 +153,7 @@ class QuestBuilderSceneTest(TestCase):
                 "description": "",
                 "receive_territory_id": str(gain_territory.id),
                 "lose_territory_id": str(lose_territory.id),
+                "discover_territory_id": str(discover_territory.id),
             },
         )
 
@@ -156,6 +161,32 @@ class QuestBuilderSceneTest(TestCase):
         scene.refresh_from_db()
         self.assertEqual(scene.receive_territory_id, gain_territory.id)
         self.assertEqual(scene.lose_territory_id, lose_territory.id)
+        self.assertEqual(scene.discover_territory_id, discover_territory.id)
+
+    def test_scene_gang_standings_save_persists_rows(self):
+        scene = Scene.objects.create(
+            quest=self.quest, key="test_quest__standing", title="Standing", body="", scene_type="normal"
+        )
+        gang_a = Gang.objects.create(key="qb-gang-a", name="QB Gang A")
+        gang_b = Gang.objects.create(key="qb-gang-b", name="QB Gang B")
+        url = reverse("admin:quest_builder_scene_gang_standings_save", args=[self.quest.pk, scene.pk])
+
+        response = self.client.post(
+            url,
+            {
+                "gang_id_0": str(gang_a.id),
+                "standing_change_0": "3",
+                "gang_id_1": str(gang_b.id),
+                "standing_change_1": "-2",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        scene.refresh_from_db()
+        rows = list(scene.scene_gang_standings.order_by("gang__key"))
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(rows[0].standing_change, 3)
+        self.assertEqual(rows[1].standing_change, -2)
 
     def test_scene_save_returns_oob_html(self):
         scene = Scene.objects.create(

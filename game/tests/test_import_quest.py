@@ -5,7 +5,7 @@ from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TestCase
 
-from game.models import Scene
+from game.models import Gang, Scene
 from game.models.property import Territory
 
 
@@ -214,6 +214,7 @@ scenes:
 
     def test_import_resolves_territory_arrival_fields(self):
         Territory.objects.create(key="the_docks", name="The Docks")
+        Gang.objects.create(key="dockers", name="Dockers")
         self._run_import(
             """
 quest:
@@ -243,6 +244,10 @@ scenes:
       lose_property: null
       receive_territory: the_docks
       lose_territory: null
+      discover_territory: the_docks
+      gang_standing_changes:
+        - gang: dockers
+          standing_change: 2
     choices: []
 """
         )
@@ -250,3 +255,9 @@ scenes:
         start_scene = Scene.objects.get(key="import-territory-arrival__start")
         self.assertIsNotNone(start_scene.receive_territory)
         self.assertEqual(start_scene.receive_territory.key, "the_docks")
+        self.assertIsNotNone(start_scene.discover_territory)
+        self.assertEqual(start_scene.discover_territory.key, "the_docks")
+        self.assertEqual(start_scene.scene_gang_standings.count(), 1)
+        standing = start_scene.scene_gang_standings.get()
+        self.assertEqual(standing.gang.key, "dockers")
+        self.assertEqual(standing.standing_change, 2)

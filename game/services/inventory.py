@@ -25,13 +25,33 @@ def award_scene_discovered_territories(session, scene, discovered: dict) -> list
     from ..models.property import PlayerDiscoveredTerritory
 
     newly_discovered = []
-    for territory in (scene.receive_territory, scene.lose_territory):
+    for territory in (scene.receive_territory, scene.lose_territory, scene.discover_territory):
         if not territory or territory.id in discovered:
             continue
         row, _ = PlayerDiscoveredTerritory.objects.get_or_create(session=session, territory=territory)
         discovered[territory.id] = row
         newly_discovered.append(territory)
     return newly_discovered
+
+
+def apply_scene_gang_standing_changes(session, scene) -> list[tuple[object, int, int]]:
+    """
+    Applies SceneGangStanding deltas for this arrival.
+    Returns list of (gang, delta, new_standing).
+    """
+    from ..models import PlayerGangStanding
+
+    changes = []
+    for row in scene.scene_gang_standings.select_related("gang").all():
+        standing, _ = PlayerGangStanding.objects.get_or_create(
+            session=session,
+            gang=row.gang,
+            defaults={"standing": 0},
+        )
+        standing.standing += row.standing_change
+        standing.save(update_fields=["standing"])
+        changes.append((row.gang, row.standing_change, standing.standing))
+    return changes
 
 
 def award_scene_contacts(session, scene, contacts: dict) -> tuple[list, list]:

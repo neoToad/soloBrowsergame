@@ -177,6 +177,10 @@ hubs:
             world_yaml = Path(tmp_dir) / "world.yaml"
             world_yaml.write_text(
                 """
+gangs:
+  - key: split_test_gang
+    name: Split Test Gang
+    description: Gang used for standing test.
 properties:
   - key: storage_unit
     name: Dockside Warehouse Unit
@@ -226,6 +230,8 @@ scenes:
       lose_property: null
       receive_territory: null
       lose_territory: null
+      discover_territory: null
+      gang_standing_changes: []
     choices: []
 
   - key: property-fk-quest__territory
@@ -242,6 +248,10 @@ scenes:
       lose_property: null
       receive_territory: the_docks
       lose_territory: null
+      discover_territory: the_docks
+      gang_standing_changes:
+        - gang: split_test_gang
+          standing_change: -3
     choices: []
 """,
                 encoding="utf-8",
@@ -254,6 +264,10 @@ scenes:
         self.assertEqual(scene.receive_property.key, "storage_unit")
         self.assertIsNotNone(territory_scene.receive_territory)
         self.assertEqual(territory_scene.receive_territory.key, "the_docks")
+        self.assertIsNotNone(territory_scene.discover_territory)
+        self.assertEqual(territory_scene.discover_territory.key, "the_docks")
+        self.assertEqual(territory_scene.scene_gang_standings.count(), 1)
+        self.assertEqual(territory_scene.scene_gang_standings.get().standing_change, -3)
         self.assertTrue(Property.objects.filter(key="storage_unit").exists())
         self.assertTrue(Territory.objects.filter(key="the_docks").exists())
 

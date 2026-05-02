@@ -1,0 +1,38 @@
+<div id="gang-standings-section" style="border-top: 1px solid #ddd; margin-top: 14px; padding-top: 12px;">
+    <h3 style="margin: 0 0 8px;">Gang Standing Changes</h3>
+    <form
+        hx-post="{% url 'admin:quest_builder_scene_gang_standings_save' quest_id scene.id %}"
+        hx-target="#gang-standings-section"
+        hx-swap="outerHTML">
+        {% csrf_token %}
+        {% for row in scene_gang_standings %}
+            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                <select name="gang_id_{{ forloop.counter0 }}" style="flex: 2;">
+                    <option value="">-- select gang --</option>
+                    {% for gang in all_gangs %}
+                        <option value="{{ gang.id }}" {% if row.gang_id == gang.id %}selected{% endif %}>{{ gang.name }}</option>
+                    {% endfor %}
+                </select>
+                <input
+                    type="number"
+                    name="standing_change_{{ forloop.counter0 }}"
+                    value="{{ row.standing_change }}"
+                    style="flex: 1;"
+                >
+            </div>
+        {% empty %}
+            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                <select name="gang_id_0" style="flex: 2;">
+                    <option value="">-- select gang --</option>
+                    {% for gang in all_gangs %}
+                        <option value="{{ gang.id }}">{{ gang.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="standing_change_0" value="0" style="flex: 1;">
+            </div>
+        {% endfor %}
+        <div style="display: flex; gap: 8px; margin-top: 8px;">
+            <button type="submit" class="button">Save Gang Standings</button>
+        </div>
+    </form>
+</div>

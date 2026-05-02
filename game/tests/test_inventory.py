@@ -163,19 +163,50 @@ class InventoryServiceTest(TestCase):
         scene = self.session.current_scene
         gain_territory = Territory.objects.create(key="inv__gain_t", name="Gain Territory")
         lose_territory = Territory.objects.create(key="inv__lose_t", name="Lose Territory")
+        discover_territory = Territory.objects.create(key="inv__discover_t", name="Discover Territory")
         scene.receive_territory = gain_territory
         scene.lose_territory = lose_territory
-        scene.save(update_fields=["receive_territory", "lose_territory"])
+        scene.discover_territory = discover_territory
+        scene.save(update_fields=["receive_territory", "lose_territory", "discover_territory"])
 
         discovered = get_discovered_territories(self.session)
         newly_discovered = award_scene_discovered_territories(self.session, scene, discovered)
 
-        self.assertEqual({t.id for t in newly_discovered}, {gain_territory.id, lose_territory.id})
+        self.assertEqual(
+            {t.id for t in newly_discovered},
+            {gain_territory.id, lose_territory.id, discover_territory.id},
+        )
         self.assertTrue(
             PlayerDiscoveredTerritory.objects.filter(session=self.session, territory=gain_territory).exists()
         )
         self.assertTrue(
             PlayerDiscoveredTerritory.objects.filter(session=self.session, territory=lose_territory).exists()
+        )
+        self.assertTrue(
+            PlayerDiscoveredTerritory.objects.filter(session=self.session, territory=discover_territory).exists()
+        )
+
+    def test_apply_scene_gang_standing_changes_updates_player_standing(self):
+        from game.models.player import PlayerGangStanding
+        from game.models.world import Gang, SceneGangStanding
+        from game.services.inventory import apply_scene_gang_standing_changes
+
+        scene = self.session.current_scene
+        gang_a = Gang.objects.create(key="inv__standing_a", name="Standing A")
+        gang_b = Gang.objects.create(key="inv__standing_b", name="Standing B")
+        SceneGangStanding.objects.create(scene=scene, gang=gang_a, standing_change=4)
+        SceneGangStanding.objects.create(scene=scene, gang=gang_b, standing_change=-1)
+
+        applied = apply_scene_gang_standing_changes(self.session, scene)
+
+        self.assertEqual(len(applied), 2)
+        self.assertEqual(
+            PlayerGangStanding.objects.get(session=self.session, gang=gang_a).standing,
+            4,
+        )
+        self.assertEqual(
+            PlayerGangStanding.objects.get(session=self.session, gang=gang_b).standing,
+            -1,
         )
 
 

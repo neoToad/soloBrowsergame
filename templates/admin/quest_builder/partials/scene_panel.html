@@ -152,6 +152,19 @@
             </div>
 
             <div style="margin-bottom: 10px;">
+                <label for="discover-territory"><strong>Discover Territory</strong></label><br>
+                <select id="discover-territory" name="discover_territory_id" style="width: 100%; margin-top: 4px;">
+                    <option value="">-- none --</option>
+                    {% for territory in all_territories %}
+                        <option value="{{ territory.id }}"
+                            {% if scene and scene.discover_territory_id == territory.id %}selected{% endif %}>
+                            {{ territory.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="margin-bottom: 10px;">
                 <label for="consume-item"><strong>Consume Item on Arrival</strong></label><br>
                 <select id="consume-item" name="consume_item_id" style="width: 100%; margin-top: 4px;">
                     <option value="">— none —</option>
@@ -190,6 +203,7 @@
     {% if scene %}
         {% include "admin/quest_builder/partials/items_section.html" %}
         {% include "admin/quest_builder/partials/contacts_section.html" %}
+        {% include "admin/quest_builder/partials/gang_standings_section.html" %}
         {% include "admin/quest_builder/partials/combat_section.html" %}
     {% endif %}
 
