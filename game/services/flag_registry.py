@@ -42,6 +42,8 @@ STORY_FLAG_KEYS = frozenset(
         "the_ride_straight",
         "the_ride_covered",
         "the_ride_lost",
+        "morris_job_clean",
+        "morris_job_hot",
     }
 )
 
