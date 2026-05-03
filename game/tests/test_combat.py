@@ -205,6 +205,12 @@ class CombatServiceTest(TestCase):
         cs = self._make_combat_state()
         self.encounter.victory_arrival_flavor = "The crowd clears out."
         self.encounter.save(update_fields=["victory_arrival_flavor"])
+        self.stats.heat = 5
+        self.stats.save(update_fields=["heat"])
+        self.victory_scene.cash_change = 7
+        self.victory_scene.heat_change = -2
+        self.victory_scene.rep_change = 3
+        self.victory_scene.save(update_fields=["cash_change", "heat_change", "rep_change"])
 
         logs, context = resolve_combat_end(
             self.session,
@@ -217,11 +223,32 @@ class CombatServiceTest(TestCase):
             ending_type="victory",
         )
 
-        self.assertIn("The crowd clears out.", logs)
-        self.assertIn("+1 XP.", logs)
-        self.assertLess(logs.index("The crowd clears out."), logs.index("+1 XP."))
+        self.assertIn("The crowd clears out. You gained 1 XP, +$7 cash, -2 heat, +3 rep.", logs)
+        self.assertNotIn("+1 XP.", logs)
         self.assertIn("scene", context)
         self.assertEqual(self.session.log.count(), 0)
+
+    def test_resolve_combat_end_without_victory_flavor_still_logs_combined_rewards(self):
+        from game.services.combat import resolve_combat_end
+
+        cs = self._make_combat_state()
+        self.victory_scene.cash_change = 4
+        self.victory_scene.heat_change = 1
+        self.victory_scene.rep_change = 2
+        self.victory_scene.save(update_fields=["cash_change", "heat_change", "rep_change"])
+
+        logs, _context = resolve_combat_end(
+            self.session,
+            self.stats,
+            {},
+            {},
+            self.victory_scene,
+            cs,
+            xp_award=50,
+            ending_type="victory",
+        )
+
+        self.assertIn("You gained 50 XP, +$4 cash, +1 heat, +2 rep.", logs)
 
     def test_initialize_combat_state_deactivates_when_entering_non_combat_scene(self):
         from game.services.combat import initialize_combat_state

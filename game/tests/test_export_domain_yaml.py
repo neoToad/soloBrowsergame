@@ -7,6 +7,7 @@ from django.test import TestCase
 
 from game.models import Contact, Gang, Item, Quest, Scene
 from game.models.combat import Enemy
+from game.models.requirements import Requirement, RequirementGroup
 from game.models.property import Property, Territory
 from game.models.world import Choice, SceneContact, SceneGangStanding, SceneItem
 
@@ -82,7 +83,15 @@ class ExportDomainYamlTests(TestCase):
         self.hub.receive_territory = self.territory
         self.hub.discover_territory = self.territory
         self.hub.save(update_fields=["receive_property", "receive_territory", "discover_territory"])
-        Choice.objects.create(scene=self.hub, label="Go", order=1, target_scene=self.target)
+        hub_choice = Choice.objects.create(scene=self.hub, label="Go", order=1, target_scene=self.target)
+        req = Requirement.objects.create(condition_type="has_flag", flag_name="hub_gate_flag")
+        req_group = RequirementGroup.objects.create(
+            label="Hub gate",
+            logic="all",
+            group_key="hub__export:1:Go",
+        )
+        req_group.requirements.add(req)
+        hub_choice.requirements.add(req_group)
         SceneItem.objects.create(scene=self.hub, item=self.item, quantity=2, award_once=False)
         SceneContact.objects.create(scene=self.hub, contact=self.contact, action="gain", award_once=True)
         SceneGangStanding.objects.create(scene=self.hub, gang=self.gang, standing_change=4)
@@ -136,6 +145,16 @@ class ExportDomainYamlTests(TestCase):
             hub_row = next(row for row in hubs_data["hubs"] if row["key"] == "hub__export")
             self.assertEqual(hub_row["arrival"]["discover_territory"], "export_territory")
             self.assertEqual(hub_row["arrival"]["gang_standing_changes"][0]["gang"], "export_gang")
+            choice_row = next(row for row in hub_row["choices"] if row["label"] == "Go")
+            self.assertEqual(len(choice_row["requirements"]), 1)
+            self.assertEqual(choice_row["requirements"][0]["label"], "Hub gate")
+            self.assertEqual(choice_row["requirements"][0]["conditions"][0]["condition_type"], "has_flag")
+            self.assertEqual(choice_row["requirements"][0]["conditions"][0]["flag_name"], "hub_gate_flag")
+
+            properties_data = yaml.safe_load((Path(tmp_dir) / "properties.yaml").read_text(encoding="utf-8"))
+            self.assertIn("properties", properties_data)
+            property_row = next(row for row in properties_data["properties"] if row["key"] == "export_property")
+            self.assertEqual(property_row["description"], "Export property")
 
     def test_export_all_yaml_combined_round_trip_imports_cleanly(self):
         with TemporaryDirectory() as tmp_dir:
@@ -155,5 +174,6 @@ class ExportDomainYamlTests(TestCase):
             self.assertTrue(Property.objects.filter(key="export_property").exists())
             self.assertTrue(Territory.objects.filter(key="export_territory").exists())
             self.assertTrue(Quest.objects.filter(key="export-domain-quest").exists())
+            self.assertEqual(Property.objects.get(key="export_property").description, "Export property")
             hub = Scene.objects.get(key="hub__export")
             self.assertEqual(hub.scene_gang_standings.count(), 1)

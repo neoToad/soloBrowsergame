@@ -37,7 +37,19 @@ hubs:
     failure_arrival_flavor: null
     set_flag_name: null
     clear_flag_name: null
-    requirements: []
+    requirements:
+    - label: Must have completed Corky's
+      logic: all
+      conditions:
+      - condition_type: quest_completed
+        flag_name: null
+        stat_name: null
+        stat_value: 0
+        required_item: null
+        required_quest: corkys
+        required_contact: null
+        required_ending_type: null
+      group_key: Must have completed Corky's
   - label: Stop by Reyes Boxing
     order: 2
     target_scene: hub__reyes_boxing

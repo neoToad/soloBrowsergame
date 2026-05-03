@@ -1,6 +1,7 @@
 properties:
 - key: corkys_bar
   name: Corky's Bar
+  description: ''
   property_type: business
   cash_per_turn: 75
   heat_per_turn: 0
@@ -9,6 +10,7 @@ properties:
   resolution_scene: null
 - key: dockside_warehouse_unit
   name: Dockside Warehouse Unit
+  description: ''
   property_type: business
   cash_per_turn: 200
   heat_per_turn: 3
@@ -17,6 +19,7 @@ properties:
   resolution_scene: null
 - key: flats_lockup
   name: Flats Lockup
+  description: Testing
   property_type: safehouse
   cash_per_turn: 0
   heat_per_turn: -1
@@ -25,6 +28,7 @@ properties:
   resolution_scene: null
 - key: storage_unit
   name: Storage Unit
+  description: A rented unit with a lock that works. For now.
   property_type: safehouse
   cash_per_turn: 0
   heat_per_turn: 0
@@ -33,6 +37,7 @@ properties:
   resolution_scene: null
 - key: westside_safehouse
   name: Westside Safehouse
+  description: ''
   property_type: safehouse
   cash_per_turn: 0
   heat_per_turn: -2

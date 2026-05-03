@@ -108,6 +108,7 @@ def import_world_data(data: dict) -> ImportResult:
             key=property_key,
             defaults={
                 "name": pdata["name"],
+                "description": pdata.get("description", ""),
                 "property_type": property_type,
                 "cash_per_turn": pdata.get("cash_per_turn", 0),
                 "heat_per_turn": pdata.get("heat_per_turn", 0),

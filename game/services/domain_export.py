@@ -90,6 +90,7 @@ def build_properties_payload() -> dict:
             {
                 "key": prop.key,
                 "name": prop.name,
+                "description": prop.description or "",
                 "property_type": prop.property_type,
                 "cash_per_turn": prop.cash_per_turn,
                 "heat_per_turn": prop.heat_per_turn,
@@ -126,6 +127,33 @@ def build_world_payload() -> dict:
     return payload
 
 
+def _requirement_to_dict(requirement) -> dict:
+    return {
+        "condition_type": requirement.condition_type,
+        "flag_name": requirement.flag_name or None,
+        "stat_name": requirement.stat_name or None,
+        "stat_value": requirement.stat_value,
+        "required_item": requirement.required_item.key if requirement.required_item else None,
+        "required_quest": requirement.required_quest.key if requirement.required_quest else None,
+        "required_contact": requirement.required_contact.key if requirement.required_contact else None,
+        "required_ending_type": requirement.required_ending_type or None,
+    }
+
+
+def _requirement_groups_to_list(groups_qs) -> list[dict]:
+    groups = []
+    for group in groups_qs.order_by("group_key", "id"):
+        row = {
+            "label": group.label,
+            "logic": group.logic,
+            "conditions": [_requirement_to_dict(req) for req in group.requirements.all().order_by("id")],
+        }
+        if group.group_key:
+            row["group_key"] = group.group_key
+        groups.append(row)
+    return groups
+
+
 def _choice_to_dict(choice) -> dict:
     return {
         "label": choice.label,
@@ -137,7 +165,7 @@ def _choice_to_dict(choice) -> dict:
         "failure_arrival_flavor": choice.failure_arrival_flavor or None,
         "set_flag_name": choice.set_flag_name or None,
         "clear_flag_name": choice.clear_flag_name or None,
-        "requirements": [],
+        "requirements": _requirement_groups_to_list(choice.requirements.all()),
     }
 
 
@@ -191,6 +219,7 @@ def build_hubs_payload() -> dict:
             "choices__target_scene",
             "choices__success_scene",
             "choices__failure_scene",
+            "choices__requirements__requirements",
             "scene_items__item",
             "scene_contacts__contact",
             "scene_gang_standings__gang",

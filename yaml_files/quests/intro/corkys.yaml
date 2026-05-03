@@ -1,10 +1,8 @@
 quest:
   key: corkys
   title: Corky's
-  description: 'Dutch wants his dealers back in a bar called Corky''s. The owner pushed
-    back. You''re the push.
-
-    '
+  description: Dutch wants his dealers back in a bar called Corky's. The owner pushed
+    back. You're the push.
   arc: intro
   arc_order: 3
   is_repeatable: false
@@ -12,7 +10,7 @@ quest:
   - hub__apartment
   entrance_scene: corkys__the-brief
   requirements:
-  - label: Must have completed first word
+  - label: Must have completed The Morris Job
     logic: all
     conditions:
     - condition_type: quest_completed
@@ -20,10 +18,10 @@ quest:
       stat_name: null
       stat_value: 0
       required_item: null
-      required_quest: first-word
+      required_quest: the-morris-job
       required_contact: null
       required_ending_type: null
-    group_key: Must have completed first word
+    group_key: Must have completed The Call
 scenes:
 - key: corkys__the-brief
   scene_type: normal

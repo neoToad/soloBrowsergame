@@ -265,19 +265,54 @@ def resolve_combat_end(session, stats, inventory, completed_map, next_scene, com
     session.save()
 
     log_queue = []
+    victory_flavor = ""
 
     if encounter:
         if ending_type == 'victory' and encounter.victory_arrival_flavor:
-            log_queue.append(encounter.victory_arrival_flavor)
+            victory_flavor = encounter.victory_arrival_flavor.strip()
+            log_queue.append(victory_flavor)
         elif ending_type == 'defeat' and encounter.defeat_arrival_flavor:
             log_queue.append(encounter.defeat_arrival_flavor)
 
+    cash_before = stats.cash
+    heat_before = stats.heat
+    rep_before = stats.rep
     arrival_logs, _ = process_arrival(session, stats, inventory, completed_map, next_scene)
+    cash_delta = stats.cash - cash_before
+    heat_delta = stats.heat - heat_before
+    rep_delta = stats.rep - rep_before
+    if ending_type == 'victory':
+        arrival_logs = [
+            line for line in arrival_logs
+            if not (
+                line.startswith("Cash: ")
+                or line.startswith("Heat: ")
+                or line.startswith("Reputation: ")
+            )
+        ]
     log_queue.extend(arrival_logs)
 
     if xp_award:
         combat_levels = award_xp(session, stats, xp_award)
-        log_queue.append(f"+{xp_award} XP.")
+        if ending_type == 'victory':
+            reward_bits = [f"{xp_award} XP"]
+            if cash_delta:
+                cash_sign = "+" if cash_delta > 0 else "-"
+                reward_bits.append(f"{cash_sign}${abs(cash_delta)} cash")
+            if heat_delta:
+                heat_sign = "+" if heat_delta > 0 else "-"
+                reward_bits.append(f"{heat_sign}{abs(heat_delta)} heat")
+            if rep_delta:
+                rep_sign = "+" if rep_delta > 0 else "-"
+                reward_bits.append(f"{rep_sign}{abs(rep_delta)} rep")
+            combined = f"You gained {', '.join(reward_bits)}."
+            if victory_flavor:
+                combined = f"{victory_flavor} {combined}"
+                if victory_flavor in log_queue:
+                    log_queue.remove(victory_flavor)
+            log_queue.append(combined)
+        else:
+            log_queue.append(f"+{xp_award} XP.")
         for new_level in combat_levels:
             log_queue.append(LEVEL_UP_FLAVOR.get(new_level, "You feel stronger."))
 

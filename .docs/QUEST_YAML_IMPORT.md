@@ -49,6 +49,11 @@ The importer uses Django's `update_or_create` keyed on `key` for quests and scen
 - `requirements` is a list of `RequirementGroup` objects. Multiple groups means ALL groups must pass (AND between groups). Within each group, `logic` controls AND/OR between individual conditions.
 - `combat_encounter` is only present on scenes with `scene_type: combat`. The importer ignores it on all other scene types.
 - `roll` block is always present but `requires_roll: false` means the importer ignores `roll_stat` and `roll_difficulty`.
+- `arrival` supports territory and gang standing effects:
+  - `receive_territory` (territory key or `null`)
+  - `lose_territory` (territory key or `null`)
+  - `discover_territory` (territory key or `null`)
+  - `gang_standing_changes` (list, default `[]`)
 
 ---
 
@@ -604,6 +609,37 @@ quest:
           required_item: null
           required_ending_type: null
           required_contact: null
+```
+
+---
+
+## Arrival Territory and Gang Standing Schema
+
+Use these fields inside each scene's `arrival` block when needed:
+
+```yaml
+arrival:
+  cash_change: 0
+  rep_change: 0
+  heat_change: 0
+  consume_item: null
+  receive_property: null
+  lose_property: null
+  receive_territory: null
+  lose_territory: null
+  discover_territory: null
+  gang_standing_changes: []
+```
+
+Gang standing entries use this shape:
+
+```yaml
+arrival:
+  gang_standing_changes:
+    - gang: dockers_union
+      standing_change: 5
+    - gang: southside_kings
+      standing_change: -3
 ```
 
 ---
