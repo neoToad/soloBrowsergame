@@ -1,7 +1,7 @@
 <div class="notice-board">
 
   {% if notice_board.available %}
-  <p class="panel-label">[ AVAILABLE JOBS ]</p>
+  <p class="panel-label">[ AVAILABLE EVENTS ]</p>
   {% for entry in notice_board.available %}
   <div class="quest-entry quest-entry--available">
     <p class="quest-title">{{ entry.quest.title }}</p>
@@ -12,14 +12,14 @@
       hx-swap="outerHTML"
       hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
       hx-indicator="#loading-indicator">
-      Take the job
+      Start event
     </button>
   </div>
   {% endfor %}
   {% endif %}
 
   {% if notice_board.locked %}
-  <p class="panel-label">[ LOCKED JOBS ]</p>
+  <p class="panel-label">[ LOCKED EVENTS ]</p>
   {% for entry in notice_board.locked %}
   <div class="quest-entry quest-entry--locked">
     <p class="quest-title">{{ entry.quest.title }}</p>
@@ -31,7 +31,7 @@
   {% endif %}
 
   {% if notice_board.completed %}
-  <p class="panel-label">[ COMPLETED JOBS ]</p>
+  <p class="panel-label">[ COMPLETED EVENTS ]</p>
   {% for entry in notice_board.completed %}
   <div class="quest-entry quest-entry--completed">
     <p class="quest-title">{{ entry.quest.title }}</p>

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from ..models import GameSession, PlayerStats, Scene, CompletedQuest
 from ..models.property import PlayerDiscoveredTerritory, PlayerProperty, PlayerTerritory, Territory
@@ -130,6 +131,7 @@ def _build_hub_context(session, scene, effective_stats, inventory, completed_map
             completed_map,
             effective_stats,
             flags=session.flags,
+            include_debug_sections=getattr(settings, "SHOW_LOCKED_COMPLETED_QUESTS", False),
         )
     jobs_hub_context = jobs_service.build_jobs_hub_context(
         session,

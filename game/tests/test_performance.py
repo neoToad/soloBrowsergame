@@ -1,4 +1,4 @@
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 
 from game.models import GameSession, Scene
 
@@ -32,6 +32,7 @@ class QueryBudgetTest(TestCase):
         self.assertGreaterEqual(len(choices), 1)
         self.assertLessEqual(len(ctx), 4)
 
+    @override_settings(SHOW_LOCKED_COMPLETED_QUESTS=True)
     def test_get_notice_board_uses_prefetch_budget(self):
         from django.db import connection
         from django.test.utils import CaptureQueriesContext
@@ -40,7 +41,13 @@ class QueryBudgetTest(TestCase):
 
         scene = Scene.objects.get(key="hub__notice_board")
         with CaptureQueriesContext(connection) as ctx:
-            board = get_notice_board(scene, {}, {}, self.session.stats)
+            board = get_notice_board(
+                scene,
+                {},
+                {},
+                self.session.stats,
+                include_debug_sections=True,
+            )
 
         self.assertIn("available", board)
         self.assertIn("locked", board)

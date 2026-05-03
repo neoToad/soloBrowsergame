@@ -2,7 +2,7 @@ from django.db import models
 from .player import GameSession
 
 
-_EVENT_LOG_CAP = 20
+_EVENT_LOG_CAP = 5
 
 
 def log_event(session, text: str) -> None:

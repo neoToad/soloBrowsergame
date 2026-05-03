@@ -1,7 +1,7 @@
 import json
 from unittest.mock import patch
 
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from game.constants import SESSION_KEY
@@ -320,10 +320,11 @@ class NoticeBoardTest(TestCase):
 
     def test_notice_board_initial_state(self):
         response = self.client.get(reverse("scene_detail", kwargs={"scene_key": "hub__notice_board"}))
-        self.assertContains(response, "[ AVAILABLE JOBS ]")
+        self.assertContains(response, "[ AVAILABLE EVENTS ]")
         self.assertContains(response, "The Warehouse Job")
         self.assertIn("quest-entry--available", response.content.decode())
 
+    @override_settings(SHOW_LOCKED_COMPLETED_QUESTS=True)
     def test_quest_prerequisite_gating(self):
         second_quest = Quest.objects.create(
             key="second_quest",
@@ -340,7 +341,7 @@ class NoticeBoardTest(TestCase):
         second_quest.hub_scenes.add(self.notice_board_scene)
 
         response = self.client.get(reverse("scene_detail", kwargs={"scene_key": "hub__notice_board"}))
-        self.assertContains(response, "[ LOCKED JOBS ]")
+        self.assertContains(response, "[ LOCKED EVENTS ]")
         self.assertContains(response, second_quest.title)
         self.assertContains(response, "Requires Warehouse")
 
@@ -380,6 +381,7 @@ class NoticeBoardTest(TestCase):
         self.assertNotContains(response, "Requires Intellect 9")
         self.assertContains(response, intellect_quest.title)
 
+    @override_settings(SHOW_LOCKED_COMPLETED_QUESTS=True)
     def test_completed_quest_rendering(self):
         self.warehouse_job.is_repeatable = True
         self.warehouse_job.save()
@@ -389,10 +391,32 @@ class NoticeBoardTest(TestCase):
         )
 
         response = self.client.get(reverse("scene_detail", kwargs={"scene_key": "hub__notice_board"}))
-        self.assertContains(response, "[ COMPLETED JOBS ]")
+        self.assertContains(response, "[ COMPLETED EVENTS ]")
         self.assertContains(response, "The Warehouse Job")
         self.assertContains(response, "Victory")
         self.assertContains(response, "Play again")
+
+    def test_locked_and_completed_are_hidden_when_debug_toggle_off(self):
+        second_quest = Quest.objects.create(
+            key="second_quest_hidden",
+            title="Hidden Locked Quest",
+            description="Locked until warehouse is done.",
+            entrance_scene=self.warehouse_entrance,
+        )
+        req = Requirement.objects.create(
+            condition_type="quest_completed", required_quest=self.warehouse_job
+        )
+        group = RequirementGroup.objects.create(label="Requires Warehouse Hidden", logic="all")
+        group.requirements.add(req)
+        second_quest.requirements.add(group)
+        second_quest.hub_scenes.add(self.notice_board_scene)
+        CompletedQuest.objects.create(
+            session=self.session, quest=self.warehouse_job, ending_type="victory"
+        )
+
+        response = self.client.get(reverse("scene_detail", kwargs={"scene_key": "hub__notice_board"}))
+        self.assertNotContains(response, "[ LOCKED EVENTS ]")
+        self.assertNotContains(response, "[ COMPLETED EVENTS ]")
 
     def test_start_quest_view(self):
         locked_quest = Quest.objects.create(

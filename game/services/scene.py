@@ -71,7 +71,15 @@ def consume_arrival_item(session, inventory, next_scene) -> list[str]:
     return []
 
 
-def get_notice_board(scene, inventory, completed_map, effective_stats, flags=None):
+def get_notice_board(
+    scene,
+    inventory,
+    completed_map,
+    effective_stats,
+    flags=None,
+    *,
+    include_debug_sections=False,
+):
     """
     Returns a dict of three lists: available, locked, completed, for quests
     assigned to the given hub scene.
@@ -84,10 +92,11 @@ def get_notice_board(scene, inventory, completed_map, effective_stats, flags=Non
         Quest.objects.filter(is_unlocked=True, hub_scenes=scene)
     ):
         if quest.id in completed_map:
-            completed.append({
-                'quest': quest,
-                'ending_type': completed_map[quest.id],
-            })
+            if include_debug_sections:
+                completed.append({
+                    'quest': quest,
+                    'ending_type': completed_map[quest.id],
+                })
             continue
         requirement_groups = list(quest.requirements.all())
         if requirement_groups:
@@ -95,10 +104,11 @@ def get_notice_board(scene, inventory, completed_map, effective_stats, flags=Non
                 rg for rg in requirement_groups if not rg.evaluate(ctx)
             ]
             if failing:
-                locked.append({
-                    'quest': quest,
-                    'reasons': [rg.label for rg in failing],
-                })
+                if include_debug_sections:
+                    locked.append({
+                        'quest': quest,
+                        'reasons': [rg.label for rg in failing],
+                    })
                 continue
         available.append({'quest': quest})
     return {'available': available, 'locked': locked, 'completed': completed}
