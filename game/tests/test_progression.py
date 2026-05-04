@@ -32,6 +32,46 @@ class LevelUpTest(TestCase):
         response = self.client.post(reverse("level_up"), {"stat": "strength"}, HTTP_HX_REQUEST="true")
         self.assertEqual(response.status_code, 400)
 
+    def test_level_up_restores_5_hp_and_logs_amount(self):
+        from game.utils import compute_max_hp
+
+        self.stats.stat_points = 1
+        self.stats.strength = 15
+        self.stats.agility = 10
+        self.stats.max_hp = compute_max_hp(15)
+        self.stats.hp = 10
+        self.stats.save()
+
+        response = self.client.post(reverse("level_up"), {"stat": "agility"}, HTTP_HX_REQUEST="true")
+
+        self.assertEqual(response.status_code, 200)
+        self.stats.refresh_from_db()
+        self.assertEqual(self.stats.agility, 11)
+        self.assertEqual(self.stats.hp, 15)
+        self.assertTrue(
+            self.session.log.filter(text="AGILITY increased to 11, 5 HP restored.").exists()
+        )
+
+    def test_level_up_hp_restore_caps_and_logs_actual_amount(self):
+        from game.utils import compute_max_hp
+
+        self.stats.stat_points = 1
+        self.stats.strength = 15
+        self.stats.intellect = 10
+        self.stats.max_hp = compute_max_hp(15)
+        self.stats.hp = self.stats.max_hp - 1
+        self.stats.save()
+
+        response = self.client.post(reverse("level_up"), {"stat": "intellect"}, HTTP_HX_REQUEST="true")
+
+        self.assertEqual(response.status_code, 200)
+        self.stats.refresh_from_db()
+        self.assertEqual(self.stats.intellect, 11)
+        self.assertEqual(self.stats.hp, compute_max_hp(15))
+        self.assertTrue(
+            self.session.log.filter(text="INTELLECT increased to 11, 1 HP restored.").exists()
+        )
+
     def test_scene_renders_level_up_panel_after_level_gain(self):
         self.stats.level = 2
         self.stats.stat_points = 1

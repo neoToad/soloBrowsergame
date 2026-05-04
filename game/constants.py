@@ -19,3 +19,5 @@ USE_ITEM_FLAVOR = {
     'heal_hp':  "You take a pull from the flask. Steadier now.",
     'add_stat': "You feel sharper. More focused.",
 }
+
+LEVEL_UP_HP_RESTORE = 5

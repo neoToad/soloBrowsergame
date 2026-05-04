@@ -54,6 +54,20 @@ def spend_stat_point(stats, stat_name, stat_fields):
     return field, field, current_val + 1
 
 
+def restore_hp_on_stat_upgrade(stats, effective_max_hp):
+    """
+    Restores a fixed amount of HP after a stat-upgrade choice.
+    Returns the actual healed amount.
+    """
+    from ..constants import LEVEL_UP_HP_RESTORE
+
+    healed = min(LEVEL_UP_HP_RESTORE, max(0, effective_max_hp - stats.hp))
+    if healed:
+        stats.hp = min(effective_max_hp, stats.hp + healed)
+        stats.save(update_fields=["hp"])
+    return healed
+
+
 def apply_stat_rewards(session, stats, obj):
     """
     Applies cash_change, rep_change, heat_change from `obj` (Scene or Choice) to stats.

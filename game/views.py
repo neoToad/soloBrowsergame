@@ -11,7 +11,7 @@ from .models import (
 from .models.events import log_event, flush_event_log
 from .services.session     import load_session_context, create_session, build_render_context
 from .services.combat      import initialize_combat_state, get_active_combat_state
-from .services.progression import spend_stat_point
+from .services.progression import spend_stat_point, restore_hp_on_stat_upgrade
 from .services             import gameplay
 from .services.types       import GameplayError
 from .services             import jobs as jobs_service
@@ -339,7 +339,9 @@ def level_up(request, *, session_context):
     except ValueError as exc:
         return response_utils.error_response(request, message=str(exc), status=400)
 
-    log_event(session, f"{public_name.upper()} increased to {new_value}.")
+    post_upgrade_effective_stats = get_effective_stats(stats, inventory)
+    healed = restore_hp_on_stat_upgrade(stats, post_upgrade_effective_stats.max_hp)
+    log_event(session, f"{public_name.upper()} increased to {new_value}, {healed} HP restored.")
 
     scene           = session.current_scene
     effective_stats = get_effective_stats(stats, inventory)
