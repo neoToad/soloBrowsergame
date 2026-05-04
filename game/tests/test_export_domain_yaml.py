@@ -66,8 +66,6 @@ class ExportDomainYamlTests(TestCase):
             cash_per_turn=10,
             heat_per_turn=1,
             rep_per_turn=2,
-            is_contestable=True,
-            resolution_scene=self.hub,
         )
         self.territory = Territory.objects.create(
             key="export_territory",
@@ -76,8 +74,6 @@ class ExportDomainYamlTests(TestCase):
             cash_per_turn=11,
             heat_per_turn=2,
             rep_per_turn=3,
-            is_contestable=True,
-            resolution_scene=self.hub,
         )
         self.hub.receive_property = self.property
         self.hub.receive_territory = self.territory

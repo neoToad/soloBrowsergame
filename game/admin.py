@@ -12,7 +12,7 @@ from .models import (
     Arc, Quest, Item, Requirement, RequirementGroup, Scene, Choice,
     GameSession, PlayerStats, PlayerInventory, SceneItem, CompletedQuest,
     Enemy, CombatEncounter, CombatState, EventLog,
-    Property, Territory, PlayerProperty, PlayerTerritory, PlayerDiscoveredTerritory, RivalClaim,
+    Property, Territory, PlayerProperty, PlayerTerritory, PlayerDiscoveredTerritory,
     Gang, Contact, SceneContact, SceneGangStanding, PlayerContact, PlayerGangStanding,
 )
 
@@ -112,12 +112,12 @@ class PlayerInventoryInline(admin.TabularInline):
 class PlayerPropertyInline(admin.TabularInline):
     model = PlayerProperty
     extra = 0
-    fields = ('property', 'is_contested')
+    fields = ('property',)
 
 class PlayerTerritoryInline(admin.TabularInline):
     model = PlayerTerritory
     extra = 0
-    fields = ('territory', 'is_contested')
+    fields = ('territory',)
 
 
 class PlayerDiscoveredTerritoryInline(admin.TabularInline):
@@ -522,26 +522,23 @@ class EventLogAdmin(admin.ModelAdmin):
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'property_type', 'cash_per_turn', 'heat_per_turn', 'rep_per_turn', 'is_contestable', 'resolution_scene')
-    list_filter = ('property_type', 'is_contestable')
+    list_display = ('name', 'property_type', 'cash_per_turn', 'heat_per_turn', 'rep_per_turn')
+    list_filter = ('property_type',)
     search_fields = ('name',)
 
 @admin.register(PlayerProperty)
 class PlayerPropertyAdmin(admin.ModelAdmin):
-    list_display = ('session', 'property', 'is_contested')
-    list_filter = ('is_contested',)
+    list_display = ('session', 'property')
     list_select_related = True
 
 @admin.register(Territory)
 class TerritoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'cash_per_turn', 'heat_per_turn', 'rep_per_turn', 'is_contestable', 'resolution_scene')
-    list_filter = ('is_contestable',)
+    list_display = ('name', 'cash_per_turn', 'heat_per_turn', 'rep_per_turn')
     search_fields = ('name', 'key')
 
 @admin.register(PlayerTerritory)
 class PlayerTerritoryAdmin(admin.ModelAdmin):
-    list_display = ('session', 'territory', 'is_contested')
-    list_filter = ('is_contested',)
+    list_display = ('session', 'territory')
     list_select_related = True
 
 
@@ -550,12 +547,6 @@ class PlayerDiscoveredTerritoryAdmin(admin.ModelAdmin):
     list_display = ("session", "territory", "discovered_at")
     list_select_related = True
     readonly_fields = ("discovered_at",)
-
-@admin.register(RivalClaim)
-class RivalClaimAdmin(admin.ModelAdmin):
-    list_display = ('player_property', 'resolution_scene', 'created_at')
-    list_select_related = True
-    readonly_fields = ('created_at',)
 
 @admin.register(Gang)
 class GangAdmin(admin.ModelAdmin):

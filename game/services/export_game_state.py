@@ -243,8 +243,6 @@ def build_game_state_payload(include_scene_body=False):
                     "cash_per_turn": prop.cash_per_turn,
                     "heat_per_turn": prop.heat_per_turn,
                     "rep_per_turn": prop.rep_per_turn,
-                    "is_contestable": prop.is_contestable,
-                    "resolution_scene": scene_key_by_id.get(prop.resolution_scene_id),
                 }
                 for prop in properties
             ]),

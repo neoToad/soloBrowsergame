@@ -325,17 +325,6 @@ html, body {
     font-size: 12px;
 }
 
-.property-contested .property-name {
-    color: var(--danger, #c0392b);
-}
-
-.property-contested-badge {
-    color: var(--danger, #c0392b);
-    font-weight: bold;
-    margin-left: 4px;
-}
-
-
 /* EVENT LOG */
 
 .log-entry {

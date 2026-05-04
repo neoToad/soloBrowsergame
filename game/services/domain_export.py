@@ -85,7 +85,7 @@ def build_gangs_payload() -> dict:
 
 def build_properties_payload() -> dict:
     properties = []
-    for prop in Property.objects.select_related("resolution_scene").order_by("key"):
+    for prop in Property.objects.order_by("key"):
         properties.append(
             {
                 "key": prop.key,
@@ -95,8 +95,6 @@ def build_properties_payload() -> dict:
                 "cash_per_turn": prop.cash_per_turn,
                 "heat_per_turn": prop.heat_per_turn,
                 "rep_per_turn": prop.rep_per_turn,
-                "is_contestable": prop.is_contestable,
-                "resolution_scene": prop.resolution_scene.key if prop.resolution_scene else None,
             }
         )
     return {"properties": properties}
@@ -104,7 +102,7 @@ def build_properties_payload() -> dict:
 
 def build_territories_payload() -> dict:
     territories = []
-    for territory in Territory.objects.select_related("resolution_scene").order_by("key"):
+    for territory in Territory.objects.order_by("key"):
         territories.append(
             {
                 "key": territory.key,
@@ -113,8 +111,6 @@ def build_territories_payload() -> dict:
                 "cash_per_turn": territory.cash_per_turn,
                 "heat_per_turn": territory.heat_per_turn,
                 "rep_per_turn": territory.rep_per_turn,
-                "is_contestable": territory.is_contestable,
-                "resolution_scene": territory.resolution_scene.key if territory.resolution_scene else None,
             }
         )
     return {"territories": territories}

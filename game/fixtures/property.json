@@ -9,9 +9,7 @@
     "property_type": "business",
     "cash_per_turn": 75,
     "heat_per_turn": 0,
-    "rep_per_turn": 2,
-    "is_contestable": true,
-    "resolution_scene": null
+    "rep_per_turn": 2
   }
 },
 {
@@ -24,9 +22,7 @@
     "property_type": "business",
     "cash_per_turn": 200,
     "heat_per_turn": 3,
-    "rep_per_turn": 0,
-    "is_contestable": true,
-    "resolution_scene": null
+    "rep_per_turn": 0
   }
 },
 {
@@ -39,9 +35,7 @@
     "property_type": "safehouse",
     "cash_per_turn": 0,
     "heat_per_turn": -2,
-    "rep_per_turn": 0,
-    "is_contestable": true,
-    "resolution_scene": null
+    "rep_per_turn": 0
   }
 },
 {
@@ -54,9 +48,7 @@
     "property_type": "safehouse",
     "cash_per_turn": 0,
     "heat_per_turn": -1,
-    "rep_per_turn": 0,
-    "is_contestable": false,
-    "resolution_scene": null
+    "rep_per_turn": 0
   }
 },
 {
@@ -69,9 +61,8 @@
     "property_type": "safehouse",
     "cash_per_turn": 0,
     "heat_per_turn": 0,
-    "rep_per_turn": 0,
-    "is_contestable": false,
-    "resolution_scene": null
+    "rep_per_turn": 0
   }
 }
 ]
+

@@ -14,19 +14,6 @@
     </div>
     {% endif %}
 
-    {% if turn_summary.active_claims %}
-    <div class="turn-summary__threats">
-        {% for claim in turn_summary.active_claims %}
-            <p class="turn-summary__threat-warning">
-                Rival contest: <strong>{{ claim.player_property.property.name }}</strong>
-                {% if claim.resolution_scene %}
-                    — resolve it at {{ claim.resolution_scene.title }}
-                {% endif %}
-            </p>
-        {% endfor %}
-    </div>
-    {% endif %}
-
     {% if turn_summary.newly_unlocked %}
     <div class="turn-summary__unlocked">
         {% for scene in turn_summary.newly_unlocked %}

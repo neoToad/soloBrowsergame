@@ -188,16 +188,12 @@ properties:
     cash_per_turn: 200
     heat_per_turn: 3
     rep_per_turn: 0
-    is_contestable: true
-    resolution_scene: null
 territories:
   - key: the_docks
     name: The Docks
     cash_per_turn: 225
     heat_per_turn: 3
     rep_per_turn: 1
-    is_contestable: true
-    resolution_scene: null
 """,
                 encoding="utf-8",
             )
@@ -325,8 +321,6 @@ properties:
     cash_per_turn: 10
     heat_per_turn: 0
     rep_per_turn: 1
-    is_contestable: false
-    resolution_scene: null
 """,
                 encoding="utf-8",
             )
@@ -340,8 +334,6 @@ territories:
     cash_per_turn: 5
     heat_per_turn: 0
     rep_per_turn: 2
-    is_contestable: true
-    resolution_scene: null
 """,
                 encoding="utf-8",
             )

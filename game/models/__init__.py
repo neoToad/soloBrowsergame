@@ -10,5 +10,4 @@ from .property import (
     PlayerProperty,
     PlayerTerritory,
     PlayerDiscoveredTerritory,
-    RivalClaim,
 )

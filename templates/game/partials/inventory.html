@@ -62,13 +62,12 @@
         <p class="panel-label" style="margin-top: 14px;">[ Properties ]</p>
         <div class="item-list">
             {% for pp in player_properties %}
-                <div class="property-row{% if pp.is_contested %} property-contested{% endif %}">
+                <div class="property-row">
                     <button class="item-name-btn" onclick="document.getElementById('property-modal-{{ pp.property.id }}').showModal()">
                         {{ pp.property.name }}
                     </button>
                     <span class="property-meta">
                         {% if pp.property.cash_per_turn %}+${{ pp.property.cash_per_turn }}{% endif %}
-                        {% if pp.is_contested %}<span class="property-contested-badge">!</span>{% endif %}
                     </span>
                 </div>
                 <dialog id="property-modal-{{ pp.property.id }}" class="item-modal">

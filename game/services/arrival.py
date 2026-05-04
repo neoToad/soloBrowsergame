@@ -1,13 +1,10 @@
 from django.db import transaction
 
-from ..models import RivalClaim
 from .progression import apply_stat_rewards, maybe_complete_quest
 from .property_service import (
     apply_property_rewards,
     process_turn_income,
-    trigger_rival_contest,
     get_turn_summary,
-    resolve_contest,
 )
 from .inventory import (
     award_scene_items,
@@ -56,21 +53,9 @@ def process_arrival(session, stats, inventory, completed_map, next_scene, contac
 
         turn_summary = None
         if quest_logs:
-            active_claim = RivalClaim.objects.filter(
-                player_property__session=session,
-                resolution_scene=next_scene,
-            ).first()
-            if active_claim:
-                logs.append(resolve_contest(session, active_claim, next_scene.ending_type))
-
             income_logs, income_totals = process_turn_income(session)
             logs += income_logs
 
-            contest_warning, unlocked_scene = trigger_rival_contest(session)
-            if contest_warning:
-                logs.append(contest_warning)
-            newly_unlocked = [unlocked_scene] if unlocked_scene else []
-
-            turn_summary = get_turn_summary(session, income_totals, newly_unlocked)
+            turn_summary = get_turn_summary(session, income_totals, [])
 
         return logs, turn_summary

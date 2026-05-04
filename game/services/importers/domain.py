@@ -113,8 +113,6 @@ def import_world_data(data: dict) -> ImportResult:
                 "cash_per_turn": pdata.get("cash_per_turn", 0),
                 "heat_per_turn": pdata.get("heat_per_turn", 0),
                 "rep_per_turn": pdata.get("rep_per_turn", 0),
-                "is_contestable": pdata.get("is_contestable", False),
-                "resolution_scene": get_by_key_or_warn(Scene, pdata.get("resolution_scene"), result),
             },
         )
         if created:
@@ -134,8 +132,6 @@ def import_world_data(data: dict) -> ImportResult:
                 "cash_per_turn": tdata.get("cash_per_turn", 0),
                 "heat_per_turn": tdata.get("heat_per_turn", 0),
                 "rep_per_turn": tdata.get("rep_per_turn", 0),
-                "is_contestable": tdata.get("is_contestable", False),
-                "resolution_scene": get_by_key_or_warn(Scene, tdata.get("resolution_scene"), result),
             },
         )
         if created:

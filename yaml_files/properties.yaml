@@ -6,8 +6,6 @@ properties:
   cash_per_turn: 75
   heat_per_turn: 0
   rep_per_turn: 2
-  is_contestable: true
-  resolution_scene: null
 - key: dockside_warehouse_unit
   name: Dockside Warehouse Unit
   description: ''
@@ -15,8 +13,6 @@ properties:
   cash_per_turn: 200
   heat_per_turn: 3
   rep_per_turn: 0
-  is_contestable: true
-  resolution_scene: null
 - key: flats_lockup
   name: Flats Lockup
   description: Testing
@@ -24,8 +20,6 @@ properties:
   cash_per_turn: 0
   heat_per_turn: -1
   rep_per_turn: 0
-  is_contestable: false
-  resolution_scene: null
 - key: storage_unit
   name: Storage Unit
   description: A rented unit with a lock that works. For now.
@@ -33,8 +27,6 @@ properties:
   cash_per_turn: 0
   heat_per_turn: 0
   rep_per_turn: 0
-  is_contestable: false
-  resolution_scene: null
 - key: westside_safehouse
   name: Westside Safehouse
   description: ''
@@ -42,5 +34,3 @@ properties:
   cash_per_turn: 0
   heat_per_turn: -2
   rep_per_turn: 0
-  is_contestable: true
-  resolution_scene: null
