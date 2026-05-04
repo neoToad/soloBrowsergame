@@ -1,11 +1,11 @@
 from django.core.management.base import BaseCommand
 
-from game.models import Choice, ContactJobOffer
+from game.models import Choice
 from game.services.flag_registry import is_valid_flag_name, normalize_flag_name
 
 
 class Command(BaseCommand):
-    help = "Report choices/offers with invalid flag names."
+    help = "Report choices with invalid flag names."
 
     def handle(self, *args, **options):
         invalid_count = 0
@@ -22,16 +22,6 @@ class Command(BaseCommand):
                 self.stdout.write(
                     self.style.WARNING(
                         f"Choice#{choice.pk} ({choice.scene_id} -> {choice.label}): {invalid_fields}"
-                    )
-                )
-
-        for offer in ContactJobOffer.objects.all().order_by("id"):
-            normalized = normalize_flag_name(offer.required_flag, allow_blank=True)
-            if normalized and not is_valid_flag_name(normalized):
-                invalid_count += 1
-                self.stdout.write(
-                    self.style.WARNING(
-                        f"ContactJobOffer#{offer.pk} ({offer.key}): {{'required_flag': '{normalized}'}}"
                     )
                 )
 

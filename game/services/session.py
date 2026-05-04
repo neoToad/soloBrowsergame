@@ -4,7 +4,6 @@ from ..models import GameSession, PlayerStats, Scene, CompletedQuest
 from ..models.property import PlayerDiscoveredTerritory, PlayerProperty, PlayerTerritory, Territory
 from ..constants import HUB_START_SCENE_KEY, SESSION_KEY
 from .inventory import get_player_inventory
-from . import jobs as jobs_service
 from ..utils import get_effective_stats, compute_max_hp
 
 def load_session_context(session_pk):
@@ -133,16 +132,8 @@ def _build_hub_context(session, scene, effective_stats, inventory, completed_map
             flags=session.flags,
             include_debug_sections=getattr(settings, "SHOW_LOCKED_COMPLETED_QUESTS", False),
         )
-    jobs_hub_context = jobs_service.build_jobs_hub_context(
-        session,
-        scene,
-        effective_stats,
-        inventory,
-        completed_map,
-    )
     return {
         "notice_board": notice_board,
-        **jobs_hub_context,
     }
 
 

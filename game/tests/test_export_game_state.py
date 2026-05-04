@@ -10,7 +10,7 @@ class ExportGameStateTest(TestCase):
         payload = build_game_state_payload()
 
         self.assertIsInstance(payload, dict)
-        for key in ("meta", "counts", "items", "enemies", "contacts", "scenes", "quests", "jobs"):
+        for key in ("meta", "counts", "items", "enemies", "contacts", "scenes", "quests"):
             self.assertIn(key, payload)
         self.assertEqual(payload["meta"]["version"], 1)
         self.assertIn("exported_at", payload["meta"])

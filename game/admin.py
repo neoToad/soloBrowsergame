@@ -14,8 +14,6 @@ from .models import (
     Enemy, CombatEncounter, CombatState, EventLog,
     Property, Territory, PlayerProperty, PlayerTerritory, PlayerDiscoveredTerritory, RivalClaim,
     Gang, Contact, SceneContact, SceneGangStanding, PlayerContact, PlayerGangStanding,
-    Job, JobApproach, JobBeatVariant, PlayerJobState,
-    ContactJobOffer, PlayerContactOfferState, JobRun,
 )
 
 # 2. Custom actions
@@ -138,24 +136,6 @@ class PlayerGangStandingInline(admin.TabularInline):
     model = PlayerGangStanding
     extra = 0
     fields = ('gang', 'standing')
-
-class JobApproachInline(admin.TabularInline):
-    model = JobApproach
-    extra = 0
-    fields = ('key', 'label', 'order', 'min_recon_tier', 'roll_stat', 'base_difficulty')
-
-class JobBeatVariantInline(admin.TabularInline):
-    model = JobBeatVariant
-    extra = 0
-    fields = ('beat_number', 'key', 'title', 'order', 'approach', 'requires_roll', 'roll_stat', 'base_difficulty', 'allow_abort')
-
-class ContactJobOfferInline(admin.TabularInline):
-    model = ContactJobOffer
-    extra = 0
-    fields = (
-        'key', 'job', 'scene', 'order', 'is_active',
-        'min_run_count', 'required_flag', 'cooldown_turns',
-    )
 
 # 4. Admin classes
 @admin.register(Arc)
@@ -454,7 +434,7 @@ class ChoiceAdmin(admin.ModelAdmin):
             'fields': ('set_flag_name', 'clear_flag_name'),
             'description': (
                 "Use a registered flag key or one of these dynamic patterns: "
-                "approach_<key>, approach_<key>_failed, ran_<job_key>_<3|5|10>x."
+                "approach_<key>, approach_<key>_failed, ran_<activity_key>_<3|5|10>x."
             ),
         }),
     )
@@ -588,81 +568,3 @@ class ContactAdmin(admin.ModelAdmin):
     list_display = ('key', 'name')
     search_fields = ('key', 'name')
     prepopulated_fields = {'key': ('name',)}
-    inlines = [ContactJobOfferInline]
-
-
-@admin.register(Job)
-class JobAdmin(admin.ModelAdmin):
-    list_display = (
-        'key', 'title', 'is_active', 'base_cooldown_turns',
-        'base_cash_min', 'base_cash_max', 'base_heat', 'base_rep',
-    )
-    list_filter = ('is_active',)
-    search_fields = ('key', 'title', 'description')
-    prepopulated_fields = {'key': ('title',)}
-    filter_horizontal = ('district_hubs', 'unlock_requirements')
-    inlines = [JobApproachInline, JobBeatVariantInline]
-
-
-@admin.register(JobApproach)
-class JobApproachAdmin(admin.ModelAdmin):
-    list_display = ('job', 'key', 'label', 'min_recon_tier', 'roll_stat', 'base_difficulty', 'order')
-    list_filter = ('min_recon_tier', 'roll_stat')
-    search_fields = ('job__key', 'job__title', 'key', 'label')
-
-
-@admin.register(JobBeatVariant)
-class JobBeatVariantAdmin(admin.ModelAdmin):
-    list_display = ('job', 'beat_number', 'key', 'title', 'approach', 'requires_roll', 'allow_abort', 'order')
-    list_filter = ('beat_number', 'requires_roll', 'allow_abort')
-    search_fields = ('job__key', 'job__title', 'key', 'title')
-
-
-@admin.register(PlayerJobState)
-class PlayerJobStateAdmin(admin.ModelAdmin):
-    list_display = ('session', 'job', 'run_count', 'cooldown_until_turn')
-    list_select_related = True
-    search_fields = ('session__session_key', 'job__key', 'job__title')
-
-
-@admin.register(ContactJobOffer)
-class ContactJobOfferAdmin(admin.ModelAdmin):
-    list_display = ('key', 'contact', 'job', 'scene', 'is_active', 'min_run_count', 'cooldown_turns')
-    list_filter = ('is_active', 'contact')
-    list_select_related = True
-    search_fields = ('key', 'contact__name', 'job__key', 'job__title')
-    filter_horizontal = ('unlock_requirements',)
-    fieldsets = (
-        (None, {
-            'fields': (
-                'key', 'contact', 'job', 'scene', 'order', 'is_active',
-                'min_run_count', 'required_flag', 'cooldown_turns',
-                'unlock_requirements',
-            ),
-            'description': (
-                "required_flag must be a registered flag key or supported "
-                "dynamic pattern."
-            ),
-        }),
-        ('Text', {
-            'fields': ('first_meeting_text', 'standard_offer_text', 'nothing_available_text'),
-        }),
-    )
-
-
-@admin.register(PlayerContactOfferState)
-class PlayerContactOfferStateAdmin(admin.ModelAdmin):
-    list_display = ('session', 'offer', 'cooldown_until_turn', 'met_contact')
-    list_select_related = True
-    search_fields = ('session__session_key', 'offer__key')
-
-
-@admin.register(JobRun)
-class JobRunAdmin(admin.ModelAdmin):
-    list_display = (
-        'id', 'session', 'job', 'source', 'status', 'recon_tier',
-        'current_beat', 'started_turn', 'completed_turn',
-    )
-    list_filter = ('source', 'status', 'recon_tier')
-    list_select_related = True
-    search_fields = ('session__session_key', 'job__key', 'job__title')

@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.test import TestCase
 
-from game.models import Choice, Contact, ContactJobOffer, Job, Quest, Scene
+from game.models import Choice, Quest, Scene
 from game.services import quest_builder
 
 
@@ -64,21 +64,6 @@ class FlagValidationModelTests(TestCase):
         choice.label = "Legacy Edited"
         choice.full_clean()
 
-    def test_contact_offer_required_flag_validation(self):
-        contact = Contact.objects.create(key="flag-contact", name="Flag Contact")
-        job = Job.objects.create(key="flag-job", title="Flag Job")
-        offer = ContactJobOffer(
-            key="flag-offer",
-            contact=contact,
-            job=job,
-            scene=self.hub_scene,
-            required_flag="ran_flag_job_3x",
-        )
-        offer.full_clean()
-        offer.required_flag = "invalid required flag"
-        with self.assertRaises(ValidationError):
-            offer.full_clean()
-
 
 class FlagValidationServiceTests(TestCase):
     def setUp(self):
@@ -131,20 +116,8 @@ class ReportInvalidFlagsCommandTests(TestCase):
         choice = Choice.objects.create(scene=scene, label="Go", target_scene=target, set_flag_name="test")
         Choice.objects.filter(pk=choice.pk).update(set_flag_name="invalid choice flag")
 
-        contact = Contact.objects.create(key="flag-report-contact", name="Report Contact")
-        job = Job.objects.create(key="flag-report-job", title="Report Job")
-        offer = ContactJobOffer.objects.create(
-            key="flag-report-offer",
-            contact=contact,
-            job=job,
-            scene=scene,
-            required_flag="test",
-        )
-        ContactJobOffer.objects.filter(pk=offer.pk).update(required_flag="invalid offer flag")
-
         out = StringIO()
         call_command("report_invalid_flags", stdout=out)
         output = out.getvalue()
         self.assertIn("Choice#", output)
-        self.assertIn("ContactJobOffer#", output)
-        self.assertIn("Found 2 row(s) with invalid flag names.", output)
+        self.assertIn("Found 1 row(s) with invalid flag names.", output)

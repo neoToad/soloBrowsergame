@@ -7,7 +7,6 @@ import yaml
 
 from game.models.combat import CombatEncounter, Enemy
 from game.models.items import Item
-from game.models.jobs import ContactJobOffer, Job, JobApproach, JobBeatVariant
 from game.models.property import Property
 from game.models.requirements import Requirement, RequirementGroup
 from game.models.world import Arc, Choice, Contact, Quest, Scene, SceneContact, SceneItem
@@ -52,16 +51,6 @@ def build_game_state_payload(include_scene_body=False):
         .order_by("arc_order", "key")
     )
     arcs = list(Arc.objects.prefetch_related("quests").order_by("order", "key"))
-    jobs = list(Job.objects.prefetch_related("district_hubs").order_by("title", "key"))
-    approaches = list(JobApproach.objects.select_related("job").order_by("job_id", "order", "id"))
-    beat_variants = list(
-        JobBeatVariant.objects.select_related("job", "approach")
-        .order_by("job_id", "beat_number", "order", "id")
-    )
-    contact_offers = list(
-        ContactJobOffer.objects.select_related("job", "contact", "scene")
-        .order_by("contact_id", "order", "id")
-    )
     choices = list(
         Choice.objects.select_related("scene", "target_scene", "success_scene", "failure_scene")
         .order_by("scene_id", "order", "id")
@@ -79,7 +68,6 @@ def build_game_state_payload(include_scene_body=False):
     quest_key_by_id = {quest.id: quest.key for quest in quests}
     contact_key_by_id = {contact.id: contact.key for contact in contacts}
     scene_key_by_id = {scene.id: scene.key for scene in scenes}
-    approach_key_by_id = {approach.id: approach.key for approach in approaches}
 
     requirement_groups = list(
         RequirementGroup.objects.prefetch_related("requirements").order_by("id")
@@ -204,72 +192,6 @@ def build_game_state_payload(include_scene_body=False):
             }
         )
 
-    approaches_by_job_id = defaultdict(list)
-    for approach in approaches:
-        approaches_by_job_id[approach.job_id].append(
-            {
-                "key": approach.key,
-                "label": approach.label,
-                "order": approach.order,
-                "min_recon_tier": approach.min_recon_tier,
-                "roll_stat": approach.roll_stat,
-                "base_difficulty": approach.base_difficulty,
-            }
-        )
-
-    beat_variants_by_job_id = defaultdict(list)
-    for variant in beat_variants:
-        beat_variants_by_job_id[variant.job_id].append(
-            {
-                "beat_number": variant.beat_number,
-                "key": variant.key,
-                "title": variant.title,
-                "order": variant.order,
-                "approach": approach_key_by_id.get(variant.approach_id),
-                "requires_roll": variant.requires_roll,
-                "roll_stat": variant.roll_stat or None,
-                "base_difficulty": variant.base_difficulty,
-                "allow_abort": variant.allow_abort,
-            }
-        )
-
-    contact_offers_by_job_id = defaultdict(list)
-    for offer in contact_offers:
-        offer_group_ids = list(offer.unlock_requirements.values_list("id", flat=True).order_by("id"))
-        contact_offers_by_job_id[offer.job_id].append(
-            {
-                "key": offer.key,
-                "contact": contact_key_by_id.get(offer.contact_id),
-                "scene": scene_key_by_id.get(offer.scene_id),
-                "order": offer.order,
-                "is_active": offer.is_active,
-                "min_run_count": offer.min_run_count,
-                "required_flag": offer.required_flag or None,
-                "cooldown_turns": offer.cooldown_turns,
-                "unlock_requirement_group_ids": offer_group_ids,
-            }
-        )
-
-    jobs_payload = []
-    for job in jobs:
-        job_group_ids = list(job.unlock_requirements.values_list("id", flat=True).order_by("id"))
-        jobs_payload.append(
-            {
-                "key": job.key,
-                "title": job.title,
-                "is_active": job.is_active,
-                "base_cooldown_turns": job.base_cooldown_turns,
-                "base_cash_min": job.base_cash_min,
-                "base_cash_max": job.base_cash_max,
-                "base_heat": job.base_heat,
-                "base_rep": job.base_rep,
-                "district_hubs": [scene.key for scene in job.district_hubs.all().order_by("key")],
-                "unlock_requirement_group_ids": job_group_ids,
-                "approaches": approaches_by_job_id.get(job.id, []),
-                "beat_variants": beat_variants_by_job_id.get(job.id, []),
-                "contact_offers": contact_offers_by_job_id.get(job.id, []),
-            }
-        )
 
     payload = {
         "meta": {
@@ -329,7 +251,6 @@ def build_game_state_payload(include_scene_body=False):
             "arcs": len(arcs_payload),
             "quests": len(quests_payload),
             "scenes": len(scenes_payload),
-            "jobs": len(jobs_payload),
             "requirement_groups": len(requirement_groups_payload),
             "requirements": len(requirements_payload),
         },
@@ -340,7 +261,6 @@ def build_game_state_payload(include_scene_body=False):
         "arcs": arcs_payload,
         "quests": quests_payload,
         "scenes": scenes_payload,
-        "jobs": jobs_payload,
         "requirement_groups": requirement_groups_payload,
         "requirements": requirements_payload,
     }

@@ -6,7 +6,6 @@ from django.core.management.base import BaseCommand
 
 from game.models.combat import CombatEncounter, Enemy
 from game.models.items import Item
-from game.models.jobs import ContactJobOffer, Job, JobApproach, JobBeatVariant
 from game.models.property import Property
 from game.models.requirements import Requirement, RequirementGroup
 from game.models.world import Arc, Choice, Contact, Quest, Scene, SceneItem
@@ -19,10 +18,6 @@ MODELS = [
     ("choice", Choice),
     ("sceneitem", SceneItem),
     ("contact", Contact),
-    ("job", Job),
-    ("jobapproach", JobApproach),
-    ("jobbeatvariant", JobBeatVariant),
-    ("contactjoboffer", ContactJobOffer),
     ("enemy", Enemy),
     ("combatencounter", CombatEncounter),
     ("requirement", Requirement),

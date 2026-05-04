@@ -42,8 +42,6 @@ STORY_FLAG_KEYS = frozenset(
         "the_ride_straight",
         "the_ride_covered",
         "the_ride_lost",
-        "morris_job_clean",
-        "morris_job_hot",
     }
 )
 
@@ -88,5 +86,5 @@ def validate_flag_name(
     raise ValidationError(
         f"{field_label} '{normalized}' is not in the flag registry. "
         "Use a registered key or a supported dynamic pattern "
-        "('approach_<key>', 'approach_<key>_failed', 'ran_<job_key>_<3|5|10>x')."
+        "('approach_<key>', 'approach_<key>_failed', 'ran_<activity_key>_<3|5|10>x')."
     )

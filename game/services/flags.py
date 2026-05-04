@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Iterable
-
 from django.core.exceptions import ValidationError
 
 from .flag_registry import FlagKey, normalize_flag_name
@@ -20,38 +18,6 @@ def set_flag(session, flag: str | FlagKey) -> None:
 def clear_flag(session, flag: str | FlagKey) -> None:
     """Remove a named session flag if present and persist the session flags map."""
     _update_flags(session, clear_flags=(_normalize(flag),))
-
-
-def approach_selected_flag(approach_key: str) -> str:
-    return f"approach_{approach_key}"
-
-
-def approach_failed_flag(approach_key: str) -> str:
-    return f"{approach_selected_flag(approach_key)}_failed"
-
-
-def clear_job_approach_flags(session, approach_keys: Iterable[str]) -> None:
-    clear_flags = [FlagKey.BEAT2_PENALTY.value]
-    for key in approach_keys:
-        clear_flags.append(approach_selected_flag(key))
-        clear_flags.append(approach_failed_flag(key))
-    _update_flags(session, clear_flags=clear_flags)
-
-
-def set_approach_outcome(session, approach_key: str, *, success: bool) -> None:
-    selected_flag = approach_selected_flag(approach_key)
-    failed_flag = approach_failed_flag(approach_key)
-    if success:
-        _update_flags(
-            session,
-            set_flags=(selected_flag,),
-            clear_flags=(failed_flag, FlagKey.BEAT2_PENALTY.value),
-        )
-    else:
-        _update_flags(
-            session,
-            set_flags=(selected_flag, failed_flag, FlagKey.BEAT2_PENALTY.value),
-        )
 
 
 def _normalize(flag: str | FlagKey) -> str:

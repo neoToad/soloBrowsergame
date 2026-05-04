@@ -6,15 +6,13 @@ from django.http import HttpResponseNotAllowed
 from .models import (
     Choice, GameSession, Item,
     Quest, Scene,
-    ContactJobOffer, Job, JobApproach, JobRun,
 )
-from .models.events import log_event, flush_event_log
+from .models.events import log_event
 from .services.session     import load_session_context, create_session, build_render_context
 from .services.combat      import initialize_combat_state, get_active_combat_state
 from .services.progression import spend_stat_point, restore_hp_on_stat_upgrade
 from .services             import gameplay
 from .services.types       import GameplayError
-from .services             import jobs as jobs_service
 from .presentation import responses as response_utils
 from .utils import get_effective_stats
 from .constants import SESSION_KEY, STAT_FIELDS
@@ -137,154 +135,6 @@ def start_quest(request, quest_key, *, session_context):
     if response_utils.is_htmx(request):
         return _htmx_response(request, context)
     return redirect('scene_detail', scene_key=result.next_scene.key)
-
-
-@require_game_session
-def job_recon_start(request, job_key, *, session_context):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-
-    session, *_ = session_context
-    job = get_object_or_404(Job, key=job_key, is_active=True)
-
-    try:
-        recon_preview = jobs_service.start_recon(session, job)
-    except jobs_service.JobRulesError as exc:
-        return response_utils.error_response(request, message=str(exc), status=403)
-
-    return _render_current_scene(request, session, extra_context={'job_recon_preview': recon_preview})
-
-
-@require_game_session
-def job_recon_commit(request, job_key, *, session_context):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-
-    session, *_ = session_context
-    job = get_object_or_404(Job, key=job_key, is_active=True)
-
-    try:
-        run = jobs_service.commit_recon(session, job)
-    except jobs_service.JobRulesError as exc:
-        return response_utils.error_response(request, message=str(exc), status=403)
-
-    flush_event_log(session, [f"You commit to {job.title}. Beat 1 begins."])
-    return _render_current_scene(request, session, extra_context={'job_run': run})
-
-
-@require_game_session
-def job_recon_walk_away(request, job_key, *, session_context):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-
-    session, *_ = session_context
-    job = get_object_or_404(Job, key=job_key, is_active=True)
-    jobs_service.increment_turn(session)
-    flush_event_log(session, [f"You walk away from {job.title} for now."])
-    return _render_current_scene(request, session)
-
-
-@require_game_session
-def job_contact_start(request, offer_id, *, session_context):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-
-    session, *_ = session_context
-    offer = get_object_or_404(ContactJobOffer, pk=offer_id, is_active=True)
-
-    try:
-        run = jobs_service.start_contact_job(session, offer)
-    except jobs_service.JobRulesError as exc:
-        return response_utils.error_response(request, message=str(exc), status=403)
-
-    flush_event_log(session, [f"{offer.contact.name} lines up a job: {offer.job.title}."])
-    return _render_current_scene(request, session, extra_context={'job_run': run})
-
-
-@require_game_session
-def job_run_beat_1(request, run_id, *, session_context):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-
-    approach_key = (request.POST.get('approach') or '').strip()
-    if not approach_key:
-        return response_utils.error_response(request, message="Missing approach key.", status=400)
-
-    session, *_ = session_context
-    run = get_object_or_404(JobRun, pk=run_id)
-    approach = JobApproach.objects.filter(job_id=run.job_id, key=approach_key).first()
-    if approach is None:
-        return response_utils.error_response(request, message="Invalid approach key.", status=400)
-
-    try:
-        result = jobs_service.resolve_beat_1(session, run, approach)
-    except jobs_service.JobRulesError as exc:
-        return response_utils.error_response(request, message=str(exc), status=403)
-
-    outcome = "success" if result['roll'].success else "failure"
-    flush_event_log(session, [f"Beat 1 ({approach.label}): {outcome}."])
-    return _render_current_scene(request, session, extra_context={'job_beat_1': result})
-
-
-@require_game_session
-def job_run_beat_2(request, run_id, *, session_context):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-
-    action_key = (request.POST.get('action') or '').strip()
-    if not action_key:
-        return response_utils.error_response(request, message="Missing beat 2 action key.", status=400)
-
-    session, *_ = session_context
-    run = get_object_or_404(JobRun, pk=run_id)
-
-    try:
-        result = jobs_service.resolve_beat_2(session, run, action_key)
-    except jobs_service.JobRulesError as exc:
-        return response_utils.error_response(request, message=str(exc), status=403)
-
-    flush_event_log(session, [f"Beat 2 resolved: {result['variant'].title}."])
-    return _render_current_scene(request, session, extra_context={'job_beat_2': result})
-
-
-@require_game_session
-def job_run_abort(request, run_id, *, session_context):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-
-    session, *_ = session_context
-    run = get_object_or_404(JobRun, pk=run_id)
-
-    try:
-        jobs_service.abort_job_run(session, run)
-    except jobs_service.JobRulesError as exc:
-        return response_utils.error_response(request, message=str(exc), status=403)
-
-    flush_event_log(session, [f"You abort {run.job.title}."])
-    return _render_current_scene(request, session)
-
-
-@require_game_session
-def job_run_resolve(request, run_id, *, session_context):
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-
-    session, *_ = session_context
-    run = get_object_or_404(JobRun, pk=run_id)
-
-    try:
-        result = jobs_service.resolve_beat_3(session, run)
-    except jobs_service.JobRulesError as exc:
-        return response_utils.error_response(request, message=str(exc), status=403)
-
-    rewards = result['rewards']
-    flush_event_log(
-        session,
-        [
-            f"Job complete: +${rewards['cash']} cash, {rewards['heat']} heat, {rewards['rep']} rep.",
-        ],
-    )
-    return _render_current_scene(request, session, extra_context={'job_result': result})
 
 
 @require_game_session
