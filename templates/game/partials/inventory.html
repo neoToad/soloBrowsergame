@@ -72,7 +72,7 @@
                 </div>
                 <dialog id="property-modal-{{ pp.property.id }}" class="item-modal">
                     <div class="item-modal-header">{{ pp.property.name }}</div>
-                    <p class="item-modal-description">{{ pp.property.description|default:"No intel yet." }}</p>
+                    <p class="item-modal-description">{{ pp.property.description|default:"No intel yet."|linebreaksbr }}</p>
                     <div class="item-modal-footer">
                         <button class="item-close-btn" onclick="this.closest('dialog').close()">CLOSE</button>
                     </div>

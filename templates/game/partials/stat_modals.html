@@ -1,0 +1,57 @@
+<div id="stat-modals" {% if oob %}hx-swap-oob="true"{% endif %}>
+    <dialog id="stat-modal-strength" class="item-modal">
+        <div class="item-modal-header">MUSCLE</div>
+        <p class="item-modal-effect">Base {{ stat_bonus_breakdown.strength.base }}</p>
+        {% for source in stat_bonus_breakdown.strength.sources %}
+            <p class="item-modal-passive">{{ source.item_name }} +{{ source.value }}</p>
+        {% empty %}
+            <p class="item-modal-passive">No passive bonuses active.</p>
+        {% endfor %}
+        <p class="item-modal-effect">Total {{ stat_bonus_breakdown.strength.total }}</p>
+        <div class="item-modal-footer">
+            <button class="item-close-btn" onclick="this.closest('dialog').close()">CLOSE</button>
+        </div>
+    </dialog>
+
+    <dialog id="stat-modal-agility" class="item-modal">
+        <div class="item-modal-header">REFLEXES</div>
+        <p class="item-modal-effect">Base {{ stat_bonus_breakdown.agility.base }}</p>
+        {% for source in stat_bonus_breakdown.agility.sources %}
+            <p class="item-modal-passive">{{ source.item_name }} +{{ source.value }}</p>
+        {% empty %}
+            <p class="item-modal-passive">No passive bonuses active.</p>
+        {% endfor %}
+        <p class="item-modal-effect">Total {{ stat_bonus_breakdown.agility.total }}</p>
+        <div class="item-modal-footer">
+            <button class="item-close-btn" onclick="this.closest('dialog').close()">CLOSE</button>
+        </div>
+    </dialog>
+
+    <dialog id="stat-modal-intellect" class="item-modal">
+        <div class="item-modal-header">CUNNING</div>
+        <p class="item-modal-effect">Base {{ stat_bonus_breakdown.intellect.base }}</p>
+        {% for source in stat_bonus_breakdown.intellect.sources %}
+            <p class="item-modal-passive">{{ source.item_name }} +{{ source.value }}</p>
+        {% empty %}
+            <p class="item-modal-passive">No passive bonuses active.</p>
+        {% endfor %}
+        <p class="item-modal-effect">Total {{ stat_bonus_breakdown.intellect.total }}</p>
+        <div class="item-modal-footer">
+            <button class="item-close-btn" onclick="this.closest('dialog').close()">CLOSE</button>
+        </div>
+    </dialog>
+
+    <dialog id="stat-modal-charisma" class="item-modal">
+        <div class="item-modal-header">NERVE</div>
+        <p class="item-modal-effect">Base {{ stat_bonus_breakdown.charisma.base }}</p>
+        {% for source in stat_bonus_breakdown.charisma.sources %}
+            <p class="item-modal-passive">{{ source.item_name }} +{{ source.value }}</p>
+        {% empty %}
+            <p class="item-modal-passive">No passive bonuses active.</p>
+        {% endfor %}
+        <p class="item-modal-effect">Total {{ stat_bonus_breakdown.charisma.total }}</p>
+        <div class="item-modal-footer">
+            <button class="item-close-btn" onclick="this.closest('dialog').close()">CLOSE</button>
+        </div>
+    </dialog>
+</div>

@@ -4,7 +4,7 @@ from ..models import GameSession, PlayerStats, Scene, CompletedQuest
 from ..models.property import PlayerDiscoveredTerritory, PlayerProperty, PlayerTerritory, Territory
 from ..constants import HUB_START_SCENE_KEY, SESSION_KEY
 from .inventory import get_player_inventory
-from ..utils import get_effective_stats, compute_max_hp
+from ..utils import get_effective_stats, compute_max_hp, get_stat_bonus_breakdown
 
 def load_session_context(session_pk):
     """Load session and derived gameplay context used by game views."""
@@ -87,6 +87,7 @@ def _build_core_scene_context(
         "stats": stats,
         "effective_stats": effective_stats,
         "stat_bonuses": effective_stats.bonuses,
+        "stat_bonus_breakdown": get_stat_bonus_breakdown(stats, inventory),
         "inventory": inventory,
         "logs": session.log.all()[:10],
         "oob": True,

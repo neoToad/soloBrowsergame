@@ -279,6 +279,35 @@ class EffectiveStatsTest(TestCase):
         self.assertNotIn("luck", effective.bonuses)
         self.assertEqual(effective.strength, stats.strength)
 
+    def test_get_stat_bonus_breakdown_returns_itemized_sources(self):
+        from game.models import Item, PlayerInventory
+        from game.services.inventory import get_player_inventory
+        from game.utils import get_stat_bonus_breakdown
+
+        stats = self.session.stats
+        stats.strength = 9
+        stats.save()
+
+        brass_knuckles = Item.objects.create(
+            key="phase6__brass_knuckles",
+            name="Brass Knuckles",
+            description="Heavy knuckles.",
+            passive_stat="strength",
+            passive_value=2,
+        )
+        PlayerInventory.objects.create(session=self.session, item=brass_knuckles, quantity=1)
+
+        inventory = get_player_inventory(self.session)
+        breakdown = get_stat_bonus_breakdown(stats, inventory)
+
+        self.assertEqual(breakdown["strength"]["base"], 9)
+        self.assertEqual(breakdown["strength"]["total_bonus"], 2)
+        self.assertEqual(breakdown["strength"]["total"], 11)
+        self.assertEqual(len(breakdown["strength"]["sources"]), 1)
+        self.assertEqual(breakdown["strength"]["sources"][0]["item_name"], "Brass Knuckles")
+        self.assertEqual(breakdown["strength"]["sources"][0]["value"], 2)
+        self.assertEqual(breakdown["agility"]["sources"], [])
+
 
 class ItemValidationTest(TestCase):
     def test_item_clean_rejects_invalid_effect_stat(self):
@@ -381,6 +410,33 @@ class ContactsModalRenderTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, f'id="contact-modal-{self.contact_no_desc.id}"')
         self.assertContains(response, "No intel yet.")
+
+
+class StatModalRenderTest(TestCase):
+    def setUp(self):
+        from game.models import PlayerInventory
+
+        self.client = Client()
+        self.session = bootstrap_game_session(self.client)
+        self.session.stats.strength = 9
+        self.session.stats.save(update_fields=["strength"])
+        brass_knuckles = ItemFactory(
+            key="inv__stat_modal_brass",
+            name="Brass Knuckles",
+            passive_stat="strength",
+            passive_value=2,
+        )
+        PlayerInventory.objects.create(session=self.session, item=brass_knuckles, quantity=1)
+
+    def test_stat_modal_renders_itemized_bonus_breakdown(self):
+        response = self.client.get(
+            reverse("scene_detail", kwargs={"scene_key": self.session.current_scene.key})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'id="stat-modal-strength"')
+        self.assertContains(response, "Base 9")
+        self.assertContains(response, "Brass Knuckles +2")
+        self.assertContains(response, "Total 11")
 
 
 class PropertiesModalRenderTest(TestCase):

@@ -667,8 +667,41 @@ dialog.item-modal::backdrop {
     color: var(--accent);
 }
 
+.stat-trigger-btn {
+    -webkit-appearance: none;
+    appearance: none;
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    letter-spacing: inherit;
+    text-align: right;
+    display: inline;
+    vertical-align: baseline;
+}
+
+.stat-trigger-btn:hover {
+    color: inherit;
+}
+
+.stat-row--clickable,
+.mob-stat--clickable {
+    cursor: pointer;
+}
+
 .contact-modal .item-modal-footer {
     justify-content: flex-end;
+}
+
+@media (min-width: 1024px) {
+    dialog.territory-modal {
+        max-width: 440px;
+    }
 }
 
 /* PASSIVE BONUS INDICATOR (stats bar) */

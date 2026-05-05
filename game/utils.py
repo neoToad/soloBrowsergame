@@ -3,7 +3,16 @@ import random
 from .constants import STAT_FIELDS
 from .services.types import RollResult, DamageResult, EffectiveStats
 
-__all__ = ['RollResult', 'DamageResult', 'EffectiveStats', 'roll_d20', 'stat_modifier', 'compute_max_hp', 'get_effective_stats']
+__all__ = [
+    'RollResult',
+    'DamageResult',
+    'EffectiveStats',
+    'roll_d20',
+    'stat_modifier',
+    'compute_max_hp',
+    'get_effective_stats',
+    'get_stat_bonus_breakdown',
+]
 
 
 def roll_d20():
@@ -51,3 +60,43 @@ def get_effective_stats(stats, inventory) -> EffectiveStats:
         rep         = stats.rep,
         bonuses     = bonuses,
     )
+
+
+def get_stat_bonus_breakdown(stats, inventory) -> dict:
+    """
+    Build an itemized passive bonus breakdown for each core stat.
+
+    Shape:
+    {
+      "strength": {
+        "base": 9,
+        "total_bonus": 2,
+        "total": 11,
+        "sources": [{"item_name": "Brass Knuckles", "value": 2}],
+      },
+      ...
+    }
+    """
+    breakdown = {
+        stat_field: {
+            "base": getattr(stats, stat_field),
+            "total_bonus": 0,
+            "total": getattr(stats, stat_field),
+            "sources": [],
+        }
+        for stat_field in STAT_FIELDS
+    }
+
+    for pi in inventory.values():
+        item = pi.item
+        stat_field = item.passive_stat
+        if stat_field in STAT_FIELDS and item.passive_value:
+            entry = breakdown[stat_field]
+            entry["sources"].append({
+                "item_name": item.name,
+                "value": item.passive_value,
+            })
+            entry["total_bonus"] += item.passive_value
+            entry["total"] = entry["base"] + entry["total_bonus"]
+
+    return breakdown

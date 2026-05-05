@@ -16,31 +16,39 @@
         <span class="stat-value {{ stats.hp|hp_color_class:effective_stats.max_hp }}">{{ stats.hp }}/{{ effective_stats.max_hp }}</span>
     </div>
 
-    <div class="stat-row">
+    <div class="stat-row stat-row--clickable" onclick="document.getElementById('stat-modal-strength').showModal()">
         <span class="stat-name">MUSCLE</span>
         <span class="stat-value">
-            {{ effective_stats.strength }}
+            <button type="button" class="stat-trigger-btn">
+                {{ effective_stats.strength }}
+            </button>
         </span>
     </div>
 
-    <div class="stat-row">
+    <div class="stat-row stat-row--clickable" onclick="document.getElementById('stat-modal-agility').showModal()">
         <span class="stat-name">REFLEXES</span>
         <span class="stat-value">
-            {{ effective_stats.agility }}{% if stat_bonuses.agility %}<span class="stat-bonus"> (+{{ stat_bonuses.agility }})</span>{% endif %}
+            <button type="button" class="stat-trigger-btn">
+                {{ effective_stats.agility }}{% if stat_bonuses.agility %}<span class="stat-bonus"> (+{{ stat_bonuses.agility }})</span>{% endif %}
+            </button>
         </span>
     </div>
 
-    <div class="stat-row">
+    <div class="stat-row stat-row--clickable" onclick="document.getElementById('stat-modal-intellect').showModal()">
         <span class="stat-name">CUNNING</span>
         <span class="stat-value">
-            {{ effective_stats.intellect }}{% if stat_bonuses.intellect %}<span class="stat-bonus"> (+{{ stat_bonuses.intellect }})</span>{% endif %}
+            <button type="button" class="stat-trigger-btn">
+                {{ effective_stats.intellect }}{% if stat_bonuses.intellect %}<span class="stat-bonus"> (+{{ stat_bonuses.intellect }})</span>{% endif %}
+            </button>
         </span>
     </div>
 
-    <div class="stat-row">
+    <div class="stat-row stat-row--clickable" onclick="document.getElementById('stat-modal-charisma').showModal()">
         <span class="stat-name">NERVE</span>
         <span class="stat-value">
-            {{ effective_stats.charisma }}{% if stat_bonuses.charisma %}<span class="stat-bonus"> (+{{ stat_bonuses.charisma }})</span>{% endif %}
+            <button type="button" class="stat-trigger-btn">
+                {{ effective_stats.charisma }}{% if stat_bonuses.charisma %}<span class="stat-bonus"> (+{{ stat_bonuses.charisma }})</span>{% endif %}
+            </button>
         </span>
     </div>
 
