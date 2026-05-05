@@ -1,7 +1,7 @@
 [
 {
   "model": "game.sceneitem",
-  "pk": 34,
+  "pk": 65,
   "fields": {
     "scene": 128,
     "item": 1,
@@ -11,7 +11,7 @@
 },
 {
   "model": "game.sceneitem",
-  "pk": 35,
+  "pk": 66,
   "fields": {
     "scene": 128,
     "item": 15,
@@ -21,9 +21,59 @@
 },
 {
   "model": "game.sceneitem",
-  "pk": 36,
+  "pk": 67,
   "fields": {
     "scene": 131,
+    "item": 15,
+    "quantity": 1,
+    "award_once": false
+  }
+},
+{
+  "model": "game.sceneitem",
+  "pk": 72,
+  "fields": {
+    "scene": 139,
+    "item": 4,
+    "quantity": 1,
+    "award_once": true
+  }
+},
+{
+  "model": "game.sceneitem",
+  "pk": 73,
+  "fields": {
+    "scene": 139,
+    "item": 15,
+    "quantity": 1,
+    "award_once": false
+  }
+},
+{
+  "model": "game.sceneitem",
+  "pk": 74,
+  "fields": {
+    "scene": 140,
+    "item": 15,
+    "quantity": 1,
+    "award_once": false
+  }
+},
+{
+  "model": "game.sceneitem",
+  "pk": 75,
+  "fields": {
+    "scene": 141,
+    "item": 15,
+    "quantity": 1,
+    "award_once": false
+  }
+},
+{
+  "model": "game.sceneitem",
+  "pk": 82,
+  "fields": {
+    "scene": 152,
     "item": 15,
     "quantity": 1,
     "award_once": false

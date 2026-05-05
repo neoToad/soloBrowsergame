@@ -1,0 +1,536 @@
+quest:
+  key: crossing-lines
+  title: Crossing Lines
+  description: "Morris has a delivery that touches more parts of the city than it\
+    \ should. That\u2019s either a mistake or the point."
+  arc: intro
+  arc_order: 2
+  is_repeatable: false
+  hub_scenes:
+  - hub__apartment
+  entrance_scene: crossing-lines__morris-calls
+  requirements:
+  - label: Must have completed The Morris Job
+    logic: all
+    conditions:
+    - condition_type: quest_completed
+      flag_name: null
+      stat_name: null
+      stat_value: 0
+      required_item: null
+      required_quest: the-morris-job
+      required_contact: null
+      required_ending_type: null
+    group_key: Must have completed The Call
+scenes:
+- key: crossing-lines__morris-calls
+  scene_type: normal
+  title: Morris Calls
+  order: 10
+  body: "Morris calls mid-afternoon, which is almost worse than early morning. Early\
+    \ morning means urgency. Afternoon means something has already gone wrong and\
+    \ you\u2019re being slotted into the gap it left behind.\n\nHe gives you an address\
+    \ in the Westside, another on the Strip, and a final drop that he describes as\
+    \ \u201Cself-explanatory,\u201D which is not a phrase Morris uses unless he has\
+    \ decided you don\u2019t need the explanation.\n\nYou ask what you\u2019re carrying.\n\
+    \n\u201CPackage,\u201D Morris says.\n\nA pause. Then:\n\n\u201CComplete the sequence.\
+    \ Do not improvise.\u201D\n\nHe hangs up.\n\nThe package is already outside your\
+    \ door.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Take the package
+    order: 1
+    target_scene: crossing-lines__westside-arrival
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: "You pick it up. It feels heavier now that it\u2019s yours."
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: crossing-lines__westside-arrival
+  scene_type: normal
+  title: Westside
+  order: 20
+  body: "The Westside notices you before you finish noticing it.\n\nBalconies, windows,\
+    \ people on stoops who don\u2019t look at you directly but also don\u2019t look\
+    \ away. The kind of attention that doesn\u2019t ask questions because it already\
+    \ has answers.\n\nA guy across the street leans against a railing, watching you\
+    \ without watching you.\n\n\u201CYou\u2019re not from here,\u201D he says.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: the_westside
+    gang_standing_changes:
+    - gang: westside-kings
+      standing_change: 2
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: "I\u2019m passing through"
+    order: 1
+    target_scene: crossing-lines__westside-hand-off
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He watches how you say it more than what you say.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Passing through
+    order: 1
+    target_scene: crossing-lines__westside-hand-off
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: "He decides that\u2019s enough of an answer."
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: "Then it\u2019s a good day for something new"
+    order: 2
+    target_scene: crossing-lines__westside-hand-off
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: That gets a look. Not a good one. Not a bad one either.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: crossing-lines__westside-hand-off
+  scene_type: normal
+  title: Hand Off
+  order: 30
+  body: "The door opens before you knock.\n\nA man takes the package, disappears,\
+    \ and comes back ten seconds later with it like nothing changed.\n\n\u201CNext,\u201D\
+    \ he says.\n\nIt weighs the same.\n\nThat\u2019s the problem.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Head to the Strip
+    order: 1
+    target_scene: crossing-lines__strip-arrival
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The block lets you leave.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: crossing-lines__strip-arrival
+  scene_type: normal
+  title: The Strip
+  order: 40
+  body: "The Strip moves fast enough that nobody has time for you.\n\nA storefront\
+    \ that looks expensive until you look closer.\n\n\u201CYou\u2019re early,\u201D\
+    \ a man says.\n\nYou\u2019re not.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: the_strip
+    gang_standing_changes:
+    - gang: backstreet-boys
+      standing_change: 2
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Play along
+    order: 1
+    target_scene: crossing-lines__strip-hand-off
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You nod like this makes sense.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: "Seems like I\u2019m exactly on time"
+    order: 2
+    target_scene: crossing-lines__strip-hand-off
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: "He smiles like you told a joke he didn\u2019t like."
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: crossing-lines__strip-hand-off
+  scene_type: normal
+  title: Strip Hand Off
+  order: 50
+  body: "He circles the package like it might explain itself.\n\nTen seconds in the\
+    \ back. Voices.\n\nHe hands it back.\n\n\u201CYou didn\u2019t get this from us.\u201D\
+    \n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Move to the next address
+    order: 1
+    target_scene: crossing-lines__something-off
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: "The crowd absorbs you immediately. That\u2019s the whole design."
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Continue
+    order: 1
+    target_scene: crossing-lines__something-off
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: "The timing still doesn\u2019t sit right."
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: crossing-lines__something-off
+  scene_type: normal
+  title: Something Off
+  order: 60
+  body: "The timestamps don\u2019t line up.\n\nThat means either the job is wrong\
+    \ or the job is working exactly as intended.\n\nYou\u2019re already too far in\
+    \ to find out which.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Keep going
+    order: 1
+    target_scene: crossing-lines__new-build-pressure
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: "You don\u2019t get paid to fix it."
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: crossing-lines__new-build-pressure
+  scene_type: normal
+  title: New Build
+  order: 70
+  body: "Clean storefronts. Old problems underneath.\n\nA man steps into your path.\n\
+    \n\u201CThat\u2019s not yours,\u201D he says.\n\nNo anger. Just certainty.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: the_new_build
+    gang_standing_changes:
+    - gang: westside-kings
+      standing_change: 1
+    - gang: backstreet-boys
+      standing_change: 1
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: "Then it\u2019s a good thing I\u2019m not keeping it"
+    order: 1
+    target_scene: crossing-lines__push-through
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He considers that like it might be the right answer.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Not keeping it
+    order: 1
+    target_scene: crossing-lines__push-through
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: That answer works.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: crossing-lines__push-through
+  scene_type: normal
+  title: Push Through
+  order: 80
+  body: "He doesn\u2019t stop you.\n\nThat\u2019s the whole decision.\n\nYou walk\
+    \ past.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Finish the delivery
+    order: 1
+    target_scene: crossing-lines__bucco-drop
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: "Whatever this is, you\u2019re already in it."
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Finish it
+    order: 1
+    target_scene: crossing-lines__bucco-drop
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: "You\u2019re committed now."
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: crossing-lines__bucco-drop
+  scene_type: normal
+  title: The Drop
+  order: 90
+  body: "Clean.\n\nThat\u2019s the only word for it.\n\nA man takes the package. Doesn\u2019\
+    t check it.\n\nTen seconds later, it\u2019s gone.\n\n\u201CYou\u2019re done.\u201D\
+    \n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: the_hill
+    gang_standing_changes:
+    - gang: bucco-family
+      standing_change: 2
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Leave
+    order: 1
+    target_scene: crossing-lines__blues-presence
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: "You\u2019re already outside before it registers."
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: crossing-lines__blues-presence
+  scene_type: normal
+  title: Parked Car
+  order: 100
+  body: 'The car has been there long enough to belong.
+
+
+    You pass it once.
+
+
+    Nothing.
+
+
+    The second time, you feel it.
+
+
+    Not attention. Recognition.
+
+
+    You keep walking.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: prop__westside_stash
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: the_docks
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Keep moving
+    order: 1
+    target_scene: crossing-lines__ending
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Motion is safety.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: crossing-lines__ending
+  scene_type: ending
+  title: Crossing Lines
+  order: 110
+  body: "Back home.\n\nCash. Zonk.\n\nThe route stays in your head.\n\nMorris said\
+    \ acceptable.\n\nThat\u2019s what you get.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: victory
+  arrival:
+    cash_change: 200
+    rep_change: 5
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items:
+  - item: zonk_smoked
+    quantity: 1
+    award_once: false
+  scene_contacts: []
+  choices:
+  - label: Back to the apartment
+    order: 1
+    target_scene: hub__apartment
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: "The corkboard hasn\u2019t changed. You have."
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null

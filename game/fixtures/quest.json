@@ -19,18 +19,38 @@
 },
 {
   "model": "game.quest",
-  "pk": 12,
+  "pk": 16,
   "fields": {
-    "key": "first-word",
-    "title": "First Word",
-    "description": "Someone heard about your sister's situation. They want to know if you're looking for work. First job's simple - a debt collection. Guy named Pruitt. Six hundred dollars.\n",
+    "key": "the-morris-job",
+    "title": "The Morris Job",
+    "description": "Someone called Morris has a package that needs moving across the Flats. Simple job. First one usually is.",
     "is_unlocked": true,
     "arc": 1,
     "arc_order": 2,
-    "entrance_scene": 82,
+    "entrance_scene": 132,
     "is_repeatable": false,
     "requirements": [
       6
+    ],
+    "hub_scenes": [
+      1
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 17,
+  "fields": {
+    "key": "crossing-lines",
+    "title": "Crossing Lines",
+    "description": "Morris has a delivery that touches more parts of the city than it should. That’s either a mistake or the point.",
+    "is_unlocked": true,
+    "arc": 1,
+    "arc_order": 2,
+    "entrance_scene": 142,
+    "is_repeatable": false,
+    "requirements": [
+      8
     ],
     "hub_scenes": [
       1
@@ -43,14 +63,14 @@
   "fields": {
     "key": "corkys",
     "title": "Corky's",
-    "description": "Dutch wants his dealers back in a bar called Corky's. The owner pushed back. You're the push.\n",
+    "description": "Dutch wants his dealers back in a bar called Corky's. The owner pushed back. You're the push.",
     "is_unlocked": true,
     "arc": 1,
     "arc_order": 3,
     "entrance_scene": 68,
     "is_repeatable": false,
     "requirements": [
-      2
+      8
     ],
     "hub_scenes": [
       1

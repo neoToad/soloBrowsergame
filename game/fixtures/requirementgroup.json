@@ -9,21 +9,7 @@
     "scope_key": "corkys__sal-face-to-face:2:Ask him about the envelopes on the shelf",
     "group_key": "Must have read the room",
     "requirements": [
-      141
-    ]
-  }
-},
-{
-  "model": "game.requirementgroup",
-  "pk": 2,
-  "fields": {
-    "label": "Must have completed first word",
-    "logic": "all",
-    "scope_type": "quest",
-    "scope_key": "corkys",
-    "group_key": "Must have completed first word",
-    "requirements": [
-      142
+      173
     ]
   }
 },
@@ -37,7 +23,7 @@
     "scope_key": "first-word__the-message:1:Go to the meeting",
     "group_key": "Talked out",
     "requirements": [
-      143
+      175
     ]
   }
 },
@@ -51,7 +37,7 @@
     "scope_key": "first-word__the-message:2:Go to the meeting",
     "group_key": "Fought out",
     "requirements": [
-      144
+      176
     ]
   }
 },
@@ -65,7 +51,7 @@
     "scope_key": "first-word__the-message:3:Go to the meeting",
     "group_key": "Lost",
     "requirements": [
-      145
+      177
     ]
   }
 },
@@ -79,7 +65,7 @@
     "scope_key": "first-word",
     "group_key": "Must have completed the call",
     "requirements": [
-      146
+      178
     ]
   }
 },
@@ -93,7 +79,35 @@
     "scope_key": "the-ride",
     "group_key": "Must have completed Corky's",
     "requirements": [
-      147
+      180
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 8,
+  "fields": {
+    "label": "Must have completed The Morris Job",
+    "logic": "all",
+    "scope_type": "quest",
+    "scope_key": "the-morris-job",
+    "group_key": "Must have completed The Call",
+    "requirements": [
+      181
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 9,
+  "fields": {
+    "label": "Completed Crossing Lines",
+    "logic": "all",
+    "scope_type": null,
+    "scope_key": null,
+    "group_key": null,
+    "requirements": [
+      182
     ]
   }
 }

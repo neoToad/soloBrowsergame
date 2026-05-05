@@ -1,7 +1,7 @@
 [
 {
   "model": "game.requirement",
-  "pk": 141,
+  "pk": 173,
   "fields": {
     "condition_type": "has_flag",
     "flag_name": "corkys_read_room",
@@ -15,21 +15,7 @@
 },
 {
   "model": "game.requirement",
-  "pk": 142,
-  "fields": {
-    "condition_type": "quest_completed",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 12,
-    "required_ending_type": "",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
-  "pk": 143,
+  "pk": 175,
   "fields": {
     "condition_type": "has_flag",
     "flag_name": "the_call_talked_out",
@@ -43,7 +29,7 @@
 },
 {
   "model": "game.requirement",
-  "pk": 144,
+  "pk": 176,
   "fields": {
     "condition_type": "has_flag",
     "flag_name": "the_call_fought_out",
@@ -57,7 +43,7 @@
 },
 {
   "model": "game.requirement",
-  "pk": 145,
+  "pk": 177,
   "fields": {
     "condition_type": "has_flag",
     "flag_name": "the_call_lost",
@@ -71,21 +57,21 @@
 },
 {
   "model": "game.requirement",
-  "pk": 146,
+  "pk": 178,
   "fields": {
     "condition_type": "quest_completed",
     "flag_name": "",
     "stat_name": "",
     "stat_value": 0,
     "required_item": null,
-    "required_quest": null,
+    "required_quest": 15,
     "required_ending_type": "",
     "required_contact": null
   }
 },
 {
   "model": "game.requirement",
-  "pk": 147,
+  "pk": 180,
   "fields": {
     "condition_type": "quest_completed",
     "flag_name": "",
@@ -93,6 +79,34 @@
     "stat_value": 0,
     "required_item": null,
     "required_quest": 11,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 181,
+  "fields": {
+    "condition_type": "quest_completed",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": 16,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 182,
+  "fields": {
+    "condition_type": "quest_completed",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": 17,
     "required_ending_type": "",
     "required_contact": null
   }

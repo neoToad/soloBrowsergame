@@ -6,7 +6,7 @@
     "key": "hub__apartment",
     "scene_type": "hub",
     "title": "The Apartment",
-    "body": "Home. Relative term. The radiator clanks. The window looks out on a brick wall. There's a corkboard on the back of the door where you've started pinning job leads. Old habits die. New ones move in.\n",
+    "body": "Home. Relative term. The radiator clanks. The window looks out on a brick wall. There's a corkboard on the back of the door where you've started pinning job leads. Old habits die. New ones move in.",
     "order": 0,
     "requires_roll": false,
     "roll_stat": "",
@@ -23,7 +23,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -33,7 +34,7 @@
     "key": "hub__corkys",
     "scene_type": "hub",
     "title": "Corky's",
-    "body": "Corky's has been here longer than most of the buildings around it. The sign outside is missing a letter that nobody remembers. Inside it's dark the way a bar should be — not romantic, just honest about what the light would show. Two old men have been nursing pints in the corner booth since before you were born. Sal is behind the bar, doing what Sal does: keeping the glasses clean and his head down.\n\nThere's a board on the wall near the back with notices pinned to it. Some of them have been there long enough to curl at the corners.\n",
+    "body": "Corky's has been here longer than most of the buildings around it. The sign outside is missing a letter that nobody remembers. Inside it's dark the way a bar should be — not romantic, just honest about what the light would show. Two old men have been nursing pints in the corner booth since before you were born. Sal is behind the bar, doing what Sal does: keeping the glasses clean and his head down.\r\n\r\nThere's a board on the wall near the back with notices pinned to it. Some of them have been there long enough to curl at the corners.",
     "order": 0,
     "requires_roll": false,
     "roll_stat": "",
@@ -50,34 +51,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 3,
-  "fields": {
-    "key": "hub__reyes_boxing",
-    "scene_type": "hub",
-    "title": "Reyes Boxing",
-    "body": "Thirty years Eddie's been running this gym and it shows — not in neglect but in the particular wear of something used hard and maintained harder. The equipment is old. The floors are clean. The ring in the back has seen things. A speed bag in the corner ticks against its platform with the rhythm of someone who left an hour ago.\n\nEddie himself is usually somewhere in the room. Watching, or not watching, in a way that amounts to the same thing.\n",
-    "order": 0,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": null,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 0,
-    "rep_change": 0,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -87,7 +62,7 @@
     "key": "hub__westside_corner",
     "scene_type": "hub",
     "title": "The Westside",
-    "body": "The Westside runs on a corner economy that's been here longer than the current crew running it. Dense blocks, deep roots, everybody knowing everybody's business and most people pretending they don't. The Kings operate here the way water operates in a pipe — you feel the pressure without seeing the source.\n\nThings move out here. People too, if they're not careful about where they stand.\n",
+    "body": "The Westside runs on a corner economy that's been here longer than the current crew running it. Dense blocks, deep roots, everybody knowing everybody's business and most people pretending they don't. The Kings operate here the way water operates in a pipe — you feel the pressure without seeing the source.\r\n\r\nThings move out here. People too, if they're not careful about where they stand.",
     "order": 0,
     "requires_roll": false,
     "roll_stat": "",
@@ -104,7 +79,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -114,7 +90,7 @@
     "key": "hub__the_strip",
     "scene_type": "hub",
     "title": "The Strip",
-    "body": "The Strip runs six blocks of bars, restaurants, and storefronts that have learned to look legitimate without trying too hard. High foot traffic. Visible money. The kind of street where a conversation in a doorway could be anything and usually is something. The Backstreet Boys work the front end. Whatever else happens here happens behind it.\n\nNobody owns the Strip outright, which means everybody's always auditioning.\n",
+    "body": "The Strip runs six blocks of bars, restaurants, and storefronts that have learned to look legitimate without trying too hard. High foot traffic. Visible money. The kind of street where a conversation in a doorway could be anything and usually is something. The Backstreet Boys work the front end. Whatever else happens here happens behind it.\r\n\r\nNobody owns the Strip outright, which means everybody's always auditioning.",
     "order": 0,
     "requires_roll": false,
     "roll_stat": "",
@@ -131,34 +107,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 6,
-  "fields": {
-    "key": "hub__docks",
-    "scene_type": "hub",
-    "title": "The Docks",
-    "body": "The waterfront smells like it always has: diesel, brine, and the specific rot of things left in water too long. The Bucco family has worked these docks for two generations. Not loudly. The union halls and the shipping offices and the cold storage warehouses all have the look of legitimate operations because most of them are, which is exactly the point.\n\nThe cranes don't stop for anything. Whatever else is moving through here moves on the same schedule.\n",
-    "order": 0,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": null,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 0,
-    "rep_change": 0,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -185,34 +135,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 82,
-  "fields": {
-    "key": "first-word__the-message",
-    "scene_type": "normal",
-    "title": "The Message",
-    "body": "The message comes through a number you don't recognise. Three sentences, no name. Someone heard about Decker Avenue - not what happened, just that it ended.\n\nIf you're looking for work, there's a collection job. Six hundred dollars. Meet at Dave's Bar, Flats, tomorrow at noon. Come alone.\n\nYou don't know who sent it. You do know Dave's - long bar, bad lighting, the kind of place where the bartender remembers your drink and not your face.\n\nSix hundred is enough that someone thought about you before sending it.\n",
-    "order": 10,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 0,
-    "rep_change": 0,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -239,7 +163,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -266,7 +191,64 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 132,
+  "fields": {
+    "key": "the-morris-job__the-call",
+    "scene_type": "normal",
+    "title": "The Call",
+    "body": "Morris calls at noon on the dot, which is when Morris calls. He doesn't introduce himself — he says there's a package on Crane Street, a laundromat called Presto's, ask for Pete. Deliver it to the lockup on Decker, unit twelve. Two hundred on completion. He waits long enough to confirm you've heard him, then hangs up.\n\nYou don't know what's in the package. That's the job.\n",
+    "order": 10,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 16,
+    "canvas_x": 0,
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 142,
+  "fields": {
+    "key": "crossing-lines__morris-calls",
+    "scene_type": "normal",
+    "title": "Morris Calls",
+    "body": "Morris calls mid-afternoon, which is almost worse than early morning. Early morning means urgency. Afternoon means something has already gone wrong and you’re being slotted into the gap it left behind.\n\nHe gives you an address in the Westside, another on the Strip, and a final drop that he describes as “self-explanatory,” which is not a phrase Morris uses unless he has decided you don’t need the explanation.\n\nYou ask what you’re carrying.\n\n“Package,” Morris says.\n\nA pause. Then:\n\n“Complete the sequence. Do not improvise.”\n\nHe hangs up.\n\nThe package is already outside your door.\n",
+    "order": 10,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 17,
+    "canvas_x": 0,
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -293,34 +275,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 83,
-  "fields": {
-    "key": "first-word__daves-bar",
-    "scene_type": "normal",
-    "title": "Dave's Bar",
-    "body": "Dave's Bar is half full at noon, which is more than you'd like. The man in the back booth has water in front of him. Untouched.\n\n\"Morris,\" he says when you sit. Not an introduction. Just a label.\n\nPruitt. Eight months late on a six hundred dollar loan. Dutch's regulars are busy and this doesn't justify them. You are, in his words, appropriate for the scale.\n\nA hundred if you bring back the full amount. Fifty if you bring back something and a story that doesn't waste his time.\n\nHe slides the address across the table. Flats. Fourth floor.\n\n\"Dutch doesn't know your name,\" he says. \"This is how he would.\"\n",
-    "order": 20,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 0,
-    "rep_change": 0,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -347,7 +303,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -374,7 +331,64 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 133,
+  "fields": {
+    "key": "the-morris-job__crane-street",
+    "scene_type": "normal",
+    "title": "Crane Street",
+    "body": "Pete is behind the counter sorting whites from darks like a man who has been trying very hard not to think about something for three days. He's mid-forties, soft around the middle, got a wedding ring and a look in his eyes that says he made one bad decision a long time ago and has been paying for it in small installments ever since.\n\nHe sees you, checks the door behind you, and goes to the back without a word. Comes out with a sealed package the size of a shoebox wrapped in brown paper and hands it over the counter like it's something he found and doesn't want to keep finding.\n\nHe says: don't come back.\n\nYou weren't planning to.\n",
+    "order": 20,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 16,
+    "canvas_x": 0,
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 143,
+  "fields": {
+    "key": "crossing-lines__westside-arrival",
+    "scene_type": "normal",
+    "title": "Westside",
+    "body": "The Westside notices you before you finish noticing it.\n\nBalconies, windows, people on stoops who don’t look at you directly but also don’t look away. The kind of attention that doesn’t ask questions because it already has answers.\n\nA guy across the street leans against a railing, watching you without watching you.\n\n“You’re not from here,” he says.\n",
+    "order": 20,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 17,
+    "canvas_x": 0,
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": 2
   }
 },
 {
@@ -401,34 +415,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 84,
-  "fields": {
-    "key": "first-word__pruitt-address",
-    "scene_type": "normal",
-    "title": "Pruitt's Address",
-    "body": "The address is twelve minutes on foot, edging toward Westside blocks where the Kings care just enough to notice you if you give them a reason.\n\nThe building leans a little. Front door propped open with something that used to be a shoe. Buzzers dead.\n\nFourth floor. 4C.\n\nThrough the door: television noise. Daytime voices filling space.\n\nSix hundred dollars says he hasn't been answering the right calls.\n",
-    "order": 30,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 0,
-    "rep_change": 0,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -455,7 +443,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -474,6 +463,34 @@
     "ambient_sound": "",
     "consume_item": null,
     "quest": 15,
+    "canvas_x": 619,
+    "canvas_y": 60,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 134,
+  "fields": {
+    "key": "the-morris-job__the-fork",
+    "scene_type": "normal",
+    "title": "The Fork",
+    "body": "Decker Avenue runs straight through the middle of the Flats. Fifteen-minute walk, broad daylight, direct. You've done it a hundred times.\n\nYou're halfway there when you spot the patrol car sitting at the intersection of Decker and Fifth — Blues, two officers, nobody moving. They're not doing anything. That's the thing about the Blues when they're sitting still: they're watching.\n\nYou can go around. Through the back streets off Marsh Lane — longer, slower, but out of sight. Or you can keep walking. You've got nothing on you they can legally touch. Probably.\n",
+    "order": 30,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 16,
     "canvas_x": 0,
     "canvas_y": 0,
     "cash_change": 0,
@@ -482,7 +499,36 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 144,
+  "fields": {
+    "key": "crossing-lines__westside-hand-off",
+    "scene_type": "normal",
+    "title": "Hand Off",
+    "body": "The door opens before you knock.\n\nA man takes the package, disappears, and comes back ten seconds later with it like nothing changed.\n\n“Next,” he says.\n\nIt weighs the same.\n\nThat’s the problem.\n",
+    "order": 30,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 17,
+    "canvas_x": 0,
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -509,34 +555,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 85,
-  "fields": {
-    "key": "first-word__pruitt-door",
-    "scene_type": "normal",
-    "title": "Pruitt's Door",
-    "body": "He opens the door on the chain first. Forty-something, underdressed for the time of day - the look of someone who expected this and hoped it would be someone else.\n\nHe opens it the rest of the way. Doesn't invite you in.\n\nThe apartment is small and controlled. A kid's drawing on the fridge. Soccer ball in the corner.\n\n\"I don't have it,\" he says.\n",
-    "order": 40,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 0,
-    "rep_change": 0,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -563,7 +583,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -590,7 +611,64 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 135,
+  "fields": {
+    "key": "the-morris-job__back-streets",
+    "scene_type": "normal",
+    "title": "Back Streets",
+    "body": "The back route adds ten minutes and takes you through a block of loading docks and shuttered units that see more foot traffic after midnight than before noon. Nobody's around. You keep the package close and your pace steady.\n\nThere's a moment — halfway through, crossing an open lot — where you feel exposed in a way you can't account for. Like something is watching that you can't see. You hold that feeling for about five seconds and then you keep moving, because that's what you do with feelings like that.\n",
+    "order": 40,
+    "requires_roll": true,
+    "roll_stat": "intellect",
+    "roll_difficulty": 11,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 16,
+    "canvas_x": 0,
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 145,
+  "fields": {
+    "key": "crossing-lines__strip-arrival",
+    "scene_type": "normal",
+    "title": "The Strip",
+    "body": "The Strip moves fast enough that nobody has time for you.\n\nA storefront that looks expensive until you look closer.\n\n“You’re early,” a man says.\n\nYou’re not.\n",
+    "order": 40,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 17,
+    "canvas_x": 0,
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": 4
   }
 },
 {
@@ -617,34 +695,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 86,
-  "fields": {
-    "key": "first-word__lean-on-pruitt",
-    "scene_type": "normal",
-    "title": "Lean On Pruitt",
-    "body": "You don't touch him. You just move through the apartment without asking.\n\nThe soccer ball. The drawing. The quiet.\n\nYou ask him where the money is.\n",
-    "order": 50,
-    "requires_roll": true,
-    "roll_stat": "strength",
-    "roll_difficulty": 10,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 0,
-    "rep_change": 0,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -671,7 +723,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -698,7 +751,64 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 136,
+  "fields": {
+    "key": "the-morris-job__roll-success",
+    "scene_type": "normal",
+    "title": "Roll Success",
+    "body": "Cunning check passed. You come out on Decker two blocks south of the patrol. They're still sitting at Fifth, not looking your way. Unit twelve is another three minutes on foot.\n",
+    "order": 50,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 16,
+    "canvas_x": 1002,
+    "canvas_y": 249,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 146,
+  "fields": {
+    "key": "crossing-lines__strip-hand-off",
+    "scene_type": "normal",
+    "title": "Strip Hand Off",
+    "body": "He circles the package like it might explain itself.\n\nTen seconds in the back. Voices.\n\nHe hands it back.\n\n“You didn’t get this from us.”\n",
+    "order": 50,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 17,
+    "canvas_x": 0,
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -725,34 +835,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 87,
-  "fields": {
-    "key": "first-word__setup-deal",
-    "scene_type": "normal",
-    "title": "Setup Deal",
-    "body": "He lost his job seven months ago. The loan was meant to bridge something that kept getting wider.\n\nThree hundred in a ziplock bag. Still sealed.\n\nHe was going to call. He didn't.\n",
-    "order": 55,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 0,
-    "rep_change": 0,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -771,15 +855,16 @@
     "ambient_sound": "",
     "consume_item": null,
     "quest": 15,
-    "canvas_x": 0,
-    "canvas_y": 0,
+    "canvas_x": 337,
+    "canvas_y": 344,
     "cash_change": 0,
     "rep_change": 0,
     "heat_change": 0,
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -798,15 +883,16 @@
     "ambient_sound": "",
     "consume_item": null,
     "quest": 15,
-    "canvas_x": 0,
-    "canvas_y": 0,
+    "canvas_x": 582,
+    "canvas_y": 239,
     "cash_change": 0,
     "rep_change": 0,
     "heat_change": 0,
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -833,34 +919,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 88,
-  "fields": {
-    "key": "first-word__deal-roll",
-    "scene_type": "normal",
-    "title": "Deal Roll",
-    "body": "Three now. Three later.\n\nYou tell him what stands behind you if he decides wrong.\n",
-    "order": 60,
-    "requires_roll": true,
-    "roll_stat": "intellect",
-    "roll_difficulty": 11,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 0,
-    "rep_change": 0,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -887,7 +947,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -906,6 +967,62 @@
     "ambient_sound": "",
     "consume_item": null,
     "quest": 15,
+    "canvas_x": 904,
+    "canvas_y": 243,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 137,
+  "fields": {
+    "key": "the-morris-job__roll-fail",
+    "scene_type": "normal",
+    "title": "Roll Fail",
+    "body": "Cunning check failed. You misread the back streets and come out directly across from the patrol. One of the officers clocks you before you can adjust — the package tucked under your arm, you moving a little too deliberately for a man with nowhere to be.\n\nHe doesn't stop you. He just watches. Writes something down.\n",
+    "order": 60,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 16,
+    "canvas_x": 694,
+    "canvas_y": 258,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 147,
+  "fields": {
+    "key": "crossing-lines__something-off",
+    "scene_type": "normal",
+    "title": "Something Off",
+    "body": "The timestamps don’t line up.\n\nThat means either the job is wrong or the job is working exactly as intended.\n\nYou’re already too far in to find out which.\n",
+    "order": 60,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 17,
     "canvas_x": 0,
     "canvas_y": 0,
     "cash_change": 0,
@@ -914,7 +1031,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -941,34 +1059,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 89,
-  "fields": {
-    "key": "first-word__standoff",
-    "scene_type": "normal",
-    "title": "Standoff",
-    "body": "You're not getting anything.\n\nHe keeps his hands visible. That feels deliberate.\n\nThe kid's drawing watches both of you.\n",
-    "order": 65,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 1126,
-    "canvas_y": 312,
-    "cash_change": 0,
-    "rep_change": 0,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -995,7 +1087,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -1022,34 +1115,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 90,
-  "fields": {
-    "key": "first-word__full-collection",
-    "scene_type": "normal",
-    "title": "Full Collection",
-    "body": "Six hundred.\n\nYou tell Morris it's done.\n\nHe tells you to come by tomorrow.\n\nHe hangs up.\n",
-    "order": 70,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 700,
-    "rep_change": 10,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -1076,7 +1143,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -1103,7 +1171,64 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 138,
+  "fields": {
+    "key": "the-morris-job__main-road",
+    "scene_type": "normal",
+    "title": "Main Road",
+    "body": "You walk past them. They see you. One of them gets on the radio. You don't run — running ends this differently — so you keep moving, even, unhurried, eyes forward, and count the seconds until you're past the intersection.\n\nThe package gets there. So does whatever they radioed in.\n",
+    "order": 70,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 16,
+    "canvas_x": 333,
+    "canvas_y": 251,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 148,
+  "fields": {
+    "key": "crossing-lines__new-build-pressure",
+    "scene_type": "normal",
+    "title": "New Build",
+    "body": "Clean storefronts. Old problems underneath.\n\nA man steps into your path.\n\n“That’s not yours,” he says.\n\nNo anger. Just certainty.\n",
+    "order": 70,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 17,
+    "canvas_x": 0,
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": 3
   }
 },
 {
@@ -1130,7 +1255,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -1157,34 +1283,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 91,
-  "fields": {
-    "key": "first-word__partial-collection",
-    "scene_type": "normal",
-    "title": "Partial Collection",
-    "body": "Three hundred. Ziplock bag.\n\nMorris says acceptable.\n\nHe doesn't say anything else.\n",
-    "order": 75,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 350,
-    "rep_change": 5,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -1211,7 +1311,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -1230,42 +1331,16 @@
     "ambient_sound": "",
     "consume_item": null,
     "quest": 15,
-    "canvas_x": 0,
-    "canvas_y": 0,
+    "canvas_x": 963,
+    "canvas_y": 416,
     "cash_change": 150,
     "rep_change": 5,
     "heat_change": 10,
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 92,
-  "fields": {
-    "key": "first-word__walked-away",
-    "scene_type": "normal",
-    "title": "Walked Away",
-    "body": "Nothing collected.\n\nMorris listens.\n\n\"Dutch will be disappointed.\"\n",
-    "order": 78,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 0,
-    "rep_change": -5,
-    "heat_change": 5,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -1292,34 +1367,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 93,
-  "fields": {
-    "key": "first-word__done-paid",
-    "scene_type": "ending",
-    "title": "Done Paid",
-    "body": "The money sits in the drawer where you left it.\n\nMorris texted. Good work.\n\nThere's a second job on the corkboard.\n\nYou didn't put it there.\n",
-    "order": 80,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "victory",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 0,
-    "rep_change": 5,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -1346,7 +1395,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -1365,15 +1415,72 @@
     "ambient_sound": "",
     "consume_item": null,
     "quest": 15,
-    "canvas_x": 0,
-    "canvas_y": 0,
+    "canvas_x": 371,
+    "canvas_y": 520,
     "cash_change": 0,
     "rep_change": 10,
     "heat_change": 0,
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 139,
+  "fields": {
+    "key": "the-morris-job__clean-delivery",
+    "scene_type": "ending",
+    "title": "Clean Delivery",
+    "body": "The lockup smells like motor oil and old cardboard. Unit twelve has a combination padlock with the code scratched into the doorframe in pencil, which is either careless or confident. You set the package inside, lock up, and text the number Morris gave you. Delivered.\n\nHe replies in forty seconds. Acceptable. Then: Dutch knows your name. That's worth something. Then nothing.\n\nThere's a switchblade on the shelf above where you set the package. No note. You take it — it would be strange not to.\n\nTwo hundred cash arrives in the usual way, which you have now figured out is the usual way.\n",
+    "order": 80,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "victory",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 16,
+    "canvas_x": 935,
+    "canvas_y": 430,
+    "cash_change": 200,
+    "rep_change": 15,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 149,
+  "fields": {
+    "key": "crossing-lines__push-through",
+    "scene_type": "normal",
+    "title": "Push Through",
+    "body": "He doesn’t stop you.\n\nThat’s the whole decision.\n\nYou walk past.\n",
+    "order": 80,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 17,
+    "canvas_x": 0,
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -1400,34 +1507,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 94,
-  "fields": {
-    "key": "first-word__done-partial",
-    "scene_type": "ending",
-    "title": "Done Partial",
-    "body": "Morris says acceptable.\n\nYou keep the word. See how it fits.\n",
-    "order": 85,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "neutral",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 0,
-    "rep_change": 0,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -1446,15 +1527,16 @@
     "ambient_sound": "",
     "consume_item": null,
     "quest": 15,
-    "canvas_x": 0,
-    "canvas_y": 0,
+    "canvas_x": 904,
+    "canvas_y": 597,
     "cash_change": 0,
     "rep_change": 5,
     "heat_change": 0,
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -1481,34 +1563,8 @@
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
-  }
-},
-{
-  "model": "game.scene",
-  "pk": 95,
-  "fields": {
-    "key": "first-word__done-burned",
-    "scene_type": "ending",
-    "title": "Done Burned",
-    "body": "Nothing collected.\n\nThe corkboard is empty.\n\nYou leave it that way.\n",
-    "order": 90,
-    "requires_roll": false,
-    "roll_stat": "",
-    "roll_difficulty": 10,
-    "ending_type": "defeat",
-    "ambient_sound": "",
-    "consume_item": null,
-    "quest": 12,
-    "canvas_x": 0,
-    "canvas_y": 0,
-    "cash_change": 0,
-    "rep_change": -5,
-    "heat_change": 0,
-    "receive_property": null,
-    "lose_property": null,
-    "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
   }
 },
 {
@@ -1527,15 +1583,156 @@
     "ambient_sound": "",
     "consume_item": null,
     "quest": 15,
-    "canvas_x": 0,
-    "canvas_y": 0,
+    "canvas_x": 656,
+    "canvas_y": 458,
     "cash_change": -25,
     "rep_change": -5,
     "heat_change": 10,
     "receive_property": null,
     "lose_property": null,
     "receive_territory": null,
-    "lose_territory": null
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 140,
+  "fields": {
+    "key": "the-morris-job__hot-delivery",
+    "scene_type": "ending",
+    "title": "Hot Delivery",
+    "body": "Package delivered. Morris's reply takes four minutes this time. Delivered. Blues logged a person of interest on Decker carrying a package. You. Pause. Dutch is aware. Another pause. A hundred and fifty.\n\nFifty less than agreed. You don't argue. There's nobody to argue with — Morris has already hung up.\n\nThe lockup has a switchblade on the shelf. You look at it. You don't take it. That feels right.\n",
+    "order": 90,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "neutral",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 16,
+    "canvas_x": 179,
+    "canvas_y": 456,
+    "cash_change": 150,
+    "rep_change": 5,
+    "heat_change": 15,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 150,
+  "fields": {
+    "key": "crossing-lines__bucco-drop",
+    "scene_type": "normal",
+    "title": "The Drop",
+    "body": "Clean.\n\nThat’s the only word for it.\n\nA man takes the package. Doesn’t check it.\n\nTen seconds later, it’s gone.\n\n“You’re done.”\n",
+    "order": 90,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 17,
+    "canvas_x": 0,
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": 5
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 141,
+  "fields": {
+    "key": "the-morris-job__clocked",
+    "scene_type": "ending",
+    "title": "Clocked",
+    "body": "Package delivered. Morris's reply comes in three minutes. Delivered. Blues patrol noted someone on the back route near Marsh. Description matches. A pause. A hundred and seventy-five.\n\nTwenty-five short. You did everything right except the one thing. Morris doesn't explain the math — he doesn't need to. Dutch's people are careful because Dutch is careful, and the back route is supposed to be clean, and now there's a description floating around that matches yours.\n",
+    "order": 100,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "neutral",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 16,
+    "canvas_x": 577,
+    "canvas_y": 426,
+    "cash_change": 175,
+    "rep_change": 8,
+    "heat_change": 8,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 151,
+  "fields": {
+    "key": "crossing-lines__blues-presence",
+    "scene_type": "normal",
+    "title": "Parked Car",
+    "body": "The car has been there long enough to belong.\n\nYou pass it once.\n\nNothing.\n\nThe second time, you feel it.\n\nNot attention. Recognition.\n\nYou keep walking.\n",
+    "order": 100,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 17,
+    "canvas_x": 0,
+    "canvas_y": 0,
+    "cash_change": 0,
+    "rep_change": 0,
+    "heat_change": 0,
+    "receive_property": 12,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": 6
+  }
+},
+{
+  "model": "game.scene",
+  "pk": 152,
+  "fields": {
+    "key": "crossing-lines__ending",
+    "scene_type": "ending",
+    "title": "Crossing Lines",
+    "body": "Back home.\n\nCash. Zonk.\n\nThe route stays in your head.\n\nMorris said acceptable.\n\nThat’s what you get.\n",
+    "order": 110,
+    "requires_roll": false,
+    "roll_stat": "",
+    "roll_difficulty": 10,
+    "ending_type": "victory",
+    "ambient_sound": "",
+    "consume_item": null,
+    "quest": 17,
+    "canvas_x": 0,
+    "canvas_y": 0,
+    "cash_change": 200,
+    "rep_change": 5,
+    "heat_change": 0,
+    "receive_property": null,
+    "lose_property": null,
+    "receive_territory": null,
+    "lose_territory": null,
+    "discover_territory": null
   }
 }
 ]

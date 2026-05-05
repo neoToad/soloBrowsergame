@@ -10,7 +10,7 @@ quest:
   - hub__apartment
   entrance_scene: the-morris-job__the-call
   requirements:
-  - label: Must have completed The Morris Job
+  - label: Must have completed the call
     logic: all
     conditions:
     - condition_type: quest_completed
@@ -18,10 +18,10 @@ quest:
       stat_name: null
       stat_value: 0
       required_item: null
-      required_quest: the-morris-job
+      required_quest: the-call
       required_contact: null
       required_ending_type: null
-    group_key: Must have completed The Call
+    group_key: Must have completed the call
 scenes:
 - key: the-morris-job__the-call
   scene_type: normal

@@ -44,7 +44,7 @@
   "fields": {
     "key": "flats_lockup",
     "name": "Flats Lockup",
-    "description": null,
+    "description": "Testing",
     "property_type": "safehouse",
     "cash_per_turn": 0,
     "heat_per_turn": -1,
@@ -63,6 +63,18 @@
     "heat_per_turn": 0,
     "rep_per_turn": 0
   }
+},
+{
+  "model": "game.property",
+  "pk": 12,
+  "fields": {
+    "key": "prop__westside_stash",
+    "name": "Westside Stash",
+    "description": "A third-floor walkup on a block that minds its business as long as you mind yours. The lock sticks unless you turn it twice. The window faces an alley that sees more traffic than the street. There’s a mattress on the floor, a chair that wasn’t new when it got here, and a cabinet that closes if you kick it right.\r\n\r\nNobody calls it yours. That’s the point.",
+    "property_type": "safehouse",
+    "cash_per_turn": 0,
+    "heat_per_turn": 0,
+    "rep_per_turn": 0
+  }
 }
 ]
-

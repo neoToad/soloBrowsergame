@@ -3,11 +3,9 @@ hubs:
   scene_type: hub
   title: The Apartment
   order: 0
-  body: 'Home. Relative term. The radiator clanks. The window looks out on a brick
-    wall. There''s a corkboard on the back of the door where you''ve started pinning
+  body: Home. Relative term. The radiator clanks. The window looks out on a brick
+    wall. There's a corkboard on the back of the door where you've started pinning
     job leads. Old habits die. New ones move in.
-
-    '
   roll:
     requires_roll: false
     roll_stat: null
@@ -50,16 +48,6 @@ hubs:
         required_contact: null
         required_ending_type: null
       group_key: Must have completed Corky's
-  - label: Stop by Reyes Boxing
-    order: 2
-    target_scene: hub__reyes_boxing
-    success_scene: null
-    failure_scene: null
-    arrival_flavor: The gym smells like rubber and old sweat. Feels like somewhere.
-    failure_arrival_flavor: null
-    set_flag_name: null
-    clear_flag_name: null
-    requirements: []
   - label: Cross into the Westside
     order: 3
     target_scene: hub__westside_corner
@@ -70,7 +58,18 @@ hubs:
     failure_arrival_flavor: null
     set_flag_name: null
     clear_flag_name: null
-    requirements: []
+    requirements:
+    - label: Completed Crossing Lines
+      logic: all
+      conditions:
+      - condition_type: quest_completed
+        flag_name: null
+        stat_name: null
+        stat_value: 0
+        required_item: null
+        required_quest: crossing-lines
+        required_contact: null
+        required_ending_type: null
   - label: Head down to the Strip
     order: 4
     target_scene: hub__the_strip
@@ -80,7 +79,18 @@ hubs:
     failure_arrival_flavor: null
     set_flag_name: null
     clear_flag_name: null
-    requirements: []
+    requirements:
+    - label: Completed Crossing Lines
+      logic: all
+      conditions:
+      - condition_type: quest_completed
+        flag_name: null
+        stat_name: null
+        stat_value: 0
+        required_item: null
+        required_quest: crossing-lines
+        required_contact: null
+        required_ending_type: null
 - key: hub__corkys
   scene_type: hub
   title: Corky's
@@ -90,8 +100,8 @@ hubs:
     \ a bar should be \u2014 not romantic, just honest about what the light would\
     \ show. Two old men have been nursing pints in the corner booth since before you\
     \ were born. Sal is behind the bar, doing what Sal does: keeping the glasses clean\
-    \ and his head down.\n\nThere's a board on the wall near the back with notices\
-    \ pinned to it. Some of them have been there long enough to curl at the corners.\n"
+    \ and his head down.\r\n\r\nThere's a board on the wall near the back with notices\
+    \ pinned to it. Some of them have been there long enough to curl at the corners."
   roll:
     requires_roll: false
     roll_stat: null
@@ -122,16 +132,6 @@ hubs:
     set_flag_name: null
     clear_flag_name: null
     requirements: []
-  - label: Stop by Reyes Boxing
-    order: 2
-    target_scene: hub__reyes_boxing
-    success_scene: null
-    failure_scene: null
-    arrival_flavor: Five minutes on foot. The gym's lights are on.
-    failure_arrival_flavor: null
-    set_flag_name: null
-    clear_flag_name: null
-    requirements: []
   - label: Head down to the Strip
     order: 3
     target_scene: hub__the_strip
@@ -142,138 +142,16 @@ hubs:
     set_flag_name: null
     clear_flag_name: null
     requirements: []
-- key: hub__docks
-  scene_type: hub
-  title: The Docks
-  order: 0
-  body: 'The waterfront smells like it always has: diesel, brine, and the specific
-    rot of things left in water too long. The Bucco family has worked these docks
-    for two generations. Not loudly. The union halls and the shipping offices and
-    the cold storage warehouses all have the look of legitimate operations because
-    most of them are, which is exactly the point.
-
-
-    The cranes don''t stop for anything. Whatever else is moving through here moves
-    on the same schedule.
-
-    '
-  roll:
-    requires_roll: false
-    roll_stat: null
-    roll_difficulty: null
-  ending:
-    ending_type: null
-  arrival:
-    cash_change: 0
-    rep_change: 0
-    heat_change: 0
-    consume_item: null
-    receive_property: null
-    lose_property: null
-    receive_territory: null
-    lose_territory: null
-    discover_territory: null
-    gang_standing_changes: []
-  scene_items: []
-  scene_contacts: []
-  choices:
-  - label: Head back up to the Strip
-    order: 1
-    target_scene: hub__the_strip
-    success_scene: null
-    failure_scene: null
-    arrival_flavor: You leave the waterfront behind. The city gets louder as you go
-      up.
-    failure_arrival_flavor: null
-    set_flag_name: null
-    clear_flag_name: null
-    requirements: []
-  - label: Head back to the Flats
-    order: 2
-    target_scene: hub__apartment
-    success_scene: null
-    failure_scene: null
-    arrival_flavor: Long walk. You know it well enough by now that you stop noticing
-      it.
-    failure_arrival_flavor: null
-    set_flag_name: null
-    clear_flag_name: null
-    requirements: []
-- key: hub__reyes_boxing
-  scene_type: hub
-  title: Reyes Boxing
-  order: 0
-  body: "Thirty years Eddie's been running this gym and it shows \u2014 not in neglect\
-    \ but in the particular wear of something used hard and maintained harder. The\
-    \ equipment is old. The floors are clean. The ring in the back has seen things.\
-    \ A speed bag in the corner ticks against its platform with the rhythm of someone\
-    \ who left an hour ago.\n\nEddie himself is usually somewhere in the room. Watching,\
-    \ or not watching, in a way that amounts to the same thing.\n"
-  roll:
-    requires_roll: false
-    roll_stat: null
-    roll_difficulty: null
-  ending:
-    ending_type: null
-  arrival:
-    cash_change: 0
-    rep_change: 0
-    heat_change: 0
-    consume_item: null
-    receive_property: null
-    lose_property: null
-    receive_territory: null
-    lose_territory: null
-    discover_territory: null
-    gang_standing_changes: []
-  scene_items: []
-  scene_contacts: []
-  choices:
-  - label: Head home
-    order: 1
-    target_scene: hub__apartment
-    success_scene: null
-    failure_scene: null
-    arrival_flavor: You take the long way. The Flats at this hour is quiet, almost.
-    failure_arrival_flavor: null
-    set_flag_name: null
-    clear_flag_name: null
-    requirements: []
-  - label: Stop by Corky's
-    order: 2
-    target_scene: hub__corkys
-    success_scene: null
-    failure_scene: null
-    arrival_flavor: Five minutes. The sign is half-lit, the way it always is.
-    failure_arrival_flavor: null
-    set_flag_name: null
-    clear_flag_name: null
-    requirements: []
-  - label: Cross into the Westside
-    order: 3
-    target_scene: hub__westside_corner
-    success_scene: null
-    failure_scene: null
-    arrival_flavor: Different block, different rules. You clock the corners before
-      you move.
-    failure_arrival_flavor: null
-    set_flag_name: null
-    clear_flag_name: null
-    requirements: []
 - key: hub__the_strip
   scene_type: hub
   title: The Strip
   order: 0
-  body: 'The Strip runs six blocks of bars, restaurants, and storefronts that have
-    learned to look legitimate without trying too hard. High foot traffic. Visible
-    money. The kind of street where a conversation in a doorway could be anything
-    and usually is something. The Backstreet Boys work the front end. Whatever else
-    happens here happens behind it.
-
-
-    Nobody owns the Strip outright, which means everybody''s always auditioning.
-
-    '
+  body: "The Strip runs six blocks of bars, restaurants, and storefronts that have\
+    \ learned to look legitimate without trying too hard. High foot traffic. Visible\
+    \ money. The kind of street where a conversation in a doorway could be anything\
+    \ and usually is something. The Backstreet Boys work the front end. Whatever else\
+    \ happens here happens behind it.\r\n\r\nNobody owns the Strip outright, which\
+    \ means everybody's always auditioning."
   roll:
     requires_roll: false
     roll_stat: null
@@ -315,17 +193,6 @@ hubs:
     set_flag_name: null
     clear_flag_name: null
     requirements: []
-  - label: Head down to the Docks
-    order: 3
-    target_scene: hub__docks
-    success_scene: null
-    failure_scene: null
-    arrival_flavor: The smell hits you before the water does. Salt and diesel and
-      old money.
-    failure_arrival_flavor: null
-    set_flag_name: null
-    clear_flag_name: null
-    requirements: []
 - key: hub__westside_corner
   scene_type: hub
   title: The Westside
@@ -333,8 +200,9 @@ hubs:
   body: "The Westside runs on a corner economy that's been here longer than the current\
     \ crew running it. Dense blocks, deep roots, everybody knowing everybody's business\
     \ and most people pretending they don't. The Kings operate here the way water\
-    \ operates in a pipe \u2014 you feel the pressure without seeing the source.\n\
-    \nThings move out here. People too, if they're not careful about where they stand.\n"
+    \ operates in a pipe \u2014 you feel the pressure without seeing the source.\r\
+    \n\r\nThings move out here. People too, if they're not careful about where they\
+    \ stand."
   roll:
     requires_roll: false
     roll_stat: null

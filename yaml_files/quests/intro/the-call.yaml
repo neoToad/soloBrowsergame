@@ -107,7 +107,10 @@ scenes:
     discover_territory: null
     gang_standing_changes: []
   scene_items: []
-  scene_contacts: []
+  scene_contacts:
+  - contact: sister
+    action: gain
+    award_once: true
   choices:
   - label: Tell her you'll handle it
     order: 1

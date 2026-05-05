@@ -89,10 +89,10 @@
   "fields": {
     "key": "terrell",
     "name": "Terrell",
-    "description": "Young, maybe twenty-five. Gold chain, clean sneakers, eyes that clock you the second you round the corner. Got reach but no discipline. The stoop light flickers. Somewhere above you a window slides shut.",
+    "description": "Young, maybe twenty-five. Gold chain, clean sneakers, eyes that clock you the second you round the corner. Got reach but no discipline. The stoop light flickers. Somewhere above you a window slides shut.\n",
     "max_hp": 10,
-    "attack_modifier": -6,
-    "defense": 6,
+    "attack_modifier": -4,
+    "defense": 8,
     "damage_min": 1,
     "damage_max": 3
   }
