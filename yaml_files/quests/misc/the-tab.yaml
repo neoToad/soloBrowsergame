@@ -1,0 +1,581 @@
+quest:
+  key: the-tab
+  title: The Tab
+  description: 'A guy ran up a tab he couldn''t cover and left a flash drive behind
+    the bar. Now two different people are asking about him. Sal wants to know if he
+    needs to worry.
+
+    '
+  arc: null
+  arc_order: 0
+  is_repeatable: false
+  hub_scenes:
+  - hub__corkys
+  entrance_scene: the-tab__sal-tells-you
+  requirements: []
+scenes:
+- key: the-tab__sal-tells-you
+  scene_type: normal
+  title: Sal Tells You
+  order: 10
+  body: "Sal puts the flash drive on the bar between you like he's setting down a\
+    \ coaster. Small thing. Cheap plastic, the kind you get in a pack of ten. He says\
+    \ a guy came in last Tuesday, ran up forty dollars, said he'd be back to cover\
+    \ it. Didn't come back. Left this behind on the table. Sal found it when he was\
+    \ clearing up. He held onto it because that seemed like the right thing to do\
+    \ and then two days later someone came in asking about the guy \u2014 plainclothes,\
+    \ didn't identify himself, but Sal's seen enough plainclothes to know plainclothes.\
+    \ And then yesterday someone else came in. Older, suit, asked the same questions\
+    \ differently. Sal says he told both of them nothing because he didn't know anything.\
+    \ He picks up his cloth. He says the guy's name was Fenn.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Take the drive
+    order: 1
+    target_scene: the-tab__the-drive
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Sal slides it across. Doesn't say thank you. Doesn't need to.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tab__the-drive
+  scene_type: normal
+  title: The Drive
+  order: 20
+  body: 'You don''t have anything to open it on at the bar so you sit with it for
+    a minute and think about what Sal said. Two people asking about the same man within
+    two days of each other, neither of them identifying themselves, both of them asking
+    carefully. That''s not a coincidence and it''s not a small thing. Fenn found something
+    he wasn''t supposed to find and copied it onto a cheap flash drive and then left
+    it on a table in Corky''s, which means either he panicked or he was interrupted
+    or both. You need to find him before the other two do.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items:
+  - item: flash_drive
+    quantity: 1
+    award_once: true
+  scene_contacts: []
+  choices:
+  - label: Start asking around
+    order: 1
+    target_scene: the-tab__find-fenn
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You know a few people who know a few people. You start there.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tab__find-fenn
+  scene_type: normal
+  title: Find Fenn
+  order: 30
+  body: "Fenn isn't crew, isn't connected, isn't the kind of person who has a usual\
+    \ place to go to ground. What he has is a cousin who runs a laundromat off Decker\
+    \ Avenue and a habit of staying somewhere familiar when things go wrong. You work\
+    \ the thread carefully \u2014 not too many questions, not too fast, nothing that\
+    \ gets back to the wrong person before you're ready.\n"
+  roll:
+    requires_roll: true
+    roll_stat: intellect
+    roll_difficulty: 12
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Follow the thread
+    order: 1
+    target_scene: null
+    success_scene: the-tab__found-fenn
+    failure_scene: the-tab__too-late
+    arrival_flavor: The cousin knows something. You can tell by the way he doesn't
+      quite meet your eyes.
+    failure_arrival_flavor: Someone got there first. The cousin's already been asked
+      and already said too much.
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tab__found-fenn
+  scene_type: normal
+  title: Found Fenn
+  order: 35
+  body: 'Cunning check passed. The laundromat. Back office, behind the industrial
+    dryers, sitting on a folding chair with his jacket still on like he''s been ready
+    to leave for three days. Fenn is mid-thirties, unremarkable, the kind of face
+    that doesn''t stay in your memory. He looks at you and immediately starts explaining,
+    which tells you he''s been rehearsing this conversation and just needed someone
+    to have it with.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Let him talk
+    order: 1
+    target_scene: the-tab__fenn-talks
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He takes a breath. Starts at the beginning.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tab__too-late
+  scene_type: normal
+  title: Too Late
+  order: 36
+  body: "Cunning check failed. The cousin already talked \u2014 to the plainclothes\
+    \ officer, two hours ago. Fenn's location is no longer a secret you have and they\
+    \ don't. You still have the drive. That's something. But the clock is different\
+    \ now and the people moving on it are moving faster than you.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Decide what to do with the drive
+    order: 1
+    target_scene: the-tab__the-decision-cold
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You still have it. That's all you have.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tab__fenn-talks
+  scene_type: normal
+  title: Fenn Talks
+  order: 40
+  body: "He found the records by accident \u2014 he does occasional bookkeeping work,\
+    \ legitimate, and a client handed him a folder that had something in it that shouldn't\
+    \ have been there. Names, dates, amounts. Someone skimming from operations he\
+    \ recognized immediately and wished he hadn't. He copied what he could onto the\
+    \ drive before he understood what he was looking at. Then he understood what he\
+    \ was looking at and he ran. He left the drive at Corky's because he panicked\
+    \ and because he goes there sometimes and it felt like somewhere safe, which he\
+    \ knows now was stupid. He says he just needs to get out of the city. He's not\
+    \ asking for anything else.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Decide what to do
+    order: 1
+    target_scene: the-tab__the-decision
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He waits. Jacket still on. Ready to move the second you tell him
+      which direction.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tab__the-decision
+  scene_type: normal
+  title: The Decision
+  order: 50
+  body: 'Three options. The drive goes to the plainclothes officer and becomes evidence
+    and Fenn becomes a witness and the Buccos work out where it came from eventually
+    and Corky''s is in that story. Or the drive goes to the Bucco associate and Fenn
+    doesn''t get out of the city and you get paid and you know what you paid for.
+    Or you tell Fenn to go, you break the drive, and neither of the two people asking
+    gets what they came for. The last option doesn''t pay anything. It does mean you
+    can look Sal in the eye tomorrow.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Destroy the drive and send Fenn running
+    order: 1
+    target_scene: the-tab__clean
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You tell Fenn to go. He goes. You put the drive on the concrete
+      floor and stand on it.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Hand it to the Blues
+    order: 2
+    target_scene: the-tab__blues
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You tell Fenn to find somewhere to be. Then you make a call.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Hand it to the Bucco associate
+    order: 3
+    target_scene: the-tab__buccos
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You tell Fenn you'll buy him an hour. You're not sure you mean
+      it.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tab__the-decision-cold
+  scene_type: normal
+  title: The Decision
+  order: 51
+  body: 'You still have the drive. Fenn is somewhere the plainclothes officer is now
+    looking and you can''t change that. What you can change is what happens to the
+    evidence. Hand it to the Blues and it becomes a case and Corky''s is in that story.
+    Hand it to the Bucco associate and whoever they find first pays for all of it.
+    Break it and nobody gets what they came for, which is the cleanest outcome available
+    from a bad position.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Hand it to the Blues
+    order: 1
+    target_scene: the-tab__blues
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You make a call. The plainclothes officer picks up on the first
+      ring.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Hand it to the Bucco associate
+    order: 2
+    target_scene: the-tab__buccos
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The associate is easy to find. He's been waiting somewhere close.
+      You had a feeling.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Destroy it and walk away
+    order: 3
+    target_scene: the-tab__burned
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You put the drive on the pavement and stand on it. Then you walk.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tab__clean
+  scene_type: ending
+  title: Clean
+  order: 60
+  body: 'Fenn is gone. The drive is in pieces on the laundromat floor. You go back
+    to Corky''s and sit at the bar and Sal pours without asking. You tell him the
+    guy won''t be coming back but his tab is settled and nobody needs to know anything
+    else. Sal nods. He picks up his cloth. The two old men in the corner are still
+    nursing their pints. The jukebox plays something from one era. Everything is exactly
+    as it was, which is the point.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: victory
+  arrival:
+    cash_change: 0
+    rep_change: 25
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Stay for a drink
+    order: 1
+    target_scene: hub__corkys
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Nobody comes asking about Fenn again. After a while you stop expecting
+      them to.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tab__blues
+  scene_type: ending
+  title: Evidence
+  order: 65
+  body: "The plainclothes officer takes the drive without thanking you. He asks how\
+    \ you came to have it. You tell him you found it. He looks at you for a moment\
+    \ with the particular expression of someone filing something away for later and\
+    \ then he leaves. Three weeks later you hear that Corky's came up in a deposition\
+    \ \u2014 not as a subject, just as a location. Sal reads about it in a filing\
+    \ someone shows him. He doesn't say anything to you. He doesn't need to.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: neutral
+  arrival:
+    cash_change: 0
+    rep_change: 5
+    heat_change: 30
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the bar
+    order: 1
+    target_scene: hub__corkys
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Sal's wiping down glasses. He doesn't look up when you come in.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tab__buccos
+  scene_type: ending
+  title: Handled
+  order: 70
+  body: 'The associate takes the drive and hands you an envelope without counting
+    out what''s in it, which means it''s enough that counting would be insulting.
+    He says the matter is handled. He says it the way people say things when they
+    mean something specific by handled. You go back to Corky''s. You don''t ask about
+    Fenn. You don''t hear about Fenn. That''s probably the answer.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: neutral
+  arrival:
+    cash_change: 400
+    rep_change: 5
+    heat_change: 10
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the bar
+    order: 1
+    target_scene: hub__corkys
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The envelope sits in your jacket the whole walk back. You don't
+      count it until you're inside.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tab__burned
+  scene_type: ending
+  title: Burned
+  order: 80
+  body: 'You break the drive and walk away and for two days it seems like that was
+    the right call. Then a Blues unit comes into Corky''s and spends forty minutes
+    asking Sal questions about a regular named Fenn who used the bar as a drop point
+    for stolen financial records. Sal tells them nothing because he knows nothing,
+    which is the one thing that went right. He calls you afterward and doesn''t say
+    anything for a long moment. Then he says he needs a few days. You give him the
+    few days. The bar is still there when they''re up. So is Sal. Things are different
+    in a way neither of you names.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: defeat
+  arrival:
+    cash_change: 0
+    rep_change: -10
+    heat_change: 25
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Go back
+    order: 1
+    target_scene: hub__corkys
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Sal's behind the bar. Same as always. Almost.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null

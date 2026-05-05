@@ -1,0 +1,701 @@
+quest:
+  key: the-witness
+  title: The Witness
+  description: 'A Kings soldier named Calvin has been missing for four days. His crew
+    thinks he''s being leaned on. They want someone outside the Kings to find him
+    before it becomes a loyalty question.
+
+    '
+  arc: null
+  arc_order: 0
+  is_repeatable: false
+  hub_scenes:
+  - hub__westside_corner
+  entrance_scene: the-witness__the-approach
+  requirements: []
+scenes:
+- key: the-witness__the-approach
+  scene_type: normal
+  title: The Approach
+  order: 10
+  body: "A Kings soldier named Deon finds you at the corner. Not aggressive \u2014\
+    \ careful. He says a guy from his crew named Calvin has been gone for four days.\
+    \ Not unusual for Calvin to go quiet but four days is different and the crew is\
+    \ starting to ask questions Deon doesn't know how to answer. He says Calvin was\
+    \ on Crane Street last Tuesday night \u2014 the block with the lockup \u2014 and\
+    \ came back different. Wouldn't say what he saw. Went quiet the next day and hasn't\
+    \ surfaced since. Deon says the crew thinks he's being leaned on by someone. He\
+    \ says he needs someone outside the Kings to find Calvin before the crew decides\
+    \ it's a loyalty question. He looks at you when he says outside the Kings. You\
+    \ understand what he means.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Find Calvin
+    order: 1
+    target_scene: the-witness__what-deon-knows
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Deon nods. Gives you what he has. It isn't much.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-witness__what-deon-knows
+  scene_type: normal
+  title: What Deon Knows
+  order: 20
+  body: "Not much more than he said. Calvin is twenty-two, been with the crew three\
+    \ years, reliable until last Tuesday. He has a girlfriend on the north Westside\
+    \ \u2014 Deon gives you her block \u2014 and a cousin who runs a card game on\
+    \ Fridays out of a basement on Mercer Street. Deon says Calvin didn't go home\
+    \ Tuesday night and hasn't called the girlfriend since. He says that part is new\
+    \ \u2014 Calvin calls her every day, has done for two years. Deon says find him\
+    \ before Friday because Friday is when people start drawing conclusions.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Start with the girlfriend
+    order: 1
+    target_scene: the-witness__the-girlfriend
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: North Westside. Buildings close together, fire escapes loaded
+      with plants.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-witness__the-girlfriend
+  scene_type: normal
+  title: The Girlfriend
+  order: 30
+  body: "Her name is Aisha. She opens the door with her phone in her hand like she's\
+    \ been waiting for a call. When she sees you're not Calvin she puts the phone\
+    \ in her pocket and waits. You tell her Deon sent you. She says she doesn't know\
+    \ where he is. You believe her. She says he called her Monday \u2014 the night\
+    \ before Crane Street \u2014 and he sounded fine. Normal. Then nothing. She says\
+    \ the last thing he said was that he had to do something Tuesday night, a favor\
+    \ for someone on the crew, and he'd call her after. She says he didn't sound worried.\
+    \ She pauses. She says he sounded like someone who hadn't decided yet whether\
+    \ to be worried.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Ask about the favor
+    order: 1
+    target_scene: the-witness__the-favor-detail
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: She thinks about it. Pulls the phone back out and puts it away
+      again.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Ask if he said anything else
+    order: 2
+    target_scene: the-witness__the-favor-detail
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: She goes back through it carefully, the way people do when they
+      wish they'd paid more attention.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-witness__the-favor-detail
+  scene_type: normal
+  title: The Favor Detail
+  order: 40
+  body: "She doesn't know what the favor was. But she remembers he mentioned a name\
+    \ \u2014 not a crew name, just a first name, the corner boy who asked him to do\
+    \ it. The name she gives you is the same name attached to a jacket on Crane Street\
+    \ last Tuesday. The same freelancer. The same lockup. Calvin wasn't a witness\
+    \ to something. Calvin was doing the run for the corner boy \u2014 one night,\
+    \ cash in hand, favor returned. And something went wrong on Crane Street that\
+    \ night that Calvin came back from and hasn't talked about since.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Find Calvin
+    order: 1
+    target_scene: the-witness__the-search
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The cousin's card game. That's where you start.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-witness__the-search
+  scene_type: normal
+  title: The Search
+  order: 50
+  body: "You work the cousin's card game angle. The game runs Thursday nights too,\
+    \ not just Fridays, and the cousin isn't hard to find if you know where card games\
+    \ happen in this part of the Westside. You ask around carefully \u2014 not Calvin's\
+    \ name, just the shape of someone who needs a quiet place for a few days and has\
+    \ family who might provide it.\n"
+  roll:
+    requires_roll: true
+    roll_stat: intellect
+    roll_difficulty: 12
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Pull the thread
+    order: 1
+    target_scene: null
+    success_scene: the-witness__search-success
+    failure_scene: the-witness__search-failure
+    arrival_flavor: The cousin's name comes up twice in the same conversation from
+      two different people.
+    failure_arrival_flavor: The cousin's been telling people Calvin's out of town.
+      Calvin is not out of town.
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-witness__search-success
+  scene_type: normal
+  title: Search Success
+  order: 55
+  body: "Cunning check passed. The basement on Mercer. The card game isn't running\
+    \ tonight \u2014 it's just Calvin, sitting in the dark with the lights off, which\
+    \ you know because you can see the glow of his phone under the door. You knock.\
+    \ Long pause. Then the door opens.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Go in
+    order: 1
+    target_scene: the-witness__calvin
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The door swings open. Calvin looks at you like he's been expecting
+      someone, just not you.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-witness__search-failure
+  scene_type: normal
+  title: Search Failure
+  order: 56
+  body: "Cunning check failed. The cousin stonewalls you \u2014 politely, firmly,\
+    \ in the way of someone who has been asked to stonewall and is doing it carefully.\
+    \ You don't get a location. But you get enough to know Calvin is close and scared\
+    \ and the cousin is the only person he's trusted with where. You go back to Deon.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Tell Deon what you know
+    order: 1
+    target_scene: the-witness__deons-move
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Deon listens. Then he picks up his phone.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-witness__deons-move
+  scene_type: normal
+  title: Deon's Move
+  order: 57
+  body: "Deon listens. Then he makes a call. Fifteen minutes later the cousin calls\
+    \ him back and gives up the address, because Deon asking directly is a different\
+    \ weight than a stranger asking. Deon gives you the address and says go alone\
+    \ \u2014 Calvin doesn't need to see crew right now. You go to the basement on\
+    \ Mercer.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Go in
+    order: 1
+    target_scene: the-witness__calvin
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The basement door is unlocked. Calvin is inside with the lights
+      off.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-witness__calvin
+  scene_type: normal
+  title: Calvin
+  order: 60
+  body: "Twenty-two. Sitting on an upturned crate in the dark. He looks at you the\
+    \ way people look at someone when they've run out of places to go. He doesn't\
+    \ ask how you found him. He just says he didn't know what was in the lockup. He\
+    \ thought it was product, standard run, cash job. But when he got there the corner\
+    \ boy wasn't moving product. He was meeting someone \u2014 older, suit, unhurried.\
+    \ Calvin heard enough of the conversation to understand that the corner boy was\
+    \ passing information about Kings operations to someone who wasn't Kings. He panicked\
+    \ and left and hasn't known what to do with it since.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Tell him to come back to the crew
+    order: 1
+    target_scene: the-witness__the-decision
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He nods slowly. Stands up. Puts his jacket on like he's been waiting
+      for permission.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Ask him who the man in the suit was
+    order: 2
+    target_scene: the-witness__the-suit
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He thinks about it. Describes him carefully, the way scared people
+      remember things.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-witness__the-suit
+  scene_type: normal
+  title: The Suit
+  order: 65
+  body: "Calvin didn't recognize him. But he described him well enough \u2014 older,\
+    \ methodical, the kind of large that comes with a suit \u2014 that you recognize\
+    \ the description. Bucco muscle. Which means the corner boy wasn't just freelancing\
+    \ on territory. He was selling Kings operational information to the Bucco Family.\
+    \ That's a different problem than a boundary violation. That's the kind of thing\
+    \ that doesn't stay quiet.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Decide what to do with it
+    order: 1
+    target_scene: the-witness__the-decision
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Calvin's already standing. Jacket on. Waiting for you to tell
+      him which direction.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-witness__the-decision
+  scene_type: normal
+  title: The Decision
+  order: 70
+  body: "Calvin goes back to the crew either way \u2014 that part is settled. The\
+    \ question is what goes back with him. You know what he saw. You know what it\
+    \ means. Deon doesn't know yet. The crew doesn't know. The Kings council doesn't\
+    \ know. You have four options for how much of this moves and in which direction.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Tell Calvin to say he saw nothing, send him back clean
+    order: 1
+    target_scene: the-witness__clean-return
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Calvin nods. He looks relieved and guilty at the same time. You
+      know the feeling.
+    failure_arrival_flavor: null
+    set_flag_name: witness_calvin_silent
+    clear_flag_name: null
+    requirements: []
+  - label: Tell Deon exactly what Calvin saw
+    order: 2
+    target_scene: the-witness__deon-knows
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Deon picks up on the first ring. You tell him to meet you.
+    failure_arrival_flavor: null
+    set_flag_name: witness_deon_told
+    clear_flag_name: null
+    requirements: []
+  - label: Take it to the Kings council directly
+    order: 3
+    target_scene: the-witness__council
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You tell Calvin to sit tight one more hour. Then you make a call.
+    failure_arrival_flavor: null
+    set_flag_name: witness_council_told
+    clear_flag_name: null
+    requirements: []
+  - label: Keep the information yourself, send Calvin back with nothing
+    order: 4
+    target_scene: the-witness__sitting-on-it
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Calvin goes. You sit in the basement for a while and think about
+      what you're holding.
+    failure_arrival_flavor: null
+    set_flag_name: witness_held
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-witness__clean-return
+  scene_type: ending
+  title: Clean Return
+  order: 80
+  body: 'Calvin goes back. He tells the crew he needed a few days, personal reasons,
+    nothing to do with the crew. Deon accepts it because accepting it is easier than
+    not accepting it. The corner boy is still out there. The Bucco connection is still
+    live. Nobody knows except you. That information is either an asset or a weight
+    and right now you can''t tell which.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: neutral
+  arrival:
+    cash_change: 150
+    rep_change: 10
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the corner
+    order: 1
+    target_scene: hub__westside_corner
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Calvin's back. The crew moves on. The corner boy is still on Crane
+      Street.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: witness_calvin_silent
+    requirements: []
+  combat_encounter: null
+- key: the-witness__deon-knows
+  scene_type: ending
+  title: Deon Knows
+  order: 85
+  body: 'Deon goes very still when you tell him. He asks you to say it again. Then
+    he thanks you in the careful way of someone who is already thinking about what
+    comes next and doesn''t want you to see it. Calvin goes back to the crew. What
+    Deon does with the information is Deon''s business now. The council will know
+    by morning. What happens to the corner boy after that is not something Deon says
+    out loud.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: neutral
+  arrival:
+    cash_change: 150
+    rep_change: 15
+    heat_change: 10
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the corner
+    order: 1
+    target_scene: hub__westside_corner
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Deon's already on the phone before you reach the end of the block.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: witness_deon_told
+    requirements: []
+  combat_encounter: null
+- key: the-witness__council
+  scene_type: ending
+  title: Council
+  order: 90
+  body: "You bypass Deon and go straight to the council through the contact who gave\
+    \ you the job. It takes two hours and a waiting room and Ray Okafor asking you\
+    \ specific practical questions for twenty minutes. Then Curt says something short\
+    \ that everyone finishes what they're doing to hear. Calvin goes back to the crew.\
+    \ The corner boy's situation is resolved at a level above your pay grade, quickly\
+    \ and without announcement. You get paid twice \u2014 once for finding Calvin,\
+    \ once for what you brought back with him.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: victory
+  arrival:
+    cash_change: 400
+    rep_change: 25
+    heat_change: 5
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the corner
+    order: 1
+    target_scene: hub__westside_corner
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The corner boy isn't on Crane Street anymore. Nobody says why.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: witness_council_told
+    requirements: []
+  combat_encounter: null
+- key: the-witness__sitting-on-it
+  scene_type: ending
+  title: Sitting On It
+  order: 95
+  body: "Calvin goes back with nothing. You keep what you know. Three days later the\
+    \ corner boy is gone \u2014 not the way the council would have done it, quietly,\
+    \ but visibly, messily, in a way that costs the Kings two blocks of credibility\
+    \ on the Flats border. Someone else connected the same dots you did and moved\
+    \ faster. The information you were sitting on is now just history. Deon doesn't\
+    \ blame you. He doesn't know you had it. That's almost worse.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: defeat
+  arrival:
+    cash_change: 150
+    rep_change: -10
+    heat_change: 10
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the corner
+    order: 1
+    target_scene: hub__westside_corner
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You had it. You sat on it. Now it's just something that happened.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: witness_held
+    requirements: []
+  combat_encounter: null

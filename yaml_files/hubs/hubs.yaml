@@ -70,6 +70,7 @@ hubs:
         required_quest: crossing-lines
         required_contact: null
         required_ending_type: null
+      group_key: Completed Crossing Lines
   - label: Head down to the Strip
     order: 4
     target_scene: hub__the_strip
@@ -91,6 +92,7 @@ hubs:
         required_quest: crossing-lines
         required_contact: null
         required_ending_type: null
+      group_key: Completed Crossing Lines
 - key: hub__corkys
   scene_type: hub
   title: Corky's

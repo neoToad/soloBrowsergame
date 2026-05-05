@@ -1,0 +1,724 @@
+quest:
+  key: the-strip-job
+  title: The Strip Job
+  description: 'There''s an electronics shop two blocks down from the corner. You''ve
+    walked past it three times this week without meaning to. Tonight feels like the
+    night.
+
+    '
+  arc: null
+  arc_order: 0
+  is_repeatable: false
+  hub_scenes:
+  - hub__the_strip
+  entrance_scene: the-strip-job__the-corner
+  requirements: []
+scenes:
+- key: the-strip-job__the-corner
+  scene_type: normal
+  title: The Corner
+  order: 10
+  body: "There's an electronics shop two blocks down from where you're standing. You've\
+    \ walked past it three times this week without meaning to. Small place, independent,\
+    \ the kind that sells phone cases and cheap cables and doesn't ask questions.\
+    \ The till is visible from the street. So is the back room door, which is never\
+    \ fully closed. Tonight the Strip is doing what it does \u2014 high foot traffic,\
+    \ nobody watching anything. You could move now. Or you could watch it a little\
+    \ longer.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Watch it a while longer
+    order: 1
+    target_scene: the-strip-job__casing-it
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You find a spot at the bus stop nobody uses as a bus stop and
+      you watch.
+    failure_arrival_flavor: null
+    set_flag_name: strip_job_cased
+    clear_flag_name: null
+    requirements: []
+  - label: You've seen enough
+    order: 2
+    target_scene: the-strip-job__the-approach
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You've been clocking this place for three days. That's enough.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-strip-job__casing-it
+  scene_type: normal
+  title: Casing It
+  order: 20
+  body: "Forty minutes. One staff member, young, changes his earbud every twenty minutes\
+    \ like clockwork. A delivery comes at nine and he goes to the back for it \u2014\
+    \ two minutes, maybe three. The side alley has a fire exit that doesn't look alarmed.\
+    \ You file all of it away.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: That's enough
+    order: 1
+    target_scene: the-strip-job__the-approach
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You know the layout. You know the timing. Time to move.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-strip-job__the-approach
+  scene_type: normal
+  title: The Approach
+  order: 30
+  body: 'The store is exactly what it looked like from the street. One guy behind
+    the counter, one earbud in, not particularly interested in anything. The back
+    room door is ajar. You can see the edge of a desk and a lockbox sitting on it.
+    Three ways to do this.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Walk in like you belong
+    order: 1
+    target_scene: the-strip-job__the-bluff
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You push the door open. The guy behind the counter doesn't look
+      up.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Go in hard
+    order: 2
+    target_scene: the-strip-job__the-fight-setup
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You close the distance before he has time to think about it.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Take the side alley
+    order: 3
+    target_scene: the-strip-job__the-side-door
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The alley is empty. The fire exit is exactly where you clocked
+      it.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements:
+    - label: Must have cased the store
+      logic: all
+      conditions:
+      - condition_type: has_flag
+        flag_name: strip_job_cased
+        stat_name: null
+        stat_value: 0
+        required_item: null
+        required_quest: null
+        required_contact: null
+        required_ending_type: null
+      group_key: Must have cased the store
+  combat_encounter: null
+- key: the-strip-job__the-bluff
+  scene_type: normal
+  title: The Bluff
+  order: 40
+  body: 'You''re a customer. Browsing. The guy behind the counter is young and not
+    particularly switched on. The back room is twelve feet away. You just need him
+    looking somewhere else long enough.
+
+    '
+  roll:
+    requires_roll: true
+    roll_stat: charisma
+    roll_difficulty: 13
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Give him something to look at
+    order: 1
+    target_scene: null
+    success_scene: the-strip-job__bluff-success
+    failure_scene: the-strip-job__bluff-failure
+    arrival_flavor: He turns to check the shelf behind him. You move.
+    failure_arrival_flavor: He clocks you before you're halfway there. His hand goes
+      under the counter.
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-strip-job__bluff-success
+  scene_type: normal
+  title: Bluff Success
+  order: 45
+  body: 'Nerve check passed. He holds for a second, squinting at the shelf like he''s
+    trying to remember something. Then he turns back around and you''re already through
+    the door.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Keep moving
+    order: 1
+    target_scene: the-strip-job__the-back-room
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The back room door swings shut behind you.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-strip-job__bluff-failure
+  scene_type: normal
+  title: Bluff Failure
+  order: 46
+  body: "Nerve check failed. He laughs \u2014 short, sharp, not friendly \u2014 and\
+    \ his hand comes up from under the counter with something in it. You're already\
+    \ moving but the door between you is closing fast.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Rush him
+    order: 1
+    target_scene: the-strip-job__the-fight-setup
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: No other option. You go over the counter.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-strip-job__the-fight-setup
+  scene_type: normal
+  title: The Fight Setup
+  order: 50
+  body: 'No more pretending. The counter isn''t going to help him as much as he thinks
+    it will. You''ve done this before. The trick is being faster than the moment when
+    he decides to do something about it.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Move on him
+    order: 1
+    target_scene: the-strip-job__the-fight
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You go in before he finishes the thought.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-strip-job__the-fight
+  scene_type: combat
+  title: The Fight
+  order: 60
+  body: 'Fast and ugly. The Strip noise bleeds in under the door and covers most of
+    it.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices: []
+  combat_encounter:
+    enemy: street_thug
+    victory_scene: the-strip-job__the-back-room
+    defeat_scene: the-strip-job__burned
+    victory_arrival_flavor: He goes down. You step over him and head for the back.
+    defeat_arrival_flavor: The floor comes up fast. Someone outside is already pushing
+      the door open.
+- key: the-strip-job__the-side-door
+  scene_type: normal
+  title: The Side Door
+  order: 65
+  body: "The fire exit opens easier than it should \u2014 the latch has been taped\
+    \ back, probably by the staff member who smokes back here. You're in the stockroom\
+    \ before anyone knows the building has changed. The back room is one door ahead.\
+    \ You can hear the guy at the counter running his mouth to someone on the phone.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Keep moving
+    order: 1
+    target_scene: the-strip-job__the-back-room
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The door swings shut behind you without a sound.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-strip-job__the-back-room
+  scene_type: normal
+  title: The Back Room
+  order: 70
+  body: "Small room. Shelving units, a safe that's open and mostly empty, and a lockbox\
+    \ on the desk that isn't. You crack it \u2014 cash, and underneath the cash a\
+    \ ledger. Handwritten, two years of names and numbers. You recognize two of them\
+    \ and wish you didn't.\n\nThen you hear breathing. There's someone in the corner\
+    \ behind the shelving unit. Young, maybe seventeen, sitting on an upturned crate\
+    \ with his knees pulled up. He looks at you. You look at him. He was clearly not\
+    \ supposed to be here either.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 200
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items:
+  - item: ledger
+    quantity: 1
+    award_once: true
+  scene_contacts: []
+  choices:
+  - label: Tell him to forget he saw you
+    order: 1
+    target_scene: the-strip-job__the-exit
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He nods. Doesn't say anything. You don't know if that means anything.
+    failure_arrival_flavor: null
+    set_flag_name: strip_job_witness
+    clear_flag_name: null
+    requirements: []
+  - label: Take his phone first
+    order: 2
+    target_scene: the-strip-job__the-exit
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He hands it over without being asked twice. Smart kid.
+    failure_arrival_flavor: null
+    set_flag_name: strip_job_witness
+    clear_flag_name: null
+    requirements: []
+  - label: Zip tie him to the shelf
+    order: 3
+    target_scene: the-strip-job__the-exit
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He doesn't fight it. You make it tight enough to mean it, loose
+      enough to matter.
+    failure_arrival_flavor: null
+    set_flag_name: strip_job_witness_tied
+    clear_flag_name: strip_job_witness
+    requirements:
+    - label: Must have zip ties
+      logic: all
+      conditions:
+      - condition_type: has_item
+        flag_name: null
+        stat_name: null
+        stat_value: 0
+        required_item: zip_ties
+        required_quest: null
+        required_contact: null
+        required_ending_type: null
+      group_key: Must have zip ties
+  combat_encounter: null
+- key: the-strip-job__the-exit
+  scene_type: normal
+  title: The Exit
+  order: 80
+  body: "You're moving back through the store when you see it \u2014 a car idling\
+    \ outside that wasn't there ten minutes ago. Two people in the front seat not\
+    \ looking at anything in particular, which in this neighborhood means they're\
+    \ looking at everything. Could be nothing. Could be someone who owns this store\
+    \ keeping tabs on it in a way that doesn't show up on any roster.\n\nThe kid in\
+    \ the back room is going to make a decision in about thirty seconds.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Walk out the front, don't run
+    order: 1
+    target_scene: the-strip-job__complications
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You push through the door at a pace that says you have somewhere
+      to be.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements:
+    - label: Witness not restrained
+      logic: all
+      conditions:
+      - condition_type: has_flag
+        flag_name: strip_job_witness
+        stat_name: null
+        stat_value: 0
+        required_item: null
+        required_quest: null
+        required_contact: null
+        required_ending_type: null
+      group_key: Witness not restrained
+  - label: Walk out the front, don't run
+    order: 2
+    target_scene: the-strip-job__done
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You push through the door. The car doesn't move.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements:
+    - label: Witness restrained
+      logic: all
+      conditions:
+      - condition_type: has_flag
+        flag_name: strip_job_witness_tied
+        stat_name: null
+        stat_value: 0
+        required_item: null
+        required_quest: null
+        required_contact: null
+        required_ending_type: null
+      group_key: Witness restrained
+  - label: Back out the side door
+    order: 3
+    target_scene: the-strip-job__done
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The alley is still empty. You knew it would be.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements:
+    - label: Must have cased the store
+      logic: all
+      conditions:
+      - condition_type: has_flag
+        flag_name: strip_job_cased
+        stat_name: null
+        stat_value: 0
+        required_item: null
+        required_quest: null
+        required_contact: null
+        required_ending_type: null
+      group_key: Must have cased the store
+  combat_encounter: null
+- key: the-strip-job__done
+  scene_type: ending
+  title: Done
+  order: 90
+  body: 'Clean. The Strip swallows you up the way you knew it would. The cash is real,
+    the ledger is in your jacket, and nobody got a good look at anything. The car
+    outside turned out to be nothing, or if it wasn''t nothing it wasn''t fast enough.
+
+
+    You don''t know yet what''s in the ledger. That''s tomorrow''s question.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: victory
+  arrival:
+    cash_change: 0
+    rep_change: 15
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the corner
+    order: 1
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The noodle place is still open. You don't stop.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: strip_job_cased
+    requirements: []
+  combat_encounter: null
+- key: the-strip-job__complications
+  scene_type: ending
+  title: Complications
+  order: 95
+  body: "You walk out the front and the car clocks you. Not immediately \u2014 there's\
+    \ a delay, like they're confirming something, which means the kid made his call\
+    \ faster than you expected. You're half a block away before the doors open. You\
+    \ don't run. Running is worse. You take three turns and duck into the dry cleaner's\
+    \ doorway \u2014 closed for renovation, fourteen months now \u2014 and wait, and\
+    \ after four minutes nothing comes past, and you walk the rest of the way in the\
+    \ direction that isn't your actual direction.\n\nYou've got the cash. You've got\
+    \ the ledger. But someone got a look at you, and someone in that car is going\
+    \ to describe what they saw to whoever owns that store.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: neutral
+  arrival:
+    cash_change: 0
+    rep_change: 5
+    heat_change: 20
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Take the long way back
+    order: 1
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You change direction twice more before you stop.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: strip_job_witness
+    requirements: []
+  combat_encounter: null
+- key: the-strip-job__burned
+  scene_type: ending
+  title: Burned
+  order: 100
+  body: 'You come to outside. Someone dragged you out, which means someone didn''t
+    want the police called, which tells you something about who owns the store that
+    you would have preferred to know going in. No cash. No ledger. The side of your
+    face is making an argument you don''t have a response to.
+
+
+    Two blocks away you stop and check your pockets out of habit. Empty. The Strip
+    keeps moving around you, indifferent, unhurried, completely unimpressed.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: defeat
+  arrival:
+    cash_change: -50
+    rep_change: -5
+    heat_change: 15
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Walk it off
+    order: 1
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You take the long way. Force of habit.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: strip_job_cased
+    requirements: []
+  combat_encounter: null

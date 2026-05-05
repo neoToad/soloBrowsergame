@@ -1,0 +1,644 @@
+quest:
+  key: the-boundary
+  title: The Boundary
+  description: 'Someone''s been running product two blocks into Kings territory from
+    the Flats side. The council wants it stopped quietly. They''re asking you.
+
+    '
+  arc: null
+  arc_order: 0
+  is_repeatable: false
+  hub_scenes:
+  - hub__westside_corner
+  entrance_scene: the-boundary__the-ask
+  requirements: []
+scenes:
+- key: the-boundary__the-ask
+  scene_type: normal
+  title: The Ask
+  order: 10
+  body: 'The contact finds you at the corner, not the other way around. Kings-adjacent,
+    mid-level, the kind of person who passes messages without being the message. He
+    says it quietly and without preamble: someone''s been running product two blocks
+    into Kings territory from the Flats side. Small enough that the council hasn''t
+    moved on it officially. Big enough that the corner crews are counting and comparing.
+    He says the council wants it stopped before it becomes something they have to
+    respond to formally, because a formal response means a formal escalation and nobody
+    wants that. He says they want someone outside the Kings to look at it. He says
+    they''re asking you.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Find out who's crossing the line
+    order: 1
+    target_scene: the-boundary__the-block
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He nods once and walks. You're already thinking about the corner.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-boundary__the-block
+  scene_type: normal
+  title: The Block
+  order: 20
+  body: "Two blocks west of the Kings' established edge. A corner that's been neutral\
+    \ for years, the kind of neutral that holds because both sides agree it does.\
+    \ Someone's been working it for three weeks \u2014 not loudly, not flagrantly,\
+    \ just consistently. You watch it for an hour. The operation is small. One runner,\
+    \ careful, knows the timing. You clock the pickup point and the runner's route\
+    \ and you start working backward.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Follow the route
+    order: 1
+    target_scene: the-boundary__the-trail
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The runner moves like someone who thinks nobody's watching. You
+      stay back.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-boundary__the-trail
+  scene_type: normal
+  title: The Trail
+  order: 30
+  body: "The runner leads you three blocks before he makes a pickup from a lockup\
+    \ on Crane Street. You stay back and watch the handoff. The person making the\
+    \ delivery is young, Flats-side, wearing a jacket you recognize \u2014 not the\
+    \ person, the jacket. Dutch's people have a particular source for their outerwear\
+    \ and it's specific enough to be a tell if you know what you're looking at. You're\
+    \ not certain. You need to be certain before you do anything with this.\n"
+  roll:
+    requires_roll: true
+    roll_stat: intellect
+    roll_difficulty: 13
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Get closer
+    order: 1
+    target_scene: null
+    success_scene: the-boundary__trail-success
+    failure_scene: the-boundary__trail-failure
+    arrival_flavor: You close the distance without being made. Close enough to see
+      the face.
+    failure_arrival_flavor: He clocks you at twenty feet. The lockup door closes.
+      The runner is already gone.
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-boundary__trail-success
+  scene_type: normal
+  title: Trail Success
+  order: 35
+  body: "Cunning check passed. Harlan Street corner boy. Young, maybe nineteen, running\
+    \ a side operation that Dutch almost certainly doesn't know about \u2014 this\
+    \ is too sloppy, too visible, too much of exactly the kind of thing Dutch doesn't\
+    \ allow. He's freelancing. That changes the shape of this considerably.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Work out what to do with it
+    order: 1
+    target_scene: the-boundary__the-confrontation-setup
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You watch the lockup door for a while. Then you move.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-boundary__trail-failure
+  scene_type: normal
+  title: Trail Failure
+  order: 36
+  body: 'Cunning check failed. You lost the thread. What you have is a jacket and
+    a lockup address and the knowledge that whoever''s running this is Flats-connected.
+    It''s enough to act on but not enough to be clean about it.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Move on the lockup
+    order: 1
+    target_scene: the-boundary__the-confrontation-setup
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You know the address. That's enough to start.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-boundary__the-confrontation-setup
+  scene_type: normal
+  title: The Confrontation Setup
+  order: 40
+  body: "You go back to the lockup the next evening. The corner boy is there \u2014\
+    \ alone this time, counting something. He sees you and his hand moves toward his\
+    \ jacket and then stops when he reads your expression. You're not Kings. You're\
+    \ not Blues. He's trying to work out what you are and what that means for the\
+    \ next thirty seconds.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Tell him exactly what this is
+    order: 1
+    target_scene: the-boundary__the-negotiation
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You keep your voice level. Give him the shape of it before he
+      has time to react.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Make the point physically
+    order: 2
+    target_scene: the-boundary__the-fight-setup
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You close the distance before he finishes reading you.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-boundary__the-negotiation
+  scene_type: normal
+  title: The Negotiation
+  order: 50
+  body: 'You lay it out for him. He''s two blocks into Kings territory. The council
+    knows. The only reason this hasn''t already become something bad is because they
+    wanted it handled quietly, and quiet is still available to him if he walks away
+    from this corner tonight and doesn''t come back. You tell him Dutch doesn''t know
+    he''s here and suggest he think carefully about whether Dutch finding out would
+    be better or worse than what''s currently on the table.
+
+    '
+  roll:
+    requires_roll: true
+    roll_stat: charisma
+    roll_difficulty: 12
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Let it land
+    order: 1
+    target_scene: null
+    success_scene: the-boundary__negotiation-success
+    failure_scene: the-boundary__negotiation-failure
+    arrival_flavor: Something moves across his face. He looks at the lockup door and
+      then back at you.
+    failure_arrival_flavor: He's nineteen and scared and scared nineteen-year-olds
+      make bad decisions. He reaches for his jacket again.
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-boundary__negotiation-success
+  scene_type: normal
+  title: Negotiation Success
+  order: 55
+  body: 'Nerve check passed. He walks. Leaves the lockup, leaves the corner, doesn''t
+    look back. You wait twenty minutes to be sure and then you go find the contact
+    and tell him it''s done. You don''t tell him it was Harlan Street. You don''t
+    tell him it was a freelancer. You just say it''s done and let him decide what
+    that''s worth.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Collect and go
+    order: 1
+    target_scene: the-boundary__done
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The contact pays without asking questions. You don't offer answers.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-boundary__negotiation-failure
+  scene_type: normal
+  title: Negotiation Failure
+  order: 56
+  body: 'Nerve check failed. He goes for the jacket and you''re already moving. The
+    lockup is tight and he''s younger than you but fear and bad judgment are their
+    own kind of fuel.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Finish it
+    order: 1
+    target_scene: the-boundary__the-fight-setup
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: No more talking.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-boundary__the-fight-setup
+  scene_type: normal
+  title: The Fight Setup
+  order: 60
+  body: 'Small space. One way in, one way out. He''s made his decision and so have
+    you.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Move on him
+    order: 1
+    target_scene: the-boundary__the-fight
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Four walls and a concrete floor. You account for the space.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-boundary__the-fight
+  scene_type: combat
+  title: The Fight
+  order: 70
+  body: 'The lockup is four walls and a concrete floor and not much else. He''s fast
+    and cornered, which is its own problem.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices: []
+  combat_encounter:
+    enemy: corner_boy
+    victory_scene: the-boundary__fight-victory
+    defeat_scene: the-boundary__burned
+    victory_arrival_flavor: He goes down. The lockup is quiet. You go through what
+      he left behind.
+    defeat_arrival_flavor: The concrete comes up fast. He's gone before you stop moving.
+- key: the-boundary__fight-victory
+  scene_type: normal
+  title: Fight Victory
+  order: 75
+  body: "He's down. The lockup is quiet. You go through what he left behind \u2014\
+    \ enough to confirm the Harlan Street connection, nothing that names Dutch directly.\
+    \ You take what's useful and leave the rest. Then you find the contact and tell\
+    \ him the corner is clear. You don't say how. He doesn't ask. But the way he doesn't\
+    \ ask tells you he already knows more than he let on, which means the Kings had\
+    \ their own read on this and wanted to see what you'd do with it.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Get paid and go
+    order: 1
+    target_scene: the-boundary__messy
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He pays. The way he doesn't ask how is its own kind of answer.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-boundary__done
+  scene_type: ending
+  title: Done
+  order: 80
+  body: 'Clean. The corner goes quiet. Neither side has to acknowledge what happened
+    or why. The cold war holds. The contact pays you in the parking structure off
+    Decker and shakes your hand once, which is more than you expected. You don''t
+    mention Harlan Street. You don''t mention Dutch. Some information is worth more
+    sitting still than moving.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: victory
+  arrival:
+    cash_change: 350
+    rep_change: 20
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the corner
+    order: 1
+    target_scene: hub__westside_corner
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The boundary holds. Nobody marks the occasion.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-boundary__messy
+  scene_type: ending
+  title: Messy
+  order: 85
+  body: 'The contact pays you and then mentions, almost in passing, that they had
+    a feeling it was Flats-connected. You don''t confirm it. You don''t deny it. He
+    nods like you''ve said something useful anyway. The Kings now know the direction
+    if not the name. That''s a shorter distance to Harlan Street than anyone needs
+    right now. The cold war is a little colder.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: neutral
+  arrival:
+    cash_change: 350
+    rep_change: 10
+    heat_change: 15
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Back to the corner
+    order: 1
+    target_scene: hub__westside_corner
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You think about what the contact said for most of the walk back.
+      Almost in passing.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-boundary__burned
+  scene_type: ending
+  title: Burned
+  order: 90
+  body: "You come to in the lockup. He's gone, the product is gone, the lockup is\
+    \ empty except for you. By the time you find the contact the corner is already\
+    \ hot \u2014 the Kings crews are counting and the word freelancer is moving through\
+    \ the wrong channels toward the word Harlan. You didn't start this. You didn't\
+    \ stop it either.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: defeat
+  arrival:
+    cash_change: 0
+    rep_change: -10
+    heat_change: 20
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Walk it off
+    order: 1
+    target_scene: hub__westside_corner
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The cold war gets a little warmer. Nothing you can do about it
+      now.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null

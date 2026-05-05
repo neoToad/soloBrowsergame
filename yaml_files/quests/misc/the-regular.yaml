@@ -1,0 +1,671 @@
+quest:
+  key: the-regular
+  title: The Regular
+  description: 'Danny Kowalski hasn''t been in for two weeks. Tuesday, Thursday, every
+    week for eleven years, and then nothing. Sal''s not asking you to do anything
+    about it. He''s just saying it.
+
+    '
+  arc: null
+  arc_order: 0
+  is_repeatable: false
+  hub_scenes:
+  - hub__corkys
+  entrance_scene: the-regular__sal-mentions-it
+  requirements: []
+scenes:
+- key: the-regular__sal-mentions-it
+  scene_type: normal
+  title: Sal Mentions It
+  order: 10
+  body: "Sal's wiping down the bar when he says it. Not to you specifically \u2014\
+    \ just out loud, the way he says things. Danny Kowalski hasn't been in for two\
+    \ weeks. Tuesday, Thursday, every week for eleven years, and then nothing. Sal\
+    \ sets the cloth down and picks up a glass and doesn't say anything else. He's\
+    \ not asking you to do anything. He's just saying it. You finish your drink and\
+    \ think about it for longer than you probably should.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Ask Sal what he knows
+    order: 1
+    target_scene: the-regular__what-sal-knows
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Sal puts the glass down. Thinks about it.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-regular__what-sal-knows
+  scene_type: normal
+  title: What Sal Knows
+  order: 20
+  body: 'Not much. Danny''s a retired machinist. Lives six blocks away on Crane Street.
+    Drinks a pint of bitter and nurses a second one for two hours and tips exactly
+    fifteen percent every time, which Sal finds both endearing and faintly insulting.
+    No family that Sal knows about. Couple of friends who used to come in with him
+    but stopped a few years back. Sal doesn''t know why. He writes Danny''s address
+    on a bar napkin without being asked and slides it across the bar. Then he picks
+    up his cloth and goes back to the glasses.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Go to Crane Street
+    order: 1
+    target_scene: the-regular__crane-street
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Six blocks. You know the street. You've never had a reason to
+      go there before.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-regular__crane-street
+  scene_type: normal
+  title: Crane Street
+  order: 30
+  body: "Six-story walkup. Danny's on the fourth floor. You knock. Long pause. Then\
+    \ the chain goes on before the door opens \u2014 just a crack, just enough. Danny\
+    \ is mid-sixties, smaller than you expected, wearing a cardigan that's seen better\
+    \ decades. He looks at you the way people look at strangers at their door when\
+    \ they're already scared of something else. You tell him Sal sent you. The chain\
+    \ stays on. He says he's fine. He says tell Sal he's fine. Behind him you can\
+    \ see a window with the curtain drawn in the middle of the afternoon.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Tell him you know about the debt
+    order: 1
+    target_scene: the-regular__the-debt
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Something shifts in his expression. The chain comes off.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Ask if anyone's been coming around
+    order: 2
+    target_scene: the-regular__the-debt
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He looks at you for a long moment. Then the chain comes off.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-regular__the-debt
+  scene_type: normal
+  title: The Debt
+  order: 40
+  body: 'He stands in the doorway and tells you in the flat voice of someone who has
+    been rehearsing this: it''s three hundred dollars, it belonged to a friend of
+    his who died eight months ago, somehow it became his problem, two guys have come
+    by twice now and the second time they broke something in the hallway. He says
+    he''s handling it. He is clearly not handling it. He says he doesn''t want any
+    trouble. You tell him you''re not trouble. He looks at you for a long moment,
+    like he''s deciding whether that''s ever been true of anyone who''s said it.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Find the collectors
+    order: 1
+    target_scene: the-regular__the-corner
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He gives you the block. Doesn't ask what you're going to do.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-regular__the-corner
+  scene_type: normal
+  title: The Corner
+  order: 50
+  body: "It doesn't take long. Two corner boys, working the block two streets over.\
+    \ Young \u2014 early twenties at most. They're not Kings, not BSB, just muscle\
+    \ hired to follow up on a debt that got sold down the chain until it landed with\
+    \ someone who needed the three hundred more than they needed the hassle. They\
+    \ clock you coming. The taller one crosses his arms. The shorter one doesn't move\
+    \ at all, which is worse.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Talk them off it
+    order: 1
+    target_scene: the-regular__the-negotiation
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You keep your hands visible. Start talking.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Make it physical
+    order: 2
+    target_scene: the-regular__the-fight-setup
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The shorter one sees it coming. The taller one doesn't.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-regular__the-negotiation
+  scene_type: normal
+  title: The Negotiation
+  order: 60
+  body: 'You explain the situation. Danny didn''t run up this debt, his dead friend
+    did, and the friend is no longer available to collect from. You suggest that passing
+    this particular problem back up the chain is probably worth more to everyone than
+    three hundred dollars from a retired machinist in a cardigan. You keep it reasonable.
+    You keep it calm. The taller one is listening. The shorter one is still not moving.
+
+    '
+  roll:
+    requires_roll: true
+    roll_stat: charisma
+    roll_difficulty: 11
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Let it land
+    order: 1
+    target_scene: null
+    success_scene: the-regular__negotiation-success
+    failure_scene: the-regular__negotiation-failure
+    arrival_flavor: The taller one looks at his partner. Something passes between
+      them.
+    failure_arrival_flavor: The shorter one takes a step forward. That's the answer.
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-regular__negotiation-success
+  scene_type: normal
+  title: Negotiation Success
+  order: 65
+  body: "Nerve check passed. The taller one says the debt's not worth the conversation\
+    \ and that's the end of it. Not generous \u2014 practical. They walk. You watch\
+    \ them go for long enough to be sure, then you take the long way back to Crane\
+    \ Street.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Go back to Danny
+    order: 1
+    target_scene: the-regular__the-choice
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Crane Street is quiet. Same curtain in the window.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-regular__negotiation-failure
+  scene_type: normal
+  title: Negotiation Failure
+  order: 66
+  body: 'Nerve check failed. The shorter one moves first and the taller one is half
+    a second behind him. You don''t have a lot of room to work with.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Handle it
+    order: 1
+    target_scene: the-regular__the-fight-setup
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: No more talking.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-regular__the-fight-setup
+  scene_type: normal
+  title: The Fight Setup
+  order: 70
+  body: 'The taller one says something. You stop listening after the first word. The
+    block is quiet enough that this is going to be noticed and loud enough from the
+    street that nobody''s going to come out to watch. Two of them. You''ve had worse
+    math.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Move on them
+    order: 1
+    target_scene: the-regular__the-fight
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You close the distance before he finishes the sentence.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-regular__the-fight
+  scene_type: combat
+  title: The Fight
+  order: 80
+  body: 'Two against one in a tight block. The shorter one is faster than he looks.
+    The taller one makes up for it with commitment.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices: []
+  combat_encounter:
+    enemy: street_thug_x2
+    victory_scene: the-regular__fight-victory
+    defeat_scene: the-regular__beaten
+    victory_arrival_flavor: They're done. You check yourself for damage. Nothing that
+      won't close.
+    defeat_arrival_flavor: The block tilts. Then the pavement. Then nothing for a
+      while.
+- key: the-regular__fight-victory
+  scene_type: normal
+  title: Fight Victory
+  order: 85
+  body: "They're done. You check yourself for damage \u2014 nothing serious, nothing\
+    \ that won't close on its own. One of them says, from the ground, that the debt\
+    \ stands. You tell him to pass that up the chain and see what they say. Then you\
+    \ go back to Crane Street.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Go back to Danny
+    order: 1
+    target_scene: the-regular__the-choice
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Crane Street is quiet. Same curtain in the window.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-regular__the-choice
+  scene_type: normal
+  title: The Choice
+  order: 90
+  body: 'Danny opens the door without the chain this time. You tell him the two guys
+    won''t be coming back. He nods slowly, like he was hoping for something he knew
+    was too much to ask. Then he asks what it cost you. You think about the three
+    hundred dollars and the conversation and whatever comes next for whoever owns
+    that debt. Two options present themselves.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Pay off the debt yourself
+    order: 1
+    target_scene: the-regular__done
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You pull the cash out. He looks at it for a long moment.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Tell him to lie low for a while
+    order: 2
+    target_scene: the-regular__scared-off
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He nods. Says he understands. He's been doing that for two weeks
+      already.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-regular__done
+  scene_type: ending
+  title: Done
+  order: 100
+  body: 'You pull the cash out. He looks at it for a long moment and then he looks
+    at you and says he doesn''t understand why a stranger would do that. You tell
+    him Sal''s been wiping down the same glasses for eleven years waiting for him
+    to come back in on Tuesday. You''re not sure if that''s the real reason. It''ll
+    do. He takes the cash. He says he''ll be in Thursday. You go back to Corky''s
+    and tell Sal. Sal picks up his cloth.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: victory
+  arrival:
+    cash_change: -300
+    rep_change: 20
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Stay for a drink
+    order: 1
+    target_scene: hub__corkys
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Thursday. Danny comes in at six. Sal doesn't say anything. Pours
+      the bitter without being asked.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-regular__scared-off
+  scene_type: ending
+  title: Scared Off
+  order: 105
+  body: 'You tell him the two guys are gone but the debt is still out there somewhere,
+    and whoever owns it will eventually pass it to someone new. He should lie low,
+    vary his routine, not open the door to strangers. He nods. He says he understands.
+    He''s been doing that for two weeks already. You go back to Corky''s. You don''t
+    tell Sal the details. He doesn''t ask. He pours you one on the house, which he''s
+    never done before, and goes back to his glasses.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: neutral
+  arrival:
+    cash_change: 0
+    rep_change: 10
+    heat_change: 5
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Drink it
+    order: 1
+    target_scene: hub__corkys
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Danny doesn't come back on Tuesday. Or Thursday. You stop counting
+      after a while.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-regular__beaten
+  scene_type: ending
+  title: Beaten
+  order: 110
+  body: 'You wake up on the block. They''re gone. Nothing broken that won''t heal,
+    nothing taken except the evening. You go back to Crane Street anyway. Danny answers
+    on the first knock this time. He looks at you and then he looks past you and he
+    says quietly that he appreciates it but he doesn''t want anyone else coming around.
+    He says it like he means it. He closes the door. You go back to Corky''s and sit
+    at the bar and don''t say anything and Sal doesn''t ask.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: defeat
+  arrival:
+    cash_change: -25
+    rep_change: -5
+    heat_change: 10
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Sit with it
+    order: 1
+    target_scene: hub__corkys
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Danny doesn't come back. Sal keeps his Tuesday and Thursday glasses
+      clean anyway.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null

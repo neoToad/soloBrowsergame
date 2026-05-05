@@ -35,6 +35,13 @@ STORY_FLAG_KEYS = frozenset(
         "hunt_defeat",
         "hunt_victory",
         "phase6_secret",
+        "morris_job_clean",
+        "morris_job_hot",
+        "strip_job_cased",
+        "strip_job_witness",
+        "strip_job_witness_tied",
+        "tail_watcher_loose",
+        "tail_watcher_tied",
         "test",
         "the_call_fought_out",
         "the_call_lost",
@@ -42,6 +49,10 @@ STORY_FLAG_KEYS = frozenset(
         "the_ride_straight",
         "the_ride_covered",
         "the_ride_lost",
+        "witness_calvin_silent",
+        "witness_council_told",
+        "witness_deon_told",
+        "witness_held",
     }
 )
 

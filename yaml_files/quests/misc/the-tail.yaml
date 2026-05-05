@@ -1,0 +1,625 @@
+quest:
+  key: the-tail
+  title: The Tail
+  description: 'Burner number, no name. Someone''s watching a Strip regular and the
+    caller wants to know who hired them. Then they want them gone.
+
+    '
+  arc: null
+  arc_order: 0
+  is_repeatable: false
+  hub_scenes:
+  - hub__the_strip
+  entrance_scene: the-tail__the-call
+  requirements: []
+scenes:
+- key: the-tail__the-call
+  scene_type: normal
+  title: The Call
+  order: 10
+  body: "Burner number. No name. The voice is calm in the way that people are calm\
+    \ when they've already decided what they want and are just waiting for you to\
+    \ agree. There's a woman named Carla who works out of the noodle place on the\
+    \ corner. Someone's been watching her for three days \u2014 same car, same spot,\
+    \ same camera. The caller wants to know who hired the watcher. Then they want\
+    \ the watcher gone. They use that word specifically. Gone. You ask what it pays.\
+    \ They tell you. You don't ask anything else.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Take the job
+    order: 1
+    target_scene: the-tail__find-carla
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The line goes dead before you can change your mind.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tail__find-carla
+  scene_type: normal
+  title: Find Carla
+  order: 20
+  body: 'The noodle place does a lunch special that runs out by noon. It''s quarter
+    past and Carla''s at a table in the back with a ledger and a cup of tea she hasn''t
+    touched. Mid-forties, reading glasses on a chain, the particular stillness of
+    someone who has spent a long time not reacting to things. She clocks you the second
+    you walk in. You tell her someone''s watching her. She says she knows. She''s
+    been watching him watch her for two days and didn''t know what to do about it.
+    She slides a napkin across the table with a license plate written on it. She says
+    she wants to know who hired him too.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Find the car
+    order: 1
+    target_scene: the-tail__the-watcher
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: She doesn't say good luck. You get the impression she doesn't
+      believe in it.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tail__the-watcher
+  scene_type: normal
+  title: The Watcher
+  order: 30
+  body: "The car is a grey sedan parked in the dry cleaner's loading bay \u2014 closed\
+    \ for renovation, same as it's been for fourteen months. The watcher is inside\
+    \ it. Late forties, jacket that was expensive once, a camera with a long lens\
+    \ on the passenger seat. He sees you coming and doesn't move, which means he's\
+    \ either very calm or he's already made a call. You tap on the window. He rolls\
+    \ it down an inch. His eyes go to your hands first, then your face.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Talk it out of him
+    order: 1
+    target_scene: the-tail__the-squeeze
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You keep your voice low. Put one hand on the roof of the car.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  - label: Pull him out of the car
+    order: 2
+    target_scene: the-tail__the-extraction-setup
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You get the door open before he decides whether to lock it.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tail__the-squeeze
+  scene_type: normal
+  title: The Squeeze
+  order: 40
+  body: 'You tell him you''re not the police and you''re not going to hurt him and
+    both of those things are true as long as he tells you what you need to know. You
+    keep your voice level. You put one hand on the roof of the car. The trick is making
+    the space feel smaller without moving.
+
+    '
+  roll:
+    requires_roll: true
+    roll_stat: charisma
+    roll_difficulty: 12
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Wait him out
+    order: 1
+    target_scene: null
+    success_scene: the-tail__squeeze-success
+    failure_scene: the-tail__squeeze-failure
+    arrival_flavor: He looks at the steering wheel for a long moment. Then he talks.
+    failure_arrival_flavor: He shakes his head. Reaches for his phone.
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tail__squeeze-success
+  scene_type: normal
+  title: Squeeze Success
+  order: 45
+  body: 'Nerve check passed. He talks in the clipped way of someone who has decided
+    that cooperation is the least bad option available to him. A law firm on the Hill.
+    Client privilege means he doesn''t know who specifically, just the billing address.
+    He writes it on a card and hands it through the gap in the window. Then he asks
+    what happens now.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Make a decision
+    order: 1
+    target_scene: the-tail__what-to-do
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He's watching you through the window. Waiting.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tail__squeeze-failure
+  scene_type: normal
+  title: Squeeze Failure
+  order: 46
+  body: 'Nerve check failed. He gets the phone halfway to his ear before you make
+    a decision. The window isn''t going to stop you and he knows it. You go around
+    to the passenger side.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Pull him out
+    order: 1
+    target_scene: the-tail__the-extraction-setup
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You get the door open. He comes out with his hands up.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tail__what-to-do
+  scene_type: normal
+  title: What To Do With Him
+  order: 50
+  body: 'He has the name you need. He has a phone that may or may not have already
+    sent something. He''s looking at you through the window with the expression of
+    a man doing math.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Zip tie him to the steering wheel and walk
+    order: 1
+    target_scene: the-tail__clean-exit
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He doesn't fight it. You make it tight enough to mean it.
+    failure_arrival_flavor: null
+    set_flag_name: tail_watcher_tied
+    clear_flag_name: null
+    requirements: []
+  - label: Tell him to drive and not come back
+    order: 2
+    target_scene: the-tail__loose-end
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: He nods. Starts the car. You watch him pull out of the loading
+      bay.
+    failure_arrival_flavor: null
+    set_flag_name: tail_watcher_loose
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tail__the-extraction-setup
+  scene_type: normal
+  title: The Extraction Setup
+  order: 55
+  body: "He comes out of the car with his hands up, which is either smart or practiced\
+    \ \u2014 you're not sure which. The camera stays on the seat. He's bigger than\
+    \ he looked through the glass and he's already decided something. You can see\
+    \ it in the way he's standing.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Move on him
+    order: 1
+    target_scene: the-tail__the-fight
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The loading bay is tight. You account for the car.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tail__the-fight
+  scene_type: combat
+  title: The Fight
+  order: 60
+  body: 'The loading bay is tight. The car is between you for the first two seconds
+    and then it isn''t.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices: []
+  combat_encounter:
+    enemy: street_thug
+    victory_scene: the-tail__fight-victory
+    defeat_scene: the-tail__burned
+    victory_arrival_flavor: He goes down by the rear wheel. You go through his jacket.
+    defeat_arrival_flavor: The last thing you see is the camera still on the passenger
+      seat.
+- key: the-tail__fight-victory
+  scene_type: normal
+  title: Fight Victory
+  order: 65
+  body: "He's on the ground by the rear wheel. You go through his jacket. A wallet,\
+    \ a phone with three missed calls on the screen, and a folded invoice with a billing\
+    \ address \u2014 a law firm on the Hill. Someone with money and a reason to watch\
+    \ Carla. You take the invoice and the phone. He's breathing. Someone called before\
+    \ you got here, which means someone knows this went wrong.\n"
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: null
+  arrival:
+    cash_change: 0
+    rep_change: 0
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Move
+    order: 1
+    target_scene: the-tail__messy-exit
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You don't run. You walk like you have somewhere to be, which you
+      do.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tail__clean-exit
+  scene_type: ending
+  title: Clean Exit
+  order: 70
+  body: 'You call the burner number from three blocks away. Read out the billing address.
+    The line is quiet for a moment and then the caller says good and hangs up. You
+    stop at the noodle place on the way back and tell Carla. She writes something
+    in her ledger and doesn''t say thank you, which is its own kind of thank you.
+    The zip ties are still in your jacket pocket. You keep them.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: victory
+  arrival:
+    cash_change: 300
+    rep_change: 20
+    heat_change: 0
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items:
+  - item: zip_ties
+    quantity: 1
+    award_once: true
+  scene_contacts: []
+  choices:
+  - label: Back to the corner
+    order: 1
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The grey sedan is still in the loading bay. It'll be someone else's
+      problem by morning.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: tail_watcher_tied
+    requirements: []
+  combat_encounter: null
+- key: the-tail__loose-end
+  scene_type: ending
+  title: Loose End
+  order: 75
+  body: 'You call the burner number. Read out the billing address. The caller says
+    good and hangs up. You tell Carla. She nods and writes something down. Three days
+    later you hear that the grey sedan came back, different plates, same spot. The
+    watcher has a client who''s paying enough to keep going. That''s not your problem
+    anymore. It might become someone else''s.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: neutral
+  arrival:
+    cash_change: 300
+    rep_change: 10
+    heat_change: 10
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items:
+  - item: zip_ties
+    quantity: 1
+    award_once: true
+  scene_contacts: []
+  choices:
+  - label: Back to the corner
+    order: 1
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: You got paid. The job isn't done. Those two things are going to
+      have to coexist.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: tail_watcher_loose
+    requirements: []
+  combat_encounter: null
+- key: the-tail__messy-exit
+  scene_type: ending
+  title: Messy Exit
+  order: 80
+  body: 'You call the burner number from a payphone two blocks over. Read out the
+    billing address. The caller says good and then says they heard it got complicated.
+    You don''t ask how they heard. They say the payment stands but next time keep
+    it cleaner. The line goes dead. You tell Carla in passing. She doesn''t look surprised,
+    which means she already knew, which means she has sources you don''t know about.
+    That''s interesting.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: neutral
+  arrival:
+    cash_change: 300
+    rep_change: 5
+    heat_change: 25
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items:
+  - item: zip_ties
+    quantity: 1
+    award_once: true
+  scene_contacts: []
+  choices:
+  - label: Back to the corner
+    order: 1
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: Next time keep it cleaner. You're already thinking about what
+      that means.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
+- key: the-tail__burned
+  scene_type: ending
+  title: Burned
+  order: 90
+  body: 'You come to in the loading bay. The car is gone. His phone is gone. Your
+    pockets are lighter than they were. Somewhere in the city a private investigator
+    is explaining to his client that someone came asking, and the client is deciding
+    what to do about that, and you don''t know who the client is or what they''re
+    capable of. The noodle place is two blocks away. You don''t go. You don''t have
+    anything to tell Carla.
+
+    '
+  roll:
+    requires_roll: false
+    roll_stat: null
+    roll_difficulty: null
+  ending:
+    ending_type: defeat
+  arrival:
+    cash_change: -50
+    rep_change: -10
+    heat_change: 20
+    consume_item: null
+    receive_property: null
+    lose_property: null
+    receive_territory: null
+    lose_territory: null
+    discover_territory: null
+    gang_standing_changes: []
+  scene_items: []
+  scene_contacts: []
+  choices:
+  - label: Walk it off
+    order: 1
+    target_scene: hub__the_strip
+    success_scene: null
+    failure_scene: null
+    arrival_flavor: The burner number rings out. You don't leave a message.
+    failure_arrival_flavor: null
+    set_flag_name: null
+    clear_flag_name: null
+    requirements: []
+  combat_encounter: null
