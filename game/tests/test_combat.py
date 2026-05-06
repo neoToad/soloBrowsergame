@@ -333,6 +333,54 @@ class CombatViewTest(TestCase):
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.hp, initial_hp)
 
+    def test_combat_attack_miss_renders_your_turn_badge_from_latest_event(self):
+        from game.models.combat import CombatState
+
+        cs = CombatState.objects.get(session=self.session)
+        cs.pending_enemy_roll = None
+        cs.pending_enemy_total = None
+        cs.pending_enemy_hit = None
+        cs.pending_enemy_damage = None
+        cs.enemy_hp = self.enemy.max_hp
+        cs.save(
+            update_fields=[
+                "pending_enemy_roll",
+                "pending_enemy_total",
+                "pending_enemy_hit",
+                "pending_enemy_damage",
+                "enemy_hp",
+            ]
+        )
+
+        with patch("game.services.combat.roll_d20", return_value=1):
+            response = self.client.post(reverse("combat_attack"), HTTP_HX_REQUEST="true")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Your Turn")
+
+    def test_combat_attack_roll_header_uses_display_stat_name(self):
+        from game.models.combat import CombatState
+
+        cs = CombatState.objects.get(session=self.session)
+        cs.pending_enemy_roll = None
+        cs.pending_enemy_total = None
+        cs.pending_enemy_hit = None
+        cs.pending_enemy_damage = None
+        cs.save(
+            update_fields=[
+                "pending_enemy_roll",
+                "pending_enemy_total",
+                "pending_enemy_hit",
+                "pending_enemy_damage",
+            ]
+        )
+
+        with patch("game.services.combat.roll_d20", return_value=1):
+            response = self.client.post(reverse("combat_attack"), HTTP_HX_REQUEST="true")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "MUSCLE CHECK")
+
     def test_combat_continue_returns_400_when_victory_scene_missing(self):
         from game.models.combat import CombatEncounter, CombatState
 

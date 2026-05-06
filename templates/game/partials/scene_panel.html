@@ -1,3 +1,4 @@
+{% load game_filters %}
 <div id="scene-panel"
      {% if scene.is_ending %}class="scene--ending" data-ending="{{ scene.ending_type }}"{% endif %}>
 
@@ -10,6 +11,19 @@
     {% endif %}
 
     <h2>{{ scene.title }}</h2>
+    {% if combat_state and combat_state.is_active %}
+    <p class="combat-phase-badge {% if combat_state.pending_victory %}combat-phase-badge--victory{% elif logs and logs.0.text|slice:':15' == 'You move on him' %}combat-phase-badge--player{% elif logs and 'comes at you' in logs.0.text %}combat-phase-badge--enemy{% else %}combat-phase-badge--player{% endif %}">
+        {% if combat_state.pending_victory %}
+            Victory
+        {% elif logs and logs.0.text|slice:':15' == 'You move on him' %}
+            Your Turn
+        {% elif logs and 'comes at you' in logs.0.text %}
+            Enemy Turn
+        {% else %}
+            Your Turn
+        {% endif %}
+    </p>
+    {% endif %}
 
     {% if logs %}
     <div class="latest-event">{{ logs.0.text }}</div>
@@ -18,7 +32,7 @@
     {% if roll_result %}
     <div class="roll-result-row">
         <div class="roll-result {% if roll_result.success %}roll-result--success{% else %}roll-result--failure{% endif %}">
-            <p class="roll-result-header">{{ roll_result.stat|upper }} CHECK</p>
+            <p class="roll-result-header">{{ roll_result.stat|stat_display_name|upper }} CHECK</p>
             <div class="roll-result-body">
                 <div class="roll-die-wrap">
                     <span class="roll-die" data-final="{{ roll_result.roll }}">{{ roll_result.roll }}</span>

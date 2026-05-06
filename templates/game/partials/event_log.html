@@ -1,7 +1,7 @@
 <div id="event-log" {% if oob %}hx-swap-oob="true"{% endif %}>
     <p class="panel-label">[ EVENT LOG ]</p>
     {% for entry in logs %}
-        <p class="log-entry {% if forloop.first %}log-entry--recent{% endif %}">{{ entry.text }}</p>
+        <p class="log-entry {% if forloop.first %}log-entry--recent{% endif %}{% if entry.text|slice:':15' == 'You move on him' %} log-entry--player{% elif 'comes at you' in entry.text %} log-entry--enemy{% else %} log-entry--system{% endif %}">{{ entry.text }}</p>
     {% empty %}
         <p class="log-entry"><em>No events yet.</em></p>
     {% endfor %}

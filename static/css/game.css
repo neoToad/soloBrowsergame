@@ -339,6 +339,22 @@ html, body {
     color: var(--warning);
 }
 
+.log-entry--player {
+    color: var(--accent);
+    border-left: 2px solid var(--accent-dim);
+    padding-left: 8px;
+}
+
+.log-entry--enemy {
+    color: var(--danger);
+    border-left: 2px solid var(--danger);
+    padding-left: 8px;
+}
+
+.log-entry--system {
+    color: var(--text-dim);
+}
+
 .latest-event {
     color: var(--warning);
     font-size: 17px;
@@ -387,12 +403,42 @@ html, body {
 
 /* COMBAT PANEL */
 
+.combat-phase-badge {
+    margin: -2px 0 10px;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    width: fit-content;
+    animation: fade-rise 0.16s ease;
+}
+
+.combat-phase-badge--player {
+    color: var(--accent);
+    border-color: var(--accent-dim);
+    background: rgba(71, 143, 79, 0.12);
+}
+
+.combat-phase-badge--enemy {
+    color: var(--danger);
+    border-color: var(--danger);
+    background: rgba(204, 68, 68, 0.12);
+}
+
+.combat-phase-badge--victory {
+    color: var(--warning);
+    border-color: var(--warning);
+    background: rgba(204, 184, 93, 0.12);
+}
+
 .combat-opponent {
     border: 1px solid var(--danger);
     padding: 10px 14px;
     display: flex;
     flex-direction: column;
     gap: 4px;
+    background: rgba(204, 68, 68, 0.06);
 }
 
 .combat-opp-name {
@@ -452,6 +498,15 @@ html, body {
     text-align: right;
 }
 
+.combat-threat-label {
+    color: var(--danger);
+    border: 1px solid var(--danger);
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 1px 4px;
+}
+
 .combat-turn {
     color: var(--text-dim);
     font-size: 11px;
@@ -466,6 +521,51 @@ html, body {
     letter-spacing: 1px;
     margin: 0;
     text-transform: uppercase;
+}
+
+.combat-helper {
+    margin: 0;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+
+.combat-helper--player {
+    color: var(--accent);
+}
+
+.combat-helper--enemy {
+    color: var(--danger);
+}
+
+.combat-helper--victory {
+    color: var(--warning);
+}
+
+.combat-incoming {
+    color: var(--danger);
+}
+
+#combat-panel .choices {
+    animation: fade-rise 0.16s ease;
+}
+
+#combat-panel.combat-panel--player .choices button {
+    border-color: var(--accent-dim);
+}
+
+#combat-panel.combat-panel--enemy .choices button {
+    background: rgba(204, 68, 68, 0.15);
+    border-color: var(--danger);
+    color: #ffdede;
+}
+
+#combat-panel.combat-panel--enemy .choices button:hover {
+    background: rgba(204, 68, 68, 0.24);
+}
+
+#combat-panel.combat-panel--victory .choices button {
+    border-color: var(--warning);
+    color: var(--warning);
 }
 
 /* XP / RANK (stats bar) */
@@ -1142,6 +1242,17 @@ details[open] > .drawer-summary::before {
 }
 #scene-panel.is-loading {
     opacity: 0;
+}
+
+@keyframes fade-rise {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* 1b. Newest log entry slide-in */

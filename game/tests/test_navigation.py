@@ -297,6 +297,23 @@ class GameNavigationTest(TestCase):
         session.refresh_from_db()
         self.assertEqual(session.current_scene, initial_scene)
 
+    def test_event_log_classification_marks_only_player_attack_as_player(self):
+        self.client.get("/game/")
+        session = GameSession.objects.first()
+        session.log.create(text="You move on him - roll 12 (+2) = 14 vs 10 - Hit! 4 damage.")
+        session.log.create(text="You gained 50 XP, +$4 cash, +1 heat, +2 rep.")
+        session.log.create(text="Corner Thug comes at you - roll 9 (+0) = 9 vs 11 - Missed.")
+
+        response = self.client.get(reverse("scene_detail", kwargs={"scene_key": session.current_scene.key}))
+        content = response.content.decode()
+
+        self.assertIn("You move on him", content)
+        self.assertIn("log-entry--player", content)
+        self.assertIn("You gained 50 XP", content)
+        self.assertIn("log-entry--system", content)
+        self.assertIn("comes at you", content)
+        self.assertIn("log-entry--enemy", content)
+
 
 class NoticeBoardTest(TestCase):
     fixtures = [

@@ -1,5 +1,6 @@
 from django import template
 from game.services.progression import XP_THRESHOLDS, MAX_LEVEL, RANK_TITLES, LEVEL_UP_FLAVOR
+from game.constants import STAT_DISPLAY_NAMES
 
 register = template.Library()
 
@@ -80,3 +81,15 @@ def levelup_flavor(level):
         return LEVEL_UP_FLAVOR.get(int(level), '')
     except (ValueError, TypeError, KeyError):
         return ''
+
+
+@register.filter
+def stat_display_name(stat_key):
+    """
+    Returns the player-facing stat label (muscle/reflexes/cunning/nerve)
+    for canonical stat keys. Falls back to the original value.
+    """
+    if stat_key is None:
+        return ''
+    key = str(stat_key).strip().lower()
+    return STAT_DISPLAY_NAMES.get(key, str(stat_key))

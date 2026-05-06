@@ -1,5 +1,7 @@
 {% load game_filters %}
-<div id="combat-panel">
+<div
+    id="combat-panel"
+    class="{% if combat_state.pending_victory %}combat-panel--victory{% elif combat_state.enemy_attack_pending %}combat-panel--enemy{% else %}combat-panel--player{% endif %}">
 
     <div class="combat-opponent">
         <p class="combat-opp-name">{{ combat_state.enemy.name|upper }}</p>
@@ -30,6 +32,7 @@
     <div class="choices">
         {% if combat_state.pending_victory %}
         <p class="combat-defeated-msg">{{ combat_state.enemy.name }} has been defeated.</p>
+        <p class="combat-helper combat-helper--victory">Take control of the next scene.</p>
         <button
             hx-post="{% url 'combat_continue' %}"
             hx-target="#scene-panel"
@@ -39,7 +42,8 @@
             Continue
         </button>
         {% elif combat_state.enemy_attack_pending %}
-        <p class="combat-incoming">{{ combat_state.enemy.name }} is coming at you —</p>
+        <p class="combat-helper combat-helper--enemy">Incoming attack. Hold your ground.</p>
+        <p class="combat-incoming">{{ combat_state.enemy.name }} is coming at you.</p>
         <button
             hx-post="{% url 'combat_resolve_enemy' %}"
             hx-target="#scene-panel"
@@ -49,6 +53,7 @@
             Brace yourself
         </button>
         {% else %}
+        <p class="combat-helper combat-helper--player">Choose your moment and press the attack.</p>
         <button
             hx-post="{% url 'combat_attack' %}"
             hx-target="#scene-panel"
