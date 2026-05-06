@@ -1,18 +1,27 @@
 quest:
   key: the-witness
   title: The Witness
-  description: 'A Kings soldier named Calvin has been missing for four days. His crew
-    thinks he''s being leaned on. They want someone outside the Kings to find him
-    before it becomes a loyalty question.
-
-    '
+  description: A Kings soldier named Calvin has been missing for four days. His crew
+    thinks he's being leaned on. They want someone outside the Kings to find him before
+    it becomes a loyalty question.
   arc: null
   arc_order: 0
   is_repeatable: false
   hub_scenes:
   - hub__westside_corner
   entrance_scene: the-witness__the-approach
-  requirements: []
+  requirements:
+  - label: Must have completed the tail
+    logic: all
+    conditions:
+    - condition_type: quest_completed
+      flag_name: null
+      stat_name: null
+      stat_value: 0
+      required_item: null
+      required_quest: the-tail
+      required_contact: null
+      required_ending_type: null
 scenes:
 - key: the-witness__the-approach
   scene_type: normal

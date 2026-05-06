@@ -1,18 +1,27 @@
 quest:
   key: the-tab
   title: The Tab
-  description: 'A guy ran up a tab he couldn''t cover and left a flash drive behind
+  description: A guy ran up a tab he couldn't cover and left a flash drive behind
     the bar. Now two different people are asking about him. Sal wants to know if he
     needs to worry.
-
-    '
   arc: null
   arc_order: 0
   is_repeatable: false
   hub_scenes:
   - hub__corkys
   entrance_scene: the-tab__sal-tells-you
-  requirements: []
+  requirements:
+  - label: Completed the strip
+    logic: all
+    conditions:
+    - condition_type: quest_completed
+      flag_name: null
+      stat_name: null
+      stat_value: 0
+      required_item: null
+      required_quest: the-strip-job
+      required_contact: null
+      required_ending_type: null
 scenes:
 - key: the-tab__sal-tells-you
   scene_type: normal
