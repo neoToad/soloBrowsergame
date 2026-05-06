@@ -314,6 +314,47 @@ class GameNavigationTest(TestCase):
         self.assertIn("comes at you", content)
         self.assertIn("log-entry--enemy", content)
 
+    def test_non_combat_roll_does_not_render_attack_or_damage_card(self):
+        self.client.get("/game/")
+        session = GameSession.objects.first()
+
+        roll_scene = Scene.objects.create(
+            key="test__roll_scene_ui",
+            title="Roll Scene UI",
+            body="",
+            scene_type="normal",
+            requires_roll=True,
+            roll_stat="agility",
+            roll_difficulty=10,
+        )
+        success_scene = Scene.objects.create(
+            key="test__roll_success_ui", title="Roll Success UI", body="", scene_type="normal"
+        )
+        failure_scene = Scene.objects.create(
+            key="test__roll_fail_ui", title="Roll Fail UI", body="", scene_type="normal"
+        )
+        choice = Choice.objects.create(
+            scene=roll_scene,
+            label="Take the chance",
+            success_scene=success_scene,
+            failure_scene=failure_scene,
+            order=1,
+        )
+
+        session.current_scene = roll_scene
+        session.save(update_fields=["current_scene"])
+
+        with patch("game.services.scene.roll_d20", return_value=1):
+            response = self.client.post(
+                reverse("choice_resolve", kwargs={"choice_id": choice.pk}),
+                HTTP_HX_REQUEST="true",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "REFLEXES CHECK")
+        self.assertNotContains(response, "roll-result--miss")
+        self.assertNotContains(response, "roll-result--damage")
+
 
 class NoticeBoardTest(TestCase):
     fixtures = [

@@ -45,32 +45,34 @@
             </div>
             <p class="roll-verdict">{% if roll_result.success %}&#x2713;&nbsp; Success{% else %}&#x2717;&nbsp; Failure{% endif %}</p>
         </div>
-        {% if damage_result %}
-        <div class="roll-result roll-result--damage">
-            <p class="roll-result-header">DAMAGE</p>
-            <div class="roll-result-body">
-                <div class="roll-die-wrap">
-                    <span class="roll-die">{{ damage_result.die_roll }}</span>
-                    <span class="roll-die-label">{{ damage_result.die_label }}</span>
+        {% if combat_state and combat_state.is_active %}
+            {% if damage_result %}
+            <div class="roll-result roll-result--damage">
+                <p class="roll-result-header">DAMAGE</p>
+                <div class="roll-result-body">
+                    <div class="roll-die-wrap">
+                        <span class="roll-die">{{ damage_result.die_roll }}</span>
+                        <span class="roll-die-label">{{ damage_result.die_label }}</span>
+                    </div>
+                    <div class="roll-math">
+                        <span class="roll-math-line">{{ damage_result.mod_display }} &nbsp;=&nbsp; <strong>{{ damage_result.total }}</strong></span>
+                        <span class="roll-math-dc">damage dealt</span>
+                    </div>
                 </div>
-                <div class="roll-math">
-                    <span class="roll-math-line">{{ damage_result.mod_display }} &nbsp;=&nbsp; <strong>{{ damage_result.total }}</strong></span>
-                    <span class="roll-math-dc">damage dealt</span>
-                </div>
+                <p class="roll-verdict">&#x2020;&nbsp; {{ damage_result.total }} dmg</p>
             </div>
-            <p class="roll-verdict">&#x2020;&nbsp; {{ damage_result.total }} dmg</p>
-        </div>
-        {% else %}
-        <div class="roll-result roll-result--miss">
-            <p class="roll-result-header">ATTACK</p>
-            <div class="roll-result-body">
-                <div class="roll-math">
-                    <span class="roll-math-line"><strong>Missed</strong></span>
-                    <span class="roll-math-dc">no damage dealt</span>
+            {% else %}
+            <div class="roll-result roll-result--miss">
+                <p class="roll-result-header">ATTACK</p>
+                <div class="roll-result-body">
+                    <div class="roll-math">
+                        <span class="roll-math-line"><strong>Missed</strong></span>
+                        <span class="roll-math-dc">no damage dealt</span>
+                    </div>
                 </div>
+                <p class="roll-verdict">&#x2014;&nbsp; 0 dmg</p>
             </div>
-            <p class="roll-verdict">&#x2014;&nbsp; 0 dmg</p>
-        </div>
+            {% endif %}
         {% endif %}
     </div>
     {% endif %}

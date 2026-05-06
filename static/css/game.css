@@ -340,19 +340,23 @@ html, body {
 }
 
 .log-entry--player {
-    color: var(--accent);
-    border-left: 2px solid var(--accent-dim);
-    padding-left: 8px;
+    color: var(--text-dim);
+    border-left: none;
+    padding-left: 0;
 }
 
 .log-entry--enemy {
-    color: var(--danger);
-    border-left: 2px solid var(--danger);
-    padding-left: 8px;
+    color: var(--text-dim);
+    border-left: none;
+    padding-left: 0;
 }
 
 .log-entry--system {
     color: var(--text-dim);
+}
+
+.log-entry--recent {
+    color: var(--warning);
 }
 
 .latest-event {
