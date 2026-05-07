@@ -7,13 +7,11 @@ import yaml
 from django.core.management import CommandError
 from django.db import transaction
 
-from .domain import (
-    import_enemies_and_contacts_data,
-    import_hubs_data,
-    import_items_data,
-    import_quest_data,
-    import_world_data,
-)
+from .enemies_contacts import import_enemies_and_contacts_data
+from .hubs import import_hubs_data
+from .items import import_items_data
+from .quests import import_quest_data
+from .world import import_world_data
 from .types import ImportResult
 
 TYPE_ORDER = ["items", "enemies_contacts", "hubs", "world", "quest"]

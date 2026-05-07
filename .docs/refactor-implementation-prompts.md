@@ -2,27 +2,6 @@
 
 Use these prompts one at a time in a coding agent. Each prompt assumes this repo�s architecture rule: business logic must live in services, not views.
 
-## 7) Split importer domain module into per-domain modules
-
-```text
-Refactor `game/services/importers/domain.py` into smaller modules:
-- `game/services/importers/items.py`
-- `game/services/importers/enemies_contacts.py`
-- `game/services/importers/world.py`
-- `game/services/importers/hubs.py`
-- `game/services/importers/quests.py`
-- shared helpers in `game/services/importers/shared.py`
-
-Requirements:
-1. Preserve current import behavior and `ImportResult` bookkeeping.
-2. Keep helper reuse for scene choice/items/contacts/combat import paths.
-3. Update imports in orchestrator and management commands.
-4. Keep function-level test coverage green (`game/tests/test_import_refactor.py`, `test_import_quest.py`).
-
-Deliverables:
-- Smaller importer modules with clear responsibilities.
-```
-
 ## 8) Replace stringly-typed import dispatch with enum/registry
 
 ```text
