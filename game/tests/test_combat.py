@@ -3,7 +3,7 @@ from unittest.mock import patch
 from django.test import Client, TestCase
 from django.urls import reverse
 
-from game.models import Enemy, GameSession, Scene
+from game.models import CompletedQuest, Enemy, GameSession, Scene
 
 from game.tests.factories import ChoiceFactory, EnemyFactory, SceneFactory, bootstrap_game_session
 
@@ -47,11 +47,15 @@ class CombatTest(TestCase):
         self.combat_state.refresh_from_db()
         self.assertLess(self.combat_state.enemy_hp, 100)
 
-    def test_combat_victory_and_quest_completion(self):
+    def test_combat_victory_awards_xp_and_transitions_to_victory_scene(self):
+        from game.services.progression import XP_AWARDS
+
         self.combat_state.enemy_hp = 1
         self.combat_state.save()
         self.session.stats.strength = 20
         self.session.stats.save()
+        starting_xp = self.session.stats.experience
+        starting_completed_quests = CompletedQuest.objects.filter(session=self.session).count()
 
         with patch("game.services.combat.roll_d20", return_value=20):
             self.client.post(reverse("combat_attack"), HTTP_HX_REQUEST="true")
@@ -62,8 +66,17 @@ class CombatTest(TestCase):
         response = self.client.post(reverse("combat_continue"), HTTP_HX_REQUEST="true")
         self.assertEqual(response.status_code, 200)
         self.session.refresh_from_db()
+        self.session.stats.refresh_from_db()
         victory_scene = Scene.objects.get(key="debt__enforcer_fight")
         self.assertEqual(self.session.current_scene, victory_scene)
+        self.assertEqual(self.session.stats.experience, starting_xp + XP_AWARDS["combat_victory"])
+        self.assertTrue(
+            self.session.log.filter(text__icontains=f"You gained {XP_AWARDS['combat_victory']} XP.").exists()
+        )
+        self.assertEqual(
+            CompletedQuest.objects.filter(session=self.session).count(),
+            starting_completed_quests,
+        )
 
 
 class CombatServiceTest(TestCase):

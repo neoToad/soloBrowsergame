@@ -256,3 +256,74 @@ class ProgressionServiceTest(TestCase):
         self.assertEqual(result, [])
         self.assertEqual(CompletedQuest.objects.filter(session=self.session, quest=quest).count(), 1)
 
+    def test_apply_stat_rewards_formats_positive_and_negative_logs_and_heat_floor(self):
+        from game.services.progression import apply_stat_rewards
+
+        class RewardObj:
+            cash_change = 25
+            rep_change = -3
+            heat_change = -10
+
+        self.stats.cash = 100
+        self.stats.rep = 10
+        self.stats.heat = 4
+        self.stats.save()
+
+        logs = apply_stat_rewards(self.session, self.stats, RewardObj())
+        self.stats.refresh_from_db()
+
+        self.assertEqual(logs, ["Cash: +$25", "Reputation: -3", "Heat: -10"])
+        self.assertEqual(self.stats.cash, 125)
+        self.assertEqual(self.stats.rep, 7)
+        self.assertEqual(self.stats.heat, 0)
+
+    def test_apply_stat_rewards_no_change_returns_empty_and_does_not_save(self):
+        from game.services.progression import apply_stat_rewards
+        from unittest.mock import patch
+
+        class NoRewardObj:
+            cash_change = 0
+            rep_change = 0
+            heat_change = 0
+
+        with patch.object(self.stats, "save") as save_mock:
+            logs = apply_stat_rewards(self.session, self.stats, NoRewardObj())
+
+        self.assertEqual(logs, [])
+        save_mock.assert_not_called()
+
+    def test_maybe_complete_quest_uses_default_flavor_for_unmapped_level_and_updates_completed_map(self):
+        from game.services import progression as progression_service
+
+        quest = Quest.objects.create(key="prog__quest_default_flavor", title="Default Flavor Quest", description="")
+        ending_scene = Scene.objects.create(
+            quest=quest,
+            key="prog__ending_default_flavor",
+            title="Ending",
+            body="",
+            scene_type="ending",
+            ending_type="victory",
+        )
+        completed_map = {}
+
+        self.stats.level = 1
+        self.stats.experience = 100
+        self.stats.stat_points = 0
+        self.stats.stat_points_awarded = 0
+        self.stats.save()
+
+        original_flavor = progression_service.LEVEL_UP_FLAVOR.get(2)
+        try:
+            progression_service.LEVEL_UP_FLAVOR.pop(2, None)
+            result = progression_service.maybe_complete_quest(
+                self.session, self.stats, ending_scene, completed_map
+            )
+        finally:
+            if original_flavor is not None:
+                progression_service.LEVEL_UP_FLAVOR[2] = original_flavor
+
+        self.assertIn(quest.id, completed_map)
+        self.assertEqual(completed_map[quest.id], "victory")
+        self.assertIn("+150 XP.", result)
+        self.assertIn("You feel stronger.", result)
+
