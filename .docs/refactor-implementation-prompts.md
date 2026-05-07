@@ -2,27 +2,6 @@
 
 Use these prompts one at a time in a coding agent. Each prompt assumes this repo�s architecture rule: business logic must live in services, not views.
 
-## 10) Split runtime `views.py` by domain
-
-```text
-Refactor `game/views.py` into a views package:
-- `game/views/__init__.py`
-- `game/views/navigation.py` (root, hub, scene detail)
-- `game/views/combat.py`
-- `game/views/quests.py`
-- `game/views/player.py` (level_up, use_item)
-- `game/views/shared.py` (decorators/helpers like `require_game_session`, `_htmx_response`)
-
-Requirements:
-1. Keep public callables imported by `game/urls.py` unchanged via re-exports.
-2. No business logic in views; preserve use of services/gameplay layer.
-3. Keep HTMX behavior, redirects, and error handling identical.
-4. Add/update route tests for regression confidence.
-
-Deliverables:
-- Domain-oriented views package with unchanged URL behavior.
-```
-
 ## 11) Decompose dense session context builder
 
 ```text
