@@ -280,6 +280,188 @@ class CombatServiceTest(TestCase):
         self.assertIn(self.enemy.name, init_log)
 
 
+
+
+class CombatGameplayServiceGuardsTest(TestCase):
+    def setUp(self):
+        from game.models.combat import CombatEncounter
+
+        self.client = Client()
+        self.session = bootstrap_game_session(self.client)
+        self.stats = self.session.stats
+
+        self.enemy = EnemyFactory(
+            key="cguard__enemy",
+            name="Guard Thug",
+            description="",
+            max_hp=20,
+            attack_modifier=0,
+            defense=8,
+            damage_min=2,
+            damage_max=4,
+        )
+        self.victory_scene = SceneFactory(key="cguard__victory", title="Victory", body="", scene_type="normal")
+        self.combat_scene = SceneFactory(key="cguard__combat", title="Combat", body="", scene_type="combat")
+        self.encounter = CombatEncounter.objects.create(
+            scene=self.combat_scene,
+            enemy=self.enemy,
+            victory_scene=self.victory_scene,
+        )
+        self.session.current_scene = self.combat_scene
+        self.session.save(update_fields=["current_scene"])
+
+    def _make_combat_state(self, **kwargs):
+        from game.models.combat import CombatState
+
+        defaults = dict(session=self.session, enemy=self.enemy, enemy_hp=20, turn_number=1, is_active=True)
+        defaults.update(kwargs)
+        return CombatState.objects.create(**defaults)
+
+    def test_require_active_combat_raises_when_missing_state(self):
+        from game.services.gameplay.combat import _require_active_combat
+        from game.services.types import GameplayError
+
+        with self.assertRaises(GameplayError) as ctx:
+            _require_active_combat(self.session)
+
+        self.assertEqual(str(ctx.exception), "No active combat.")
+        self.assertEqual(ctx.exception.status, 400)
+
+    def test_require_active_combat_raises_when_state_inactive(self):
+        from game.services.gameplay.combat import _require_active_combat
+        from game.services.types import GameplayError
+
+        self._make_combat_state(is_active=False)
+
+        with self.assertRaises(GameplayError) as ctx:
+            _require_active_combat(self.session)
+
+        self.assertEqual(str(ctx.exception), "Combat is not active.")
+        self.assertEqual(ctx.exception.status, 400)
+
+    def test_run_enemy_attack_raises_when_no_pending_enemy_attack(self):
+        from game.services.gameplay.combat import run_enemy_attack
+        from game.services.types import GameplayError
+
+        self._make_combat_state()
+
+        with patch("game.services.gameplay.combat.flush_event_log") as flush_mock:
+            with self.assertRaises(GameplayError) as ctx:
+                run_enemy_attack((self.session, self.stats, {}, self.stats, {}))
+
+        self.assertEqual(str(ctx.exception), "No pending enemy attack.")
+        self.assertEqual(ctx.exception.status, 400)
+        flush_mock.assert_not_called()
+
+    def test_run_enemy_attack_raises_when_encounter_missing(self):
+        from game.models.combat import CombatEncounter
+        from game.services.gameplay.combat import run_enemy_attack
+        from game.services.types import GameplayError
+
+        self._make_combat_state(
+            pending_enemy_roll=10,
+            pending_enemy_total=12,
+            pending_enemy_hit=True,
+            pending_enemy_damage=3,
+        )
+        CombatEncounter.objects.filter(pk=self.encounter.pk).delete()
+
+        with patch("game.services.gameplay.combat.flush_event_log") as flush_mock:
+            with self.assertRaises(GameplayError) as ctx:
+                run_enemy_attack((self.session, self.stats, {}, self.stats, {}))
+
+        self.assertEqual(
+            str(ctx.exception),
+            "No combat encounter configured for this scene. Check quest content.",
+        )
+        self.assertEqual(ctx.exception.status, 400)
+        flush_mock.assert_not_called()
+
+    def test_run_enemy_attack_clears_choices_when_combat_remains_active(self):
+        from game.services.gameplay.combat import run_enemy_attack
+
+        self._make_combat_state(
+            pending_enemy_roll=10,
+            pending_enemy_total=12,
+            pending_enemy_hit=True,
+            pending_enemy_damage=3,
+        )
+        expected_context = {
+            "combat_state": self.session.combat_state,
+            "choices": [object()],
+            "scene": self.combat_scene,
+        }
+
+        with patch("game.services.gameplay.combat.execute_enemy_attack", return_value=(["enemy acts"], expected_context)):
+            with patch("game.services.gameplay.combat.flush_event_log") as flush_mock:
+                context = run_enemy_attack((self.session, self.stats, {}, self.stats, {}))
+
+        flush_mock.assert_called_once_with(self.session, ["enemy acts"])
+        self.assertEqual(context["choices"], [])
+
+    def test_run_combat_continue_raises_when_no_combat_state(self):
+        from game.services.gameplay.combat import run_combat_continue
+        from game.services.types import GameplayError
+
+        with patch("game.services.gameplay.combat.flush_event_log") as flush_mock:
+            with self.assertRaises(GameplayError) as ctx:
+                run_combat_continue((self.session, self.stats, {}, self.stats, {}))
+
+        self.assertEqual(str(ctx.exception), "No combat state.")
+        self.assertEqual(ctx.exception.status, 400)
+        flush_mock.assert_not_called()
+
+    def test_run_combat_continue_raises_when_no_pending_victory(self):
+        from game.services.gameplay.combat import run_combat_continue
+        from game.services.types import GameplayError
+
+        self._make_combat_state(pending_victory=False)
+
+        with patch("game.services.gameplay.combat.flush_event_log") as flush_mock:
+            with self.assertRaises(GameplayError) as ctx:
+                run_combat_continue((self.session, self.stats, {}, self.stats, {}))
+
+        self.assertEqual(str(ctx.exception), "No pending victory.")
+        self.assertEqual(ctx.exception.status, 400)
+        flush_mock.assert_not_called()
+
+    def test_run_combat_continue_raises_when_encounter_missing(self):
+        from game.models.combat import CombatEncounter
+        from game.services.gameplay.combat import run_combat_continue
+        from game.services.types import GameplayError
+
+        self._make_combat_state(pending_victory=True)
+        CombatEncounter.objects.filter(pk=self.encounter.pk).delete()
+
+        with patch("game.services.gameplay.combat.flush_event_log") as flush_mock:
+            with self.assertRaises(GameplayError) as ctx:
+                run_combat_continue((self.session, self.stats, {}, self.stats, {}))
+
+        self.assertEqual(
+            str(ctx.exception),
+            "No combat encounter configured for this scene. Check quest content.",
+        )
+        self.assertEqual(ctx.exception.status, 400)
+        flush_mock.assert_not_called()
+
+    def test_run_combat_continue_clears_choices_when_combat_remains_active(self):
+        from game.services.gameplay.combat import run_combat_continue
+
+        self._make_combat_state(pending_victory=True)
+        expected_context = {
+            "combat_state": self.session.combat_state,
+            "choices": [object()],
+            "scene": self.victory_scene,
+        }
+
+        with patch("game.services.gameplay.combat.resolve_combat_end", return_value=(["victory"], expected_context)):
+            with patch("game.services.gameplay.combat.flush_event_log") as flush_mock:
+                context = run_combat_continue((self.session, self.stats, {}, self.stats, {}))
+
+        flush_mock.assert_called_once_with(self.session, ["victory"])
+        self.assertEqual(context["choices"], [])
+
+
 class CombatViewTest(TestCase):
     def setUp(self):
         from game.models.combat import CombatEncounter, CombatState
