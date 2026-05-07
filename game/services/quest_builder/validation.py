@@ -1,5 +1,5 @@
 from ...models.combat import CombatEncounter
-from ...models.world import Choice, Quest, Scene
+from ...models.world import Choice, Quest, Scene, validate_choice_routing
 
 
 class QuestValidator:
@@ -11,8 +11,31 @@ class QuestValidator:
         self.scene_id_set = set(scene_ids)
         self.entry_scene_id = self.quest.entrance_scene_id
 
-        choices_qs = Choice.objects.filter(scene_id__in=scene_ids).only(
-            "id", "scene_id", "label", "target_scene_id", "success_scene_id", "failure_scene_id"
+        choices_qs = (
+            Choice.objects.filter(scene_id__in=scene_ids)
+            .select_related("scene", "target_scene", "success_scene", "failure_scene")
+            .only(
+                "id",
+                "scene_id",
+                "label",
+                "target_scene_id",
+                "success_scene_id",
+                "failure_scene_id",
+                "scene__id",
+                "scene__key",
+                "scene__scene_type",
+                "scene__requires_roll",
+                "scene__quest_id",
+                "target_scene__id",
+                "target_scene__scene_type",
+                "target_scene__quest_id",
+                "success_scene__id",
+                "success_scene__scene_type",
+                "success_scene__quest_id",
+                "failure_scene__id",
+                "failure_scene__scene_type",
+                "failure_scene__quest_id",
+            )
         )
         self.choices = list(choices_qs)
 
@@ -50,12 +73,29 @@ class QuestValidator:
 
     def validate(self):
         warnings = []
+        warnings += self._check_choice_route_semantics()
         warnings += self._check_no_hub_scenes()
         warnings += self._check_duplicate_keys()
         warnings += self._check_orphan_scenes()
         warnings += self._check_missing_routing()
         for scene in self.scenes:
             warnings += self._check_scene(scene)
+        return warnings
+
+    def _check_choice_route_semantics(self):
+        warnings = []
+        for c in self.choices:
+            route_errors = validate_choice_routing(c)
+            for field_name, messages in route_errors.items():
+                for message in messages:
+                    warnings.append(
+                        {
+                            "type": "invalid_choice_route",
+                            "scene_id": c.scene_id,
+                            "choice_id": c.id,
+                            "message": f'Choice "{c.label}" has invalid {field_name}: {message}',
+                        }
+                    )
         return warnings
 
     def _check_no_hub_scenes(self):

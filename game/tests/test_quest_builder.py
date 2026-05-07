@@ -1,5 +1,6 @@
 import json
 
+from django.core.exceptions import ValidationError
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -417,6 +418,40 @@ class QuestBuilderValidationTest(TestCase):
         self._make_choice(end, label="Return", target_scene=hub)
         self.assertNotIn("ending_no_hub_return", self._warning_types(quest))
 
+    def test_invalid_choice_route_shape_warned_by_shared_route_boundary(self):
+        quest = self._make_quest(key="qbv__routewarn")
+        entry = self._make_scene(quest, "qbv__routewarn__entry", requires_roll=True)
+        win = self._make_scene(quest, "qbv__routewarn__win", scene_type="ending")
+        lose = self._make_scene(quest, "qbv__routewarn__lose", scene_type="ending")
+        quest.entrance_scene = entry
+        quest.save(update_fields=["entrance_scene"])
+        self._make_choice(entry, label="Bad mix", target_scene=win, success_scene=win, failure_scene=lose)
+
+        from game.services.quest_builder import validate_quest
+
+        warnings = validate_quest(quest.pk)
+        self.assertTrue(any(w["type"] == "invalid_choice_route" for w in warnings))
+
+    def test_cross_quest_roll_target_warned_by_shared_route_boundary(self):
+        quest = self._make_quest(key="qbv__crosswarn")
+        other_quest = self._make_quest(key="qbv__crosswarn_other")
+        entry = self._make_scene(quest, "qbv__crosswarn__entry", requires_roll=True)
+        local_fail = self._make_scene(quest, "qbv__crosswarn__fail", scene_type="ending")
+        foreign_success = self._make_scene(other_quest, "qbv__crosswarn_other__win", scene_type="ending")
+        quest.entrance_scene = entry
+        quest.save(update_fields=["entrance_scene"])
+        self._make_choice(entry, label="Cross roll", success_scene=foreign_success, failure_scene=local_fail)
+
+        from game.services.quest_builder import validate_quest
+
+        warnings = validate_quest(quest.pk)
+        self.assertTrue(
+            any(
+                w["type"] == "invalid_choice_route" and "same quest" in w["message"]
+                for w in warnings
+            )
+        )
+
 
 class QuestBuilderParsingTest(TestCase):
     def test_parse_scene_items_rows_handles_sparse_indices(self):
@@ -523,6 +558,47 @@ class QuestBuilderChoiceCreateOwnershipTest(TestCase):
         choice = Choice.objects.get(scene=self.source_scene, label="Valid in quest choice")
         self.assertEqual(choice.target_scene, self.target_scene)
 
+    def test_choice_create_rejects_direct_choice_without_target_with_actionable_error(self):
+        response = self.client.post(
+            self._create_url(),
+            {
+                "source_scene_id": str(self.source_scene.pk),
+                "label": "Missing direct target",
+                "routing_type": "direct",
+                "target_scene": "",
+            },
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "target_scene: Direct-routed choices must set target_scene.", status_code=400)
+
+    def test_choice_create_rejects_roll_choice_with_cross_quest_target(self):
+        foreign_scene = Scene.objects.create(
+            quest=self.other_quest,
+            key="qb_choice_other__target",
+            title="Other Target",
+            body="",
+            scene_type="normal",
+        )
+        self.source_scene.requires_roll = True
+        self.source_scene.save(update_fields=["requires_roll"])
+
+        response = self.client.post(
+            self._create_url(),
+            {
+                "source_scene_id": str(self.source_scene.pk),
+                "label": "Cross quest roll",
+                "routing_type": "roll",
+                "success_scene": str(foreign_scene.pk),
+                "failure_scene": str(self.target_scene.pk),
+            },
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "success_scene: success_scene must point to a scene in the same quest as the source scene.", status_code=400)
+
 
 class QuestDeleteCascadeTest(TestCase):
     def test_deleting_quest_deletes_its_scenes_and_scene_children(self):
@@ -591,3 +667,27 @@ class QuestDeleteCascadeTest(TestCase):
         bridge_choice.refresh_from_db()
 
         self.assertIsNone(bridge_choice.target_scene)
+
+
+class ChoiceRouteValidationBoundaryTest(TestCase):
+    def test_ending_scene_allows_external_hub_return(self):
+        quest = Quest.objects.create(key="route_ok_q", title="Route OK", description="")
+        ending = Scene.objects.create(
+            quest=quest, key="route_ok_q__end", title="End", body="", scene_type="ending"
+        )
+        hub = Scene.objects.create(key="route_ok_hub", title="Hub", body="", scene_type="hub")
+
+        choice = Choice(scene=ending, label="Return", target_scene=hub)
+        choice.full_clean()
+
+    def test_non_ending_scene_rejects_external_hub_target(self):
+        quest = Quest.objects.create(key="route_bad_q", title="Route Bad", description="")
+        normal = Scene.objects.create(
+            quest=quest, key="route_bad_q__start", title="Start", body="", scene_type="normal"
+        )
+        hub = Scene.objects.create(key="route_bad_hub", title="Hub", body="", scene_type="hub")
+
+        choice = Choice(scene=normal, label="Bad External", target_scene=hub)
+        with self.assertRaises(ValidationError) as ctx:
+            choice.full_clean()
+        self.assertIn("target_scene", ctx.exception.message_dict)

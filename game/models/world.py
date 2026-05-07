@@ -269,6 +269,12 @@ class Choice(models.Model):
 
     def clean(self):
         super().clean()
+        errors = {}
+
+        route_errors = validate_choice_routing(self)
+        if route_errors:
+            errors.update(route_errors)
+
         legacy_fields = {}
         if self.pk:
             legacy_fields = (
@@ -280,7 +286,6 @@ class Choice(models.Model):
 
         set_legacy = (legacy_fields.get("set_flag_name", "").strip(),)
         clear_legacy = (legacy_fields.get("clear_flag_name", "").strip(),)
-        errors = {}
         try:
             self.set_flag_name = validate_flag_name(
                 self.set_flag_name,
@@ -302,6 +307,59 @@ class Choice(models.Model):
 
     def __str__(self):
         return f"{self.scene.key} -> {self.label}"
+
+
+def validate_choice_routing(choice):
+    errors = {}
+    scene = getattr(choice, "scene", None)
+    if scene is None:
+        return errors
+
+    has_target = bool(choice.target_scene_id)
+    has_success = bool(choice.success_scene_id)
+    has_failure = bool(choice.failure_scene_id)
+    has_roll = has_success or has_failure
+
+    if has_target and has_roll:
+        errors["target_scene"] = ["Use either direct routing (target_scene) or roll routing (success/failure), not both."]
+        errors["success_scene"] = ["Use either direct routing (target_scene) or roll routing (success/failure), not both."]
+        errors["failure_scene"] = ["Use either direct routing (target_scene) or roll routing (success/failure), not both."]
+        return errors
+
+    if scene.requires_roll:
+        if has_target:
+            errors["target_scene"] = ["This source scene requires_roll=True. Use success_scene and failure_scene instead of target_scene."]
+        if has_success != has_failure:
+            missing = "failure_scene" if has_success else "success_scene"
+            errors[missing] = [f'Roll-routed choices must set both success_scene and failure_scene for scene "{scene.key}".']
+    else:
+        if has_roll:
+            errors["target_scene"] = ["This source scene requires_roll=False. Use target_scene and clear success_scene/failure_scene."]
+        if not has_target:
+            errors["target_scene"] = ["Direct-routed choices must set target_scene."]
+
+    source_quest_id = scene.quest_id
+
+    def _validate_destination(field_name, destination, allow_external_hub=False):
+        if not destination:
+            return
+        if destination.pk == scene.pk:
+            return
+        if source_quest_id and destination.quest_id and destination.quest_id != source_quest_id:
+            errors[field_name] = [f"{field_name} must point to a scene in the same quest as the source scene."]
+            return
+        if source_quest_id and destination.quest_id is None and not allow_external_hub:
+            errors[field_name] = [f"{field_name} cannot point outside the quest unless it returns to a hub scene from an ending scene."]
+            return
+        if source_quest_id and destination.quest_id is None and allow_external_hub and destination.scene_type != "hub":
+            errors[field_name] = [f"{field_name} can only point outside the quest to a hub scene."]
+
+    allow_external_direct_hub = scene.scene_type == "ending" and has_target and not has_roll
+    _validate_destination("target_scene", choice.target_scene, allow_external_hub=allow_external_direct_hub)
+    _validate_destination("success_scene", choice.success_scene, allow_external_hub=False)
+    _validate_destination("failure_scene", choice.failure_scene, allow_external_hub=False)
+
+    return errors
 
 
 class SceneItem(models.Model):
