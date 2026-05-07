@@ -4,6 +4,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 
 from game.models import Choice, CombatEncounter, Contact, Enemy, Gang, Item, Quest, Scene, SceneContact, SceneItem, Territory
+from game.services.quest_builder.parsing import parse_scene_contacts_rows, parse_scene_items_rows
 
 
 class QuestBuilderSceneTest(TestCase):
@@ -187,6 +188,49 @@ class QuestBuilderSceneTest(TestCase):
         self.assertEqual(len(rows), 2)
         self.assertEqual(rows[0].standing_change, 3)
         self.assertEqual(rows[1].standing_change, -2)
+
+    def test_scene_items_save_invalid_quantity_returns_400_and_error_trigger(self):
+        scene = Scene.objects.create(
+            quest=self.quest, key="test_quest__items", title="Items", body="", scene_type="normal"
+        )
+        item = Item.objects.create(key="qb-item", name="QB Item", description="")
+        url = reverse("admin:quest_builder_scene_items_save", args=[self.quest.pk, scene.pk])
+
+        response = self.client.post(
+            url,
+            {"item_id_0": str(item.id), "quantity_0": "nope"},
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "quantity_0 must be a valid integer", status_code=400)
+        triggers = json.loads(response.headers.get("HX-Trigger", "{}"))
+        self.assertEqual(
+            triggers.get("quest_builder.error"),
+            {"message": "quantity_0 must be a valid integer", "status": 400},
+        )
+        self.assertEqual(SceneItem.objects.filter(scene=scene).count(), 0)
+
+    def test_scene_contacts_save_invalid_contact_id_returns_400_and_error_trigger(self):
+        scene = Scene.objects.create(
+            quest=self.quest, key="test_quest__contacts", title="Contacts", body="", scene_type="normal"
+        )
+        url = reverse("admin:quest_builder_scene_contacts_save", args=[self.quest.pk, scene.pk])
+
+        response = self.client.post(
+            url,
+            {"contact_id_0": "bad", "action_0": "gain"},
+            HTTP_HX_REQUEST="true",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "contact_id_0 must be a valid integer", status_code=400)
+        triggers = json.loads(response.headers.get("HX-Trigger", "{}"))
+        self.assertEqual(
+            triggers.get("quest_builder.error"),
+            {"message": "contact_id_0 must be a valid integer", "status": 400},
+        )
+        self.assertEqual(SceneContact.objects.filter(scene=scene).count(), 0)
 
     def test_scene_save_returns_oob_html(self):
         scene = Scene.objects.create(
@@ -372,6 +416,16 @@ class QuestBuilderValidationTest(TestCase):
         self._make_choice(entry, target_scene=end)
         self._make_choice(end, label="Return", target_scene=hub)
         self.assertNotIn("ending_no_hub_return", self._warning_types(quest))
+
+
+class QuestBuilderParsingTest(TestCase):
+    def test_parse_scene_items_rows_handles_sparse_indices(self):
+        parsed = parse_scene_items_rows({"item_id_1": "7", "quantity_1": "3"})
+        self.assertEqual(parsed, [{"item_id": 7, "quantity": 3}])
+
+    def test_parse_scene_contacts_rows_defaults_action_and_bool(self):
+        parsed = parse_scene_contacts_rows({"contact_id_2": "5", "action_2": "invalid", "award_once_2": "yes"})
+        self.assertEqual(parsed, [{"contact_id": 5, "action": "gain", "award_once": True}])
 
 
 class QuestBuilderChoiceCreateOwnershipTest(TestCase):

@@ -19,7 +19,14 @@ from .mutations import (
     update_scene_gang_standings,
     update_scene_items,
 )
-from .parsing import QuestFormParser, parse_choice_form, parse_combat_form, parse_scene_form
+from .parsing import (
+    QuestFormParser,
+    parse_choice_form,
+    parse_combat_form,
+    parse_scene_contacts_rows,
+    parse_scene_form,
+    parse_scene_items_rows,
+)
 from .requirements import RequirementGroupBuilder, build_requirement_groups_from_post
 from .validation import QuestValidator, validate_quest
 
@@ -46,7 +53,9 @@ __all__ = [
     "get_scene_hub_exits",
     "parse_choice_form",
     "parse_combat_form",
+    "parse_scene_contacts_rows",
     "parse_scene_form",
+    "parse_scene_items_rows",
     "save_scene_position",
     "update_choice",
     "update_combat_encounter",

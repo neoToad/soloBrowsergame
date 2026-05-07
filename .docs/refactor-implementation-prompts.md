@@ -2,25 +2,6 @@
 
 Use these prompts one at a time in a coding agent. Each prompt assumes this repo�s architecture rule: business logic must live in services, not views.
 
-## 3) Extract shared POST row parsing for scene items/contacts
-
-```text
-Refactor duplicated dynamic row parsing in quest-builder scene save endpoints (`scene_items_save`, `scene_contacts_save`) into reusable service/form helpers.
-
-Requirements:
-1. Add parsing helpers in `game/services/quest_builder/parsing.py` (or a new sibling module) that:
-   - parse indexed POST rows robustly,
-   - validate row fields,
-   - return normalized typed structures.
-2. Views should stop looping over `request.POST` directly.
-3. Keep all current request/response behavior and template outputs unchanged.
-4. Surface validation errors as `ValueError` (or a dedicated domain exception) handled by view error helper.
-
-Deliverables:
-- Shared parser(s) reused by items and contacts paths.
-- Focused tests for parser edge cases and endpoint regressions.
-```
-
 ## 4) Add a trigger helper for snake_case + dot.case event names
 
 ```text

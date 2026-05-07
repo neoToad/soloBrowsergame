@@ -1,3 +1,67 @@
+import re
+
+
+_ITEM_ID_KEY_RE = re.compile(r"^item_id_(\d+)$")
+_CONTACT_ID_KEY_RE = re.compile(r"^contact_id_(\d+)$")
+
+
+def _extract_indices(data, *patterns):
+    indices = set()
+    for key in data.keys():
+        for pattern in patterns:
+            match = pattern.match(key)
+            if match:
+                indices.add(int(match.group(1)))
+                break
+    return sorted(indices)
+
+
+def parse_scene_items_rows(data):
+    rows = []
+    for index in _extract_indices(data, _ITEM_ID_KEY_RE):
+        raw_item_id = (data.get(f"item_id_{index}") or "").strip()
+        raw_quantity = (data.get(f"quantity_{index}") or "").strip()
+        if raw_item_id:
+            try:
+                item_id = int(raw_item_id)
+            except ValueError as exc:
+                raise ValueError(f"item_id_{index} must be a valid integer") from exc
+        else:
+            item_id = None
+        if raw_quantity:
+            try:
+                quantity = int(raw_quantity)
+            except ValueError as exc:
+                raise ValueError(f"quantity_{index} must be a valid integer") from exc
+        else:
+            quantity = 1
+        rows.append({"item_id": item_id, "quantity": quantity})
+    return rows
+
+
+def parse_scene_contacts_rows(data):
+    rows = []
+    for index in _extract_indices(data, _CONTACT_ID_KEY_RE):
+        raw_contact_id = (data.get(f"contact_id_{index}") or "").strip()
+        raw_action = (data.get(f"action_{index}") or "").strip()
+        raw_award_once = (data.get(f"award_once_{index}") or "").strip().lower()
+        if raw_contact_id:
+            try:
+                contact_id = int(raw_contact_id)
+            except ValueError as exc:
+                raise ValueError(f"contact_id_{index} must be a valid integer") from exc
+        else:
+            contact_id = None
+        rows.append(
+            {
+                "contact_id": contact_id,
+                "action": raw_action if raw_action in ("gain", "lose") else "gain",
+                "award_once": raw_award_once in ("on", "1", "true", "yes"),
+            }
+        )
+    return rows
+
+
 class QuestFormParser:
     @staticmethod
     def parse_scene_form(data):

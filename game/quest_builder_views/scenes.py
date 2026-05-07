@@ -25,6 +25,8 @@ from game.services.quest_builder import (
     delete_scene as delete_scene_service,
     get_delete_scene_consequences as get_delete_scene_consequences_service,
     get_scene_hub_exits,
+    parse_scene_contacts_rows as parse_scene_contacts_rows_service,
+    parse_scene_items_rows as parse_scene_items_rows_service,
     save_scene_position as save_scene_position_service,
     update_combat_encounter as update_combat_encounter_service,
     update_scene as update_scene_service,
@@ -192,15 +194,10 @@ def scene_items_save(request, quest_id, scene_id):
     quest = get_object_or_404(Quest, pk=quest_id)
     scene = get_object_or_404(quest.scenes.all(), pk=scene_id)
 
-    items_data = []
-    index = 0
-    while True:
-        item_id_key = f"item_id_{index}"
-        qty_key = f"quantity_{index}"
-        if item_id_key not in request.POST and qty_key not in request.POST:
-            break
-        items_data.append({"item_id": request.POST.get(item_id_key, ""), "quantity": request.POST.get(qty_key, "1")})
-        index += 1
+    try:
+        items_data = parse_scene_items_rows_service(request.POST)
+    except ValueError as exc:
+        return qb_error(request, str(exc), status=400)
 
     scene_items = update_scene_items_service(scene.id, items_data)
     all_items = list(Item.objects.order_by("name"))
@@ -226,23 +223,10 @@ def scene_contacts_save(request, quest_id, scene_id):
     quest = get_object_or_404(Quest, pk=quest_id)
     scene = get_object_or_404(quest.scenes.all(), pk=scene_id)
 
-    contacts_data = []
-    index = 0
-    while True:
-        contact_id_key = f"contact_id_{index}"
-        action_key = f"action_{index}"
-        award_once_key = f"award_once_{index}"
-        if contact_id_key not in request.POST and action_key not in request.POST and award_once_key not in request.POST:
-            break
-        raw_award_once = (request.POST.get(award_once_key) or "").strip().lower()
-        contacts_data.append(
-            {
-                "contact_id": request.POST.get(contact_id_key, ""),
-                "action": request.POST.get(action_key, ""),
-                "award_once": raw_award_once in ("on", "1", "true", "yes"),
-            }
-        )
-        index += 1
+    try:
+        contacts_data = parse_scene_contacts_rows_service(request.POST)
+    except ValueError as exc:
+        return qb_error(request, str(exc), status=400)
 
     scene_contacts = update_scene_contacts_service(scene.id, contacts_data)
     all_contacts = list(Contact.objects.order_by("name"))
