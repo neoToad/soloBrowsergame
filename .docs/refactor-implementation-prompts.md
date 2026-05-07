@@ -2,31 +2,6 @@
 
 Use these prompts one at a time in a coding agent. Each prompt assumes this repo�s architecture rule: business logic must live in services, not views.
 
-## 9) Split overloaded Django admin module
-
-```text
-Break `game/admin.py` into an admin package by domain while preserving admin registrations and URLs.
-
-Target structure:
-- `game/admin/__init__.py`
-- `game/admin/quests.py`
-- `game/admin/world.py`
-- `game/admin/player.py`
-- `game/admin/combat.py`
-- `game/admin/inlines.py`
-- `game/admin/actions.py`
-- `game/admin/quest_builder_urls.py`
-
-Requirements:
-1. Preserve all `@admin.register` behavior.
-2. Keep `QuestAdmin.get_urls()` behavior, but extract quest-builder URL declarations into a dedicated helper module.
-3. Maintain current admin templates and custom links.
-4. Confirm Django discovers registrations correctly.
-
-Deliverables:
-- Modular admin package with same runtime behavior.
-```
-
 ## 10) Split runtime `views.py` by domain
 
 ```text
