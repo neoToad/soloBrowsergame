@@ -215,6 +215,22 @@ class QuestBuilderSceneTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertIn("Scene key must match", response.content.decode())
 
+    def test_scene_move_invalid_coordinates_returns_same_htmx_error_trigger(self):
+        scene = Scene.objects.create(
+            quest=self.quest, key="test_quest__move", title="Move", body="", scene_type="normal"
+        )
+        url = reverse("admin:quest_builder_scene_move", args=[self.quest.pk, scene.pk])
+
+        response = self.client.post(url, {"x": "abc", "y": "200"}, HTTP_HX_REQUEST="true")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "x and y must be integers", status_code=400)
+        triggers = json.loads(response.headers.get("HX-Trigger", "{}"))
+        self.assertEqual(
+            triggers.get("quest_builder.error"),
+            {"message": "x and y must be integers", "status": 400},
+        )
+
     def test_scene_delete_removes_from_db(self):
         scene = Scene.objects.create(
             quest=self.quest, key="test_quest__del", title="Gone", body="", scene_type="normal"
@@ -417,6 +433,25 @@ class QuestBuilderChoiceCreateOwnershipTest(TestCase):
         self.assertFalse(
             Choice.objects.filter(scene=self.other_source_scene, label="Invalid cross quest choice").exists()
         )
+        triggers = json.loads(response.headers.get("HX-Trigger", "{}"))
+        self.assertEqual(
+            triggers.get("quest_builder.error"),
+            {"message": "Source scene does not belong to this quest.", "status": 403},
+        )
+
+    def test_choice_create_missing_source_non_htmx_returns_inline_error_without_trigger(self):
+        response = self.client.post(
+            self._create_url(),
+            {
+                "label": "Missing source",
+                "routing_type": "direct",
+                "target_scene": str(self.target_scene.pk),
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "source_scene_id required", status_code=400)
+        self.assertFalse(response.has_header("HX-Trigger"))
 
     def test_choice_create_allows_source_scene_in_same_quest(self):
         response = self.client.post(

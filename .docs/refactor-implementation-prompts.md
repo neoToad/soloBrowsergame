@@ -2,23 +2,6 @@
 
 Use these prompts one at a time in a coding agent. Each prompt assumes this repo�s architecture rule: business logic must live in services, not views.
 
-## 2) Standardize quest-builder error responses using `presentation/responses.py`
-
-```text
-Adopt `game/presentation/responses.py` helpers across `game/quest_builder_views.py` (or new split modules) to remove duplicated inline error payload code.
-
-Requirements:
-1. Replace repeated `response_utils.error_response(...)` call patterns with a local helper in `quest_builder` views package, e.g. `_qb_error(request, message, status=400)`.
-2. Default templates must remain:
-   - `admin/quest_builder/partials/inline_error.html`
-3. Preserve current HTMX trigger semantics for errors.
-4. Keep full-page fallback behavior intact for non-HTMX requests.
-
-Deliverables:
-- Reduced duplication in error handling.
-- Tests verifying same status codes/messages/triggers for representative failing endpoints.
-```
-
 ## 3) Extract shared POST row parsing for scene items/contacts
 
 ```text

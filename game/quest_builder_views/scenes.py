@@ -19,6 +19,7 @@ from game.models import (
 )
 from game.models.combat import Enemy as EnemyModel
 from game.presentation import responses as response_utils
+from game.quest_builder_views.partials import qb_error
 from game.services.quest_builder import (
     create_scene as create_scene_service,
     delete_scene as delete_scene_service,
@@ -101,14 +102,7 @@ def scene_save(request, quest_id, scene_id):
     try:
         scene = update_scene_service(scene_id, request.POST)
     except ValueError as exc:
-        return response_utils.error_response(
-            request,
-            message=str(exc),
-            status=400,
-            htmx_template="admin/quest_builder/partials/inline_error.html",
-            full_template="admin/quest_builder/partials/inline_error.html",
-            triggers={"quest_builder.error": {"message": str(exc), "status": 400}},
-        )
+        return qb_error(request, str(exc), status=400)
 
     scene.hub_exits = get_scene_hub_exits(scene.id, quest_id)
     html = render_to_string(
@@ -129,14 +123,7 @@ def scene_create(request, quest_id):
     try:
         scene = create_scene_service(quest_id, request.POST)
     except ValueError as exc:
-        return response_utils.error_response(
-            request,
-            message=str(exc),
-            status=400,
-            htmx_template="admin/quest_builder/partials/inline_error.html",
-            full_template="admin/quest_builder/partials/inline_error.html",
-            triggers={"quest_builder.error": {"message": str(exc), "status": 400}},
-        )
+        return qb_error(request, str(exc), status=400)
 
     html = render_to_string(
         "admin/quest_builder/partials/scene_create_response.html",
@@ -192,14 +179,7 @@ def scene_move(request, quest_id, scene_id):
         x = int((request.POST.get("x") or "").strip())
         y = int((request.POST.get("y") or "").strip())
     except (TypeError, ValueError):
-        return response_utils.error_response(
-            request,
-            message="x and y must be integers",
-            status=400,
-            htmx_template="admin/quest_builder/partials/inline_error.html",
-            full_template="admin/quest_builder/partials/inline_error.html",
-            triggers={"quest_builder.error": {"message": "x and y must be integers", "status": 400}},
-        )
+        return qb_error(request, "x and y must be integers", status=400)
 
     save_scene_position_service(scene_id, x, y)
     return HttpResponse(status=204)

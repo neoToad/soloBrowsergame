@@ -4,6 +4,18 @@ from django.urls import reverse
 
 from game.constants import STAT_DISPLAY_NAMES
 from game.models import Item, Quest, Requirement, Scene
+from game.presentation import responses as response_utils
+
+
+def qb_error(request, message, status=400):
+    return response_utils.error_response(
+        request,
+        message=message,
+        status=status,
+        htmx_template="admin/quest_builder/partials/inline_error.html",
+        full_template="admin/quest_builder/partials/inline_error.html",
+        triggers={"quest_builder.error": {"message": message, "status": status}},
+    )
 
 
 def choice_context(*, quest, quest_id, choice=None, source_scene_id=None, routing_type="direct"):

@@ -8,7 +8,7 @@ from django.urls import reverse
 from game.constants import STAT_DISPLAY_NAMES
 from game.models import Choice, Contact, Item, Quest, Requirement
 from game.presentation import responses as response_utils
-from game.quest_builder_views.partials import choice_context
+from game.quest_builder_views.partials import choice_context, qb_error
 from game.services.quest_builder import (
     build_requirement_groups_from_post as build_requirement_groups_from_post_service,
     create_choice as create_choice_service,
@@ -48,47 +48,19 @@ def choice_create(request, quest_id):
     quest = get_object_or_404(Quest, pk=quest_id)
     raw_source = (request.POST.get("source_scene_id") or "").strip()
     if not raw_source:
-        return response_utils.error_response(
-            request,
-            message="source_scene_id required",
-            status=400,
-            htmx_template="admin/quest_builder/partials/inline_error.html",
-            full_template="admin/quest_builder/partials/inline_error.html",
-            triggers={"quest_builder.error": {"message": "source_scene_id required", "status": 400}},
-        )
+        return qb_error(request, "source_scene_id required", status=400)
     try:
         source_scene_id = int(raw_source)
     except ValueError:
-        return response_utils.error_response(
-            request,
-            message="source_scene_id must be a valid integer",
-            status=400,
-            htmx_template="admin/quest_builder/partials/inline_error.html",
-            full_template="admin/quest_builder/partials/inline_error.html",
-            triggers={"quest_builder.error": {"message": "source_scene_id must be a valid integer", "status": 400}},
-        )
+        return qb_error(request, "source_scene_id must be a valid integer", status=400)
 
     if not quest.scenes.filter(pk=source_scene_id).exists():
-        return response_utils.error_response(
-            request,
-            message="Source scene does not belong to this quest.",
-            status=403,
-            htmx_template="admin/quest_builder/partials/inline_error.html",
-            full_template="admin/quest_builder/partials/inline_error.html",
-            triggers={"quest_builder.error": {"message": "Source scene does not belong to this quest.", "status": 403}},
-        )
+        return qb_error(request, "Source scene does not belong to this quest.", status=403)
 
     try:
         choice = create_choice_service(source_scene_id, request.POST)
     except ValueError as exc:
-        return response_utils.error_response(
-            request,
-            message=str(exc),
-            status=400,
-            htmx_template="admin/quest_builder/partials/inline_error.html",
-            full_template="admin/quest_builder/partials/inline_error.html",
-            triggers={"quest_builder.error": {"message": str(exc), "status": 400}},
-        )
+        return qb_error(request, str(exc), status=400)
     routing_type = "roll" if (choice.success_scene_id or choice.failure_scene_id) else "direct"
 
     context = choice_context(
@@ -135,25 +107,11 @@ def choice_save(request, quest_id, choice_id):
     quest = get_object_or_404(Quest, pk=quest_id)
     choice_check = get_object_or_404(Choice, pk=choice_id)
     if not quest.scenes.filter(pk=choice_check.scene_id).exists():
-        return response_utils.error_response(
-            request,
-            message="Choice does not belong to this quest.",
-            status=403,
-            htmx_template="admin/quest_builder/partials/inline_error.html",
-            full_template="admin/quest_builder/partials/inline_error.html",
-            triggers={"quest_builder.error": {"message": "Choice does not belong to this quest.", "status": 403}},
-        )
+        return qb_error(request, "Choice does not belong to this quest.", status=403)
     try:
         choice = update_choice_service(choice_id, request.POST)
     except ValueError as exc:
-        return response_utils.error_response(
-            request,
-            message=str(exc),
-            status=400,
-            htmx_template="admin/quest_builder/partials/inline_error.html",
-            full_template="admin/quest_builder/partials/inline_error.html",
-            triggers={"quest_builder.error": {"message": str(exc), "status": 400}},
-        )
+        return qb_error(request, str(exc), status=400)
     build_requirement_groups_from_post_service(choice, request.POST)
     routing_type = "roll" if (choice.success_scene_id or choice.failure_scene_id) else "direct"
 
@@ -191,14 +149,7 @@ def choice_delete(request, quest_id, choice_id):
     quest = get_object_or_404(Quest, pk=quest_id)
     choice = get_object_or_404(Choice, pk=choice_id)
     if not quest.scenes.filter(pk=choice.scene_id).exists():
-        return response_utils.error_response(
-            request,
-            message="Choice does not belong to this quest.",
-            status=403,
-            htmx_template="admin/quest_builder/partials/inline_error.html",
-            full_template="admin/quest_builder/partials/inline_error.html",
-            triggers={"quest_builder.error": {"message": "Choice does not belong to this quest.", "status": 403}},
-        )
+        return qb_error(request, "Choice does not belong to this quest.", status=403)
     source_scene_id = delete_choice_service(choice_id)
 
     response = response_utils.empty_response()
@@ -219,14 +170,7 @@ def choice_requirements_save(request, quest_id, choice_id):
     quest = get_object_or_404(Quest, pk=quest_id)
     choice = get_object_or_404(Choice, pk=choice_id)
     if not quest.scenes.filter(pk=choice.scene_id).exists():
-        return response_utils.error_response(
-            request,
-            message="Choice does not belong to this quest.",
-            status=403,
-            htmx_template="admin/quest_builder/partials/inline_error.html",
-            full_template="admin/quest_builder/partials/inline_error.html",
-            triggers={"quest_builder.error": {"message": "Choice does not belong to this quest.", "status": 403}},
-        )
+        return qb_error(request, "Choice does not belong to this quest.", status=403)
     build_requirement_groups_from_post_service(choice, request.POST)
 
     html = render_to_string(
