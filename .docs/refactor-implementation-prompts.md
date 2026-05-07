@@ -2,27 +2,6 @@
 
 Use these prompts one at a time in a coding agent. Each prompt assumes this repo�s architecture rule: business logic must live in services, not views.
 
-## 5) Retire legacy pending-enemy-attack fallback in combat service
-
-```text
-Simplify `game/services/combat.py` by removing legacy compatibility around `pending_enemy_attack` JSON fallback.
-
-Context:
-- Current code still has `_has_legacy_pending_enemy_attack_field` and `_read_pending_enemy_attack` fallback logic.
-- Migrations include `0053_remove_combatstate_pending_enemy_attack_json.py`.
-
-Requirements:
-1. Remove field-existence checks and JSON fallback paths.
-2. Keep only typed scalar pending fields (`pending_enemy_roll/total/hit/damage`).
-3. Ensure clear errors when pending attack is absent.
-4. Update tests in `game/tests/test_combat.py` for new simplified behavior.
-5. Verify no model field references remain to removed legacy field.
-
-Deliverables:
-- Leaner queue/consume/clear attack functions.
-- Passing combat tests.
-```
-
 ## 6) Separate combat math engine from persistence/orchestration
 
 ```text

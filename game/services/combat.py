@@ -1,5 +1,4 @@
 import random
-from django.core.exceptions import FieldDoesNotExist
 from ..utils import roll_d20, stat_modifier
 from .types import CombatRollResult, PendingEnemyAttack
 from .types import GameplayError
@@ -333,22 +332,30 @@ def queue_enemy_attack(combat_state, attack: CombatRollResult) -> None:
     combat_state.pending_enemy_total = attack.total
     combat_state.pending_enemy_hit = attack.hit
     combat_state.pending_enemy_damage = attack.damage
-    update_fields = [
-        "pending_enemy_roll",
-        "pending_enemy_total",
-        "pending_enemy_hit",
-        "pending_enemy_damage",
-    ]
-    if _has_legacy_pending_enemy_attack_field(combat_state):
-        combat_state.pending_enemy_attack = None
-        update_fields.append("pending_enemy_attack")
     combat_state.save(
-        update_fields=update_fields
+        update_fields=[
+            "pending_enemy_roll",
+            "pending_enemy_total",
+            "pending_enemy_hit",
+            "pending_enemy_damage",
+        ]
     )
 
 
 def consume_enemy_attack(combat_state) -> PendingEnemyAttack:
-    attack = _read_pending_enemy_attack(combat_state)
+    if (
+        combat_state.pending_enemy_roll is None
+        or combat_state.pending_enemy_total is None
+        or combat_state.pending_enemy_hit is None
+        or combat_state.pending_enemy_damage is None
+    ):
+        raise ValueError("No pending enemy attack to consume.")
+    attack = PendingEnemyAttack(
+        roll=combat_state.pending_enemy_roll,
+        total=combat_state.pending_enemy_total,
+        hit=bool(combat_state.pending_enemy_hit),
+        damage=combat_state.pending_enemy_damage,
+    )
     clear_enemy_attack(combat_state)
     return attack
 
@@ -358,48 +365,11 @@ def clear_enemy_attack(combat_state) -> None:
     combat_state.pending_enemy_total = None
     combat_state.pending_enemy_hit = None
     combat_state.pending_enemy_damage = None
-    update_fields = [
-        "pending_enemy_roll",
-        "pending_enemy_total",
-        "pending_enemy_hit",
-        "pending_enemy_damage",
-    ]
-    if _has_legacy_pending_enemy_attack_field(combat_state):
-        combat_state.pending_enemy_attack = None
-        update_fields.append("pending_enemy_attack")
     combat_state.save(
-        update_fields=update_fields
+        update_fields=[
+            "pending_enemy_roll",
+            "pending_enemy_total",
+            "pending_enemy_hit",
+            "pending_enemy_damage",
+        ]
     )
-
-
-def _read_pending_enemy_attack(combat_state) -> PendingEnemyAttack:
-    if (
-        combat_state.pending_enemy_roll is not None
-        and combat_state.pending_enemy_total is not None
-        and combat_state.pending_enemy_hit is not None
-        and combat_state.pending_enemy_damage is not None
-    ):
-        return PendingEnemyAttack(
-            roll=combat_state.pending_enemy_roll,
-            total=combat_state.pending_enemy_total,
-            hit=bool(combat_state.pending_enemy_hit),
-            damage=combat_state.pending_enemy_damage,
-        )
-
-    legacy_payload = getattr(combat_state, "pending_enemy_attack", None)
-    if isinstance(legacy_payload, dict):
-        return PendingEnemyAttack(
-            roll=legacy_payload["roll"],
-            total=legacy_payload["total"],
-            hit=legacy_payload["hit"],
-            damage=legacy_payload["damage"],
-        )
-    raise ValueError("No pending enemy attack to consume.")
-
-
-def _has_legacy_pending_enemy_attack_field(combat_state) -> bool:
-    try:
-        combat_state._meta.get_field("pending_enemy_attack")
-    except FieldDoesNotExist:
-        return False
-    return True

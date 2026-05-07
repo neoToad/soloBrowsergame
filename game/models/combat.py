@@ -63,16 +63,12 @@ class CombatState(models.Model):
 
     @property
     def enemy_attack_pending(self):
-        typed_pending = (
+        return (
             self.pending_enemy_roll is not None
             and self.pending_enemy_total is not None
             and self.pending_enemy_hit is not None
             and self.pending_enemy_damage is not None
         )
-        if typed_pending:
-            return True
-        # Temporary fallback while migrating away from the legacy JSON field.
-        return getattr(self, "pending_enemy_attack", None) is not None
 
     def __str__(self):
         return f"{self.session} vs {self.enemy.name} (turn {self.turn_number})"

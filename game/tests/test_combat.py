@@ -292,6 +292,21 @@ class CombatServiceTest(TestCase):
         self.assertTrue(new_cs.is_active)
         self.assertIn(self.enemy.name, init_log)
 
+    def test_consume_enemy_attack_raises_when_pending_attack_is_incomplete(self):
+        from game.services.combat import consume_enemy_attack
+
+        cs = self._make_combat_state(
+            pending_enemy_roll=10,
+            pending_enemy_total=12,
+            pending_enemy_hit=None,
+            pending_enemy_damage=3,
+        )
+
+        with self.assertRaises(ValueError) as ctx:
+            consume_enemy_attack(cs)
+
+        self.assertEqual(str(ctx.exception), "No pending enemy attack to consume.")
+
 
 
 
