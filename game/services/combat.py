@@ -1,27 +1,27 @@
 import random
 from ..utils import roll_d20, stat_modifier
+from .combat_engine import (
+    build_enemy_attack_log,
+    build_player_attack_log,
+    resolve_enemy_attack_roll,
+    resolve_player_attack_roll,
+)
 from .types import CombatRollResult, PendingEnemyAttack
 from .types import GameplayError
 
+
 def resolve_player_attack(stats, enemy) -> CombatRollResult:
     """Resolve one player attack roll against an enemy and return hit/damage details."""
-    modifier = stat_modifier(stats.strength)
-    roll  = roll_d20()
-    total = roll + modifier
-    hit   = total >= enemy.defense
-    damage_die = random.randint(1, 6) if hit else 0
-    damage     = damage_die + max(0, modifier) if hit else 0
-    return CombatRollResult(hit=hit, damage=damage, damage_die=damage_die, roll=roll, total=total)
+    roll = roll_d20()
+    damage_die = random.randint(1, 6)
+    return resolve_player_attack_roll(stats, enemy, roll=roll, damage_die=damage_die)
 
 
 def resolve_enemy_attack(enemy, stats) -> CombatRollResult:
     """Resolve one enemy attack roll against player stats and return hit/damage details."""
-    player_defense = 10 + stat_modifier(stats.agility)
-    roll  = roll_d20()
-    total = roll + enemy.attack_modifier
-    hit   = total >= player_defense
-    damage_die = random.randint(enemy.damage_min, enemy.damage_max) if hit else 0
-    return CombatRollResult(hit=hit, damage=damage_die, damage_die=damage_die, roll=roll, total=total)
+    roll = roll_d20()
+    damage_die = random.randint(enemy.damage_min, enemy.damage_max)
+    return resolve_enemy_attack_roll(enemy, stats, roll=roll, damage_die=damage_die)
 
 
 def get_active_combat_state(session):
@@ -94,13 +94,18 @@ def execute_player_attack(session, stats, inventory, completed_map, combat_state
         combat_state.save()
 
     logs = []
+    player_attack_log = build_player_attack_log(
+        roll=p.roll,
+        mod_str=mod_str,
+        total=p.total,
+        defense=enemy.defense,
+        hit=p.hit,
+        damage=p.damage,
+    )
 
     if combat_state.enemy_hp <= 0:
         if p.hit:
-            logs.append(
-                f"You move on him — roll {p.roll} ({mod_str}) = {p.total} "
-                f"vs {enemy.defense} — Hit! {p.damage} damage."
-            )
+            logs.append(player_attack_log)
         logs.append(f"{enemy.name} goes down.")
         combat_state.pending_victory = True
         combat_state.save()
@@ -124,17 +129,7 @@ def execute_player_attack(session, stats, inventory, completed_map, combat_state
         return logs, context
 
     e = resolve_enemy_attack(enemy, effective_stats)
-
-    if p.hit:
-        logs.append(
-            f"You move on him — roll {p.roll} ({mod_str}) = {p.total} "
-            f"vs {enemy.defense} — Hit! {p.damage} damage."
-        )
-    else:
-        logs.append(
-            f"You move on him — roll {p.roll} ({mod_str}) = {p.total} "
-            f"vs {enemy.defense} — Missed."
-        )
+    logs.append(player_attack_log)
 
     queue_enemy_attack(combat_state, e)
 
@@ -187,15 +182,17 @@ def execute_enemy_attack(session, stats, inventory, completed_map, combat_state,
     logs = []
     if e_hit:
         stats.hp = max(0, stats.hp - e_dmg)
-        logs.append(
-            f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
-            f"vs {player_defense} — Hit! {e_dmg} damage."
+    logs.append(
+        build_enemy_attack_log(
+            enemy_name=enemy.name,
+            roll=e_roll,
+            mod_str=e_mod_str,
+            total=e_total,
+            defense=player_defense,
+            hit=e_hit,
+            damage=e_dmg,
         )
-    else:
-        logs.append(
-            f"{enemy.name} comes at you — roll {e_roll} ({e_mod_str}) = {e_total} "
-            f"vs {player_defense} — Missed."
-        )
+    )
 
     combat_state.turn_number += 1
     combat_state.save(update_fields=["turn_number"])

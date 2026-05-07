@@ -2,25 +2,6 @@
 
 Use these prompts one at a time in a coding agent. Each prompt assumes this repo�s architecture rule: business logic must live in services, not views.
 
-## 6) Separate combat math engine from persistence/orchestration
-
-```text
-Refactor `game/services/combat.py` to make roll math pure and orchestration side-effectful but isolated.
-
-Requirements:
-1. Create `game/services/combat_engine.py` for pure functions only:
-   - player attack roll resolution
-   - enemy attack roll resolution
-   - message-fragment builders that do not touch DB
-2. Keep DB/session mutations in `game/services/combat.py` or move orchestration to `game/services/gameplay/combat.py`.
-3. Avoid changing gameplay behavior or text outputs.
-4. Add unit tests for pure engine functions without DB fixtures.
-
-Deliverables:
-- Clear module boundary between pure rules and persistence.
-- Reduced cognitive load in `combat.py`.
-```
-
 ## 7) Split importer domain module into per-domain modules
 
 ```text
