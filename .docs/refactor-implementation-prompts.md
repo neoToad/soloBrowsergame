@@ -2,42 +2,6 @@
 
 Use these prompts one at a time in a coding agent. Each prompt assumes this repo�s architecture rule: business logic must live in services, not views.
 
-## 13) Remove tracked `__pycache__` artifacts from git index
-
-```text
-Clean repository noise by untracking committed bytecode caches.
-
-Requirements:
-1. Remove tracked `__pycache__` directories under `core/` and `game/` from git index only (not local deletion intent):
-   - use `git rm --cached -r` on tracked cache paths.
-2. Ensure `.gitignore` already covers `__pycache__/` (it does; verify no gaps).
-3. Do not modify runtime code.
-
-Deliverables:
-- Clean git index without cache artifacts.
-```
-
-## 14) Split large integration-heavy tests into behavior-focused modules
-
-```text
-Refactor oversized tests for maintainability:
-- `game/tests/test_combat.py`
-- `game/tests/test_navigation.py`
-
-Requirements:
-1. Split by behavior area/endpoints, e.g.:
-   - combat attack flow
-   - enemy resolve flow
-   - combat continue/victory/defeat
-   - scene routing/choice resolution
-2. Extract shared setup/assertion helpers into `game/tests/helpers/` or fixtures.
-3. Keep test intent and coverage equivalent or better.
-4. Ensure test names remain descriptive and deterministic.
-
-Deliverables:
-- Smaller test modules, shared fixtures/helpers, unchanged behavior confidence.
-```
-
 ## 15) Add route-shape validation boundary for scene/choice routing semantics
 
 ```text
