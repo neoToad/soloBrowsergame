@@ -1,21 +1,38 @@
 from django.test import Client, TestCase, override_settings
 
 from game.models import GameSession, Scene
+from game.tests.factories import ChoiceFactory, HubSceneFactory, QuestFactory, SceneFactory
 
 
 class QueryBudgetTest(TestCase):
-    fixtures = [
-        "game/fixtures/arc.json",
-        "game/fixtures/property.json",
-        "game/fixtures/requirement.json",
-        "game/fixtures/requirementgroup.json",
-        "game/fixtures/scene.json",
-        "game/fixtures/choice.json",
-        "game/fixtures/quest.json",
-    ]
-
     def setUp(self):
         self.client = Client()
+        HubSceneFactory()
+        self.notice_board_scene = SceneFactory(
+            key="hub__notice_board",
+            title="The Board",
+            body="",
+            scene_type="hub",
+        )
+        self.warehouse_scene = SceneFactory(
+            key="warehouse__loading_dock",
+            title="Loading Dock",
+            body="",
+            scene_type="normal",
+        )
+        ChoiceFactory(
+            scene=self.warehouse_scene,
+            label="Slip around back.",
+            target_scene=self.notice_board_scene,
+            order=1,
+        )
+        warehouse_job = QuestFactory(
+            key="the_warehouse_job",
+            title="The Warehouse Job",
+            description="A warehouse run.",
+            entrance_scene=self.warehouse_scene,
+        )
+        warehouse_job.hub_scenes.add(self.notice_board_scene)
         self.client.get("/game/")
         self.session = GameSession.objects.first()
 

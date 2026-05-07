@@ -19,6 +19,7 @@ from game.models import (
 )
 
 from game.tests.factories import HubSceneFactory
+from game.tests.factories import ChoiceFactory, QuestFactory, SceneFactory
 
 
 class GameNavigationTest(TestCase):
@@ -149,6 +150,72 @@ class GameNavigationTest(TestCase):
         self.assertIn('id="scene-panel"', response.content.decode())
         session.refresh_from_db()
         self.assertEqual(session.current_scene, dest)
+
+    def test_choice_resolve_rejects_get_with_405(self):
+        self.client.get("/game/")
+        session = GameSession.objects.first()
+        dest = Scene.objects.create(
+            key="test__nav_method_guard_dest",
+            title="Method Guard Destination",
+            body="",
+            scene_type="normal",
+        )
+        choice = Choice.objects.create(
+            scene=session.current_scene,
+            label="Guard Choice",
+            target_scene=dest,
+            order=9997,
+        )
+
+        response = self.client.get(
+            reverse("choice_resolve", kwargs={"choice_id": choice.pk}),
+        )
+
+        self.assertEqual(response.status_code, 405)
+
+    def test_choice_resolve_non_htmx_redirects_to_scene_detail(self):
+        self.client.get("/game/")
+        session = GameSession.objects.first()
+        dest = Scene.objects.create(
+            key="test__nav_non_htmx_dest",
+            title="Destination",
+            body="",
+            scene_type="normal",
+        )
+        choice = Choice.objects.create(
+            scene=session.current_scene,
+            label="Go non htmx",
+            target_scene=dest,
+            order=9998,
+        )
+
+        response = self.client.post(
+            reverse("choice_resolve", kwargs={"choice_id": choice.pk}),
+        )
+
+        self.assertRedirects(
+            response,
+            reverse("scene_detail", kwargs={"scene_key": dest.key}),
+        )
+        session.refresh_from_db()
+        self.assertEqual(session.current_scene, dest)
+
+    def test_choice_resolve_non_htmx_error_renders_full_page_template(self):
+        self.client.get("/game/")
+        session = GameSession.objects.first()
+        initial_scene = session.current_scene
+
+        off_scene_choice = Choice.objects.exclude(scene=initial_scene).first()
+        self.assertIsNotNone(off_scene_choice, "Expected at least one choice from another scene")
+
+        response = self.client.post(
+            reverse("choice_resolve", kwargs={"choice_id": off_scene_choice.pk}),
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, "game/error.html")
+        self.assertContains(response, "[ REQUEST FAILED ]", status_code=403)
+        self.assertContains(response, "Status 403", status_code=403)
 
     def test_choice_flag_effects_update_gated_choice_visibility(self):
         self.client.get("/game/")
@@ -357,24 +424,37 @@ class GameNavigationTest(TestCase):
 
 
 class NoticeBoardTest(TestCase):
-    fixtures = [
-        "game/fixtures/arc.json",
-        "game/fixtures/property.json",
-        "game/fixtures/requirement.json",
-        "game/fixtures/requirementgroup.json",
-        "game/fixtures/scene.json",
-        "game/fixtures/choice.json",
-        "game/fixtures/quest.json",
-    ]
-
     def setUp(self):
         self.client = Client()
+        HubSceneFactory()
+        self.notice_board_scene = SceneFactory(
+            key="hub__notice_board",
+            title="The Board",
+            body="",
+            scene_type="hub",
+        )
+        self.warehouse_entrance = SceneFactory(
+            key="warehouse__loading_dock",
+            title="Loading Dock",
+            body="",
+            scene_type="normal",
+        )
+        ChoiceFactory(
+            scene=self.warehouse_entrance,
+            label="Slip around back.",
+            target_scene=self.notice_board_scene,
+            order=1,
+        )
+        self.warehouse_job = QuestFactory(
+            key="the_warehouse_job",
+            title="The Warehouse Job",
+            description="A warehouse run.",
+            entrance_scene=self.warehouse_entrance,
+        )
+        self.warehouse_job.hub_scenes.add(self.notice_board_scene)
+
         self.client.get("/game/")
         self.session = GameSession.objects.first()
-        self.warehouse_job = Quest.objects.get(key="the_warehouse_job")
-        self.warehouse_entrance = Scene.objects.get(key="warehouse__loading_dock")
-        self.notice_board_scene = Scene.objects.get(key="hub__notice_board")
-        self.warehouse_job.hub_scenes.add(self.notice_board_scene)
 
     def test_notice_board_initial_state(self):
         response = self.client.get(reverse("scene_detail", kwargs={"scene_key": "hub__notice_board"}))
@@ -411,6 +491,7 @@ class NoticeBoardTest(TestCase):
         self.assertContains(response, second_quest.title)
         self.assertNotContains(response, "Requires Warehouse")
 
+    @override_settings(SHOW_LOCKED_COMPLETED_QUESTS=True)
     def test_stat_gated_quest(self):
         intellect_quest = Quest.objects.create(
             key="intellect_quest",
@@ -511,4 +592,34 @@ class NoticeBoardTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn('id="scene-panel"', response.content.decode())
         self.assertContains(response, self.warehouse_entrance.title)
+
+    def test_start_quest_rejects_get_with_405(self):
+        response = self.client.get(
+            reverse("start_quest", kwargs={"quest_key": "the_warehouse_job"})
+        )
+
+        self.assertEqual(response.status_code, 405)
+
+    def test_start_quest_non_htmx_error_renders_full_page_template(self):
+        locked_quest = Quest.objects.create(
+            key="locked_quest_non_htmx_error",
+            title="Locked Quest Non HTMX Error",
+            description="Requires brains.",
+            entrance_scene=self.warehouse_entrance,
+        )
+        req = Requirement.objects.create(
+            condition_type="stat_gte", stat_name="intellect", stat_value=99
+        )
+        group = RequirementGroup.objects.create(label="Requires Big Brains Non HTMX", logic="all")
+        group.requirements.add(req)
+        locked_quest.requirements.add(group)
+
+        response = self.client.post(
+            reverse("start_quest", kwargs={"quest_key": locked_quest.key})
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, "game/error.html")
+        self.assertContains(response, "[ REQUEST FAILED ]", status_code=403)
+        self.assertContains(response, "Status 403", status_code=403)
 

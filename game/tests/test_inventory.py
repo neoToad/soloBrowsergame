@@ -55,6 +55,13 @@ class UseItemTest(TestCase):
         )
         self.assertEqual(response.status_code, 400)
 
+    def test_use_item_rejects_get_with_405(self):
+        response = self.client.get(
+            reverse("use_item", kwargs={"item_id": self.heal_potion.pk}),
+        )
+
+        self.assertEqual(response.status_code, 405)
+
 
 class InventoryServiceTest(TestCase):
     def setUp(self):

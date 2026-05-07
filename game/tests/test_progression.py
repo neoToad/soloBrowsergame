@@ -32,6 +32,10 @@ class LevelUpTest(TestCase):
         response = self.client.post(reverse("level_up"), {"stat": "strength"}, HTTP_HX_REQUEST="true")
         self.assertEqual(response.status_code, 400)
 
+    def test_level_up_rejects_get_with_405(self):
+        response = self.client.get(reverse("level_up"))
+        self.assertEqual(response.status_code, 405)
+
     def test_level_up_restores_5_hp_and_logs_amount(self):
         from game.utils import compute_max_hp
 

@@ -9,21 +9,24 @@ from game.tests.factories import ChoiceFactory, EnemyFactory, SceneFactory, boot
 
 
 class CombatTest(TestCase):
-    fixtures = [
-        "game/fixtures/property.json",
-        "game/fixtures/scene.json",
-        "game/fixtures/enemy.json",
-        "game/fixtures/combatencounter.json",
-    ]
-
     def setUp(self):
         from game.models import CombatEncounter, CombatState
 
         self.client = Client()
-        self.client.get("/game/")
-        session_id = self.client.session.session_key
-        self.session = GameSession.objects.get(session_key=session_id)
-        self.combat_scene = Scene.objects.get(key="debt__corner_fight")
+        self.session = bootstrap_game_session(self.client)
+        self.combat_scene = SceneFactory(key="debt__corner_fight", title="Corner Fight", body="", scene_type="combat")
+        victory_scene = SceneFactory(key="debt__enforcer_fight", title="After Fight", body="", scene_type="normal")
+        enemy = EnemyFactory(
+            key="debt__corner_thug",
+            name="Corner Thug",
+            description="",
+            max_hp=20,
+            attack_modifier=0,
+            defense=8,
+            damage_min=2,
+            damage_max=4,
+        )
+        CombatEncounter.objects.create(scene=self.combat_scene, enemy=enemy, victory_scene=victory_scene)
         self.session.current_scene = self.combat_scene
         self.session.save()
         encounter = CombatEncounter.objects.get(scene=self.combat_scene)
@@ -332,6 +335,18 @@ class CombatViewTest(TestCase):
         self.assertEqual(cs.turn_number, 2)
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.hp, initial_hp)
+
+    def test_combat_attack_rejects_get_with_405(self):
+        response = self.client.get(reverse("combat_attack"))
+        self.assertEqual(response.status_code, 405)
+
+    def test_combat_resolve_enemy_rejects_get_with_405(self):
+        response = self.client.get(reverse("combat_resolve_enemy"))
+        self.assertEqual(response.status_code, 405)
+
+    def test_combat_continue_rejects_get_with_405(self):
+        response = self.client.get(reverse("combat_continue"))
+        self.assertEqual(response.status_code, 405)
 
     def test_combat_attack_miss_renders_your_turn_badge_from_latest_event(self):
         from game.models.combat import CombatState
