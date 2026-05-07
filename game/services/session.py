@@ -59,7 +59,7 @@ def create_session(request):
     return game_session
 
 
-def _build_core_scene_context(
+def build_core_context(
     session,
     scene,
     stats,
@@ -98,7 +98,7 @@ def _build_core_scene_context(
     }
 
 
-def _build_social_property_context(session):
+def build_social_context(session):
     from ..models import PlayerContact, PlayerGangStanding
 
     player_properties = PlayerProperty.objects.filter(session=session).select_related("property")
@@ -120,7 +120,7 @@ def _build_social_property_context(session):
     }
 
 
-def _build_hub_context(session, scene, effective_stats, inventory, completed_map):
+def build_hub_context(session, scene, effective_stats, inventory, completed_map):
     from .scene import get_notice_board
 
     notice_board = None
@@ -140,7 +140,7 @@ def _build_hub_context(session, scene, effective_stats, inventory, completed_map
 
 def build_render_context(session, scene, stats, effective_stats, inventory, completed_map, *, combat_state, turn_summary=None, roll_result=None, damage_result=None):
     """Assemble canonical template context for scene rendering and HTMX partial updates."""
-    context = _build_core_scene_context(
+    context = build_core_context(
         session,
         scene,
         stats,
@@ -152,6 +152,6 @@ def build_render_context(session, scene, stats, effective_stats, inventory, comp
         roll_result=roll_result,
         damage_result=damage_result,
     )
-    context.update(_build_hub_context(session, scene, effective_stats, inventory, completed_map))
-    context.update(_build_social_property_context(session))
+    context.update(build_hub_context(session, scene, effective_stats, inventory, completed_map))
+    context.update(build_social_context(session))
     return context

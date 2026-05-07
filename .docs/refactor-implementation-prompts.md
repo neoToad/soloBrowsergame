@@ -2,24 +2,6 @@
 
 Use these prompts one at a time in a coding agent. Each prompt assumes this repo�s architecture rule: business logic must live in services, not views.
 
-## 11) Decompose dense session context builder
-
-```text
-Refactor `game/services/session.py` `build_render_context()` composition into explicit context providers.
-
-Requirements:
-1. Introduce provider functions or dataclass-based providers with clear contracts, e.g.:
-   - `build_core_context(...)`
-   - `build_hub_context(...)`
-   - `build_social_context(...)`
-2. Keep output keys and template compatibility unchanged.
-3. Ensure no new DB query explosions (use existing select_related/prefetch patterns where needed).
-4. Add tests for context key presence and representative values.
-
-Deliverables:
-- Better-separated context assembly without behavior changes.
-```
-
 ## 12) Extract inline quest-builder JS into static module(s)
 
 ```text
