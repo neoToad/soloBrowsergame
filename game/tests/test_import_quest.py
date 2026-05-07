@@ -5,8 +5,10 @@ from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.test import TestCase
 
-from game.models import Gang, Scene
+from game.models import Contact, Enemy, Gang, Scene
+from game.models.combat import CombatEncounter
 from game.models.property import Territory
+from game.services.importers.domain import import_quest_data
 
 
 class ImportQuestCommandTests(TestCase):
@@ -19,6 +21,31 @@ class ImportQuestCommandTests(TestCase):
             yaml_path = Path(tmp_dir) / "quest.yaml"
             yaml_path.write_text(yaml_text, encoding="utf-8")
             call_command("import_quest", str(yaml_path))
+
+    def _base_reimport_payload(self) -> dict:
+        return {
+            "quest": {
+                "key": "reimport-scene-links",
+                "title": "Reimport Scene Links",
+                "description": "Reimport behavior",
+                "arc": None,
+                "arc_order": 0,
+                "is_repeatable": False,
+                "hub_scenes": [],
+                "entrance_scene": "reimport-scene-links__start",
+                "requirements": [],
+            },
+            "scenes": [
+                {
+                    "key": "reimport-scene-links__start",
+                    "scene_type": "normal",
+                    "title": "Start",
+                    "body": "Start",
+                    "order": 0,
+                    "choices": [],
+                }
+            ],
+        }
 
     def test_import_reads_nested_ending_and_arrival_blocks(self):
         self._run_import(
@@ -261,3 +288,79 @@ scenes:
         standing = start_scene.scene_gang_standings.get()
         self.assertEqual(standing.gang.key, "dockers")
         self.assertEqual(standing.standing_change, 2)
+
+    def test_import_quest_reimport_recreates_scene_items_and_tracks_counts(self):
+        first = self._base_reimport_payload()
+        first["scenes"][0]["scene_items"] = [{"item": "brass_knuckles", "quantity": 1, "award_once": True}]
+        first_result = import_quest_data(first)
+        self.assertEqual(first_result.counts["scene_items"].created, 1)
+        self.assertEqual(first_result.counts.get("scene_items").deleted, 0)
+
+        second = self._base_reimport_payload()
+        second["scenes"][0]["scene_items"] = [{"item": "brass_knuckles", "quantity": 3, "award_once": False}]
+        second_result = import_quest_data(second)
+
+        start_scene = Scene.objects.get(key="reimport-scene-links__start")
+        self.assertEqual(start_scene.scene_items.count(), 1)
+        scene_item = start_scene.scene_items.get()
+        self.assertEqual(scene_item.quantity, 3)
+        self.assertFalse(scene_item.award_once)
+        self.assertEqual(second_result.counts["scene_items"].deleted, 1)
+        self.assertEqual(second_result.counts["scene_items"].created, 1)
+
+    def test_import_quest_reimport_recreates_scene_contacts_and_tracks_counts(self):
+        Contact.objects.create(key="fixer", name="Fixer", description="Test contact")
+        first = self._base_reimport_payload()
+        first["scenes"][0]["scene_contacts"] = [{"contact": "fixer", "action": "gain", "award_once": True}]
+        first_result = import_quest_data(first)
+        self.assertEqual(first_result.counts["scene_contacts"].created, 1)
+        self.assertEqual(first_result.counts.get("scene_contacts").deleted, 0)
+
+        second = self._base_reimport_payload()
+        second["scenes"][0]["scene_contacts"] = [{"contact": "fixer", "action": "lose", "award_once": False}]
+        second_result = import_quest_data(second)
+
+        start_scene = Scene.objects.get(key="reimport-scene-links__start")
+        self.assertEqual(start_scene.scene_contacts.count(), 1)
+        scene_contact = start_scene.scene_contacts.get()
+        self.assertEqual(scene_contact.action, "lose")
+        self.assertFalse(scene_contact.award_once)
+        self.assertEqual(second_result.counts["scene_contacts"].deleted, 1)
+        self.assertEqual(second_result.counts["scene_contacts"].created, 1)
+
+    def test_import_quest_combat_missing_enemy_warns_and_skips_combat_encounter(self):
+        data = {
+            "quest": {
+                "key": "missing-combat-enemy",
+                "title": "Missing Combat Enemy",
+                "description": "Combat import warning",
+                "arc": None,
+                "arc_order": 0,
+                "is_repeatable": False,
+                "hub_scenes": [],
+                "entrance_scene": "missing-combat-enemy__fight",
+                "requirements": [],
+            },
+            "scenes": [
+                {
+                    "key": "missing-combat-enemy__fight",
+                    "scene_type": "combat",
+                    "title": "Fight",
+                    "body": "Fight body",
+                    "order": 0,
+                    "combat_encounter": {"enemy": "does-not-exist"},
+                    "choices": [],
+                }
+            ],
+        }
+
+        result = import_quest_data(data)
+
+        self.assertTrue(any("Enemy 'does-not-exist' not found in DB; FK set to null" in warning for warning in result.warnings))
+        self.assertTrue(
+            any("Skipping CombatEncounter for 'missing-combat-enemy__fight'; enemy not found" in warning for warning in result.warnings)
+        )
+        self.assertFalse(Enemy.objects.filter(key="does-not-exist").exists())
+        self.assertFalse(
+            CombatEncounter.objects.filter(scene__key="missing-combat-enemy__fight").exists()
+        )

@@ -2,9 +2,12 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from django.core.management import call_command
+from django.core.management.base import CommandError
 from django.test import TestCase
 
 from game.models import Contact, Enemy, Gang, Property, Quest, RequirementGroup, Scene, Territory
+from game.models.items import Item
+from game.services.importers.domain import import_items_data, import_world_data
 
 
 class ImportRefactorTests(TestCase):
@@ -342,3 +345,48 @@ territories:
         self.assertTrue(Gang.objects.filter(key="split_test_gang").exists())
         self.assertTrue(Property.objects.filter(key="split_test_property").exists())
         self.assertTrue(Territory.objects.filter(key="split_test_territory").exists())
+
+    def test_import_items_data_raises_command_error_with_item_key_context(self):
+        with self.assertRaises(CommandError) as exc_info:
+            import_items_data(
+                {
+                    "items": [
+                        {
+                            "key": "bad-item",
+                            "name": "Bad Item",
+                            "description": "Invalid stat payload",
+                            "effect_type": "add_stat",
+                            "effect_stat": "not_a_real_stat",
+                        }
+                    ]
+                }
+            )
+
+        self.assertIn("Invalid item 'bad-item'", str(exc_info.exception))
+        self.assertFalse(Item.objects.filter(key="bad-item").exists())
+
+    def test_import_world_data_warns_for_generated_property_key_and_skips_unsupported_type(self):
+        result = import_world_data(
+            {
+                "properties": [
+                    {
+                        "name": "Dockside Safe House",
+                        "property_type": "safehouse",
+                    },
+                    {
+                        "key": "bad-property-type",
+                        "name": "Bad Property Type",
+                        "property_type": "territory",
+                    },
+                ]
+            }
+        )
+
+        self.assertTrue(
+            any("missing key; using generated key 'dockside-safe-house'" in warning for warning in result.warnings)
+        )
+        self.assertTrue(
+            any("unsupported property_type 'territory'; skipping." in warning for warning in result.warnings)
+        )
+        self.assertTrue(Property.objects.filter(key="dockside-safe-house").exists())
+        self.assertFalse(Property.objects.filter(key="bad-property-type").exists())
