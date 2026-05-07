@@ -1,4 +1,4 @@
-<div id="requirements-section" style="border-top: 1px solid #ddd; margin-top: 16px; padding-top: 12px;">
+<div id="requirements-section" data-qb-requirements-section style="border-top: 1px solid #ddd; margin-top: 16px; padding-top: 12px;">
     <details open>
         <summary style="cursor: pointer; font-weight: 600; font-size: 14px; margin-bottom: 10px;">
             Requirements ({{ requirement_groups|length }})
@@ -10,380 +10,177 @@
             </div>
         {% endif %}
 
-        <form
-            hx-post="{{ save_url }}"
-            hx-target="#requirements-section"
-            hx-swap="outerHTML">
+        <form hx-post="{{ save_url }}" hx-target="#requirements-section" hx-swap="outerHTML">
             {% csrf_token %}
 
             <p style="font-size: 12px; color: #666; margin: 0 0 10px;">
                 All groups must pass (AND between groups). Within a group, choose ALL or ANY logic.
             </p>
 
-            <div id="req-groups">
+            <div id="req-groups" data-qb-req-groups>
                 {% for group in requirement_groups %}
-                    <div class="req-group" style="border: 1px solid #ccc; border-radius: 4px; padding: 10px; margin-bottom: 8px;">
-
-                        <div class="req-and-sep" style="text-align: center; font-weight: 700; font-size: 11px; color: #888; letter-spacing: 1px; margin-bottom: 8px;{% if forloop.first %} display: none;{% endif %}">
-                            &#8212; AND &#8212;
+                    <div class="req-group" data-qb-req-group style="border: 1px solid #ccc; border-radius: 4px; padding: 10px; margin-bottom: 8px;">
+                        <div class="req-and-sep" data-qb-and-sep style="text-align: center; font-weight: 700; font-size: 11px; color: #888; letter-spacing: 1px; margin-bottom: 8px;{% if forloop.first %} display: none;{% endif %}">
+                            -- AND --
                         </div>
 
                         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap;">
                             <span style="font-size: 12px; font-weight: 600;">Logic:</span>
                             <label style="font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer;">
-                                <input type="radio" class="req-logic" name="__logic_{{ forloop.counter0 }}" value="all" {% if group.logic == 'all' %}checked{% endif %}>
+                                <input type="radio" class="req-logic" data-qb-req-logic name="__logic_{{ forloop.counter0 }}" value="all" {% if group.logic == 'all' %}checked{% endif %}>
                                 ALL of these
                             </label>
                             <label style="font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer;">
-                                <input type="radio" class="req-logic" name="__logic_{{ forloop.counter0 }}" value="any" {% if group.logic == 'any' %}checked{% endif %}>
+                                <input type="radio" class="req-logic" data-qb-req-logic name="__logic_{{ forloop.counter0 }}" value="any" {% if group.logic == 'any' %}checked{% endif %}>
                                 ANY of these
                             </label>
-                            <button type="button" class="button req-remove-group-btn" style="margin-left: auto; font-size: 11px; padding: 2px 8px; background: #dc3545; color: #fff; border: none; cursor: pointer;">
+                            <button type="button" class="button req-remove-group-btn" data-qb-remove-group style="margin-left: auto; font-size: 11px; padding: 2px 8px; background: #dc3545; color: #fff; border: none; cursor: pointer;">
                                 Remove Group
                             </button>
                         </div>
 
-                        <div class="req-rows">
+                        <div class="req-rows" data-qb-req-rows>
                             {% for req in group.requirements.all %}
-                                <div class="req-row" style="display: flex; gap: 6px; align-items: flex-start; margin-bottom: 6px; flex-wrap: wrap;">
-
-                                    <select class="req-type" style="min-width: 160px; font-size: 12px;">
+                                <div class="req-row" data-qb-req-row style="display: flex; gap: 6px; align-items: flex-start; margin-bottom: 6px; flex-wrap: wrap;">
+                                    <select class="req-type" data-qb-req-type style="min-width: 160px; font-size: 12px;">
                                         {% for type_val, type_label in requirement_types %}
                                             <option value="{{ type_val }}" {% if req.condition_type == type_val %}selected{% endif %}>{{ type_label }}</option>
                                         {% endfor %}
                                     </select>
-
-                                    <!-- Stat param -->
-                                    <div class="param-area param-area--stat" style="display: {% if req.condition_type == 'stat_gte' or req.condition_type == 'stat_lte' %}flex{% else %}none{% endif %}; gap: 4px; align-items: center;">
-                                        <select class="req-stat-name" style="font-size: 12px;">
+                                    <div class="param-area param-area--stat" data-qb-param-area="stat" style="display: {% if req.condition_type == 'stat_gte' or req.condition_type == 'stat_lte' %}flex{% else %}none{% endif %}; gap: 4px; align-items: center;">
+                                        <select class="req-stat-name" data-qb-stat-name style="font-size: 12px;">
                                             {% for field, label in stat_choices %}
                                                 <option value="{{ field }}" {% if req.stat_name == field %}selected{% endif %}>{{ label }} ({{ field }})</option>
                                             {% endfor %}
                                         </select>
-                                        <input type="number" class="req-stat-value" value="{{ req.stat_value|default:0 }}" min="0" style="width: 64px; font-size: 12px;">
+                                        <input type="number" class="req-stat-value" data-qb-stat-value value="{{ req.stat_value|default:0 }}" min="0" style="width: 64px; font-size: 12px;">
                                     </div>
-
-                                    <!-- Flag param -->
-                                    <div class="param-area param-area--flag" style="display: {% if req.condition_type == 'has_flag' or req.condition_type == 'missing_flag' %}block{% else %}none{% endif %};">
-                                        <input type="text" class="req-flag-name" value="{{ req.flag_name|default:'' }}" placeholder="Flag name" style="font-size: 12px; min-width: 140px;">
+                                    <div class="param-area param-area--flag" data-qb-param-area="flag" style="display: {% if req.condition_type == 'has_flag' or req.condition_type == 'missing_flag' %}block{% else %}none{% endif %};">
+                                        <input type="text" class="req-flag-name" data-qb-flag-name value="{{ req.flag_name|default:'' }}" placeholder="Flag name" style="font-size: 12px; min-width: 140px;">
                                     </div>
-
-                                    <!-- Quest param (shared: quest_completed, quest_not_done, quest_ending) -->
-                                    <div class="param-area param-area--quest" style="display: {% if req.condition_type == 'quest_completed' or req.condition_type == 'quest_not_done' or req.condition_type == 'quest_ending' %}flex{% else %}none{% endif %}; gap: 4px; align-items: center;">
-                                        <select class="req-quest-id" style="font-size: 12px; min-width: 140px;">
-                                            <option value="">— select quest —</option>
+                                    <div class="param-area param-area--quest" data-qb-param-area="quest" style="display: {% if req.condition_type == 'quest_completed' or req.condition_type == 'quest_not_done' or req.condition_type == 'quest_ending' %}flex{% else %}none{% endif %}; gap: 4px; align-items: center;">
+                                        <select class="req-quest-id" data-qb-quest-id style="font-size: 12px; min-width: 140px;">
+                                            <option value="">-- select quest --</option>
                                             {% for q in all_quests %}
                                                 <option value="{{ q.id }}" {% if req.required_quest_id == q.id %}selected{% endif %}>{{ q.title }}</option>
                                             {% endfor %}
                                         </select>
-                                        <select class="req-ending-type" style="font-size: 12px; display: {% if req.condition_type == 'quest_ending' %}inline-block{% else %}none{% endif %};">
+                                        <select class="req-ending-type" data-qb-ending-type style="font-size: 12px; display: {% if req.condition_type == 'quest_ending' %}inline-block{% else %}none{% endif %};">
                                             <option value="victory" {% if req.required_ending_type == 'victory' %}selected{% endif %}>Victory</option>
                                             <option value="defeat" {% if req.required_ending_type == 'defeat' %}selected{% endif %}>Defeat</option>
                                             <option value="neutral" {% if req.required_ending_type == 'neutral' %}selected{% endif %}>Neutral</option>
                                         </select>
                                     </div>
-
-                                    <!-- Level / XP param -->
-                                    <div class="param-area param-area--number" style="display: {% if req.condition_type == 'level_gte' or req.condition_type == 'xp_gte' %}block{% else %}none{% endif %};">
-                                        <input type="number" class="req-number-val" value="{{ req.stat_value|default:0 }}" min="0" style="width: 80px; font-size: 12px;">
+                                    <div class="param-area param-area--number" data-qb-param-area="number" style="display: {% if req.condition_type == 'level_gte' or req.condition_type == 'xp_gte' %}block{% else %}none{% endif %};">
+                                        <input type="number" class="req-number-val" data-qb-number-value value="{{ req.stat_value|default:0 }}" min="0" style="width: 80px; font-size: 12px;">
                                     </div>
-
-                                    <!-- Item param -->
-                                    <div class="param-area param-area--item" style="display: {% if req.condition_type == 'has_item' or req.condition_type == 'missing_item' %}block{% else %}none{% endif %};">
-                                        <select class="req-item-id" style="font-size: 12px; min-width: 140px;">
-                                            <option value="">— select item —</option>
+                                    <div class="param-area param-area--item" data-qb-param-area="item" style="display: {% if req.condition_type == 'has_item' or req.condition_type == 'missing_item' %}block{% else %}none{% endif %};">
+                                        <select class="req-item-id" data-qb-item-id style="font-size: 12px; min-width: 140px;">
+                                            <option value="">-- select item --</option>
                                             {% for item in all_items %}
                                                 <option value="{{ item.id }}" {% if req.required_item_id == item.id %}selected{% endif %}>{{ item.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
-
-                                    <!-- Contact param -->
-                                    <div class="param-area param-area--contact" style="display: {% if req.condition_type == 'has_contact' or req.condition_type == 'missing_contact' %}block{% else %}none{% endif %};">
-                                        <select class="req-contact-id" style="font-size: 12px; min-width: 140px;">
-                                            <option value="">— select contact —</option>
+                                    <div class="param-area param-area--contact" data-qb-param-area="contact" style="display: {% if req.condition_type == 'has_contact' or req.condition_type == 'missing_contact' %}block{% else %}none{% endif %};">
+                                        <select class="req-contact-id" data-qb-contact-id style="font-size: 12px; min-width: 140px;">
+                                            <option value="">-- select contact --</option>
                                             {% for contact in all_contacts %}
                                                 <option value="{{ contact.id }}" {% if req.required_contact_id == contact.id %}selected{% endif %}>{{ contact.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
-
-                                    <button type="button" class="button req-remove-row-btn" style="font-size: 11px; padding: 2px 7px; background: #dc3545; color: #fff; border: none; cursor: pointer;">✕</button>
+                                    <button type="button" class="button req-remove-row-btn" data-qb-remove-req style="font-size: 11px; padding: 2px 7px; background: #dc3545; color: #fff; border: none; cursor: pointer;">x</button>
                                 </div>
                             {% endfor %}
                         </div>
-
-                        <button type="button" class="button req-add-req-btn" style="font-size: 11px; margin-top: 4px;">+ Add Requirement</button>
+                        <button type="button" class="button req-add-req-btn" data-qb-add-req style="font-size: 11px; margin-top: 4px;">+ Add Requirement</button>
                     </div>
                 {% endfor %}
             </div>
 
-            <!-- Blank group template -->
-            <template id="req-group-tpl">
-                <div class="req-group" style="border: 1px solid #ccc; border-radius: 4px; padding: 10px; margin-bottom: 8px;">
-                    <div class="req-and-sep" style="text-align: center; font-weight: 700; font-size: 11px; color: #888; letter-spacing: 1px; margin-bottom: 8px;">
-                        &#8212; AND &#8212;
+            <template id="req-group-tpl" data-qb-req-group-template>
+                <div class="req-group" data-qb-req-group style="border: 1px solid #ccc; border-radius: 4px; padding: 10px; margin-bottom: 8px;">
+                    <div class="req-and-sep" data-qb-and-sep style="text-align: center; font-weight: 700; font-size: 11px; color: #888; letter-spacing: 1px; margin-bottom: 8px;">
+                        -- AND --
                     </div>
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px; flex-wrap: wrap;">
                         <span style="font-size: 12px; font-weight: 600;">Logic:</span>
                         <label style="font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer;">
-                            <input type="radio" class="req-logic" value="all" checked>
+                            <input type="radio" class="req-logic" data-qb-req-logic value="all" checked>
                             ALL of these
                         </label>
                         <label style="font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer;">
-                            <input type="radio" class="req-logic" value="any">
+                            <input type="radio" class="req-logic" data-qb-req-logic value="any">
                             ANY of these
                         </label>
-                        <button type="button" class="button req-remove-group-btn" style="margin-left: auto; font-size: 11px; padding: 2px 8px; background: #dc3545; color: #fff; border: none; cursor: pointer;">
+                        <button type="button" class="button req-remove-group-btn" data-qb-remove-group style="margin-left: auto; font-size: 11px; padding: 2px 8px; background: #dc3545; color: #fff; border: none; cursor: pointer;">
                             Remove Group
                         </button>
                     </div>
-                    <div class="req-rows"></div>
-                    <button type="button" class="button req-add-req-btn" style="font-size: 11px; margin-top: 4px;">+ Add Requirement</button>
+                    <div class="req-rows" data-qb-req-rows></div>
+                    <button type="button" class="button req-add-req-btn" data-qb-add-req style="font-size: 11px; margin-top: 4px;">+ Add Requirement</button>
                 </div>
             </template>
 
-            <!-- Blank requirement row template -->
-            <template id="req-row-tpl">
-                <div class="req-row" style="display: flex; gap: 6px; align-items: flex-start; margin-bottom: 6px; flex-wrap: wrap;">
-                    <select class="req-type" style="min-width: 160px; font-size: 12px;">
+            <template id="req-row-tpl" data-qb-req-row-template>
+                <div class="req-row" data-qb-req-row style="display: flex; gap: 6px; align-items: flex-start; margin-bottom: 6px; flex-wrap: wrap;">
+                    <select class="req-type" data-qb-req-type style="min-width: 160px; font-size: 12px;">
                         {% for type_val, type_label in requirement_types %}
                             <option value="{{ type_val }}">{{ type_label }}</option>
                         {% endfor %}
                     </select>
-
-                    <!-- Stat param (visible by default — matches first option stat_gte) -->
-                    <div class="param-area param-area--stat" style="display: flex; gap: 4px; align-items: center;">
-                        <select class="req-stat-name" style="font-size: 12px;">
+                    <div class="param-area param-area--stat" data-qb-param-area="stat" style="display: flex; gap: 4px; align-items: center;">
+                        <select class="req-stat-name" data-qb-stat-name style="font-size: 12px;">
                             {% for field, label in stat_choices %}
                                 <option value="{{ field }}">{{ label }} ({{ field }})</option>
                             {% endfor %}
                         </select>
-                        <input type="number" class="req-stat-value" value="0" min="0" style="width: 64px; font-size: 12px;">
+                        <input type="number" class="req-stat-value" data-qb-stat-value value="0" min="0" style="width: 64px; font-size: 12px;">
                     </div>
-
-                    <!-- Flag param -->
-                    <div class="param-area param-area--flag" style="display: none;">
-                        <input type="text" class="req-flag-name" value="" placeholder="Flag name" style="font-size: 12px; min-width: 140px;">
+                    <div class="param-area param-area--flag" data-qb-param-area="flag" style="display: none;">
+                        <input type="text" class="req-flag-name" data-qb-flag-name value="" placeholder="Flag name" style="font-size: 12px; min-width: 140px;">
                     </div>
-
-                    <!-- Quest param -->
-                    <div class="param-area param-area--quest" style="display: none; gap: 4px; align-items: center;">
-                        <select class="req-quest-id" style="font-size: 12px; min-width: 140px;">
-                            <option value="">— select quest —</option>
+                    <div class="param-area param-area--quest" data-qb-param-area="quest" style="display: none; gap: 4px; align-items: center;">
+                        <select class="req-quest-id" data-qb-quest-id style="font-size: 12px; min-width: 140px;">
+                            <option value="">-- select quest --</option>
                             {% for q in all_quests %}
                                 <option value="{{ q.id }}">{{ q.title }}</option>
                             {% endfor %}
                         </select>
-                        <select class="req-ending-type" style="font-size: 12px; display: none;">
+                        <select class="req-ending-type" data-qb-ending-type style="font-size: 12px; display: none;">
                             <option value="victory">Victory</option>
                             <option value="defeat">Defeat</option>
                             <option value="neutral">Neutral</option>
                         </select>
                     </div>
-
-                    <!-- Level / XP param -->
-                    <div class="param-area param-area--number" style="display: none;">
-                        <input type="number" class="req-number-val" value="0" min="0" style="width: 80px; font-size: 12px;">
+                    <div class="param-area param-area--number" data-qb-param-area="number" style="display: none;">
+                        <input type="number" class="req-number-val" data-qb-number-value value="0" min="0" style="width: 80px; font-size: 12px;">
                     </div>
-
-                    <!-- Item param -->
-                    <div class="param-area param-area--item" style="display: none;">
-                        <select class="req-item-id" style="font-size: 12px; min-width: 140px;">
-                            <option value="">— select item —</option>
+                    <div class="param-area param-area--item" data-qb-param-area="item" style="display: none;">
+                        <select class="req-item-id" data-qb-item-id style="font-size: 12px; min-width: 140px;">
+                            <option value="">-- select item --</option>
                             {% for item in all_items %}
                                 <option value="{{ item.id }}">{{ item.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
-
-                    <!-- Contact param -->
-                    <div class="param-area param-area--contact" style="display: none;">
-                        <select class="req-contact-id" style="font-size: 12px; min-width: 140px;">
-                            <option value="">— select contact —</option>
+                    <div class="param-area param-area--contact" data-qb-param-area="contact" style="display: none;">
+                        <select class="req-contact-id" data-qb-contact-id style="font-size: 12px; min-width: 140px;">
+                            <option value="">-- select contact --</option>
                             {% for contact in all_contacts %}
                                 <option value="{{ contact.id }}">{{ contact.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
-
-                    <button type="button" class="button req-remove-row-btn" style="font-size: 11px; padding: 2px 7px; background: #dc3545; color: #fff; border: none; cursor: pointer;">✕</button>
+                    <button type="button" class="button req-remove-row-btn" data-qb-remove-req style="font-size: 11px; padding: 2px 7px; background: #dc3545; color: #fff; border: none; cursor: pointer;">x</button>
                 </div>
             </template>
 
             <div style="display: flex; gap: 8px; margin-top: 10px;">
-                <button type="button" class="button" id="req-add-group-btn" style="font-size: 12px;">+ Add Group</button>
+                <button type="button" class="button" id="req-add-group-btn" data-qb-add-group style="font-size: 12px;">+ Add Group</button>
                 <button type="submit" class="button default" style="font-size: 12px;">Save Requirements</button>
             </div>
         </form>
     </details>
 </div>
-
-<script>
-(function () {
-    var section = document.getElementById('requirements-section');
-    if (!section) return;
-
-    var groupsContainer = section.querySelector('#req-groups');
-    var groupTpl = section.querySelector('#req-group-tpl');
-    var rowTpl   = section.querySelector('#req-row-tpl');
-
-    /* ── Type → param area mapping ─────────────────────────────── */
-    var typeAreaMap = {
-        stat_gte:        'stat',
-        stat_lte:        'stat',
-        has_flag:        'flag',
-        missing_flag:    'flag',
-        quest_completed: 'quest',
-        quest_not_done:  'quest',
-        quest_ending:    'quest',
-        level_gte:       'number',
-        xp_gte:          'number',
-        has_item:        'item',
-        missing_item:    'item',
-        has_contact:     'contact',
-        missing_contact: 'contact',
-    };
-    var allAreas = ['stat', 'flag', 'quest', 'number', 'item', 'contact'];
-
-    function updateParamVisibility(row, type) {
-        allAreas.forEach(function (a) {
-            var el = row.querySelector('.param-area--' + a);
-            if (el) el.style.display = 'none';
-        });
-        var areaKey = typeAreaMap[type];
-        if (areaKey) {
-            var area = row.querySelector('.param-area--' + areaKey);
-            if (area) {
-                area.style.display = (areaKey === 'stat' || areaKey === 'quest') ? 'flex' : 'block';
-            }
-        }
-        /* Show/hide ending-type sub-select */
-        var endingEl = row.querySelector('.req-ending-type');
-        if (endingEl) {
-            endingEl.style.display = (type === 'quest_ending') ? 'inline-block' : 'none';
-        }
-    }
-
-    /* ── AND separator visibility ───────────────────────────────── */
-    function refreshSeparators() {
-        var groups = groupsContainer.querySelectorAll('.req-group');
-        groups.forEach(function (g, i) {
-            var sep = g.querySelector('.req-and-sep');
-            if (sep) sep.style.display = i === 0 ? 'none' : 'block';
-        });
-    }
-
-    /* ── Clone a blank requirement row ─────────────────────────── */
-    function cloneRow() {
-        var clone = rowTpl.content.cloneNode(true);
-        return clone.querySelector('.req-row');
-    }
-
-    /* ── Clone a blank group ────────────────────────────────────── */
-    function cloneGroup() {
-        var clone = groupTpl.content.cloneNode(true);
-        var g = clone.querySelector('.req-group');
-        /* Add one blank row by default */
-        var firstRow = cloneRow();
-        g.querySelector('.req-rows').appendChild(firstRow);
-        return g;
-    }
-
-    /* ── Event delegation ───────────────────────────────────────── */
-    groupsContainer.addEventListener('change', function (e) {
-        if (e.target.classList.contains('req-type')) {
-            updateParamVisibility(e.target.closest('.req-row'), e.target.value);
-        }
-    });
-
-    groupsContainer.addEventListener('click', function (e) {
-        var btn = e.target.closest('button');
-        if (!btn) return;
-
-        if (btn.classList.contains('req-add-req-btn')) {
-            var group = btn.closest('.req-group');
-            group.querySelector('.req-rows').appendChild(cloneRow());
-        }
-
-        if (btn.classList.contains('req-remove-row-btn')) {
-            btn.closest('.req-row').remove();
-        }
-
-        if (btn.classList.contains('req-remove-group-btn')) {
-            btn.closest('.req-group').remove();
-            refreshSeparators();
-        }
-    });
-
-    section.querySelector('#req-add-group-btn').addEventListener('click', function () {
-        groupsContainer.appendChild(cloneGroup());
-        refreshSeparators();
-    });
-
-    /* ── Serialize DOM → POST params before HTMX sends ──────────── */
-    function buildParams() {
-        var params = {};
-        var groups = groupsContainer.querySelectorAll('.req-group');
-        params['group_count'] = groups.length;
-
-        groups.forEach(function (group, gi) {
-            var logicEl = group.querySelector('.req-logic:checked');
-            params['group_' + gi + '_logic'] = logicEl ? logicEl.value : 'all';
-
-            var rows = group.querySelectorAll('.req-row');
-            params['group_' + gi + '_req_count'] = rows.length;
-
-            rows.forEach(function (row, ri) {
-                var type = row.querySelector('.req-type').value;
-                params['group_' + gi + '_req_' + ri + '_type'] = type;
-
-                var param = '', param2 = '';
-                if (type === 'stat_gte' || type === 'stat_lte') {
-                    var statName = (row.querySelector('.req-stat-name').value || '').trim();
-                    var statVal  = (row.querySelector('.req-stat-value').value || '0').trim();
-                    param = statName + ':' + statVal;
-                } else if (type === 'has_flag' || type === 'missing_flag') {
-                    param = (row.querySelector('.req-flag-name').value || '').trim();
-                } else if (type === 'quest_completed' || type === 'quest_not_done') {
-                    param = (row.querySelector('.req-quest-id').value || '').trim();
-                } else if (type === 'quest_ending') {
-                    param  = (row.querySelector('.req-quest-id').value    || '').trim();
-                    param2 = (row.querySelector('.req-ending-type').value || '').trim();
-                } else if (type === 'level_gte' || type === 'xp_gte') {
-                    param = (row.querySelector('.req-number-val').value || '0').trim();
-                } else if (type === 'has_item' || type === 'missing_item') {
-                    param = (row.querySelector('.req-item-id').value || '').trim();
-                } else if (type === 'has_contact' || type === 'missing_contact') {
-                    param = (row.querySelector('.req-contact-id').value || '').trim();
-                }
-
-                params['group_' + gi + '_req_' + ri + '_param']  = param;
-                if (param2) {
-                    params['group_' + gi + '_req_' + ri + '_param2'] = param2;
-                }
-            });
-        });
-
-        return params;
-    }
-
-    /* Expose serialiser so parent forms (e.g. choice_panel) can include req data */
-    section.buildReqParams = buildParams;
-
-    var form = section.querySelector('form');
-    form.addEventListener('htmx:configRequest', function (evt) {
-        var extra = buildParams();
-        var params = evt.detail.parameters;
-        if (typeof params.set === 'function') {
-            // HTMX 2.x: parameters is URLSearchParams or FormData
-            Object.keys(extra).forEach(function (key) {
-                params.set(key, String(extra[key]));
-            });
-        } else {
-            // HTMX 1.x: parameters is a plain object
-            Object.assign(params, extra);
-        }
-    });
-})();
-</script>

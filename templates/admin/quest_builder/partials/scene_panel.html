@@ -1,4 +1,4 @@
-<div id="scene-panel" style="padding: 18px;">
+<div id="scene-panel" data-qb-scene-panel style="padding: 18px;">
     <h2 style="margin-top: 0;">
         {% if scene %}Edit Scene{% else %}New Scene{% endif %}
     </h2>
@@ -25,7 +25,7 @@
 
         <div style="margin-bottom: 10px;">
             <label for="scene-type"><strong>Scene Type</strong></label><br>
-            <select id="scene-type" name="scene_type" style="width: 100%;">
+            <select id="scene-type" data-qb-scene-type name="scene_type" style="width: 100%;">
                 {% for type_value, type_label in scene_types %}
                     <option value="{{ type_value }}" {% if scene and scene.scene_type == type_value %}selected{% elif not scene and type_value == 'normal' %}selected{% endif %}>
                         {{ type_label }}
@@ -34,7 +34,7 @@
             </select>
         </div>
 
-        <div id="ending-type-row" style="margin-bottom: 10px;">
+        <div id="ending-type-row" data-qb-ending-type-row style="margin-bottom: 10px;">
             <label for="ending-type"><strong>Ending Type</strong></label><br>
             <select id="ending-type" name="ending_type" style="width: 100%;">
                 <option value="">— select —</option>
@@ -49,7 +49,7 @@
             <textarea id="scene-description" name="description" rows="6" style="width: 100%;">{{ scene.body|default:'' }}</textarea>
         </div>
 
-        <div id="roll-settings" style="border-top: 1px solid #ddd; margin-top: 12px; padding-top: 10px;">
+        <div id="roll-settings" data-qb-roll-settings style="border-top: 1px solid #ddd; margin-top: 12px; padding-top: 10px;">
             <h3 style="margin: 0 0 8px;">Roll Settings</h3>
             <div style="margin-bottom: 8px;">
                 <label>
@@ -181,10 +181,7 @@
 
         <div style="display: flex; gap: 8px; margin-top: 16px; margin-bottom: 4px;">
             <button type="submit" class="button default">Save</button>
-            <button
-                type="button"
-                class="button"
-                onclick="document.getElementById('panel').innerHTML = '';">
+            <button type="button" class="button" hx-on:click="document.getElementById('panel').innerHTML = '';">
                 Cancel
             </button>
             {% if scene %}
@@ -242,36 +239,3 @@
         </div>
     {% endif %}
 </div>
-
-<script>
-    (function () {
-        const panel = document.getElementById('scene-panel');
-        if (!panel) {
-            return;
-        }
-
-        const sceneType = panel.querySelector('#scene-type');
-        const rollSettings = panel.querySelector('#roll-settings');
-        if (!sceneType || !rollSettings) {
-            return;
-        }
-
-        function updateVisibility() {
-            const type = sceneType.value;
-            rollSettings.style.display = (type === 'normal') ? 'block' : 'none';
-
-            const combatSection = document.getElementById('combat-section');
-            if (combatSection) {
-                combatSection.style.display = (type === 'combat') ? 'block' : 'none';
-            }
-
-            const endingTypeRow = panel.querySelector('#ending-type-row');
-            if (endingTypeRow) {
-                endingTypeRow.style.display = (type === 'ending') ? 'block' : 'none';
-            }
-        }
-
-        sceneType.addEventListener('change', updateVisibility);
-        updateVisibility();
-    })();
-</script>

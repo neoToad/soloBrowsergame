@@ -2,30 +2,6 @@
 
 Use these prompts one at a time in a coding agent. Each prompt assumes this repo�s architecture rule: business logic must live in services, not views.
 
-## 12) Extract inline quest-builder JS into static module(s)
-
-```text
-Move inline JavaScript out of quest-builder partial templates into static JS files.
-
-Scope:
-- `templates/admin/quest_builder/partials/items_section.html`
-- `templates/admin/quest_builder/partials/contacts_section.html`
-- `templates/admin/quest_builder/partials/requirements_section.html`
-- `templates/admin/quest_builder/partials/scene_panel.html`
-- `templates/admin/quest_builder/partials/choice_panel.html`
-
-Requirements:
-1. Create static modules under `static/js/admin/quest_builder/`.
-2. Use data attributes to parameterize selectors and row templates.
-3. Preserve HTMX swap compatibility (re-bind behavior after fragment swaps).
-4. Remove inline `onclick` handlers and inline `<script>` blocks from these partials.
-5. Keep existing UI behavior exactly (add/remove row, reindexing, dynamic param visibility).
-
-Deliverables:
-- Reusable JS modules with no inline scripts in listed templates.
-- Frontend regression checks for row editing workflows.
-```
-
 ## 13) Remove tracked `__pycache__` artifacts from git index
 
 ```text

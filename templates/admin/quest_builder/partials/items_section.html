@@ -1,4 +1,4 @@
-<div id="items-section" style="border-top: 1px solid #ddd; margin-top: 16px; padding-top: 12px;">
+<div id="items-section" data-qb-items-section style="border-top: 1px solid #ddd; margin-top: 16px; padding-top: 12px;">
     <details {% if scene_items %}open{% endif %}>
         <summary style="cursor: pointer; font-weight: 600; font-size: 14px; margin-bottom: 10px;">
             Items ({{ scene_items|length }})
@@ -16,11 +16,11 @@
             hx-swap="outerHTML">
             {% csrf_token %}
 
-            <div id="items-rows">
+            <div id="items-rows" data-qb-items-rows>
                 {% for si in scene_items %}
-                    <div class="item-row" style="display: flex; gap: 6px; align-items: center; margin-bottom: 6px;">
-                        <select name="item_id_{{ forloop.counter0 }}" style="flex: 1;">
-                            <option value="">— select item —</option>
+                    <div class="item-row" data-qb-item-row style="display: flex; gap: 6px; align-items: center; margin-bottom: 6px;">
+                        <select data-qb-item-id name="item_id_{{ forloop.counter0 }}" style="flex: 1;">
+                            <option value="">-- select item --</option>
                             {% for item in all_items %}
                                 <option value="{{ item.id }}" {% if si.item_id == item.id %}selected{% endif %}>
                                     {{ item.name }}
@@ -29,69 +29,39 @@
                         </select>
                         <input
                             type="number"
+                            data-qb-qty
                             name="quantity_{{ forloop.counter0 }}"
                             value="{{ si.quantity }}"
                             min="1"
                             style="width: 60px;">
-                        <button type="button" class="button js-remove-item-row" style="background: #dc3545; color: #fff; border: none; padding: 4px 8px; cursor: pointer;">✕</button>
+                        <button type="button" class="button js-remove-item-row" data-qb-remove-item style="background: #dc3545; color: #fff; border: none; padding: 4px 8px; cursor: pointer;">x</button>
                     </div>
                 {% endfor %}
             </div>
 
-            <template id="item-row-template">
-                <div class="item-row" style="display: flex; gap: 6px; align-items: center; margin-bottom: 6px;">
-                    <select name="__ITEM_NAME__" style="flex: 1;">
-                        <option value="">— select item —</option>
+            <template id="item-row-template" data-qb-item-template>
+                <div class="item-row" data-qb-item-row style="display: flex; gap: 6px; align-items: center; margin-bottom: 6px;">
+                    <select data-qb-item-id name="__ITEM_NAME__" style="flex: 1;">
+                        <option value="">-- select item --</option>
                         {% for item in all_items %}
                             <option value="{{ item.id }}">{{ item.name }}</option>
                         {% endfor %}
                     </select>
                     <input
                         type="number"
+                        data-qb-qty
                         name="__QTY_NAME__"
                         value="1"
                         min="1"
                         style="width: 60px;">
-                    <button type="button" class="button js-remove-item-row" style="background: #dc3545; color: #fff; border: none; padding: 4px 8px; cursor: pointer;">✕</button>
+                    <button type="button" class="button js-remove-item-row" data-qb-remove-item style="background: #dc3545; color: #fff; border: none; padding: 4px 8px; cursor: pointer;">x</button>
                 </div>
             </template>
 
             <div style="display: flex; gap: 8px; margin-top: 8px;">
-                <button type="button" class="button" id="add-item-btn" style="font-size: 12px;">+ Add Item</button>
+                <button type="button" class="button" id="add-item-btn" data-qb-add-item style="font-size: 12px;">+ Add Item</button>
                 <button type="submit" class="button default" style="font-size: 12px;">Save Items</button>
             </div>
         </form>
     </details>
 </div>
-
-<script>
-(function () {
-    var section = document.getElementById('items-section');
-    if (!section) return;
-
-    function reindexRows() {
-        section.querySelectorAll('.item-row').forEach(function (row, i) {
-            row.querySelector('select').name = 'item_id_' + i;
-            row.querySelector('input[type="number"]').name = 'quantity_' + i;
-        });
-    }
-
-    var addBtn = section.querySelector('#add-item-btn');
-    if (addBtn) {
-        addBtn.addEventListener('click', function () {
-            var tpl = section.querySelector('#item-row-template');
-            if (!tpl) return;
-            var clone = tpl.content.cloneNode(true);
-            section.querySelector('#items-rows').appendChild(clone);
-            reindexRows();
-        });
-    }
-
-    section.querySelector('#items-rows').addEventListener('click', function (e) {
-        var btn = e.target.closest('.js-remove-item-row');
-        if (!btn) return;
-        btn.closest('.item-row').remove();
-        reindexRows();
-    });
-})();
-</script>

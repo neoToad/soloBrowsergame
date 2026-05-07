@@ -1,4 +1,4 @@
-<div id="choice-panel" style="padding: 18px;">
+<div id="choice-panel" data-qb-choice-panel style="padding: 18px;">
     <h2 style="margin-top: 0;">
         {% if choice %}Edit Choice{% else %}Add Choice{% endif %}
     </h2>
@@ -28,18 +28,18 @@
             <h3 style="margin: 0 0 8px;">Routing</h3>
             <div style="display: flex; gap: 16px; margin-bottom: 12px;">
                 <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600;">
-                    <input type="radio" name="routing_type" value="direct" id="route-direct"
+                    <input type="radio" name="routing_type" value="direct" id="route-direct" data-qb-route-direct
                         {% if routing_type == 'direct' %}checked{% endif %}>
                     Direct
                 </label>
                 <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 600;">
-                    <input type="radio" name="routing_type" value="roll" id="route-roll"
+                    <input type="radio" name="routing_type" value="roll" id="route-roll" data-qb-route-roll
                         {% if routing_type == 'roll' %}checked{% endif %}>
                     Roll-based
                 </label>
             </div>
 
-            <div id="section-direct" {% if routing_type == 'roll' %}style="display: none;"{% endif %}>
+            <div id="section-direct" data-qb-section-direct {% if routing_type == 'roll' %}style="display: none;"{% endif %}>
                 <label for="target-scene"><strong>Target Scene</strong></label><br>
                 <select id="target-scene" name="target_scene" style="width: 100%; margin-top: 4px;">
                     <option value="">— select scene —</option>
@@ -77,7 +77,7 @@
                 </select>
             </div>
 
-            <div id="section-roll" {% if routing_type == 'direct' %}style="display: none;"{% endif %}>
+            <div id="section-roll" data-qb-section-roll {% if routing_type == 'direct' %}style="display: none;"{% endif %}>
                 <small style="display: block; margin-bottom: 10px; color: #666;">
                     Roll stat and difficulty are set on the scene, not the choice.
                 </small>
@@ -123,7 +123,7 @@
                     style="width: 100%; margin-top: 4px;"
                     placeholder="Short line logged when this choice resolves (optional)">{{ choice.arrival_flavor|default:'' }}</textarea>
             </div>
-            <div id="failure-flavor-row" {% if routing_type != 'roll' %}style="display: none;"{% endif %}>
+            <div id="failure-flavor-row" data-qb-failure-flavor-row {% if routing_type != 'roll' %}style="display: none;"{% endif %}>
                 <label for="failure-arrival-flavor" style="font-size: 12px; color: #555;">On roll failure</label>
                 <textarea
                     id="failure-arrival-flavor"
@@ -160,10 +160,7 @@
 
         <div style="display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap;">
             <button type="submit" class="button default">Save</button>
-            <button
-                type="button"
-                class="button"
-                onclick="document.getElementById('panel').innerHTML = '';">
+            <button type="button" class="button" hx-on:click="document.getElementById('panel').innerHTML = '';">
                 Cancel
             </button>
             {% if choice %}
@@ -184,50 +181,3 @@
         {% include "admin/quest_builder/partials/requirements_section.html" with save_url=req_save_url %}
     {% endif %}
 </div>
-
-<script>
-(function () {
-    const panel = document.getElementById('choice-panel');
-    if (!panel) return;
-
-    const routeDirect = panel.querySelector('#route-direct');
-    const routeRoll   = panel.querySelector('#route-roll');
-    const sectionDirect = panel.querySelector('#section-direct');
-    const sectionRoll   = panel.querySelector('#section-roll');
-
-    const failureFlavorRow = panel.querySelector('#failure-flavor-row');
-
-    function updateSections() {
-        if (routeRoll && routeRoll.checked) {
-            sectionDirect.style.display = 'none';
-            sectionRoll.style.display   = 'block';
-            if (failureFlavorRow) failureFlavorRow.style.display = 'block';
-        } else {
-            sectionDirect.style.display = 'block';
-            sectionRoll.style.display   = 'none';
-            if (failureFlavorRow) failureFlavorRow.style.display = 'none';
-        }
-    }
-
-    if (routeDirect) routeDirect.addEventListener('change', updateSections);
-    if (routeRoll)   routeRoll.addEventListener('change', updateSections);
-
-    /* Inject requirements data into the main Save POST */
-    var mainForm = panel.querySelector('form');
-    if (mainForm) {
-        mainForm.addEventListener('htmx:configRequest', function (evt) {
-            var section = document.getElementById('requirements-section');
-            if (!section || !section.buildReqParams) return;
-            var extra = section.buildReqParams();
-            var params = evt.detail.parameters;
-            if (typeof params.set === 'function') {
-                Object.keys(extra).forEach(function (k) {
-                    params.set(k, String(extra[k]));
-                });
-            } else {
-                Object.assign(params, extra);
-            }
-        });
-    }
-})();
-</script>

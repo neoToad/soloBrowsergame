@@ -11,6 +11,7 @@
 
 {% block content %}
 <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+<script src="{% static 'js/admin/quest_builder/panels.js' %}"></script>
 <style>
     :root {
         --qb-canvas-bg: #151a22;
@@ -1071,6 +1072,9 @@
     document.body.addEventListener('htmx:afterSwap', function (evt) {
         if (evt.target.id === 'panel') {
             clearUnsaved();
+            if (window.qbQuestBuilderPanels) {
+                window.qbQuestBuilderPanels.init(evt.target);
+            }
             // Attach input listeners to detect unsaved changes
             setTimeout(function () {
                 var inputs = panel.querySelectorAll('input, textarea, select');
@@ -1083,6 +1087,9 @@
         // Clear unsaved after a successful save
         if (evt.target.id === 'htmx-sink') {
             clearUnsaved();
+        }
+        if (window.qbQuestBuilderPanels) {
+            window.qbQuestBuilderPanels.init(evt.target);
         }
     });
 
@@ -1140,6 +1147,10 @@
             card.classList.remove('scene-card--highlight');
         }, 3000);
     });
+
+    if (window.qbQuestBuilderPanels) {
+        window.qbQuestBuilderPanels.init(document);
+    }
 
     // --- highlightChoice event ---
     document.addEventListener('highlightChoice', function (e) {
