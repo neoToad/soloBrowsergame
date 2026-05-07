@@ -12,23 +12,37 @@ from .hubs import import_hubs_data
 from .items import import_items_data
 from .quests import import_quest_data
 from .world import import_world_data
-from .types import ImportResult
+from .types import ImportResult, ImportType
 
-TYPE_ORDER = ["items", "enemies_contacts", "hubs", "world", "quest"]
+TYPE_ORDER = [
+    ImportType.ITEMS,
+    ImportType.ENEMIES_CONTACTS,
+    ImportType.HUBS,
+    ImportType.WORLD,
+    ImportType.QUEST,
+]
+
+IMPORT_HANDLERS = {
+    ImportType.ITEMS: import_items_data,
+    ImportType.ENEMIES_CONTACTS: import_enemies_and_contacts_data,
+    ImportType.HUBS: import_hubs_data,
+    ImportType.WORLD: import_world_data,
+    ImportType.QUEST: import_quest_data,
+}
 
 
-def detect_import_type(data: dict) -> str | None:
+def detect_import_type(data: dict) -> ImportType | None:
     keys = set(data.keys())
     if "quest" in keys:
-        return "quest"
+        return ImportType.QUEST
     if "hubs" in keys:
-        return "hubs"
+        return ImportType.HUBS
     if "items" in keys:
-        return "items"
+        return ImportType.ITEMS
     if keys & {"enemies", "contacts"}:
-        return "enemies_contacts"
+        return ImportType.ENEMIES_CONTACTS
     if keys & {"gangs", "properties", "territories"}:
-        return "world"
+        return ImportType.WORLD
     return None
 
 
@@ -55,22 +69,15 @@ def discover_yaml_files(paths: list[str]) -> list[str]:
     return files
 
 
-def _import_typed_data(import_type: str, data: dict) -> ImportResult:
-    if import_type == "items":
-        return import_items_data(data)
-    if import_type == "enemies_contacts":
-        return import_enemies_and_contacts_data(data)
-    if import_type == "hubs":
-        return import_hubs_data(data)
-    if import_type == "quest":
-        return import_quest_data(data)
-    if import_type == "world":
-        return import_world_data(data)
-    raise CommandError(f"Unsupported import type: {import_type}")
+def _import_typed_data(import_type: ImportType, data: dict) -> ImportResult:
+    handler = IMPORT_HANDLERS.get(import_type)
+    if handler is None:
+        raise CommandError(f"Unsupported import type: {import_type.value}")
+    return handler(data)
 
 
 def import_all_sources(paths: list[str]) -> tuple[ImportResult, dict[str, list[tuple[str, dict]]]]:
-    buckets: dict[str, list[tuple[str, dict]]] = {key: [] for key in TYPE_ORDER}
+    buckets: dict[ImportType, list[tuple[str, dict]]] = {key: [] for key in TYPE_ORDER}
     for file_path in discover_yaml_files(paths):
         data = load_yaml(file_path)
         import_type = detect_import_type(data)
@@ -83,13 +90,23 @@ def import_all_sources(paths: list[str]) -> tuple[ImportResult, dict[str, list[t
         for import_type in TYPE_ORDER:
             for _, data in buckets[import_type]:
                 result.merge(_import_typed_data(import_type, data))
-    return result, buckets
+    return result, {key.value: value for key, value in buckets.items()}
 
 
-def import_single_source(path: str, expected_type: str) -> ImportResult:
+def _coerce_import_type(import_type: str | ImportType) -> ImportType:
+    if isinstance(import_type, ImportType):
+        return import_type
+    try:
+        return ImportType(import_type)
+    except ValueError as exc:
+        raise CommandError(f"Unsupported import type: {import_type}") from exc
+
+
+def import_single_source(path: str, expected_type: str | ImportType) -> ImportResult:
     data = load_yaml(path)
     detected = detect_import_type(data)
-    if detected != expected_type:
-        raise CommandError(f"Expected import type '{expected_type}' but found '{detected or 'unknown'}'")
+    expected = _coerce_import_type(expected_type)
+    if detected != expected:
+        raise CommandError(f"Expected import type '{expected.value}' but found '{detected.value if detected else 'unknown'}'")
     with transaction.atomic():
-        return _import_typed_data(expected_type, data)
+        return _import_typed_data(expected, data)

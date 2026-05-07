@@ -1,4 +1,13 @@
 from dataclasses import dataclass, field
+from enum import Enum
+
+
+class ImportType(str, Enum):
+    ITEMS = "items"
+    ENEMIES_CONTACTS = "enemies_contacts"
+    HUBS = "hubs"
+    WORLD = "world"
+    QUEST = "quest"
 
 
 @dataclass

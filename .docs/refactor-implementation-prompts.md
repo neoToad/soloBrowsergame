@@ -2,23 +2,6 @@
 
 Use these prompts one at a time in a coding agent. Each prompt assumes this repo�s architecture rule: business logic must live in services, not views.
 
-## 8) Replace stringly-typed import dispatch with enum/registry
-
-```text
-Refactor `game/services/importers/orchestrator.py` to remove string `if/elif` dispatch.
-
-Requirements:
-1. Introduce an enum (e.g., `ImportType`) in `game/services/importers/types.py`.
-2. Convert `detect_import_type()` to return enum values, not raw strings.
-3. Replace `_import_typed_data()` conditionals with a registry map `{ImportType: handler}`.
-4. Keep import order deterministic and equivalent to current `TYPE_ORDER`.
-5. Maintain current error handling (`CommandError`) and CLI behavior.
-
-Deliverables:
-- Enum + registry dispatch.
-- Updated tests validating detection and dispatch.
-```
-
 ## 9) Split overloaded Django admin module
 
 ```text
