@@ -113,7 +113,13 @@ def scene_save(request, quest_id, scene_id):
         request=request,
     )
     response = HttpResponse(html)
-    response_utils.attach_triggers(response, {"sceneUpdated": {"sceneId": scene.id}, "scene.updated": {"sceneId": scene.id}})
+    response_utils.attach_triggers(
+        response,
+        response_utils.dual_event_triggers(
+            camel_event="sceneUpdated",
+            camel_payload={"sceneId": scene.id},
+        ),
+    )
     return response
 
 
@@ -133,7 +139,13 @@ def scene_create(request, quest_id):
         request=request,
     )
     response = HttpResponse(html)
-    response_utils.attach_triggers(response, {"sceneUpdated": {"sceneId": scene.id}, "scene.updated": {"sceneId": scene.id}})
+    response_utils.attach_triggers(
+        response,
+        response_utils.dual_event_triggers(
+            camel_event="sceneUpdated",
+            camel_payload={"sceneId": scene.id},
+        ),
+    )
     return response
 
 
@@ -166,7 +178,13 @@ def scene_delete(request, quest_id, scene_id):
         request=request,
     )
     response = HttpResponse(html)
-    response_utils.attach_triggers(response, {"sceneUpdated": {"sceneId": scene_id}, "scene.updated": {"sceneId": scene_id}})
+    response_utils.attach_triggers(
+        response,
+        response_utils.dual_event_triggers(
+            camel_event="sceneUpdated",
+            camel_payload={"sceneId": scene_id},
+        ),
+    )
     return response
 
 

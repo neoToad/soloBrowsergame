@@ -74,8 +74,9 @@ def choice_create(request, quest_id):
     response = HttpResponse(html)
     response_utils.attach_triggers(
         response,
-        {
-            "choiceCreated": {
+        response_utils.dual_event_triggers(
+            camel_event="choiceCreated",
+            camel_payload={
                 "id": choice.id,
                 "quest_id": quest_id,
                 "source_scene_id": choice.scene_id,
@@ -85,7 +86,7 @@ def choice_create(request, quest_id):
                 "failure_scene_id": choice.failure_scene_id,
                 "label": choice.label,
             },
-            "choice.created": {
+            dot_payload={
                 "id": choice.id,
                 "questId": quest_id,
                 "sourceSceneId": choice.scene_id,
@@ -95,7 +96,7 @@ def choice_create(request, quest_id):
                 "failureSceneId": choice.failure_scene_id,
                 "label": choice.label,
             },
-        },
+        ),
     )
     return response
 
@@ -118,8 +119,9 @@ def choice_save(request, quest_id, choice_id):
     response = response_utils.empty_response()
     response_utils.attach_triggers(
         response,
-        {
-            "choiceUpdated": {
+        response_utils.dual_event_triggers(
+            camel_event="choiceUpdated",
+            camel_payload={
                 "id": choice.id,
                 "source_scene_id": choice.scene_id,
                 "routing_type": routing_type,
@@ -128,7 +130,7 @@ def choice_save(request, quest_id, choice_id):
                 "failure_scene_id": choice.failure_scene_id,
                 "label": choice.label,
             },
-            "choice.updated": {
+            dot_payload={
                 "id": choice.id,
                 "sourceSceneId": choice.scene_id,
                 "routingType": routing_type,
@@ -137,7 +139,7 @@ def choice_save(request, quest_id, choice_id):
                 "failureSceneId": choice.failure_scene_id,
                 "label": choice.label,
             },
-        },
+        ),
     )
     return response
 
@@ -155,10 +157,11 @@ def choice_delete(request, quest_id, choice_id):
     response = response_utils.empty_response()
     response_utils.attach_triggers(
         response,
-        {
-            "choiceDeleted": {"id": choice_id, "source_scene_id": source_scene_id},
-            "choice.deleted": {"id": choice_id, "sourceSceneId": source_scene_id},
-        },
+        response_utils.dual_event_triggers(
+            camel_event="choiceDeleted",
+            camel_payload={"id": choice_id, "source_scene_id": source_scene_id},
+            dot_payload={"id": choice_id, "sourceSceneId": source_scene_id},
+        ),
     )
     return response
 

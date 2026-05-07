@@ -5,6 +5,7 @@ from django.urls import reverse
 
 from game.presentation.responses import (
     attach_triggers,
+    dual_event_triggers,
     empty_response,
     error_response,
     redirect_or_htmx,
@@ -105,3 +106,32 @@ class ResponseHelpersTest(SimpleTestCase):
 
         self.assertIs(returned, response)
         self.assertNotIn("HX-Trigger", response.headers)
+
+    def test_dual_event_triggers_builds_camel_and_dot_variants(self):
+        triggers = dual_event_triggers(
+            camel_event="sceneUpdated",
+            camel_payload={"sceneId": 12},
+        )
+
+        self.assertEqual(
+            triggers,
+            {
+                "sceneUpdated": {"sceneId": 12},
+                "scene.updated": {"sceneId": 12},
+            },
+        )
+
+    def test_dual_event_triggers_allows_custom_dot_payload(self):
+        triggers = dual_event_triggers(
+            camel_event="choiceDeleted",
+            camel_payload={"id": 9, "source_scene_id": 2},
+            dot_payload={"id": 9, "sourceSceneId": 2},
+        )
+
+        self.assertEqual(
+            triggers,
+            {
+                "choiceDeleted": {"id": 9, "source_scene_id": 2},
+                "choice.deleted": {"id": 9, "sourceSceneId": 2},
+            },
+        )

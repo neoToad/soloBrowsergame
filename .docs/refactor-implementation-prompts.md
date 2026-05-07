@@ -2,22 +2,6 @@
 
 Use these prompts one at a time in a coding agent. Each prompt assumes this repo�s architecture rule: business logic must live in services, not views.
 
-## 4) Add a trigger helper for snake_case + dot.case event names
-
-```text
-Remove manual duplication of HTMX trigger naming conventions in quest-builder responses.
-
-Requirements:
-1. Add a helper in `game/presentation/responses.py` (or `game/quest_builder_views/partials.py`) that takes canonical event info and emits both variants, e.g.:
-   - `sceneUpdated` and `scene.updated`
-2. Replace hand-written dual trigger dicts in scene/choice endpoints.
-3. Preserve exact trigger payload shapes consumed by frontend.
-
-Deliverables:
-- One trigger builder used everywhere in quest-builder endpoints.
-- Tests covering trigger header values.
-```
-
 ## 5) Retire legacy pending-enemy-attack fallback in combat service
 
 ```text
