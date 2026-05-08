@@ -1,152 +1,75 @@
 # Tech Debt Register
 
 ## Scope
-Inventory of shortcuts, workarounds, missing features, and scaling risks observed in the current codebase. No code changes were made.
+Inventory of shortcuts, workarounds, missing features, and scaling risks observed in the current codebase.
 
-## Critical debt (likely to hurt as codebase grows)
+## Active debt
 
-1. Monolithic view/controller surfaces increase change risk and regression probability.
-- Files:
-  - [`game/quest_builder_views.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/quest_builder_views.py)
-  - [`game/views.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/views.py)
-- Risk:
-  - High coupling across unrelated endpoints; small edits can break multiple flows.
-  - Hard to enforce architecture rule "business logic in services only" consistently.
+### High
 
-2. Monolithic admin module with mixed concerns.
-- File: [`game/admin.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/admin.py)
-- Risk:
-  - Registration, inlines, and custom route wiring are all centralized; maintenance cost and review complexity will rise sharply.
-
-3. Combat service still carries migration-era compatibility logic.
-- Files:
-  - [`game/services/combat.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/combat.py)
-  - [`game/models/combat.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/models/combat.py)
-- Evidence:
-  - Legacy pending attack fallback (`pending_enemy_attack` JSON compatibility path).
-- Risk:
-  - Dual-path behavior complicates debugging and correctness, especially around state transitions.
-
-4. Import pipeline is broad and procedural with stringly-typed dispatch.
-- Files:
-  - [`game/services/importers/domain.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/importers/domain.py)
-  - [`game/services/importers/orchestrator.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/importers/orchestrator.py)
-- Risk:
-  - Easier to introduce partial-import bugs and harder to reason about rollback/error boundaries as content grows.
-
-## High debt (important to address soon)
-
-1. Legacy allowance code embedded in model validation.
+1. Legacy allowance path remains in flag validation for existing rows.
 - Files:
   - [`game/models/world.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/models/world.py)
-  - [`game/models/jobs.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/models/jobs.py)
   - [`game/services/flag_registry.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/flag_registry.py)
-- Risk:
-  - Accepting legacy values can keep invalid historical states alive and complicate future invariants.
-
-2. Public API leaks private internals in jobs service aggregator.
-- File: [`game/services/jobs.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/jobs.py)
 - Evidence:
-  - `__all__` exports underscore-prefixed internals (`_roll_check`, `_tier_rank`, etc.).
+  - `Choice.clean()` passes prior persisted values as `legacy_values` into `validate_flag_name(...)`.
 - Risk:
-  - Internal implementation details become de facto public contracts.
+  - Keeps transitional invalid historical states alive and weakens strict registry invariants.
 
-3. Duplicated recon-tier text and mapping logic.
-- Files:
-  - [`game/services/jobs_lifecycle.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/jobs_lifecycle.py)
-  - [`game/services/jobs_listing.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/jobs_listing.py)
-- Risk:
-  - Drift between duplicate helpers and inconsistent behavior over time.
-
-4. Repeated inline error/trigger response boilerplate in quest builder endpoints.
-- File: [`game/quest_builder_views.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/quest_builder_views.py)
-- Risk:
-  - Inconsistent status/messages/trigger payloads across endpoints.
-
-## Missing features / unfinished behavior
-
-1. Heat-decay gameplay rule explicitly deferred.
-- File: [`game/models/player.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/models/player.py)
-- Evidence:
-  - TODO comment indicates planned heat decay not implemented.
-- Risk:
-  - Economy/heat progression balance may diverge from design intent.
-
-2. Compatibility alias/event-contract burden still active.
+2. Compatibility event contract still emits dual legacy + normalized trigger names.
 - Files:
   - [`.docs/ENDPOINT_RESPONSE_CONTRACT.md`](/C:/Users/colin/PycharmProjects/soloBrowserGame/.docs/ENDPOINT_RESPONSE_CONTRACT.md)
-  - [`game/quest_builder_views.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/quest_builder_views.py)
+  - [`game/quest_builder_views/scenes.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/quest_builder_views/scenes.py)
+  - [`game/quest_builder_views/choices.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/quest_builder_views/choices.py)
 - Risk:
-  - Dual event naming (`legacy + normalized`) increases long-term frontend/backend contract complexity.
+  - Dual naming (`sceneUpdated` + `scene.updated`, etc.) increases long-term backend/frontend contract complexity.
 
-## Scaling/operability debt
-
-1. Large fixture-driven content with import/export-heavy workflows but limited modularization.
+3. Import orchestration still depends on key-based detection and centralized dispatch.
 - Files:
-  - [`game/fixtures/scene.json`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/fixtures/scene.json)
-  - [`game/fixtures/choice.json`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/fixtures/choice.json)
+  - [`game/services/importers/orchestrator.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/importers/orchestrator.py)
+- Evidence:
+  - `detect_import_type(...)` infers domain from top-level YAML keys.
+  - `IMPORT_HANDLERS` central map controls per-domain execution.
 - Risk:
-  - Content maintenance and merge conflicts worsen as narrative size grows.
+  - Ambiguous or malformed content can route to unexpected import paths; behavior remains stringly/config-shaped.
 
-2. Tests are concentrated in very large modules.
-- Files:
-  - [`game/tests/test_jobs_views.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/tests/test_jobs_views.py)
-  - [`game/tests/test_navigation.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/tests/test_navigation.py)
-  - [`game/tests/test_combat.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/tests/test_combat.py)
-- Risk:
-  - Slower authoring/review cycles and harder pinpointing of behavioral regressions.
+### Medium
 
-3. Generated artifacts appear in repository tree (`__pycache__`).
-- Path examples under `game/**/__pycache__/...`
-- Risk:
-  - Repository noise, larger diffs, accidental stale artifact commits.
-
-4. Encoding/mojibake artifacts in source text/comments.
-- Files seen with artifacts:
-  - [`AGENTS.md`](/C:/Users/colin/PycharmProjects/soloBrowserGame/AGENTS.md)
-  - [`game/fixtures/contact.json`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/fixtures/contact.json)
-  - [`game/services/quest_builder/validation.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/quest_builder/validation.py)
-  - [`game/admin.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/admin.py)
-  - [`game/services/combat.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/combat.py)
+1. Heat-decay gameplay rule is still deferred.
+- File:
   - [`game/models/player.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/models/player.py)
+- Evidence:
+  - Inline TODO explicitly says planned per-turn heat decay is not implemented.
 - Risk:
-  - UI text quality issues and potential serialization/render inconsistencies.
+  - Balance/economy behavior can drift from intended design.
 
-## Maintainability debt patterns
-
-1. Service functions often return loosely structured dictionaries rather than typed return objects.
-- Files:
-  - [`game/services/jobs_lifecycle.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/jobs_lifecycle.py)
-  - [`game/services/jobs_listing.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/jobs_listing.py)
+2. Context assembly remains dense and cross-domain.
+- File:
+  - [`game/services/session.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/session.py)
 - Risk:
-  - Contract drift and key-name breakage during refactors.
+  - New panel/features can impact unrelated rendering paths and expand coupling.
 
-2. Context assembly is dense and cross-domain.
-- File: [`game/services/session.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/session.py)
+3. Hand-rolled POST row parsing still exists in quest builder endpoints.
+- File:
+  - [`game/quest_builder_views/scenes.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/quest_builder_views/scenes.py)
+- Evidence:
+  - `scene_gang_standings_save` manually loops `gang_id_<n>`/`standing_change_<n>` keys.
 - Risk:
-  - Any new panel/feature can impact unrelated rendering paths.
+  - Input-shape bugs and inconsistent parsing behavior versus shared parser helpers.
 
-3. Request parsing loops hand-coded in multiple endpoints.
-- File: [`game/quest_builder_views.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/quest_builder_views.py)
+### Operability / hygiene
+
+1. Generated `__pycache__` artifacts are present in the repository tree.
+- Paths:
+  - Multiple `__pycache__` directories under `core/` and `game/**`.
 - Risk:
-  - Input-shape bugs and duplicated parsing quirks.
+  - Repo noise and accidental stale artifact commits.
 
-## Debt from transitional migration support
-
-1. Legacy gate/flag migration history remains embedded in runtime assumptions.
-- Files:
-  - [`game/migrations/0006_migrate_legacy_gates.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/migrations/0006_migrate_legacy_gates.py)
-  - [`game/migrations/0007_remove_legacy_gate_fields.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/migrations/0007_remove_legacy_gate_fields.py)
-  - [`game/migrations/0008_replace_scene_flags.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/migrations/0008_replace_scene_flags.py)
-  - Runtime legacy hooks in model/service code listed above.
+2. Encoding/mojibake artifacts remain in user-facing strings/comments.
+- Files seen with artifacts:
+  - [`game/models/player.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/models/player.py)
+  - [`game/services/combat.py`](/C:/Users/colin/PycharmProjects/soloBrowserGame/game/services/combat.py)
 - Risk:
-  - Transitional behavior becoming permanent and obscuring true domain rules.
+  - Text quality issues and possible rendering inconsistencies.
 
-## Suggested prioritization
-
-1. Break up `quest_builder_views.py`, `views.py`, and `admin.py` (largest maintenance and coupling win).
-2. Retire combat legacy pending-attack fallback once migration cutoff is confirmed.
-3. Split importer domain module and formalize typed handler registry.
-4. Consolidate duplicated jobs helpers and tighten service public API.
-5. Clean repository hygiene (`__pycache__`, encoding normalization) and enforce via CI checks.
-6. Track and implement deferred gameplay rule (heat decay) with explicit design/tests.
+1
