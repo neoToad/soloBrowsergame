@@ -142,6 +142,9 @@ class CombatEnemyResolveViewTest(TestCase):
         self.enemy = self.ctx["enemy"]
         self.victory_scene = self.ctx["victory_scene"]
         self.combat_scene = self.ctx["combat_scene"]
+        self.combat_narrative = "A siren wails somewhere beyond the rooftops."
+        self.combat_scene.body = self.combat_narrative
+        self.combat_scene.save(update_fields=["body"])
         create_active_combat_state(
             self.session,
             self.enemy,
@@ -165,6 +168,7 @@ class CombatEnemyResolveViewTest(TestCase):
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.hp, initial_hp)
         self.assertContains(response, "Your Turn")
+        self.assertNotContains(response, self.combat_narrative)
 
     def test_combat_resolve_enemy_rejects_get_with_405(self):
         response = self.client.get(reverse("combat_resolve_enemy"))

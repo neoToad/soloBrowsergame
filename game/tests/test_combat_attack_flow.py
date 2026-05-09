@@ -18,6 +18,20 @@ class CombatAttackFlowTest(TestCase):
         self.combat_scene = self.ctx["combat_scene"]
         self.victory_scene = self.ctx["victory_scene"]
         self.cs = create_active_combat_state(self.session, self.enemy, enemy_hp=self.enemy.max_hp)
+        self.combat_narrative = "Steel screeches as the alley fight begins."
+        self.combat_scene.body = self.combat_narrative
+        self.combat_scene.save(update_fields=["body"])
+
+    def test_combat_narrative_shows_on_initial_render_then_hides_after_combat_starts(self):
+        initial_response = self.client.get(reverse("scene_detail", kwargs={"scene_key": self.combat_scene.key}))
+        self.assertEqual(initial_response.status_code, 200)
+        self.assertContains(initial_response, self.combat_narrative)
+
+        with patch("game.services.combat.roll_d20", return_value=20):
+            response = self.client.post(reverse("combat_attack"), HTTP_HX_REQUEST="true")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, self.combat_narrative)
 
     def test_player_attack_non_killing_blow_returns_combat_panel(self):
         self.cs.enemy_hp = 100

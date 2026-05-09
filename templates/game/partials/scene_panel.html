@@ -75,7 +75,9 @@
     </div>
     {% endif %}
 
+    {% if show_combat_scene_body %}
     {{ scene.body|linebreaks }}
+    {% endif %}
 
     {% if stats.stat_points > 0 and not combat_state %}
         {% include "game/partials/level_up_panel.html" %}

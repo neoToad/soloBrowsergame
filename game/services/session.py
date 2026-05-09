@@ -75,6 +75,14 @@ def build_core_context(
 ):
     from .scene import get_available_choices
 
+    show_combat_scene_body = True
+    if combat_state and combat_state.is_active:
+        show_combat_scene_body = (
+            combat_state.turn_number == 1
+            and not combat_state.enemy_attack_pending
+            and not combat_state.pending_victory
+        )
+
     return {
         "session": session,
         "scene": scene,
@@ -97,6 +105,7 @@ def build_core_context(
         "turn_summary": turn_summary,
         "roll_result": roll_result,
         "damage_result": damage_result,
+        "show_combat_scene_body": show_combat_scene_body,
     }
 
 
