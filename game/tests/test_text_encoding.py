@@ -6,7 +6,7 @@ from django.test import SimpleTestCase
 class TextEncodingGuardTest(SimpleTestCase):
     def test_no_common_mojibake_signatures(self):
         root = Path(__file__).resolve().parents[2]
-        targets = [root / "game", root / "templates", root / ".docs"]
+        targets = [root / "game", root / "templates", root / "docs"]
         extensions = {".py", ".html", ".md", ".txt", ".yaml", ".yml"}
         bad_tokens = [
             bytes((0xE2, 0x80, 0x94)).decode("latin-1"),  # em dash mojibake
