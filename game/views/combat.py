@@ -1,7 +1,7 @@
 from django.http import HttpResponseNotAllowed
 
 from game.presentation import responses as response_utils
-from game.services import gameplay
+from game.services import gameplay, progression
 from game.services.types import GameplayError
 from game.views.shared import _htmx_response, require_game_session
 
@@ -42,4 +42,6 @@ def combat_continue(request, *, session_context):
     except GameplayError as exc:
         return response_utils.error_response(request, message=str(exc), status=exc.status)
 
+    session, *_ = session_context
+    context["all_quests_complete"] = progression.all_quests_complete(session)
     return _htmx_response(request, context)

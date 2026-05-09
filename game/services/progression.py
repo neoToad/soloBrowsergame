@@ -137,6 +137,14 @@ def maybe_complete_quest(session, stats, next_scene, completed_map):
 
     return log_messages
 
+
+def all_quests_complete(session) -> bool:
+    from ..models import Quest
+
+    total = Quest.objects.filter(is_unlocked=True).count()
+    completed = session.completed_quests.values("quest_id").distinct().count()
+    return total > 0 and completed >= total
+
 XP_THRESHOLDS = {
     1: 0,
     2: 200,
