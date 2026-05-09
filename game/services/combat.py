@@ -1,4 +1,4 @@
-import random
+﻿import random
 from ..utils import roll_d20, stat_modifier
 from .combat_engine import (
     build_enemy_attack_log,
@@ -128,10 +128,8 @@ def execute_player_attack(session, stats, inventory, completed_map, combat_state
         )
         return logs, context
 
-    e = resolve_enemy_attack(enemy, effective_stats)
     logs.append(player_attack_log)
-
-    queue_enemy_attack(combat_state, e)
+    queue_enemy_turn(combat_state)
 
     effective_stats = get_effective_stats(stats, inventory)
     roll_result = RollResult(
@@ -158,7 +156,7 @@ def execute_player_attack(session, stats, inventory, completed_map, combat_state
 
 def execute_enemy_attack(session, stats, inventory, completed_map, combat_state, effective_stats):
     """
-    Apply the queued enemy attack and advance combat. Mutates stats and combat_state.
+    Resolve and apply the enemy attack and advance combat. Mutates stats and combat_state.
     Returns (logs, context). On defeat, returns pre-defeat logs followed by combat-end logs
     so callers can persist in order.
     Raises CombatEncounter.DoesNotExist if the encounter row is missing.
@@ -173,7 +171,10 @@ def execute_enemy_attack(session, stats, inventory, completed_map, combat_state,
     player_defense = 10 + stat_modifier(effective_stats.agility)
     e_mod_str = f"+{enemy.attack_modifier}" if enemy.attack_modifier >= 0 else str(enemy.attack_modifier)
 
-    enemy_attack = consume_enemy_attack(combat_state)
+    if not combat_state.enemy_attack_pending:
+        raise ValueError("No pending enemy attack to consume.")
+    clear_enemy_attack(combat_state)
+    enemy_attack = resolve_enemy_attack(enemy, effective_stats)
     e_roll = enemy_attack.roll
     e_total = enemy_attack.total
     e_hit = enemy_attack.hit
@@ -215,7 +216,7 @@ def execute_enemy_attack(session, stats, inventory, completed_map, combat_state,
     )
     damage_result = None
     if e_hit:
-        dmg_label = f'd({enemy.damage_min}–{enemy.damage_max})'
+        dmg_label = f'd({enemy.damage_min}-{enemy.damage_max})'
         damage_result = DamageResult(
             die_roll=e_dmg, die_label=dmg_label, modifier=0, mod_display='+0', total=e_dmg,
         )
@@ -340,6 +341,24 @@ def queue_enemy_attack(combat_state, attack: CombatRollResult) -> None:
     )
 
 
+def queue_enemy_turn(combat_state) -> None:
+    """
+    Mark that the enemy turn is pending without pre-rolling the enemy attack.
+    """
+    combat_state.pending_enemy_roll = 0
+    combat_state.pending_enemy_total = 0
+    combat_state.pending_enemy_hit = False
+    combat_state.pending_enemy_damage = 0
+    combat_state.save(
+        update_fields=[
+            "pending_enemy_roll",
+            "pending_enemy_total",
+            "pending_enemy_hit",
+            "pending_enemy_damage",
+        ]
+    )
+
+
 def consume_enemy_attack(combat_state) -> PendingEnemyAttack:
     if (
         combat_state.pending_enemy_roll is None
@@ -371,3 +390,5 @@ def clear_enemy_attack(combat_state) -> None:
             "pending_enemy_damage",
         ]
     )
+
+

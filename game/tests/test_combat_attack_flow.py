@@ -120,6 +120,14 @@ class CombatAttackFlowTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "MUSCLE CHECK")
 
+    def test_first_attack_refreshes_latest_event_batch_in_htmx_response(self):
+        with patch("game.services.combat.roll_d20", return_value=3):
+            response = self.client.post(reverse("combat_attack"), HTTP_HX_REQUEST="true")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "You move on him - roll 3")
+        self.assertNotContains(response, "You square up against")
+
     def test_initialize_combat_state_deactivates_when_entering_non_combat_scene(self):
         from game.services.combat import initialize_combat_state
 

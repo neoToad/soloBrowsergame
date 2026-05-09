@@ -16,11 +16,20 @@
         {% if combat_state.pending_victory %}
             Victory
         {% elif combat_state.enemy_attack_pending %}
-            Enemy Turn
+            Up Next: Enemy Turn
         {% else %}
-            Your Turn
+            Up Next: Your Turn
         {% endif %}
     </p>
+    {% if roll_result %}
+    <p class="combat-phase-note">
+        {% if combat_state.pending_victory or combat_state.enemy_attack_pending %}
+            Last Action: You attacked.
+        {% else %}
+            Last Action: {{ combat_state.enemy.name }} attacked.
+        {% endif %}
+    </p>
+    {% endif %}
     {% endif %}
 
     {% if latest_logs %}
@@ -54,10 +63,23 @@
                     </div>
                     <div class="roll-math">
                         <span class="roll-math-line">{{ damage_result.mod_display }} &nbsp;=&nbsp; <strong>{{ damage_result.total }}</strong></span>
-                        <span class="roll-math-dc">damage dealt</span>
+                        <span class="roll-math-dc">
+                            {% if combat_state.pending_victory or combat_state.enemy_attack_pending %}
+                                damage dealt
+                            {% else %}
+                                damage taken
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
-                <p class="roll-verdict">&#x2020;&nbsp; {{ damage_result.total }} dmg</p>
+                <p class="roll-verdict">
+                    &#x2020;&nbsp; {{ damage_result.total }} dmg
+                    {% if combat_state.pending_victory or combat_state.enemy_attack_pending %}
+                        dealt
+                    {% else %}
+                        taken
+                    {% endif %}
+                </p>
             </div>
             {% else %}
             <div class="roll-result roll-result--miss">

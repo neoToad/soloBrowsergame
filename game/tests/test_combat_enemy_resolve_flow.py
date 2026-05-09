@@ -31,7 +31,10 @@ class CombatEnemyResolveServiceTest(TestCase):
         self.stats.hp = 10
         self.stats.save(update_fields=["hp"])
 
-        logs, _context = execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
+        with patch("game.services.combat.roll_d20", return_value=10), patch(
+            "game.services.combat.random.randint", return_value=3
+        ):
+            logs, _context = execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
 
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.hp, 7)
@@ -55,7 +58,10 @@ class CombatEnemyResolveServiceTest(TestCase):
         self.stats.hp = 10
         self.stats.save(update_fields=["hp"])
 
-        logs, _context = execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
+        with patch("game.services.combat.roll_d20", return_value=1), patch(
+            "game.services.combat.random.randint", return_value=2
+        ):
+            logs, _context = execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
 
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.hp, 10)
@@ -81,7 +87,10 @@ class CombatEnemyResolveServiceTest(TestCase):
         self.encounter.defeat_arrival_flavor = "You wake up in a cold alley."
         self.encounter.save(update_fields=["defeat_arrival_flavor"])
 
-        logs, _context = execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
+        with patch("game.services.combat.roll_d20", return_value=15), patch(
+            "game.services.combat.random.randint", return_value=5
+        ):
+            logs, _context = execute_enemy_attack(self.session, self.stats, {}, {}, cs, self.stats)
 
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.hp, 0)
@@ -109,7 +118,10 @@ class CombatEnemyResolveServiceTest(TestCase):
         self.stats.hp = 2
         self.stats.save(update_fields=["hp"])
 
-        context = run_enemy_attack((self.session, self.stats, {}, self.stats, {}))
+        with patch("game.services.combat.roll_d20", return_value=15), patch(
+            "game.services.combat.random.randint", return_value=5
+        ):
+            context = run_enemy_attack((self.session, self.stats, {}, self.stats, {}))
 
         self.assertEqual(context["scene"], self.defeat_scene)
         self.assertGreater(len(context["choices"]), 0)
@@ -159,7 +171,10 @@ class CombatEnemyResolveViewTest(TestCase):
         from game.models.combat import CombatState
 
         initial_hp = self.stats.hp
-        response = self.client.post(reverse("combat_resolve_enemy"), HTTP_HX_REQUEST="true")
+        with patch("game.services.combat.roll_d20", return_value=1), patch(
+            "game.services.combat.random.randint", return_value=2
+        ):
+            response = self.client.post(reverse("combat_resolve_enemy"), HTTP_HX_REQUEST="true")
 
         self.assertEqual(response.status_code, 200)
         cs = CombatState.objects.get(session=self.session)
@@ -169,6 +184,25 @@ class CombatEnemyResolveViewTest(TestCase):
         self.assertEqual(self.stats.hp, initial_hp)
         self.assertContains(response, "Your Turn")
         self.assertNotContains(response, self.combat_narrative)
+
+    def test_combat_enemy_attack_view_shows_clean_damage_label_and_log_text(self):
+        from game.models.combat import CombatState
+
+        cs = CombatState.objects.get(session=self.session)
+        cs.pending_enemy_roll = 18
+        cs.pending_enemy_total = 18
+        cs.pending_enemy_hit = True
+        cs.pending_enemy_damage = 3
+        cs.save(update_fields=["pending_enemy_roll", "pending_enemy_total", "pending_enemy_hit", "pending_enemy_damage"])
+
+        with patch("game.services.combat.roll_d20", return_value=18), patch(
+            "game.services.combat.random.randint", return_value=3
+        ):
+            response = self.client.post(reverse("combat_resolve_enemy"), HTTP_HX_REQUEST="true")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "d(2-4)")
+        self.assertNotContains(response, "â")
 
     def test_combat_resolve_enemy_rejects_get_with_405(self):
         response = self.client.get(reverse("combat_resolve_enemy"))
@@ -190,7 +224,10 @@ class CombatEnemyResolveViewTest(TestCase):
         self.stats.hp = 1
         self.stats.save(update_fields=["hp"])
 
-        response = self.client.post(reverse("combat_resolve_enemy"), HTTP_HX_REQUEST="true")
+        with patch("game.services.combat.roll_d20", return_value=18), patch(
+            "game.services.combat.random.randint", return_value=5
+        ):
+            response = self.client.post(reverse("combat_resolve_enemy"), HTTP_HX_REQUEST="true")
 
         self.assertEqual(response.status_code, 400)
         self.assertContains(response, "missing defeat_scene", status_code=400)
@@ -217,7 +254,10 @@ class CombatEnemyResolveViewTest(TestCase):
         encounter.defeat_scene = self.victory_scene
         encounter.save(update_fields=["defeat_scene"])
 
-        response = self.client.post(reverse("combat_resolve_enemy"), HTTP_HX_REQUEST="true")
+        with patch("game.services.combat.roll_d20", return_value=18), patch(
+            "game.services.combat.random.randint", return_value=5
+        ):
+            response = self.client.post(reverse("combat_resolve_enemy"), HTTP_HX_REQUEST="true")
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Press the edge")

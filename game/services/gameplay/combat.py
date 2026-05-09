@@ -1,5 +1,6 @@
 from ..combat import execute_player_attack, execute_enemy_attack, resolve_combat_end
 from ...models.events import flush_event_log
+from ...models.events import get_latest_batch
 from ...models.combat import CombatEncounter, CombatState
 from ..types import GameplayError
 from ..progression import XP_AWARDS
@@ -12,6 +13,7 @@ def run_player_attack(session_context) -> dict:
         session, stats, inventory, completed_map, combat_state, effective_stats
     )
     flush_event_log(session, logs)
+    context["latest_logs"] = get_latest_batch(session)
     context['choices'] = []
     return context
 
@@ -30,6 +32,7 @@ def run_enemy_attack(session_context) -> dict:
             "No combat encounter configured for this scene. Check quest content.", status=400
         )
     flush_event_log(session, logs)
+    context["latest_logs"] = get_latest_batch(session)
     returned_combat_state = context.get('combat_state')
     if returned_combat_state and returned_combat_state.is_active:
         context['choices'] = []
@@ -54,6 +57,7 @@ def run_combat_continue(session_context) -> dict:
         ending_type='victory',
     )
     flush_event_log(session, logs)
+    context["latest_logs"] = get_latest_batch(session)
     returned_combat_state = context.get('combat_state')
     if returned_combat_state and returned_combat_state.is_active:
         context['choices'] = []
