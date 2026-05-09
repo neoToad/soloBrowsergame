@@ -17,6 +17,9 @@ SHOW_LOCKED_COMPLETED_QUESTS = False
 DEV_ENVIRONMENT = os.getenv("DEV_ENVIRONMENT")
 
 ALLOWED_HOSTS = [h.strip() for h in os.environ["ALLOWED_HOSTS"].split()]
+CSRF_TRUSTED_ORIGINS = [
+    'https://solobrowsergame-production.up.railway.app',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
