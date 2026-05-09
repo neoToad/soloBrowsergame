@@ -16,7 +16,7 @@ STAT_DB_NAMES = {display: db for db, display in STAT_DISPLAY_NAMES.items()}
 STAT_FIELD_MAP = STAT_DB_NAMES
 
 USE_ITEM_FLAVOR = {
-    'heal_hp':  "You take a pull from the flask. Steadier now.",
+    'heal_hp':  "The edges go soft. You keep moving.",
     'add_stat': "You feel sharper. More focused.",
 }
 

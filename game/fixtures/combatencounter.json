@@ -22,5 +22,53 @@
     "victory_arrival_flavor": "Terrell's on the ground. He's breathing. That's the generous version of tonight.",
     "defeat_arrival_flavor": "The pavement comes up fast. Last thing you hear is footsteps, unhurried, leaving."
   }
+},
+{
+  "model": "game.combatencounter",
+  "pk": 8,
+  "fields": {
+    "scene": 163,
+    "enemy": 4,
+    "victory_scene": 164,
+    "defeat_scene": 167,
+    "victory_arrival_flavor": "He goes down. The lockup is quiet. You go through what he left behind.",
+    "defeat_arrival_flavor": "The concrete comes up fast. He's gone before you stop moving."
+  }
+},
+{
+  "model": "game.combatencounter",
+  "pk": 9,
+  "fields": {
+    "scene": 177,
+    "enemy": 2,
+    "victory_scene": 178,
+    "defeat_scene": 182,
+    "victory_arrival_flavor": "They're done. You check yourself for damage. Nothing that won't close.",
+    "defeat_arrival_flavor": "The block tilts. Then the pavement. Then nothing for a while."
+  }
+},
+{
+  "model": "game.combatencounter",
+  "pk": 10,
+  "fields": {
+    "scene": 190,
+    "enemy": 1,
+    "victory_scene": 192,
+    "defeat_scene": 196,
+    "victory_arrival_flavor": "He goes down. You step over him and head for the back.",
+    "defeat_arrival_flavor": "The floor comes up fast. Someone outside is already pushing the door open."
+  }
+},
+{
+  "model": "game.combatencounter",
+  "pk": 11,
+  "fields": {
+    "scene": 217,
+    "enemy": 1,
+    "victory_scene": 218,
+    "defeat_scene": 222,
+    "victory_arrival_flavor": "He goes down by the rear wheel. You go through his jacket.",
+    "defeat_arrival_flavor": "The last thing you see is the camera still on the passenger seat."
+  }
 }
 ]

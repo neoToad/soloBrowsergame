@@ -205,6 +205,7 @@ def execute_enemy_attack(session, stats, inventory, completed_map, combat_state,
             encounter.defeat_scene, combat_state,
             ending_type='defeat',
         )
+        context['player_defeated'] = True
         return [*logs, *end_logs], context
 
     effective_stats = get_effective_stats(stats, inventory)

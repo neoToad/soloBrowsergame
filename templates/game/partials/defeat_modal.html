@@ -1,0 +1,17 @@
+{% if player_defeated %}
+<dialog id="player-defeat-modal" class="item-modal">
+    <div class="item-modal-header">YOU'VE BEEN BEATEN</div>
+    <p class="item-modal-description">
+        You hit the ground hard. The city chews you up and spits you out. Ready to try again?
+    </p>
+    <div class="item-modal-footer">
+        <form method="POST" action="{% url 'session_restart' %}">
+            {% csrf_token %}
+            <button type="submit" class="item-close-btn">RESTART</button>
+        </form>
+        <a href="https://github.com/neoToad/soloBrowsergame" target="_blank" rel="noopener noreferrer"
+           class="item-close-btn">VIEW ON GITHUB</a>
+    </div>
+</dialog>
+<script>document.getElementById('player-defeat-modal').showModal();</script>
+{% endif %}

@@ -9,7 +9,7 @@
     "scope_key": "corkys__sal-face-to-face:2:Ask him about the envelopes on the shelf",
     "group_key": "Must have read the room",
     "requirements": [
-      173
+      191
     ]
   }
 },
@@ -79,7 +79,7 @@
     "scope_key": "the-ride",
     "group_key": "Must have completed Corky's",
     "requirements": [
-      180
+      195
     ]
   }
 },
@@ -108,6 +108,188 @@
     "group_key": null,
     "requirements": [
       182
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 10,
+  "fields": {
+    "label": "Must have completed Corky's",
+    "logic": "all",
+    "scope_type": "choice",
+    "scope_key": "hub__apartment:1:Head to Corky's",
+    "group_key": "Must have completed Corky's",
+    "requirements": [
+      183
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 11,
+  "fields": {
+    "label": "Completed Crossing Lines",
+    "logic": "all",
+    "scope_type": "choice",
+    "scope_key": "hub__apartment:3:Cross into the Westside",
+    "group_key": "Completed Crossing Lines",
+    "requirements": [
+      184
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 12,
+  "fields": {
+    "label": "Completed Crossing Lines",
+    "logic": "all",
+    "scope_type": "choice",
+    "scope_key": "hub__apartment:4:Head down to the Strip",
+    "group_key": "Completed Crossing Lines",
+    "requirements": [
+      185
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 13,
+  "fields": {
+    "label": "Must have cased the store",
+    "logic": "all",
+    "scope_type": "choice",
+    "scope_key": "the-strip-job__the-approach:3:Take the side alley",
+    "group_key": "Must have cased the store",
+    "requirements": [
+      186
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 14,
+  "fields": {
+    "label": "Must have zip ties",
+    "logic": "all",
+    "scope_type": "choice",
+    "scope_key": "the-strip-job__the-back-room:3:Zip tie him to the shelf",
+    "group_key": "Must have zip ties",
+    "requirements": [
+      187
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 15,
+  "fields": {
+    "label": "Witness not restrained",
+    "logic": "all",
+    "scope_type": "choice",
+    "scope_key": "the-strip-job__the-exit:1:Walk out the front, don't run",
+    "group_key": "Witness not restrained",
+    "requirements": [
+      188
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 16,
+  "fields": {
+    "label": "Witness restrained",
+    "logic": "all",
+    "scope_type": "choice",
+    "scope_key": "the-strip-job__the-exit:2:Walk out the front, don't run",
+    "group_key": "Witness restrained",
+    "requirements": [
+      189
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 17,
+  "fields": {
+    "label": "Must have cased the store",
+    "logic": "all",
+    "scope_type": "choice",
+    "scope_key": "the-strip-job__the-exit:3:Back out the side door",
+    "group_key": "Must have cased the store",
+    "requirements": [
+      190
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 18,
+  "fields": {
+    "label": "Must have completed The Morris Job",
+    "logic": "all",
+    "scope_type": "quest",
+    "scope_key": "corkys",
+    "group_key": "Must have completed The Call",
+    "requirements": [
+      192
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 19,
+  "fields": {
+    "label": "Must have completed The Morris Job",
+    "logic": "all",
+    "scope_type": "quest",
+    "scope_key": "crossing-lines",
+    "group_key": "Must have completed The Call",
+    "requirements": [
+      193
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 20,
+  "fields": {
+    "label": "Must have completed the call",
+    "logic": "all",
+    "scope_type": "quest",
+    "scope_key": "the-morris-job",
+    "group_key": "Must have completed the call",
+    "requirements": [
+      194
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 21,
+  "fields": {
+    "label": "Completed the strip",
+    "logic": "all",
+    "scope_type": null,
+    "scope_key": null,
+    "group_key": null,
+    "requirements": [
+      196
+    ]
+  }
+},
+{
+  "model": "game.requirementgroup",
+  "pk": 22,
+  "fields": {
+    "label": "Must have completed the tail",
+    "logic": "all",
+    "scope_type": null,
+    "scope_key": null,
+    "group_key": null,
+    "requirements": [
+      197
     ]
   }
 }

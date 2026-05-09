@@ -5,12 +5,12 @@
   "fields": {
     "key": "street_thug",
     "name": "Street Thug",
-    "description": "Nobody's soldier. Works alone or in loose pairs, opportunistic. Not trained, not disciplined, but willing enough that it amounts to the same thing in a dark stairwell.\n",
+    "description": "Nobody's soldier. Works alone or in loose pairs, opportunistic. Not trained, not disciplined, but willing enough that it amounts to the same thing in a dark stairwell.",
     "max_hp": 18,
     "attack_modifier": 1,
     "defense": 9,
     "damage_min": 2,
-    "damage_max": 6
+    "damage_max": 4
   }
 },
 {
@@ -47,12 +47,12 @@
   "fields": {
     "key": "corner_boy",
     "name": "Corner Boy",
-    "description": "Kings or BSB, depending on the block. Low-tier, more committed than a generic thug. Has something to prove, which makes him more dangerous than his experience warrants.\n",
+    "description": "Kings or BSB, depending on the block. Low-tier, more committed than a generic thug. Has something to prove, which makes him more dangerous than his experience warrants.",
     "max_hp": 20,
-    "attack_modifier": 2,
+    "attack_modifier": -1,
     "defense": 10,
-    "damage_min": 2,
-    "damage_max": 7
+    "damage_min": 1,
+    "damage_max": 5
   }
 },
 {

@@ -13,9 +13,8 @@ def log_event(session, text: str) -> None:
 def flush_event_log(session, texts) -> None:
     if not texts:
         return
-    EventLog.objects.bulk_create(
-        [EventLog(session=session, text=t) for t in texts]
-    )
+    for text in texts:
+        EventLog.objects.create(session=session, text=text)
     _trim_overflow(session)
 
 

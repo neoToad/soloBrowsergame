@@ -143,7 +143,18 @@ hubs:
     failure_arrival_flavor: null
     set_flag_name: null
     clear_flag_name: null
-    requirements: []
+    requirements:
+    - label: Completed Crossing Lines
+      logic: all
+      conditions:
+      - condition_type: quest_completed
+        flag_name: null
+        stat_name: null
+        stat_value: 0
+        required_item: null
+        required_quest: crossing-lines
+        required_contact: null
+        required_ending_type: null
 - key: hub__the_strip
   scene_type: hub
   title: The Strip

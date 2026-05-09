@@ -22,14 +22,14 @@ scenes:
     \ on the ceiling is still shaped like a boot, the radiator still clanks like it's\
     \ trying to tell you something, and the stack of mail by the door is three years\
     \ deep and entirely bills. The envelope of cash you came home with is already\
-    \ half gone. Your parole officer wants you in legitimate work by the end of the\
-    \ month. Your old crew hasn't called.\n\nAll things considered, it could be worse.\
-    \ You're working on figuring out how.\n\nThen your phone buzzes on the counter.\
-    \ Your sister's name on the screen \u2014 Vickie \u2014 and three years of silence\
+    \ gone. Your parole officer wants you in legitimate work by the end of the month.\
+    \ Your old crew hasn't called.\n\nAll things considered, it could be worse. You're\
+    \ working on figuring out how.\n\nThen your phone buzzes on the counter. Your\
+    \ sister's name on the screen \u2014 Vickie \u2014 and three years of silence\
     \ sitting behind it like a held breath. She's calling at nine on a Tuesday night,\
     \ which means either something has gone wrong or something is about to, and with\
     \ Vickie the line between those two has always been thin. You stare at it for\
-    \ two rings.\n"
+    \ two rings."
   roll:
     requires_roll: false
     roll_stat: null

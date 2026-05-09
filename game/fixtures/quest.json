@@ -1,6 +1,118 @@
 [
 {
   "model": "game.quest",
+  "pk": 18,
+  "fields": {
+    "key": "the-boundary",
+    "title": "The Boundary",
+    "description": "Someone's been running product two blocks into Kings territory from the Flats side. The council wants it stopped quietly. They're asking you.\n",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": null,
+    "entrance_scene": 153,
+    "is_repeatable": false,
+    "requirements": [],
+    "hub_scenes": [
+      4
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 19,
+  "fields": {
+    "key": "the-regular",
+    "title": "The Regular",
+    "description": "Danny Kowalski hasn't been in for two weeks. Tuesday, Thursday, every week for eleven years, and then nothing. Sal's not asking you to do anything about it. He's just saying it.\n",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": null,
+    "entrance_scene": 168,
+    "is_repeatable": false,
+    "requirements": [],
+    "hub_scenes": [
+      2
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 20,
+  "fields": {
+    "key": "the-strip-job",
+    "title": "The Strip Job",
+    "description": "There's an electronics shop two blocks down from the corner. You've walked past it three times this week without meaning to. Tonight feels like the night.\n",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": null,
+    "entrance_scene": 183,
+    "is_repeatable": false,
+    "requirements": [],
+    "hub_scenes": [
+      5
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 21,
+  "fields": {
+    "key": "the-tab",
+    "title": "The Tab",
+    "description": "A guy ran up a tab he couldn't cover and left a flash drive behind the bar. Now two different people are asking about him. Sal wants to know if he needs to worry.",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": null,
+    "entrance_scene": 197,
+    "is_repeatable": false,
+    "requirements": [
+      21
+    ],
+    "hub_scenes": [
+      2
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 22,
+  "fields": {
+    "key": "the-tail",
+    "title": "The Tail",
+    "description": "Burner number, no name. Someone's watching a Strip regular and the caller wants to know who hired them. Then they want them gone.\n",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": null,
+    "entrance_scene": 209,
+    "is_repeatable": false,
+    "requirements": [],
+    "hub_scenes": [
+      5
+    ]
+  }
+},
+{
+  "model": "game.quest",
+  "pk": 23,
+  "fields": {
+    "key": "the-witness",
+    "title": "The Witness",
+    "description": "A Kings soldier named Calvin has been missing for four days. His crew thinks he's being leaned on. They want someone outside the Kings to find him before it becomes a loyalty question.",
+    "is_unlocked": true,
+    "arc": null,
+    "arc_order": null,
+    "entrance_scene": 223,
+    "is_repeatable": false,
+    "requirements": [
+      22
+    ],
+    "hub_scenes": [
+      4
+    ]
+  }
+},
+{
+  "model": "game.quest",
   "pk": 15,
   "fields": {
     "key": "the-call",
@@ -30,7 +142,7 @@
     "entrance_scene": 132,
     "is_repeatable": false,
     "requirements": [
-      6
+      20
     ],
     "hub_scenes": [
       1
@@ -50,7 +162,7 @@
     "entrance_scene": 142,
     "is_repeatable": false,
     "requirements": [
-      8
+      19
     ],
     "hub_scenes": [
       1
@@ -70,7 +182,7 @@
     "entrance_scene": 68,
     "is_repeatable": false,
     "requirements": [
-      8
+      18
     ],
     "hub_scenes": [
       1

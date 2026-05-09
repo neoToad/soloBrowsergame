@@ -1,20 +1,6 @@
 [
 {
   "model": "game.requirement",
-  "pk": 173,
-  "fields": {
-    "condition_type": "has_flag",
-    "flag_name": "corkys_read_room",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": null,
-    "required_ending_type": "",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
   "pk": 175,
   "fields": {
     "condition_type": "has_flag",
@@ -71,20 +57,6 @@
 },
 {
   "model": "game.requirement",
-  "pk": 180,
-  "fields": {
-    "condition_type": "quest_completed",
-    "flag_name": "",
-    "stat_name": "",
-    "stat_value": 0,
-    "required_item": null,
-    "required_quest": 11,
-    "required_ending_type": "",
-    "required_contact": null
-  }
-},
-{
-  "model": "game.requirement",
   "pk": 181,
   "fields": {
     "condition_type": "quest_completed",
@@ -107,6 +79,216 @@
     "stat_value": 0,
     "required_item": null,
     "required_quest": 17,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 183,
+  "fields": {
+    "condition_type": "quest_completed",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": 11,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 184,
+  "fields": {
+    "condition_type": "quest_completed",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": 17,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 185,
+  "fields": {
+    "condition_type": "quest_completed",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": 17,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 186,
+  "fields": {
+    "condition_type": "has_flag",
+    "flag_name": "strip_job_cased",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": null,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 187,
+  "fields": {
+    "condition_type": "has_item",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": 9,
+    "required_quest": null,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 188,
+  "fields": {
+    "condition_type": "has_flag",
+    "flag_name": "strip_job_witness",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": null,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 189,
+  "fields": {
+    "condition_type": "has_flag",
+    "flag_name": "strip_job_witness_tied",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": null,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 190,
+  "fields": {
+    "condition_type": "has_flag",
+    "flag_name": "strip_job_cased",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": null,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 191,
+  "fields": {
+    "condition_type": "has_flag",
+    "flag_name": "corkys_read_room",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": null,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 192,
+  "fields": {
+    "condition_type": "quest_completed",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": 16,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 193,
+  "fields": {
+    "condition_type": "quest_completed",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": 16,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 194,
+  "fields": {
+    "condition_type": "quest_completed",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": 15,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 195,
+  "fields": {
+    "condition_type": "quest_completed",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": 11,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 196,
+  "fields": {
+    "condition_type": "quest_completed",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": 20,
+    "required_ending_type": "",
+    "required_contact": null
+  }
+},
+{
+  "model": "game.requirement",
+  "pk": 197,
+  "fields": {
+    "condition_type": "quest_completed",
+    "flag_name": "",
+    "stat_name": "",
+    "stat_value": 0,
+    "required_item": null,
+    "required_quest": 22,
     "required_ending_type": "",
     "required_contact": null
   }

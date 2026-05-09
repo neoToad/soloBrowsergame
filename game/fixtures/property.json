@@ -5,7 +5,7 @@
   "fields": {
     "key": "corkys_bar",
     "name": "Corky's Bar",
-    "description": null,
+    "description": "",
     "property_type": "business",
     "cash_per_turn": 75,
     "heat_per_turn": 0,
@@ -31,7 +31,7 @@
   "fields": {
     "key": "westside_safehouse",
     "name": "Westside Safehouse",
-    "description": null,
+    "description": "",
     "property_type": "safehouse",
     "cash_per_turn": 0,
     "heat_per_turn": -2,

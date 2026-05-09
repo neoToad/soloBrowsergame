@@ -89,7 +89,7 @@ def build_core_context(
         "stat_bonuses": effective_stats.bonuses,
         "stat_bonus_breakdown": get_stat_bonus_breakdown(stats, inventory),
         "inventory": inventory,
-        "logs": session.log.all()[:10],
+        "logs": session.log.all()[:5],
         "oob": True,
         "combat_state": combat_state,
         "turn_summary": turn_summary,
