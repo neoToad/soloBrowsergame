@@ -16,8 +16,7 @@ DEBUG = True
 SHOW_LOCKED_COMPLETED_QUESTS = False
 DEV_ENVIRONMENT = os.getenv("DEV_ENVIRONMENT")
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'http://0.0.0.0:8080']
-
+ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(' ')
 
 # Application definition
 
