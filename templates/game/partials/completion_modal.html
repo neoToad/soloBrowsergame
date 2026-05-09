@@ -1,0 +1,17 @@
+{% if all_quests_complete %}
+<dialog id="all-quests-complete-modal" class="item-modal">
+    <div class="item-modal-header">ALL EVENTS COMPLETE</div>
+    <p class="item-modal-description">
+        You've completed every event in the city. The streets know your name.
+    </p>
+    <div class="item-modal-footer">
+        <form method="POST" action="{% url 'session_restart' %}">
+            {% csrf_token %}
+            <button type="submit" class="item-close-btn">RESTART</button>
+        </form>
+        <a href="https://github.com/neoToad/soloBrowsergame" target="_blank" rel="noopener noreferrer"
+           class="item-close-btn">VIEW ON GITHUB</a>
+    </div>
+</dialog>
+<script>document.getElementById('all-quests-complete-modal').showModal();</script>
+{% endif %}

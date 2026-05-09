@@ -1,5 +1,11 @@
 from game.views.combat import combat_attack, combat_continue, combat_resolve_enemy
-from game.views.navigation import choice_resolve, game_hub, root_redirect, scene_detail
+from game.views.navigation import (
+    choice_resolve,
+    game_hub,
+    root_redirect,
+    scene_detail,
+    session_restart,
+)
 from game.views.player import level_up, use_item
 from game.views.quests import start_quest
 
@@ -8,6 +14,7 @@ __all__ = [
     "game_hub",
     "scene_detail",
     "choice_resolve",
+    "session_restart",
     "combat_attack",
     "combat_resolve_enemy",
     "combat_continue",

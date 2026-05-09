@@ -1,5 +1,6 @@
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 
 from game.constants import SESSION_KEY
 from game.models import Choice, GameSession, Scene
@@ -78,3 +79,10 @@ def choice_resolve(request, choice_id, *, session_context):
     if response_utils.is_htmx(request):
         return _htmx_response(request, context)
     return redirect("scene_detail", scene_key=result.next_scene.key)
+
+
+@require_POST
+def session_restart(request):
+    session_key = request.session.session_key
+    GameSession.objects.filter(session_key=session_key).delete()
+    return redirect("game_hub")
