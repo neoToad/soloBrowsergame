@@ -154,3 +154,4 @@ cython_debug/
 /backup.json
 
 .qwen/
+/staticfiles/
