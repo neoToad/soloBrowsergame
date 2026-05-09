@@ -63,7 +63,7 @@ class CombatAttackFlowTest(TestCase):
         response = self.client.get(reverse("combat_attack"))
         self.assertEqual(response.status_code, 405)
 
-    def test_combat_attack_miss_renders_your_turn_badge_from_latest_event(self):
+    def test_combat_attack_miss_renders_enemy_turn_badge_when_enemy_attack_is_pending(self):
         self.cs.pending_enemy_roll = None
         self.cs.pending_enemy_total = None
         self.cs.pending_enemy_hit = None
@@ -83,7 +83,7 @@ class CombatAttackFlowTest(TestCase):
             response = self.client.post(reverse("combat_attack"), HTTP_HX_REQUEST="true")
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Your Turn")
+        self.assertContains(response, "Enemy Turn")
         self.assertContains(response, "roll-result--miss")
 
     def test_combat_attack_roll_header_uses_display_stat_name(self):

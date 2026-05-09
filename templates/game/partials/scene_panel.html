@@ -12,12 +12,10 @@
 
     <h2>{{ scene.title }}</h2>
     {% if combat_state and combat_state.is_active %}
-    <p class="combat-phase-badge {% if combat_state.pending_victory %}combat-phase-badge--victory{% elif logs and logs.0.text|slice:':15' == 'You move on him' %}combat-phase-badge--player{% elif logs and 'comes at you' in logs.0.text %}combat-phase-badge--enemy{% else %}combat-phase-badge--player{% endif %}">
+    <p class="combat-phase-badge {% if combat_state.pending_victory %}combat-phase-badge--victory{% elif combat_state.enemy_attack_pending %}combat-phase-badge--enemy{% else %}combat-phase-badge--player{% endif %}">
         {% if combat_state.pending_victory %}
             Victory
-        {% elif logs and logs.0.text|slice:':15' == 'You move on him' %}
-            Your Turn
-        {% elif logs and 'comes at you' in logs.0.text %}
+        {% elif combat_state.enemy_attack_pending %}
             Enemy Turn
         {% else %}
             Your Turn

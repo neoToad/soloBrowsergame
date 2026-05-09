@@ -164,6 +164,7 @@ class CombatEnemyResolveViewTest(TestCase):
         self.assertEqual(cs.turn_number, 2)
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.hp, initial_hp)
+        self.assertContains(response, "Your Turn")
 
     def test_combat_resolve_enemy_rejects_get_with_405(self):
         response = self.client.get(reverse("combat_resolve_enemy"))
