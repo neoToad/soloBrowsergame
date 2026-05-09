@@ -16,7 +16,7 @@ DEBUG = True
 SHOW_LOCKED_COMPLETED_QUESTS = False
 DEV_ENVIRONMENT = os.getenv("DEV_ENVIRONMENT")
 
-ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split()
+ALLOWED_HOSTS = [h.strip() for h in os.environ["ALLOWED_HOSTS"].split()]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
