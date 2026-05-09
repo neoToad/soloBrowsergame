@@ -18,8 +18,6 @@ DEV_ENVIRONMENT = os.getenv("DEV_ENVIRONMENT")
 
 ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(' ')
 
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
