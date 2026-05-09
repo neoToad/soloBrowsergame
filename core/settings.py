@@ -21,6 +21,7 @@ CSRF_TRUSTED_ORIGINS = [
     'https://solobrowsergame-production.up.railway.app',
 ]
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
