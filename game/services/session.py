@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from ..models import GameSession, PlayerStats, Scene, CompletedQuest
+from ..models.events import get_latest_batch
 from ..models.property import PlayerDiscoveredTerritory, PlayerProperty, PlayerTerritory, Territory
 from ..constants import HUB_START_SCENE_KEY, SESSION_KEY
 from .inventory import get_player_inventory
@@ -90,6 +91,7 @@ def build_core_context(
         "stat_bonus_breakdown": get_stat_bonus_breakdown(stats, inventory),
         "inventory": inventory,
         "logs": session.log.all()[:5],
+        "latest_logs": get_latest_batch(session),
         "oob": True,
         "combat_state": combat_state,
         "turn_summary": turn_summary,

@@ -25,8 +25,8 @@
     </p>
     {% endif %}
 
-    {% if logs %}
-    <div class="latest-event">{{ logs.0.text }}</div>
+    {% if latest_logs %}
+    <div class="latest-event">{% for entry in latest_logs %}{% if not forloop.first %}<br>{% endif %}{{ entry.text }}{% endfor %}</div>
     {% endif %}
 
     {% if roll_result %}

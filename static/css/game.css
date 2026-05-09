@@ -339,6 +339,7 @@ html, body {
     color: var(--warning);
 }
 
+
 .log-entry--player {
     color: var(--text-dim);
     border-left: none;
