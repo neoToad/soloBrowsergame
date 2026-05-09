@@ -2,53 +2,52 @@
 
 ## Setting
 
-Noir crime world. The player is a nobody climbing the ranks of a criminal organization.
-Tone is gritty, dry, and terse. See `CONTENT_GUIDE.md` for writing guidance.
+Noir crime world. The player is a nobody climbing through Creston's criminal economy.
+Tone is gritty, dry, and terse. See `QUEST_CONTENT_GUIDE.md` for writing guidance.
 
 ---
 
 ## Player Stats
 
-All stats default to 5. Modifier formula: `(stat - 10) // 2` (D&D-style, so 5 → -3).
+All stats default to 5. Modifier formula: `(stat - 10) // 2`.
 
-| DB field    | UI label   | Used for                                  |
-|-------------|------------|-------------------------------------------|
-| `strength`  | Muscle     | Melee attack rolls, physical skill checks |
+| DB field    | UI label   | Used for |
+|-------------|------------|----------|
+| `strength`  | Muscle     | Player attack rolls, physical checks, max HP scaling |
 | `agility`   | Reflexes   | Player defense (`10 + agility modifier`), dodge checks |
-| `intellect` | Cunning    | Skill checks requiring wit or planning    |
-| `charisma`  | Nerve      | Persuasion, intimidation, social checks   |
-| `hp`        | HP         | Current health; combat damage reduces this |
-| `max_hp`    | Max HP     | Cap for healing; starts at 20             |
+| `intellect` | Cunning    | Planning/analysis checks |
+| `charisma`  | Nerve      | Social pressure, persuasion, intimidation |
+| `hp`        | HP         | Current health |
+| `max_hp`    | Max HP     | Healing cap |
 
-Passive item bonuses are applied on top via `get_effective_stats()` — effective values are used for all rolls and display, but mutations always go to the raw `PlayerStats`.
+Passive item bonuses are applied via `get_effective_stats()`. Effective stats drive checks/rendering; persistent mutations write to `PlayerStats`.
 
 ---
 
 ## Scene Types
 
-| Type     | Behaviour                                                                  |
-|----------|----------------------------------------------------------------------------|
-| `normal` | Standard narrative scene with choices                                      |
-| `hub`    | Persistent home area; choices are always available; hosts a notice board   |
-| `combat` | Triggers a `CombatEncounter`; standard choices are hidden during combat    |
-| `ending` | Quest terminus; triggers `maybe_complete_quest()` on arrival               |
+| Type | Behavior |
+|---|---|
+| `normal` | Standard narrative scene with choices |
+| `hub` | Persistent location with notice board quest surfacing |
+| `combat` | Uses `CombatEncounter`; regular choices hidden while active combat is in progress |
+| `ending` | Quest terminus; completion and XP handled on arrival |
 
-Ending scenes additionally have an `ending_type`: `victory`, `defeat`, or `neutral`.
+Ending scenes set `ending_type`: `victory`, `defeat`, or `neutral`.
 
 ---
 
 ## Combat System
 
-- A `CombatEncounter` attaches one `Enemy` to a `Scene`.
-- On entering a combat scene, a `CombatState` is created (or retrieved) for the session.
-- Rounds are **two-phase**:
-  1. Player clicks "Move on him" → player attack resolves and is logged; enemy counter-attack is pre-rolled and stored on `CombatState` (`pending_e_roll/total/hit/dmg`).
-  2. Player clicks "Brace yourself" → stored enemy attack is applied; HP updates; turn advances.
-- **Player attack**: `d20 + strength_modifier` vs `enemy.defense`. Hit deals `d6 + strength_modifier`.
-- **Enemy attack**: `d20 + enemy.attack_modifier` vs `10 + player_agility_modifier`. Hit deals `d(damage_min–damage_max)`.
-- Enemy down → routes to `victory_scene`; awards `combat_victory` XP. Checked after phase 1 (enemy never retaliates if already dead).
-- Player down → routes to `defeat_scene`. Checked after phase 2.
-- Only one active `CombatState` per session at a time.
+- `CombatEncounter` links one enemy and routes to `victory_scene` / `defeat_scene`.
+- Entering a combat scene initializes (or reuses) one active `CombatState` for the session.
+- Combat is two-phase:
+  1. Player attack resolves and logs; enemy counterattack is pre-rolled and stored.
+  2. Player resolves enemy attack; HP/turn update; victory/defeat transitions execute.
+- Stored enemy attack fields: `pending_enemy_roll`, `pending_enemy_total`, `pending_enemy_hit`, `pending_enemy_damage`.
+- Player attack: `d20 + strength_modifier` vs `enemy.defense`; damage `d6 + max(0, strength_modifier)`.
+- Enemy attack: `d20 + enemy.attack_modifier` vs `10 + agility_modifier`; damage `d(enemy.damage_min..enemy.damage_max)`.
+- Combat victory grants XP via `XP_AWARDS['combat_victory']` and then routes through combat-end arrival processing.
 
 ---
 
@@ -56,70 +55,59 @@ Ending scenes additionally have an `ending_type`: `victory`, `defeat`, or `neutr
 
 ### Effect Types
 
-| `effect_type` | Behaviour                                                  |
-|---------------|------------------------------------------------------------|
-| `heal_hp`     | Restores `effect_value` HP (capped at `max_hp`) on use     |
-| `add_stat`    | Permanently adds `effect_value` to `effect_stat` on use   |
+| `effect_type` | Behavior |
+|---|---|
+| `heal_hp` | Restore `effect_value` HP (capped at `max_hp`) |
+| `add_stat` | Permanently add `effect_value` to `effect_stat` |
 
 ### Passive Bonuses
-Items can have `passive_stat` + `passive_value`. These are applied automatically via `get_effective_stats()` while the item is in inventory. The bonus does **not** persist to the DB — it is computed on every request.
+
+Items can provide `passive_stat` + `passive_value` while carried; these are computed, not persisted.
 
 ### Consumables
-If `is_consumable=True`, the item is removed from inventory after use. Items can also be consumed on scene arrival via `Scene.consume_item` (fires in `complete_scene` regardless of `is_consumable`).
 
-### Equipment Slots
-`equip_slot` field exists (`weapon`, `armor`, `accessory`) but equip logic is not yet implemented. Reserved for future use.
+- `is_consumable=True`: removed when used through item-use flow.
+- Scene arrival can also consume one item via `Scene.consume_item`.
 
 ---
 
 ## Requirement / Gating System
 
-Gates control whether a Quest, Scene, or Choice is accessible.
-
-- Each object holds a M2M to `RequirementGroup`.
-- All groups on an object must pass (**AND** between groups).
-- Within a group, conditions are evaluated with **AND** (`logic='all'`) or **OR** (`logic='any'`).
+- Quests and choices gate through `RequirementGroup` M2M.
+- All groups attached to an object must pass (AND between groups).
+- Within a group, `logic='all'` (AND) or `logic='any'` (OR).
 
 ### Condition Types
 
-| Type               | Checks                                           |
-|--------------------|--------------------------------------------------|
-| `stat_gte`         | `stats.{stat_name} >= stat_value`                |
-| `stat_lte`         | `stats.{stat_name} <= stat_value`                |
-| `has_item`         | item is in inventory                             |
-| `missing_item`     | item is not in inventory                         |
-| `quest_completed`  | quest has any completion                         |
-| `quest_not_done`   | quest has no completion                          |
-| `quest_ending`     | quest completed with specific `ending_type`      |
-| `level_gte`        | `stats.level >= stat_value`                      |
-| `xp_gte`           | `stats.experience >= stat_value`                 |
-| `has_flag`         | `flag_name` is set on the session                |
-| `missing_flag`     | `flag_name` is not set on the session            |
+- `stat_gte`, `stat_lte`
+- `has_item`, `missing_item`
+- `quest_completed`, `quest_not_done`, `quest_ending`
+- `level_gte`, `xp_gte`
+- `has_flag`, `missing_flag`
+- `has_contact`, `missing_contact`
 
 ---
 
 ## Flag System
 
-Session-level boolean flags stored in `GameSession.flags` (JSONField).
+Session-level boolean flags are stored in `GameSession.flags` (JSONField).
 
-- Flags are set or cleared automatically when a Choice is taken (`set_flag_name` / `clear_flag_name` fields).
-- Gated via `has_flag` / `missing_flag` requirement types on Quests, Scenes, and Choices.
-- Use `flags.py` service to read/write flags — never touch the dict directly.
+- Set/clear through choice fields: `set_flag_name`, `clear_flag_name`.
+- Read in requirements via `has_flag` / `missing_flag`.
+- Use `game/services/flags.py` helpers for mutation and checks.
 
 ---
 
 ## Notice Board
 
-Each hub scene has a notice board showing quests assigned to it via `Quest.hub_scenes` (M2M).
+Hub scenes surface quests assigned through `Quest.hub_scenes`.
 
-- **Available**: quest not completed and all requirement groups pass.
-- **Locked**: quest not completed but at least one requirement group fails (shown with reason).
-- **Completed**: quest has a `CompletedQuest` record for this session.
-
-A quest must be assigned to at least one hub scene (`is_unlocked=True`) to appear in the game. The quest builder validator flags quests that are unlocked but have no hub scenes.
+- Available: requirements pass and quest is surfaced/unlocked.
+- Locked: surfaced but requirements fail.
+- Completed: quest has `CompletedQuest` for the session unless repeatable behavior re-surfaces it.
 
 ---
 
 ## Arcs
 
-Quests can be grouped into `Arc` objects. Arcs have an `order` field; quests within an arc have `arc_order`. Currently informational — no gameplay gating is based on arc membership.
+`Arc` groups quests for sequencing/organization. `arc.order` and `quest.arc_order` define presentation order; hard gating should be modeled through requirements.

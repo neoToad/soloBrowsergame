@@ -1,6 +1,6 @@
 # Quest Authoring Patterns
 
-Canonical patterns/examples extracted from `QUEST_AUTHORING_COMPLETE.md`.
+Canonical quest authoring patterns and examples.
 
 ## Writing Conventions
 
@@ -266,3 +266,4 @@ ambush__knocked_out          (ending, defeat)
 - **Non-speech choice labels in quotation marks** — quotes on labels are for player dialogue only
 - **Body text hard-wrapped at column width** — the `|` scalar preserves every line break; each paragraph must be one continuous line or it breaks mid-sentence in game
 - **Roll routing directly to outcome scene** — insert a post-roll confirmation scene for both success and failure paths; routing straight through skips the beat where the result lands (exception: failure path that routes directly to combat can combine confirmation and combat setup in the combat scene body)
+

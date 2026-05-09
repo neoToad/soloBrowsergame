@@ -189,8 +189,44 @@ Tracked in:
   - DB fields: `strength`, `agility`, `intellect`, `charisma`
   - Display names: `muscle`, `reflexes`, `cunning`, `nerve`
   - Constants: `STAT_FIELDS`, `STAT_DISPLAY_NAMES`
+- Stat naming policy:
+  - Services and views must accept canonical DB stat names for mutations/checks.
+  - Templates may render display labels, but must post canonical DB stat names.
+  - Authoring/import content (`roll_stat`, `stat_name`) must use canonical DB stat names.
 - Always compute roll/display values from `get_effective_stats(stats, inventory)`.
 - Use `flags.py` helper functions for flag mutation checks.
+
+---
+
+## Endpoint Response Contract
+
+Scope:
+- Gameplay endpoints in `game/views/`.
+- Quest-builder endpoints in `game/quest_builder_views/`.
+
+Success behavior:
+- HTMX request: return HTML partial content that can be swapped directly.
+- HTMX mutation with client event side-effects: set `HX-Trigger` with JSON payload.
+- Non-HTMX request: redirect for normal gameplay navigation flows.
+- Combat mutation endpoints (`combat_attack`, `combat_resolve_enemy`, `combat_continue`) currently return the same HTMX fragment response path regardless of HTMX headers.
+
+Error behavior:
+- Return `4xx` with structured HTML (never plain-text response bodies).
+- HTMX gameplay errors render `templates/game/partials/scene_error.html`.
+- HTMX quest-builder errors render `templates/admin/quest_builder/partials/inline_error.html`.
+- Non-HTMX errors render HTML via `templates/game/error.html` (gameplay) or the quest-builder inline error template.
+
+Trigger naming:
+- Keep legacy event names for compatibility:
+  - `sceneUpdated`
+  - `choiceCreated`
+  - `choiceUpdated`
+  - `choiceDeleted`
+- Emit normalized aliases alongside legacy names:
+  - `scene.updated`
+  - `choice.created`
+  - `choice.updated`
+  - `choice.deleted`
 
 ---
 

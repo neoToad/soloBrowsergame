@@ -27,15 +27,12 @@ scenes:
   scene_type: normal
   title: Morris Calls
   order: 10
-  body: "Morris calls mid-afternoon, which is almost worse than early morning. Early\
-    \ morning means urgency. Afternoon means something has already gone wrong and\
-    \ you\u2019re being slotted into the gap it left behind.\n\nHe gives you an address\
-    \ in the Westside, another on the Strip, and a final drop that he describes as\
-    \ \u201Cself-explanatory,\u201D which is not a phrase Morris uses unless he has\
-    \ decided you don\u2019t need the explanation.\n\nYou ask what you\u2019re carrying.\n\
-    \n\u201CPackage,\u201D Morris says.\n\nA pause. Then:\n\n\u201CComplete the sequence.\
-    \ Do not improvise.\u201D\n\nHe hangs up.\n\nThe package is already outside your\
-    \ door.\n"
+  body: "Morris calls mid-afternoon.\n\nHe gives you an address in the Westside, another\
+    \ on the Strip, and a final drop that he describes as \u201Cself-explanatory,\u201D\
+    \ which is not a phrase Morris uses unless he has decided you don\u2019t need\
+    \ the explanation.\n\nYou ask what you\u2019re carrying.\n\n\u201CPackage,\u201D\
+    \ Morris says.\n\nA pause. Then:\n\n\u201CComplete the sequence. Do not improvise.\u201D\
+    \n\nHe hangs up.\n\nThe package is already outside your door."
   roll:
     requires_roll: false
     roll_stat: null
@@ -104,16 +101,6 @@ scenes:
     success_scene: null
     failure_scene: null
     arrival_flavor: He watches how you say it more than what you say.
-    failure_arrival_flavor: null
-    set_flag_name: null
-    clear_flag_name: null
-    requirements: []
-  - label: Passing through
-    order: 1
-    target_scene: crossing-lines__westside-hand-off
-    success_scene: null
-    failure_scene: null
-    arrival_flavor: "He decides that\u2019s enough of an answer."
     failure_arrival_flavor: null
     set_flag_name: null
     clear_flag_name: null

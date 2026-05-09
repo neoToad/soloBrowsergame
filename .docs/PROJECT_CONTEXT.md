@@ -2,12 +2,12 @@
 
 - Owner: Engineering
 - Update Trigger: Major feature/module changes that alter onboarding-relevant structure.
-- Last Verified Against Code: 2026-05-02
+- Last Verified Against Code: 2026-05-09
 
 High-level onboarding snapshot for the project. This file is summary-only.
 
 ## What This Project Is
-A Django + HTMX noir text RPG where players move through scenes, make choices, complete jobs/quests, and progress stats, contacts, territory, and reputation in a persistent session.
+A Django + HTMX noir text RPG where players move through scenes, make choices, complete quests, and progress stats, contacts, properties, territories, and reputation in a persistent session.
 
 ## Stack
 - Python 3.10+
@@ -27,20 +27,24 @@ A Django + HTMX noir text RPG where players move through scenes, make choices, c
 - Requirement evaluation (items, stats, quests, flags, contacts)
 - Inventory with active/passive item effects
 - Two-phase combat encounters
-- Multi-stage jobs flow (recon, approach, beats, rewards/cooldowns)
-- Property/territory turn effects tied to quest progression
+- Arrival-effect pipeline (cash/rep/heat, items/contacts, quest completion)
+- Property/territory progression and turn effects tied to quest outcomes
 
 ## Core Domain Entities
 - Session/player: `GameSession`, `PlayerStats`, `CompletedQuest`
 - Narrative world: `Arc`, `Quest`, `Scene`, `Choice`
-- Systems: requirements, combat encounters/state, jobs state, property/rival claims
+- Systems: requirements, combat encounters/state, flags, inventory, properties, territories
+
+## Architecture Snapshot
+- Request flow: URLs -> views -> services -> models
+- Rule: business logic belongs in services, not views
+- Current known gap: `scene_detail` GET still has combat-init/log write side effects (tracked in architecture/debt docs)
 
 ## Where to Look Next
 - Architecture rules/invariants: `.docs/ARCHITECTURE.md`
 - Current implementation status: `.docs/CURRENT_TASK.md`
-- Endpoint/HTMX response contract: `.docs/ENDPOINT_RESPONSE_CONTRACT.md`
-- Structural refactor backlog: `.docs/refactor-inventory.md`
-- Debt/risk register: `.docs/tech-debt-register.md`
+- Consolidated audit + debt register: `.docs/audit-and-tech-debt-2026-05-07.md`
 - Documentation map and ownership: `.docs/README.md`
-- Quest authoring index: `.docs/QUEST_AUTHORING_COMPLETE.md`
-- World lore index: `.docs/WORLD_LORE.md`
+- Quest authoring docs: `.docs/QUEST_AUTHORING_COMPLETE.md`, `.docs/QUEST_AUTHORING_RULES.md`, `.docs/QUEST_AUTHORING_PATTERNS.md`, `.docs/QUEST_CONTENT_GUIDE.md`
+- World lore docs: `.docs/WORLD_LORE.md`, `.docs/WORLD_LORE_CORE.md`, `.docs/WORLD_LORE_REFERENCE.md`
+- Quest tracking: `.docs/quest_tracking.xlsx` and `.docs/quest_tracking.md`

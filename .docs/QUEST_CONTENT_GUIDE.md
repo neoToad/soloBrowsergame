@@ -2,7 +2,7 @@
 
 This document defines the writing standard for all quest content: tone, sentence rhythm, character voice, dialogue, arrival flavors, endings, and scene length. It is the authoritative source for craft decisions.
 
-Structural rules — models, scene types, routing, requirements, flags, YAML formatting — live in `QUEST_AUTHORING_COMPLETE.md`. Read both before authoring a quest. Both are equally binding.
+Structural rules - models, scene types, routing, requirements, flags, and YAML formatting - live in `QUEST_AUTHORING_RULES.md`, with implementation patterns and examples in `QUEST_AUTHORING_PATTERNS.md`. Read all three before authoring a quest. They are equally binding.
 
 ---
 
@@ -347,3 +347,5 @@ Before submitting any scene body text, read it against these:
 - [ ] Does the closing line summarise what happened? (Find a last image instead.)
 - [ ] Are there adverbs covering for weak verbs? (Find the verb.)
 - [ ] Is any emotion named directly? (Show the condition instead.)
+
+

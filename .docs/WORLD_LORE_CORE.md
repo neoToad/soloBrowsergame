@@ -1,6 +1,6 @@
 # World Lore Core
 
-Canonical setting/faction context extracted from `WORLD_LORE.md`.
+Canonical world setting and faction context.
 
 ## The City
 
@@ -145,3 +145,4 @@ The most dangerous thing in Creston isn't any one faction. It's whatever breaks 
 The cold war isn't static. The player will, over the course of the game, make choices that either preserve the balance, exploit the tension, or become the thing that finally tips it. The city doesn't tell you that's what's happening. You figure it out when it's already done.
 
 ---
+

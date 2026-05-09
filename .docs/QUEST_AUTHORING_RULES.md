@@ -1,6 +1,6 @@
 # Quest Authoring Rules
 
-Canonical structural rules extracted from `QUEST_AUTHORING_COMPLETE.md`.
+Canonical structural rules for quest authoring.
 
 ## Conceptual Overview
 
@@ -310,3 +310,4 @@ The `title` field of a scene should be the human-readable equivalent of the scen
 | `smuggler-run__clean-exit` | `Clean Exit` |
 
 ---
+

@@ -1,6 +1,6 @@
 # World Lore Reference
 
-Canonical reference sections extracted from `WORLD_LORE.md`.
+Canonical world reference catalog (hubs, people, items, enemies, locations).
 
 ## Hub Scenes
 
@@ -253,3 +253,4 @@ Enemy entries for use in `CombatEncounter` records. Each has a `key`.
 | `the_cook` | The Cook | Zonk cook. Defensive encounter only — he didn't want this. Better with improvised weapons than anyone expects. |
 
 ---
+

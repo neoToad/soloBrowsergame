@@ -27,11 +27,11 @@ scenes:
   scene_type: normal
   title: The Call
   order: 10
-  body: "Morris calls at noon on the dot, which is when Morris calls. He doesn't introduce\
-    \ himself \u2014 he says there's a package on Crane Street, a laundromat called\
-    \ Presto's, ask for Pete. Deliver it to the lockup on Decker, unit twelve. Two\
-    \ hundred on completion. He waits long enough to confirm you've heard him, then\
-    \ hangs up.\n\nYou don't know what's in the package. That's the job.\n"
+  body: "Morris calls at noon on the dot. No introduction \u2014 you know who it is.\
+    \ He says there's a package on Crane Street, a laundromat called Presto's, ask\
+    \ for Pete. Deliver it to the lockup on Decker, unit twelve, two hundred on completion.\
+    \ He stays on the line long enough to confirm you've heard him, then hangs up.\n\
+    \nYou don't know what's in the package. That's the job."
   roll:
     requires_roll: false
     roll_stat: null
@@ -300,10 +300,11 @@ scenes:
   scene_type: normal
   title: Main Road
   order: 70
-  body: "You walk past them. They see you. One of them gets on the radio. You don't\
-    \ run \u2014 running ends this differently \u2014 so you keep moving, even, unhurried,\
-    \ eyes forward, and count the seconds until you're past the intersection.\n\n\
-    The package gets there. So does whatever they radioed in.\n"
+  body: "You walk past the two Blues officers posted at the corner. They see you.\
+    \ One of them gets on the radio. You don't run \u2014 running ends this differently\
+    \ \u2014 so you keep moving, even, unhurried, eyes forward, and count the seconds\
+    \ until you're past the intersection.\n\nThe package gets there. So does whatever\
+    \ they radioed in."
   roll:
     requires_roll: false
     roll_stat: null
@@ -421,7 +422,10 @@ scenes:
   scene_items:
   - item: zonk_smoked
     quantity: 1
-    award_once: false
+    award_once: true
+  - item: switchblade
+    quantity: 1
+    award_once: true
   scene_contacts:
   - contact: morris
     action: gain
