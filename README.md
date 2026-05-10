@@ -2,8 +2,8 @@
 
 A turn-based, single-player browser RPG built with Django and HTMX. The player navigates a branching narrative — making choices, fighting enemies, managing stats — with no page reloads. The server renders everything; JavaScript is minimal and purposeful.
 
-**Live:** _[URL placeholder]_
-**Code:** _[GitHub placeholder]_
+**Live:** https://solobrowsergame-production.up.railway.app/
+
 
 ---
 
