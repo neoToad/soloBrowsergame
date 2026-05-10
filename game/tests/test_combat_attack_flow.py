@@ -97,7 +97,7 @@ class CombatAttackFlowTest(TestCase):
             response = self.client.post(reverse("combat_attack"), HTTP_HX_REQUEST="true")
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Enemy Turn")
+        self.assertContains(response, "Your Turn")
         self.assertContains(response, "roll-result--miss")
 
     def test_combat_attack_roll_header_uses_display_stat_name(self):

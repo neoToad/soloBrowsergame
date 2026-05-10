@@ -182,7 +182,7 @@ class CombatEnemyResolveViewTest(TestCase):
         self.assertEqual(cs.turn_number, 2)
         self.stats.refresh_from_db()
         self.assertEqual(self.stats.hp, initial_hp)
-        self.assertContains(response, "Your Turn")
+        self.assertContains(response, "Enemy Turn")
         self.assertNotContains(response, self.combat_narrative)
 
     def test_combat_enemy_attack_view_shows_clean_damage_label_and_log_text(self):
